@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Halloumi.Shuffler.Engine
+{
+    public class Playlist
+    {
+        public string Name { get; set; }
+        public string Filename { get; set; }
+        public List<Track> Tracks { get; set; }
+
+        public Playlist()
+        {
+            this.Tracks = new List<Track>();
+        }
+    }
+}

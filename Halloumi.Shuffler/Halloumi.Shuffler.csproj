@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{96A9FFAC-90BB-4D8F-B237-8DC09024B043}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Halloumi.Shuffler</RootNamespace>
+    <AssemblyName>Halloumi.Shuffler</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Bass.Net, Version=2.4.6.4, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Toolkit, Version=4.3.2.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\ComponentFactory.Krypton.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Halloumi.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\Halloumi.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Halloumi.Common.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\Halloumi.Common.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaSlider, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\MediaSlider.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\DataGridView.cs" />
+    <Compile Include="Controls\SkipBack.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SkipBack.Designer.cs">
+      <DependentUpon>SkipBack.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackLibraryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackLibraryControl.Designer.cs">
+      <DependentUpon>TrackLibraryControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SampleLibraryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SampleLibraryControl.Designer.cs">
+      <DependentUpon>SampleLibraryControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ShufflerController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShufflerController.Designer.cs">
+      <DependentUpon>ShufflerController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackDetails.Designer.cs">
+      <DependentUpon>TrackDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackMixerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackMixerControl.Designer.cs">
+      <DependentUpon>TrackMixerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MixableTracks.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MixableTracks.Designer.cs">
+      <DependentUpon>MixableTracks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MixerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MixerControl.Designer.cs">
+      <DependentUpon>MixerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SamplePlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SamplePlayer.Designer.cs">
+      <DependentUpon>SamplePlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SamplerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SamplerControl.Designer.cs">
+      <DependentUpon>SamplerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackWave.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackWave.Designer.cs">
+      <DependentUpon>TrackWave.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PlaylistControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PlaylistControl.Designer.cs">
+      <DependentUpon>PlaylistControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Slider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PlayerDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PlayerDetails.Designer.cs">
+      <DependentUpon>PlayerDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VolumeLevel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VolumeLevel.designer.cs">
+      <DependentUpon>VolumeLevel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VolumeLevels.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\VolumeLevels.Designer.cs">
+      <DependentUpon>VolumeLevels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CommonFunctions.cs" />
+    <Compile Include="Forms\frmEditTrackSamples.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEditTrackSamples.designer.cs">
+      <DependentUpon>frmEditTrackSamples.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmExportPlaylist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmExportPlaylist.Designer.cs">
+      <DependentUpon>frmExportPlaylist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmImportShufflerFiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmImportShufflerFiles.Designer.cs">
+      <DependentUpon>frmImportShufflerFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmGeneratePlaylist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmGeneratePlaylist.Designer.cs">
+      <DependentUpon>frmGeneratePlaylist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMonitorSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMonitorSettings.Designer.cs">
+      <DependentUpon>frmMonitorSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmSampleLibrary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSampleLibrary.Designer.cs">
+      <DependentUpon>frmSampleLibrary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateTrackTitle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateTrackTitle.designer.cs">
+      <DependentUpon>frmUpdateTrackTitle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateTrackAudio.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateTrackAudio.designer.cs">
+      <DependentUpon>frmUpdateTrackAudio.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmAddPlaylist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAddPlaylist.Designer.cs">
+      <DependentUpon>frmAddPlaylist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPlugin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPlugin.designer.cs">
+      <DependentUpon>frmPlugin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSettings.Designer.cs">
+      <DependentUpon>frmSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmShufflerDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmShufflerDetails.designer.cs">
+      <DependentUpon>frmShufflerDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateAlbum.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateAlbum.designer.cs">
+      <DependentUpon>frmUpdateAlbum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateTrackDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateTrackDetails.Designer.cs">
+      <DependentUpon>frmUpdateTrackDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateArtist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateArtist.Designer.cs">
+      <DependentUpon>frmUpdateArtist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateGenre.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateGenre.Designer.cs">
+      <DependentUpon>frmUpdateGenre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateSimilarTracks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmUpdateSimilarTracks.Designer.cs">
+      <DependentUpon>frmUpdateSimilarTracks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Settings.cs" />
+    <Compile Include="Forms\TrackPlayerExtensions\frmFadeNow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TrackPlayerExtensions\frmFadeNow.Designer.cs">
+      <DependentUpon>frmFadeNow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TrackPlayerExtensions\TrackPlayerExtensionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\SkipBack.resx">
+      <DependentUpon>SkipBack.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrackLibraryControl.resx">
+      <DependentUpon>TrackLibraryControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SampleLibraryControl.resx">
+      <DependentUpon>SampleLibraryControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SamplerControl.resx">
+      <DependentUpon>SamplerControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ShufflerController.resx">
+      <DependentUpon>ShufflerController.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrackDetails.resx">
+      <DependentUpon>TrackDetails.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrackMixerControl.resx">
+      <DependentUpon>TrackMixerControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MixableTracks.resx">
+      <DependentUpon>MixableTracks.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MixerControl.resx">
+      <DependentUpon>MixerControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SamplePlayer.resx">
+      <DependentUpon>SamplePlayer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrackWave.resx">
+      <DependentUpon>TrackWave.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PlaylistControl.resx">
+      <DependentUpon>PlaylistControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PlayerDetails.resx">
+      <DependentUpon>PlayerDetails.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VolumeLevel.resx">
+      <DependentUpon>VolumeLevel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\VolumeLevels.resx">
+      <DependentUpon>VolumeLevels.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEditTrackSamples.resx">
+      <DependentUpon>frmEditTrackSamples.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmExportPlaylist.resx">
+      <DependentUpon>frmExportPlaylist.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmImportShufflerFiles.resx">
+      <DependentUpon>frmImportShufflerFiles.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmGeneratePlaylist.resx">
+      <DependentUpon>frmGeneratePlaylist.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMonitorSettings.resx">
+      <DependentUpon>frmMonitorSettings.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSampleLibrary.resx">
+      <DependentUpon>frmSampleLibrary.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateTrackTitle.resx">
+      <DependentUpon>frmUpdateTrackTitle.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateTrackAudio.resx">
+      <DependentUpon>frmUpdateTrackAudio.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAddPlaylist.resx">
+      <DependentUpon>frmAddPlaylist.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPlugin.resx">
+      <DependentUpon>frmPlugin.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSettings.resx">
+      <DependentUpon>frmSettings.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmShufflerDetails.resx">
+      <DependentUpon>frmShufflerDetails.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateSimilarTracks.resx">
+      <DependentUpon>frmUpdateSimilarTracks.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateAlbum.resx">
+      <DependentUpon>frmUpdateAlbum.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateTrackDetails.resx">
+      <DependentUpon>frmUpdateTrackDetails.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateArtist.resx">
+      <DependentUpon>frmUpdateArtist.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmUpdateGenre.resx">
+      <DependentUpon>frmUpdateGenre.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TrackPlayerExtensions\frmFadeNow.resx">
+      <DependentUpon>frmFadeNow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit.png" />
+    <Content Include="icon.ico" />
+    <Content Include="Resources\icon.ico" />
+    <Content Include="Resources\player-restart_small.png" />
+    <Content Include="Resources\player_end_small.png" />
+    <Content Include="Resources\player_fwd_small.png" />
+    <Content Include="Resources\player_pause_small.png" />
+    <Content Include="Resources\player_play_small.png" />
+    <None Include="Resources\player_rew1.png" />
+    <Content Include="Resources\player_rew_small.png" />
+    <Content Include="Resources\player_stop_small.png" />
+    <None Include="app.config" />
+    <None Include="Resources\logo.png" />
+    <None Include="Resources\player-restart.png" />
+    <None Include="Resources\player_rew.png" />
+    <None Include="Resources\player_fwd.png" />
+    <None Include="Resources\player_end.png" />
+    <None Include="Resources\player_stop.png" />
+    <None Include="Resources\player_play.png" />
+    <None Include="Resources\player_pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.BassEngine.csproj">
+      <Project>{b2b7650c-8209-4d48-aadf-5a1e76928b7e}</Project>
+      <Name>Halloumi.BassEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.Engine.csproj">
+      <Project>{744ec40e-007a-4d10-bbe1-fc084a9db425}</Project>
+      <Name>Halloumi.Shuffler.Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
