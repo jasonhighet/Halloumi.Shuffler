@@ -57,6 +57,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>
+    <Reference Include="ComponentFactory.Krypton.Design, Version=4.3.2.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\ComponentFactory.Krypton.Design.dll</HintPath>
+    </Reference>
     <Reference Include="ComponentFactory.Krypton.Toolkit, Version=4.3.2.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\ComponentFactory.Krypton.Toolkit.dll</HintPath>
