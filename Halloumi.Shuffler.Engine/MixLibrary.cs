@@ -717,6 +717,8 @@ namespace Halloumi.Shuffler.Engine
         {
             if (_loadedTracks.Contains(trackDescription)) return;
 
+            DebugHelper.WriteLine("LoadMixRankings - " + trackDescription);
+
             _loadedTracks.Add(trackDescription);
 
             var filename = GetMixRankingFileName(trackDescription);
