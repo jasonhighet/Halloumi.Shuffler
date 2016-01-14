@@ -12,9 +12,9 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmMonitorSettings : BaseForm
+    public partial class FrmMonitorSettings : BaseForm
     {
-        public frmMonitorSettings()
+        public FrmMonitorSettings()
         {
             InitializeComponent();
         }

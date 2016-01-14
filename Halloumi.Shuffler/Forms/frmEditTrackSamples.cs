@@ -17,7 +17,7 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmEditTrackSamples : BaseForm
+    public partial class FrmEditTrackSamples : BaseForm
     {
         #region Constructors
 
@@ -32,7 +32,7 @@ namespace Halloumi.Shuffler.Forms
         /// <summary>
         /// Initializes a new instance of the <see cref="frmTrack"/> class.
         /// </summary>
-        public frmEditTrackSamples()
+        public FrmEditTrackSamples()
         {
             InitializeComponent();
 
@@ -97,7 +97,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindTrack()
         {
-            lblTrackBPM.Text = this.Track.BPM.ToString("0.00");
+            lblTrackBPM.Text = this.Track.Bpm.ToString("0.00");
             this.Text = "Halloumi : Shuffler : Sample Details : " + this.Track.Description;
 
             lblTrackArtist.Text = this.LibraryTrack.Artist;
@@ -143,7 +143,7 @@ namespace Halloumi.Shuffler.Forms
             if (_bindingData) return;
 
             trackWave.RefreshPositions();
-            CalculateSampleBPM();
+            CalculateSampleBpm();
         }
 
         private Sample CurrentSample
@@ -179,7 +179,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 txtSampleStartPosition.Seconds = 0;
                 txtSampleOffsetPosition.Seconds = 0;
-                loopLengths = BE.BassHelper.GetLoopLengths(this.Track.BPM);
+                loopLengths = BE.BassHelper.GetLoopLengths(this.Track.Bpm);
                 cmbSampleLength.Seconds = 0;
                 SetLoopModeOnDropdown(LoopMode.FullLoop);
                 chkAtonal.Checked = false;
@@ -189,12 +189,12 @@ namespace Halloumi.Shuffler.Forms
             }
             else
             {
-                loopLengths = BE.BassHelper.GetLoopLengths(this.CurrentSample.BPM);
+                loopLengths = BE.BassHelper.GetLoopLengths(this.CurrentSample.Bpm);
 
                 txtSampleStartPosition.Seconds = this.CurrentSample.Start;
                 txtSampleOffsetPosition.Seconds = this.CurrentSample.Offset;
 
-                lblSampleBPM.Text = string.Format("0.00", this.CurrentSample.BPM);
+                lblSampleBPM.Text = string.Format("0.00", this.CurrentSample.Bpm);
 
                 cmbSampleLength.Seconds = this.CurrentSample.Length;
                 SetLoopModeOnDropdown(this.CurrentSample.LoopMode);
@@ -205,13 +205,13 @@ namespace Halloumi.Shuffler.Forms
             }
 
             // SetSampleCheckBoxes();
-            SetSampleBPMLabel();
+            SetSampleBpmLabel();
             cmbSampleLength.PopulateItemsFromSecondsList(loopLengths);
         }
 
-        private void SetSampleBPMLabel()
+        private void SetSampleBpmLabel()
         {
-            var bmp = CalculateSampleBPM();
+            var bmp = CalculateSampleBpm();
             lblSampleBPM.Text = bmp.ToString("0.00");
         }
 
@@ -232,7 +232,7 @@ namespace Halloumi.Shuffler.Forms
             return (LoopMode)Enum.Parse(typeof(LoopMode), StringHelper.GetAlphabeticCharactersOnly(cmbLoopMode.GetTextThreadSafe()));
         }
 
-        private decimal CalculateSampleBPM()
+        private decimal CalculateSampleBpm()
         {
             var length = cmbSampleLength.Seconds;
             var start = txtSampleStartPosition.Seconds;
@@ -240,17 +240,17 @@ namespace Halloumi.Shuffler.Forms
             if (length == 0D) return 0M;
 
             if (GetLoopModeFromDropdown() == LoopMode.FullLoop)
-                return BE.BassHelper.GetBPMFromLoopLength(length);
+                return BE.BassHelper.GetBpmFromLoopLength(length);
 
             var samples = this.Samples.Where(x => x.LoopMode == LoopMode.FullLoop).ToList();
             samples.Remove(this.CurrentSample);
 
-            if (samples.Count() == 0) return this.Track.BPM;
+            if (samples.Count() == 0) return this.Track.Bpm;
 
             return samples
                 .OrderByDescending(x => Math.Abs(start - x.Start))
                 .FirstOrDefault()
-                .BPM;
+                .Bpm;
         }
 
         private void AddSample()
@@ -272,7 +272,7 @@ namespace Halloumi.Shuffler.Forms
 
                 sample.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
                 sample.Length = this.Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
-                sample.BPM = BE.BassHelper.GetBPMFromLoopLength(sample.Length);
+                sample.Bpm = BE.BassHelper.GetBpmFromLoopLength(sample.Length);
 
                 RefreshTrackWavePositions();
 
@@ -319,7 +319,7 @@ namespace Halloumi.Shuffler.Forms
             if (txtSampleOffsetPosition.Seconds != 0) this.CurrentSample.Offset = txtSampleOffsetPosition.Seconds;
             if (cmbSampleLength.Seconds != 0) this.CurrentSample.Length = cmbSampleLength.Seconds;
 
-            this.CurrentSample.BPM = CalculateSampleBPM();
+            this.CurrentSample.Bpm = CalculateSampleBpm();
 
             this.CurrentSample.Tags = txtTags.Text
                 .Split(',')
@@ -495,7 +495,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void cmbLoopMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetSampleBPMLabel();
+            SetSampleBpmLabel();
         }
 
         private void btnImportSamplesFromMix_Click(object sender, EventArgs e)

@@ -33,9 +33,9 @@ namespace Halloumi.Shuffler.Controls
 
         private Library.TrackRankFilter TrackRankFilter { get; set; }
 
-        private int MinBPM { get; set; }
+        private int MinBpm { get; set; }
 
-        private int MaxBPM { get; set; }
+        private int MaxBpm { get; set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -60,11 +60,11 @@ namespace Halloumi.Shuffler.Controls
 
             public decimal Length { get; set; }
 
-            public decimal StartBPM { get; set; }
+            public decimal StartBpm { get; set; }
 
-            public decimal EndBPM { get; set; }
+            public decimal EndBpm { get; set; }
 
-            public decimal BPM { get; set; }
+            public decimal Bpm { get; set; }
 
             public int InCount { get; set; }
 
@@ -88,9 +88,9 @@ namespace Halloumi.Shuffler.Controls
                 this.Genre = track.Genre;
                 this.LengthFormatted = track.LengthFormatted;
                 this.Length = track.Length;
-                this.BPM = track.BPM;
-                this.EndBPM = track.EndBPM;
-                this.StartBPM = track.StartBPM;
+                this.Bpm = track.Bpm;
+                this.EndBpm = track.EndBpm;
+                this.StartBpm = track.StartBpm;
                 this.TrackNumberFormatted = track.TrackNumberFormatted;
                 this.RankDescription = track.RankDescription;
                 this.Track = track;
@@ -159,8 +159,8 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            this.MinBPM = 0;
-            this.MaxBPM = 1000;
+            this.MinBpm = 0;
+            this.MaxBpm = 1000;
             grdTracks.VirtualMode = true;
 
             txtMinBPM.TextChanged += new EventHandler(txtMinBPM_TextChanged);
@@ -239,7 +239,7 @@ namespace Halloumi.Shuffler.Controls
 
         public List<Track> GetAvailableTracks()
         {
-            return this.Library.GetTracks("", "", "", "", "", this.PlaylistFilter, this.ShufflerFilter, this.MinBPM, this.MaxBPM, this.TrackRankFilter, this.ExcludedPlaylistFilter);
+            return this.Library.GetTracks("", "", "", "", "", this.PlaylistFilter, this.ShufflerFilter, this.MinBpm, this.MaxBpm, this.TrackRankFilter, this.ExcludedPlaylistFilter);
         }
 
         public List<Track> GetDisplayedTracks()
@@ -250,8 +250,8 @@ namespace Halloumi.Shuffler.Controls
                 this.SearchFilter,
                 this.PlaylistFilter,
                 this.ShufflerFilter,
-                this.MinBPM,
-                this.MaxBPM,
+                this.MinBpm,
+                this.MaxBpm,
                 this.TrackRankFilter,
                 this.ExcludedPlaylistFilter);
 
@@ -366,7 +366,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _binding = true;
 
-            var genres = this.Library.GetGenres(this.SearchFilter, this.PlaylistFilter, this.ShufflerFilter, this.MinBPM, this.MaxBPM, this.TrackRankFilter, this.ExcludedPlaylistFilter);
+            var genres = this.Library.GetGenres(this.SearchFilter, this.PlaylistFilter, this.ShufflerFilter, this.MinBpm, this.MaxBpm, this.TrackRankFilter, this.ExcludedPlaylistFilter);
             genres.Insert(0, new Genre("(All)"));
 
             grdGenre.DataSource = genres;
@@ -384,7 +384,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _binding = true;
 
-            var artists = this.Library.GetAlbumArtists(selectedGenres, this.SearchFilter, this.PlaylistFilter, this.ShufflerFilter, this.MinBPM, this.MaxBPM, this.TrackRankFilter, this.ExcludedPlaylistFilter);
+            var artists = this.Library.GetAlbumArtists(selectedGenres, this.SearchFilter, this.PlaylistFilter, this.ShufflerFilter, this.MinBpm, this.MaxBpm, this.TrackRankFilter, this.ExcludedPlaylistFilter);
             artists.Insert(0, new Artist("(All)"));
 
             grdArtist.DataSource = artists;
@@ -403,7 +403,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _binding = true;
 
-            var albums = this.Library.GetAlbums(selectedGenres, selectedArtists, this.SearchFilter, this.PlaylistFilter, this.ShufflerFilter, this.MinBPM, this.MaxBPM, this.TrackRankFilter, this.ExcludedPlaylistFilter);
+            var albums = this.Library.GetAlbums(selectedGenres, selectedArtists, this.SearchFilter, this.PlaylistFilter, this.ShufflerFilter, this.MinBpm, this.MaxBpm, this.TrackRankFilter, this.ExcludedPlaylistFilter);
 
             var items = new List<ListViewItem>();
             foreach (var album in albums)
@@ -444,7 +444,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (this.DisplayedTracksChanging != null) DisplayedTracksChanging(this, EventArgs.Empty);
 
-            List<string> descriptions = new List<string>();
+            var descriptions = new List<string>();
 
             grdTracks.SaveSelectedRows();
 
@@ -471,8 +471,8 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "Album") trackModels = trackModels.OrderBy(t => t.Album).ToList();
                 if (sortField == "LengthFormatted") trackModels = trackModels.OrderBy(t => t.Length).ToList();
                 if (sortField == "Genre") trackModels = trackModels.OrderBy(t => t.Genre).ToList();
-                if (sortField == "StartBPM") trackModels = trackModels.OrderBy(t => t.StartBPM).ToList();
-                if (sortField == "EndBPM") trackModels = trackModels.OrderBy(t => t.EndBPM).ToList();
+                if (sortField == "StartBPM") trackModels = trackModels.OrderBy(t => t.StartBpm).ToList();
+                if (sortField == "EndBPM") trackModels = trackModels.OrderBy(t => t.EndBpm).ToList();
                 if (sortField == "InCount") trackModels = trackModels.OrderByDescending(t => t.InCount).ThenByDescending(t => t.OutCount).ToList();
                 if (sortField == "OutCount") trackModels = trackModels.OrderByDescending(t => t.OutCount).ThenByDescending(t => t.InCount).ToList();
                 //if (sortField == "UnrankedCount") trackModels = trackModels.OrderByDescending(t => t.UnrankedCount).ThenByDescending(t => t.OutCount).ToList();
@@ -512,8 +512,8 @@ namespace Halloumi.Shuffler.Controls
             else if (e.ColumnIndex == 1) e.Value = trackModel.Album;
             else if (e.ColumnIndex == 2) e.Value = trackModel.Genre;
             else if (e.ColumnIndex == 3) e.Value = trackModel.LengthFormatted;
-            else if (e.ColumnIndex == 4) e.Value = trackModel.StartBPM;
-            else if (e.ColumnIndex == 5) e.Value = trackModel.BPM;
+            else if (e.ColumnIndex == 4) e.Value = trackModel.StartBpm;
+            else if (e.ColumnIndex == 5) e.Value = trackModel.Bpm;
             else if (e.ColumnIndex == 6) e.Value = trackModel.TrackNumberFormatted;
             else if (e.ColumnIndex == 7) e.Value = trackModel.InCount;
             else if (e.ColumnIndex == 8) e.Value = trackModel.OutCount;
@@ -816,8 +816,8 @@ namespace Halloumi.Shuffler.Controls
             var endIndex = startIndex + imageCount;
             if (endIndex > lstAlbum.Items.Count) endIndex = lstAlbum.Items.Count;
 
-            int itemCount = lstAlbum.Items.Count;
-            for (int i = startIndex; i < endIndex; i++)
+            var itemCount = lstAlbum.Items.Count;
+            for (var i = startIndex; i < endIndex; i++)
             {
                 Application.DoEvents();
 
@@ -834,7 +834,7 @@ namespace Halloumi.Shuffler.Controls
                     var image = this.Library.GetAlbumCover(album);
                     if (image == null) continue;
 
-                    using (Graphics graphics = Graphics.FromImage(image))
+                    using (var graphics = Graphics.FromImage(image))
                     {
                         graphics.DrawRectangle(Pens.Gray, 0, 0, image.Width - 1, image.Height - 1);
                     }
@@ -865,7 +865,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void RenameGenre()
         {
-            var form = new frmUpdateGenre();
+            var form = new FrmUpdateGenre();
             form.Library = this.Library;
             form.Genre = this.GetSelectedGenre();
             var result = form.ShowDialog();
@@ -883,7 +883,7 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return;
 
-            var form = new frmUpdateGenre();
+            var form = new FrmUpdateGenre();
             form.Library = this.Library;
             form.Tracks = tracks;
             var result = form.ShowDialog();
@@ -899,7 +899,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void RenameAlbum()
         {
-            var form = new frmUpdateAlbum();
+            var form = new FrmUpdateAlbum();
             form.Library = this.Library;
             form.Album = this.GetSelectedAlbum();
             var result = form.ShowDialog();
@@ -917,7 +917,7 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return;
 
-            var form = new frmUpdateAlbum();
+            var form = new FrmUpdateAlbum();
             form.Library = this.Library;
             form.Tracks = tracks;
             var result = form.ShowDialog();
@@ -933,7 +933,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void UpdateAlbumArtist()
         {
-            var form = new frmUpdateArtist();
+            var form = new FrmUpdateArtist();
             form.Library = this.Library;
             form.Album = this.GetSelectedAlbum();
             var result = form.ShowDialog();
@@ -951,7 +951,7 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return;
 
-            var form = new frmUpdateArtist();
+            var form = new FrmUpdateArtist();
             form.Library = this.Library;
             form.Tracks = tracks;
             var result = form.ShowDialog();
@@ -968,7 +968,7 @@ namespace Halloumi.Shuffler.Controls
         private void UpdateTrackDetails()
         {
             if (this.GetSelectedTrack() == null) return;
-            var form = new frmUpdateTrackDetails();
+            var form = new FrmUpdateTrackDetails();
             form.Library = this.Library;
             form.Track = this.GetSelectedTrack();
             var result = form.ShowDialog();
@@ -982,7 +982,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (this.GetSelectedTrack() == null) return;
 
-            var form = new frmShufflerDetails();
+            var form = new FrmShufflerDetails();
             form.BassPlayer = this.BassPlayer;
             form.Filename = this.GetSelectedTrack().Filename;
 
@@ -1002,7 +1002,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (this.GetSelectedTrack() == null) return;
 
-            var form = new frmEditTrackSamples();
+            var form = new FrmEditTrackSamples();
             form.BassPlayer = this.BassPlayer;
             form.Filename = this.GetSelectedTrack().Filename;
             form.SampleLibrary = this.SampleLibrary;
@@ -1022,7 +1022,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void RenameArtist()
         {
-            var form = new frmUpdateArtist();
+            var form = new FrmUpdateArtist();
             form.Library = this.Library;
             form.Artist = this.GetSelectedArtist();
             var result = form.ShowDialog();
@@ -1075,7 +1075,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         /// Loads the settings.
         /// </summary>
-        public void LoadUISettings()
+        public void LoadUiSettings()
         {
             splLeftRight.SplitterDistance = (this.Width / 5) * 2;
             splLeftMiddle.SplitterDistance = (this.Width / 5) * 1;
@@ -1088,18 +1088,18 @@ namespace Halloumi.Shuffler.Controls
                 {
                     settings = SerializationHelper<Settings>.FromXmlFile(filename);
 
-                    txtSearch.Text = settings.txtSearch_Text;
-                    this.SearchFilter = settings.txtSearch_Text;
+                    txtSearch.Text = settings.TxtSearchText;
+                    this.SearchFilter = settings.TxtSearchText;
 
-                    txtMinBPM.Text = settings.txtMinBPM_Text;
-                    this.MinBPM = ConversionHelper.ToInt(settings.txtMinBPM_Text, 0);
+                    txtMinBPM.Text = settings.TxtMinBpmText;
+                    this.MinBpm = ConversionHelper.ToInt(settings.TxtMinBpmText, 0);
 
-                    txtMaxBPM.Text = settings.txtMaxBPM_Text;
-                    this.MaxBPM = ConversionHelper.ToInt(settings.txtMaxBPM_Text, 1000);
+                    txtMaxBPM.Text = settings.TxtMaxBpmText;
+                    this.MaxBpm = ConversionHelper.ToInt(settings.TxtMaxBpmText, 1000);
 
-                    cmbQueued.SelectedIndex = settings.cmbQueued_SelectedIndex;
-                    cmbShufflerFilter.SelectedIndex = settings.cmbShufflerFilter_SelectedIndex;
-                    cmbTrackRankFilter.SelectedIndex = settings.cmbTrackRankFilter_SelectedIndex;
+                    cmbQueued.SelectedIndex = settings.CmbQueuedSelectedIndex;
+                    cmbShufflerFilter.SelectedIndex = settings.CmbShufflerFilterSelectedIndex;
+                    cmbTrackRankFilter.SelectedIndex = settings.CmbTrackRankFilterSelectedIndex;
 
                     var playlistIndex = cmbPlaylist.FindString(settings.Playlist);
                     if (playlistIndex != -1)
@@ -1138,17 +1138,17 @@ namespace Halloumi.Shuffler.Controls
 
         public class Settings
         {
-            public string txtSearch_Text { get; set; }
+            public string TxtSearchText { get; set; }
 
-            public string txtMinBPM_Text { get; set; }
+            public string TxtMinBpmText { get; set; }
 
-            public string txtMaxBPM_Text { get; set; }
+            public string TxtMaxBpmText { get; set; }
 
-            public int cmbTrackRankFilter_SelectedIndex { get; set; }
+            public int CmbTrackRankFilterSelectedIndex { get; set; }
 
-            public int cmbShufflerFilter_SelectedIndex { get; set; }
+            public int CmbShufflerFilterSelectedIndex { get; set; }
 
-            public int cmbQueued_SelectedIndex { get; set; }
+            public int CmbQueuedSelectedIndex { get; set; }
 
             public string Playlist { get; set; }
 
@@ -1160,12 +1160,12 @@ namespace Halloumi.Shuffler.Controls
 
             public Settings()
             {
-                this.txtSearch_Text = "";
-                this.txtMinBPM_Text = "";
-                this.txtMaxBPM_Text = "";
-                this.cmbTrackRankFilter_SelectedIndex = 0;
-                this.cmbShufflerFilter_SelectedIndex = 0;
-                this.cmbQueued_SelectedIndex = 0;
+                this.TxtSearchText = "";
+                this.TxtMinBpmText = "";
+                this.TxtMaxBpmText = "";
+                this.CmbTrackRankFilterSelectedIndex = 0;
+                this.CmbShufflerFilterSelectedIndex = 0;
+                this.CmbQueuedSelectedIndex = 0;
                 this.Playlist = "";
                 this.ExcludedPlaylist = "";
                 this.SortColumnName = "";
@@ -1179,12 +1179,12 @@ namespace Halloumi.Shuffler.Controls
         public void SaveSettings()
         {
             var settings = new Settings();
-            settings.txtSearch_Text = txtSearch.Text;
-            settings.txtMinBPM_Text = txtMinBPM.Text;
-            settings.txtMaxBPM_Text = txtMaxBPM.Text;
-            settings.cmbTrackRankFilter_SelectedIndex = cmbTrackRankFilter.SelectedIndex;
-            settings.cmbShufflerFilter_SelectedIndex = cmbShufflerFilter.SelectedIndex;
-            settings.cmbQueued_SelectedIndex = cmbQueued.SelectedIndex;
+            settings.TxtSearchText = txtSearch.Text;
+            settings.TxtMinBpmText = txtMinBPM.Text;
+            settings.TxtMaxBpmText = txtMaxBPM.Text;
+            settings.CmbTrackRankFilterSelectedIndex = cmbTrackRankFilter.SelectedIndex;
+            settings.CmbShufflerFilterSelectedIndex = cmbShufflerFilter.SelectedIndex;
+            settings.CmbQueuedSelectedIndex = cmbQueued.SelectedIndex;
 
             settings.SortColumnName = grdTracks.SortedColumn != null ? grdTracks.SortedColumn.DataPropertyName : "";
             settings.SortOrder = grdTracks.SortOrder;
@@ -1392,7 +1392,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 currentMixRank = this.GetSelectedTrack().Rank;
             }
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 mnuRank.DropDownItems[i].Text = this.MixLibrary.GetRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuRank.DropDownItems[i]).Checked = ((5 - i) == currentMixRank);
@@ -1482,7 +1482,7 @@ namespace Halloumi.Shuffler.Controls
         private void mnuAddNewPlaylist_Click(object sender, EventArgs e)
         {
             var tracks = GetSelectedTracks();
-            var form = new frmAddPlaylist();
+            var form = new FrmAddPlaylist();
             form.Library = this.Library;
             form.Tracks = tracks;
             var result = form.ShowDialog();
@@ -1596,18 +1596,18 @@ namespace Halloumi.Shuffler.Controls
             this.BeginInvoke(bindData, true, true, true, true);
         }
 
-        private void SetBPMFilter()
+        private void SetBpmFilter()
         {
-            int min = 0;
+            var min = 0;
             if (txtMinBPM.Text != "") min = Convert.ToInt32(txtMinBPM.Text);
 
-            int max = 1000;
+            var max = 1000;
             if (txtMaxBPM.Text != "") max = Convert.ToInt32(txtMaxBPM.Text);
 
-            if (min != this.MinBPM || max != this.MaxBPM)
+            if (min != this.MinBpm || max != this.MaxBpm)
             {
-                this.MinBPM = min;
-                this.MaxBPM = max;
+                this.MinBpm = min;
+                this.MaxBpm = max;
                 var bindData = new BindDataHandler(BindData);
                 this.BeginInvoke(bindData, true, true, true, true);
             }
@@ -1705,7 +1705,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void txtMaxBPM_TextChanged(object sender, EventArgs e)
         {
-            SetBPMFilter();
+            SetBpmFilter();
         }
 
         /// <summary>
@@ -1713,7 +1713,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void txtMinBPM_TextChanged(object sender, EventArgs e)
         {
-            SetBPMFilter();
+            SetBpmFilter();
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms 
 {
-    partial class frmShufflerDetails
+    partial class FrmShufflerDetails
     {
         /// <summary>
         /// Required designer variable.
@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Sample #1");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Sample #2");
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Sample #3");
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Sample #4");
+            var listViewItem1 = new System.Windows.Forms.ListViewItem("Sample #1");
+            var listViewItem2 = new System.Windows.Forms.ListViewItem("Sample #2");
+            var listViewItem3 = new System.Windows.Forms.ListViewItem("Sample #3");
+            var listViewItem4 = new System.Windows.Forms.ListViewItem("Sample #4");
             this.pnlMain = new Halloumi.Common.Windows.Controls.Panel();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.panel4 = new Halloumi.Common.Windows.Controls.Panel();
@@ -1270,7 +1270,7 @@
             this.trackWave.Mode = Halloumi.Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler;
             this.trackWave.Name = "trackWave";
             this.trackWave.Samples = null;
-            this.trackWave.ShowTrackFX = false;
+            this.trackWave.ShowTrackFx = false;
             this.trackWave.Size = new System.Drawing.Size(1609, 306);
             this.trackWave.TabIndex = 45;
             this.trackWave.TrackSamples = null;
@@ -1484,7 +1484,7 @@
             this.Controls.Add(this.pnlButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "frmShufflerDetails";
+            this.Name = "FrmShufflerDetails";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Halloumi : Shuffler : Track";
             this.UseApplicationIcon = true;

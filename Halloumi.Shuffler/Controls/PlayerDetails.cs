@@ -130,12 +130,12 @@ namespace Halloumi.Shuffler.Controls
             slider.BackColor = color;
             sldVolume.BackColor = color;
 
-            VolumeColor1 = KryptonManager.GetPaletteForMode(palette).GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
-            VolumeColor2 = KryptonManager.GetPaletteForMode(palette).GetBackColor2(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
+            _volumeColor1 = KryptonManager.GetPaletteForMode(palette).GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
+            _volumeColor2 = KryptonManager.GetPaletteForMode(palette).GetBackColor2(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
         }
 
-        private Color VolumeColor1 = Color.Wheat;
-        private Color VolumeColor2 = Color.Gold;
+        private Color _volumeColor1 = Color.Wheat;
+        private Color _volumeColor2 = Color.Gold;
 
         /// <summary>
         /// Displays the current track details.
@@ -166,7 +166,7 @@ namespace Halloumi.Shuffler.Controls
 
                 var details = track.Album + " - " + track.Genre + " ";
                 details += " - " + track.LengthFormatted;
-                if (track.BPM != 0) details += " - " + track.BPM.ToString("0.00") + " BPM";
+                if (track.Bpm != 0) details += " - " + track.Bpm.ToString("0.00") + " BPM";
                 if (track.Key != "") details += " - " + BE.KeyHelper.GetDisplayKey(track.Key);
 
                 lblCurrentTrackDetails.Text = details;
@@ -294,7 +294,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 if (!_firstVisualShown)
                 {
-                    for (int i = 0; i < 5; i++)
+                    for (var i = 0; i < 5; i++)
                     {
                         Thread.Sleep(50);
                         Application.DoEvents();
@@ -306,8 +306,8 @@ namespace Halloumi.Shuffler.Controls
                     picVisuals.Image = _bassVisuals.CreateSpectrumLine(this.BassPlayer.MixerChanel,
                         picVisuals.Width,
                         picVisuals.Height,
-                        VolumeColor1,
-                        VolumeColor2,
+                        _volumeColor1,
+                        _volumeColor2,
                         Color.Transparent,
                         10,
                         1,
@@ -390,15 +390,15 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnTrackChange()
         {
-            if (_bassPlayer_OnTrackChange) return;
-            _bassPlayer_OnTrackChange = true;
+            if (_bassPlayerOnTrackChange) return;
+            _bassPlayerOnTrackChange = true;
 
             DisplayCurrentTrackDetails();
 
-            _bassPlayer_OnTrackChange = false;
+            _bassPlayerOnTrackChange = false;
         }
 
-        private bool _bassPlayer_OnTrackChange = false;
+        private bool _bassPlayerOnTrackChange = false;
 
         /// <summary>
         /// Handles the Shown event of the TrackDetails control.

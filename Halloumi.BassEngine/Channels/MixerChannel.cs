@@ -16,7 +16,7 @@ namespace Halloumi.BassEngine.Channels
 
         private int _eqChannel = int.MinValue;
 
-        public MixerChannel(IBMPProvider bpmProvider, MixerChannelOutputType outputType)
+        public MixerChannel(IBmpProvider bpmProvider, MixerChannelOutputType outputType)
             : base(bpmProvider)
         {
             this.InternalChannel = BassHelper.IntialiseMixerChannel();
@@ -26,31 +26,31 @@ namespace Halloumi.BassEngine.Channels
 
         public void CutBass()
         {
-            if (!IsMixerEQIntialised())
-                InitialiseMixerEQ();
+            if (!IsMixerEqIntialised())
+                InitialiseMixerEq();
 
-            SetBassEQ(-15);
+            SetBassEq(-15);
         }
 
         public void RestoreBass()
         {
-            if (!IsMixerEQIntialised())
-                InitialiseMixerEQ();
+            if (!IsMixerEqIntialised())
+                InitialiseMixerEq();
 
-            SetBassEQ(0);
+            SetBassEq(0);
         }
 
-        private void InitialiseMixerEQ()
+        private void InitialiseMixerEq()
         {
             _eqChannel = Bass.BASS_ChannelSetFX(this.InternalChannel, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
         }
 
-        private bool IsMixerEQIntialised()
+        private bool IsMixerEqIntialised()
         {
             return (_eqChannel != int.MinValue);
         }
 
-        private void SetBassEQ(decimal gain)
+        private void SetBassEq(decimal gain)
         {
             // 3-band EQ
             var eq = new BASS_DX8_PARAMEQ();

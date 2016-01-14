@@ -162,8 +162,8 @@ namespace Halloumi.Shuffler.Controls
 
             this.BeginInvoke((MethodInvoker)delegate
             {
-                Image oldBitmap = picWaveForm.BackgroundImage;
-                Bitmap bitmap = this.Wave.CreateBitmap(picWaveForm.Width,
+                var oldBitmap = picWaveForm.BackgroundImage;
+                var bitmap = this.Wave.CreateBitmap(picWaveForm.Width,
                     picWaveForm.Height,
                     this.Wave.Position2Frames(this.BassTrack.SamplesToSeconds(this.ZoomStart)),
                     this.Wave.Position2Frames(this.BassTrack.SamplesToSeconds(this.ZoomEnd)),
@@ -172,10 +172,10 @@ namespace Halloumi.Shuffler.Controls
                 if (this.CurrentPosition >= this.ZoomStart && this.CurrentPosition <= this.ZoomEnd)
                 {
                     var positionPercent = ((double)(this.CurrentPosition - this.ZoomStart) / (double)this.ZoomLength);
-                    int x = Convert.ToInt32(Math.Round(positionPercent * picWaveForm.Width, 0));
+                    var x = Convert.ToInt32(Math.Round(positionPercent * picWaveForm.Width, 0));
 
-                    using (Pen pen = new Pen(Color.Red))
-                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                    using (var pen = new Pen(Color.Red))
+                    using (var graphics = Graphics.FromImage(bitmap))
                     {
                         graphics.DrawLine(pen, x, 0, x, picWaveForm.Height - 1);
                     }
@@ -255,7 +255,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (this.Wave == null) return;
 
-            for (int i = 1; i <= 2000; i++)
+            for (var i = 1; i <= 2000; i++)
             {
                 this.Wave.RemoveMarker("S" + i.ToString() + "S");
                 this.Wave.RemoveMarker("S" + i.ToString() + "E");
@@ -263,7 +263,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (this.Samples != null)
             {
-                for (int i = 1; i <= this.Samples.Count; i++)
+                for (var i = 1; i <= this.Samples.Count; i++)
                 {
                     var sample = this.Samples[i - 1];
 
@@ -305,13 +305,13 @@ namespace Halloumi.Shuffler.Controls
             this.Wave.RemoveMarker("SKE");
 
             var attributes = this.BassPlayer.GetAutomationAttributes(this.BassTrack);
-            foreach (var trigger in attributes.TrackFXTriggers)
+            foreach (var trigger in attributes.TrackFxTriggers)
             {
-                this.Wave.RemoveMarker("TS" + attributes.TrackFXTriggers.IndexOf(trigger).ToString());
-                this.Wave.RemoveMarker("TE" + attributes.TrackFXTriggers.IndexOf(trigger).ToString());
+                this.Wave.RemoveMarker("TS" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
+                this.Wave.RemoveMarker("TE" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
             }
 
-            for (int i = 1; i <= 2000; i++)
+            for (var i = 1; i <= 2000; i++)
             {
                 this.Wave.RemoveMarker("S" + i.ToString() + "S");
                 this.Wave.RemoveMarker("S" + i.ToString() + "E");
@@ -331,7 +331,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (this.TrackSamples != null)
             {
-                for (int i = 1; i <= this.TrackSamples.Count; i++)
+                for (var i = 1; i <= this.TrackSamples.Count; i++)
                 {
                     var trackSample = this.TrackSamples[i - 1];
 
@@ -342,12 +342,12 @@ namespace Halloumi.Shuffler.Controls
                 }
             }
 
-            if (this.ShowTrackFX)
+            if (this.ShowTrackFx)
             {
-                foreach (var trackFX in attributes.TrackFXTriggers)
+                foreach (var trackFx in attributes.TrackFxTriggers)
                 {
-                    this.Wave.AddMarker("TS" + attributes.TrackFXTriggers.IndexOf(trackFX).ToString(), trackFX.Start);
-                    this.Wave.AddMarker("TE" + attributes.TrackFXTriggers.IndexOf(trackFX).ToString(), trackFX.Start + trackFX.Length);
+                    this.Wave.AddMarker("TS" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start);
+                    this.Wave.AddMarker("TE" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start + trackFx.Length);
                 }
             }
         }
@@ -358,7 +358,7 @@ namespace Halloumi.Shuffler.Controls
         private void ZoomIn()
         {
             var zoomLength = this.ZoomLength;
-            zoomLength = (int)((decimal)zoomLength * zoomRatio);
+            zoomLength = (int)((decimal)zoomLength * _zoomRatio);
             Zoom(zoomLength);
         }
 
@@ -379,7 +379,7 @@ namespace Halloumi.Shuffler.Controls
             DrawWave();
         }
 
-        private decimal zoomRatio = 0.5M;
+        private decimal _zoomRatio = 0.5M;
 
         /// <summary>
         /// Zooms out.
@@ -387,7 +387,7 @@ namespace Halloumi.Shuffler.Controls
         private void ZoomOut()
         {
             var zoomLength = this.ZoomLength;
-            zoomLength = (int)((decimal)zoomLength / zoomRatio);
+            zoomLength = (int)((decimal)zoomLength / _zoomRatio);
             Zoom(zoomLength);
         }
 
@@ -410,16 +410,16 @@ namespace Halloumi.Shuffler.Controls
 
             this.BeginInvoke((MethodInvoker)delegate
             {
-                Image oldBitmap = picWaveForm.Image;
-                Bitmap bitmap = new Bitmap(this.picWaveForm.Width, this.picWaveForm.Height);
+                var oldBitmap = picWaveForm.Image;
+                var bitmap = new Bitmap(this.picWaveForm.Width, this.picWaveForm.Height);
 
                 if (position >= this.ZoomStart && position <= this.ZoomEnd)
                 {
                     var positionPercent = ((double)(position - this.ZoomStart) / (double)this.ZoomLength);
-                    int x = Convert.ToInt32(Math.Round(positionPercent * picWaveForm.Width, 0));
+                    var x = Convert.ToInt32(Math.Round(positionPercent * picWaveForm.Width, 0));
 
-                    using (Pen pen = new Pen(Color.Gray))
-                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                    using (var pen = new Pen(Color.Gray))
+                    using (var graphics = Graphics.FromImage(bitmap))
                     {
                         graphics.Clear(Color.Black);
                         graphics.DrawLine(pen, x, 0, x, picWaveForm.Height - 1);
@@ -511,17 +511,17 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private long CurrentPosition { get; set; }
 
-        public bool ShowTrackFX
+        public bool ShowTrackFx
         {
-            get { return _showTrackFX; }
+            get { return _showTrackFx; }
             set
             {
-                _showTrackFX = value;
+                _showTrackFx = value;
                 RefreshPositions();
             }
         }
 
-        private bool _showTrackFX = false;
+        private bool _showTrackFx = false;
 
         public List<BE.TrackSample> TrackSamples { get; set; }
 
@@ -631,9 +631,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void picWaveForm_MouseUp(object sender, MouseEventArgs e)
         {
-            double percent = (double)e.X / (double)picWaveForm.Width;
-            double viewPercent = percent * (double)this.ZoomLength;
-            long position = this.ZoomStart + Convert.ToInt32(Math.Round(viewPercent, 0));
+            var percent = (double)e.X / (double)picWaveForm.Width;
+            var viewPercent = percent * (double)this.ZoomLength;
+            var position = this.ZoomStart + Convert.ToInt32(Math.Round(viewPercent, 0));
 
             if (Control.ModifierKeys == Keys.Shift)
             {
@@ -756,7 +756,7 @@ namespace Halloumi.Shuffler.Controls
         private void btnEdit_Click(object sender, EventArgs e)
         {
             var editPath = @"C:\Program Files\coolpro2\coolpro2.exe";
-            string output = Path.Combine(Path.GetTempPath(), @"Shuffler.wav");
+            var output = Path.Combine(Path.GetTempPath(), @"Shuffler.wav");
 
             if (!File.Exists(editPath)) return;
 

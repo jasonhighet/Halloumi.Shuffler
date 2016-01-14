@@ -56,7 +56,7 @@ namespace Halloumi.BassEngine
             if (_applicationFolder == "") return;
             if (!_silenceSaved) SaveSilenceLoop();
 
-            var bpm = BassHelper.GetBPMFromLoopLength(sample.LengthSeconds);
+            var bpm = BassHelper.GetBpmFromLoopLength(sample.LengthSeconds);
             var loopLength = BassHelper.GetDefaultLoopLength(bpm);
             var shortLength = loopLength / 8;
             if (shortLength > sample.LengthSeconds) shortLength = sample.LengthSeconds;

@@ -47,7 +47,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetSortGlyph()
         {
-            for (int i = 0; i < this.Columns.Count; i++)
+            for (var i = 0; i < this.Columns.Count; i++)
             {
                 if (this.Columns[i].SortMode != DataGridViewColumnSortMode.Programmatic) continue;
                 var sortOrder = SortOrder.None;

@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.kryptonManager = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
             this.pnlTop = new System.Windows.Forms.Panel();
             this.playerDetails = new Halloumi.Shuffler.Controls.PlayerDetails();
@@ -875,7 +875,7 @@
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.pnlTop);
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "frmMain";
+            this.Name = "FrmMain";
             this.Text = "Halloumi : Shuffler";
             this.UseApplicationIcon = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);

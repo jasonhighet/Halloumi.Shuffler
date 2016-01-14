@@ -140,8 +140,8 @@ namespace Halloumi.Shuffler.Controls
                 {
                     Track = track,
                     Description = track.Description,
-                    BPM = track.BPM,
-                    Diff = BE.BassHelper.GetAbsoluteBPMPercentChange(_parentTrack.EndBPM, track.StartBPM),
+                    Bpm = track.Bpm,
+                    Diff = BE.BassHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
                     MixRank = (view == View.FromTracks)
                         ? this.MixLibrary.GetExtendedMixLevel(track, _parentTrack)
                         : this.MixLibrary.GetExtendedMixLevel(_parentTrack, track),
@@ -164,7 +164,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 var sortField = grdMixableTracks.SortedColumn.DataPropertyName;
                 if (sortField == "Description") mixableTracks = mixableTracks.OrderBy(t => t.Description).ToList();
-                if (sortField == "BPM") mixableTracks = mixableTracks.OrderBy(t => t.BPM).ToList();
+                if (sortField == "BPM") mixableTracks = mixableTracks.OrderBy(t => t.Bpm).ToList();
                 if (sortField == "Diff") mixableTracks = mixableTracks.OrderBy(t => t.Diff).ToList();
                 if (sortField == "Mix") mixableTracks = mixableTracks.OrderBy(t => t.MixRank).ThenByDescending(t => t.Diff).ToList();
                 if (sortField == "RankDescription") mixableTracks = mixableTracks.OrderBy(t => t.Rank).ThenByDescending(t => t.Diff).ToList();
@@ -224,7 +224,7 @@ namespace Halloumi.Shuffler.Controls
         {
             public string Description { get; set; }
 
-            public decimal BPM { get; set; }
+            public decimal Bpm { get; set; }
 
             public int Rank { get; set; }
 

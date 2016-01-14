@@ -36,7 +36,7 @@ namespace Halloumi.BassEngine
         public Sample()
         {
             this.Channels = new List<int>();
-            this.SampleEndSyncID = int.MinValue;
+            this.SampleEndSyncId = int.MinValue;
             this.Gain = 0;
             this.IsLooped = false;
 
@@ -49,16 +49,16 @@ namespace Halloumi.BassEngine
         #region Properties
 
         /// <summary>
-        /// Gets or sets the ID for the sample.
+        /// Gets or sets the Id for the sample.
         /// </summary>
-        public int ID
+        public int Id
         {
             get;
             internal set;
         }
 
         /// <summary>
-        /// Gets or sets the bass channel ID for the track (set once the sample is loaded by the bass engine)
+        /// Gets or sets the bass channel Id for the track (set once the sample is loaded by the bass engine)
         /// </summary>
         public int Channel
         {
@@ -91,12 +91,12 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the BPM.
         /// </summary>
-        public decimal BPM
+        public decimal Bpm
         {
             get
             {
                 if (_bpm != -1) return _bpm;
-                else return BassHelper.GetBPMFromLoopLength(this.LengthSeconds);
+                else return BassHelper.GetBpmFromLoopLength(this.LengthSeconds);
             }
             set
             {
@@ -163,7 +163,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the sample end sync handle
         /// </summary>
-        internal int SampleEndSyncID { get; set; }
+        internal int SampleEndSyncId { get; set; }
 
         public string LinkedTrackDescription { get; set; }
 
@@ -171,7 +171,7 @@ namespace Halloumi.BassEngine
 
         public string SampleKey { get; set; }
 
-        public string SampleID
+        public string SampleId
         {
             get { return this.LinkedTrackDescription + " - " + this.SampleKey; }
         }

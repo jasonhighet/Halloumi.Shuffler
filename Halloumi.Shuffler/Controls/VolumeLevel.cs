@@ -53,9 +53,9 @@ namespace Halloumi.Shuffler.Controls
 
         private void ResizeLevel()
         {
-            int adjustedMax = _max - _min;
-            int adjustedValue = _value - _min;
-            decimal percent = (decimal)adjustedValue / (decimal)adjustedMax;
+            var adjustedMax = _max - _min;
+            var adjustedValue = _value - _min;
+            var percent = (decimal)adjustedValue / (decimal)adjustedMax;
             pnlLevel.Width = (int)((decimal)(pnlBackground.Width) * percent);
         }
 

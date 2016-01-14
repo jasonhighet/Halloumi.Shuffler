@@ -9,14 +9,14 @@ namespace Halloumi.BassEngine
 {
     public class AutomationAttributes
     {
-        public List<TrackFXTrigger> TrackFXTriggers { get; set; }
+        public List<TrackFxTrigger> TrackFxTriggers { get; set; }
         public List<SampleTrigger> SampleTriggers { get; set; }
         public List<ExtendedMixAttributes> ExtendedMixes { get; set; }
         public List<TrackSample> TrackSamples { get; set; }
 
         public AutomationAttributes()
         {
-            this.TrackFXTriggers = new List<TrackFXTrigger>();
+            this.TrackFxTriggers = new List<TrackFxTrigger>();
             this.SampleTriggers = new List<SampleTrigger>();
             this.ExtendedMixes = new List<ExtendedMixAttributes>();
             this.TrackSamples = new List<TrackSample>();
@@ -99,7 +99,7 @@ namespace Halloumi.BassEngine
             var filepath = GetAttributesFilePath(track.Description, folder);
             var attributes = GetAutomationAttributes(track, folder);
 
-            if (attributes.TrackFXTriggers.Count > 0
+            if (attributes.TrackFxTriggers.Count > 0
                 || attributes.SampleTriggers.Count > 0
                 || attributes.ExtendedMixes.Count > 0
                 || attributes.TrackSamples.Count > 0)

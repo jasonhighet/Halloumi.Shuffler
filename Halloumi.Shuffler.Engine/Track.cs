@@ -23,18 +23,18 @@ namespace Halloumi.Shuffler.Engine
             this.AlbumArtist = "";
             this.Album = "";
             this.Artist = "";
-            this.BPM = 0;
+            this.Bpm = 0;
             this.LastModified = DateTime.MinValue;
             this.Genre = "";
             this.Length = 0;
             this.Title = "";
             this.TrackNumber = 0;
-            this.CannotCalculateBPM = false;
+            this.CannotCalculateBpm = false;
             this.IsShufflerTrack = false;
             this.ShufflerAttribuesFile = "";
             this.ShufflerMixesFile = "";
-            this.StartBPM = 0;
-            this.EndBPM = 0;
+            this.StartBpm = 0;
+            this.EndBpm = 0;
             this.Rank = 1;
             this.PowerDown = false;
             this.Key = "";
@@ -122,17 +122,17 @@ namespace Halloumi.Shuffler.Engine
         /// <summary>
         /// Gets or sets the BPM.
         /// </summary>
-        public decimal BPM { get; set; }
+        public decimal Bpm { get; set; }
 
         /// <summary>
         /// Gets or sets the start BPM.
         /// </summary>
-        public decimal StartBPM { get; set; }
+        public decimal StartBpm { get; set; }
 
         /// <summary>
         /// Gets or sets the end BPM.
         /// </summary>
-        public decimal EndBPM { get; set; }
+        public decimal EndBpm { get; set; }
 
         /// <summary>
         /// Gets or sets the date modified.
@@ -163,7 +163,7 @@ namespace Halloumi.Shuffler.Engine
         /// <summary>
         /// If true, the BPM calculater cannot calculate the BPM for this track
         /// </summary>
-        public bool CannotCalculateBPM { get; set; }
+        public bool CannotCalculateBpm { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether shuffler attributes exist for this track.

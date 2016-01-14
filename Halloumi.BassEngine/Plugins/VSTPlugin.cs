@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.BassEngine.Plugins
 {
     /// <summary>
-    /// Represents a VST plugin.
+    /// Represents a VST plug-in.
     /// </summary>
-    public class VSTPlugin
+    public class VstPlugin
     {
-        public int ID;
+        public int Id;
         public string Name;
         public string Location;
-        public VSTPluginConfigForm Form;
+        public VstPluginConfigForm Form;
         public int EditorWidth;
         public int EditorHeight;
+        public List<VstPluginParameter> Parameters;
+
+        public class VstPluginParameter
+        {
+            public int Id;
+            public string Name;
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (this.DesignMode) return;
 
-            PaletteMode palette = KryptonHelper.GetCurrentPalette();
+            var palette = KryptonHelper.GetCurrentPalette();
             base.TrackProgressColor = KryptonManager.GetPaletteForMode(palette).GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
             base.TrackBorderColor = KryptonHelper.GetBorderColor();
             base.ButtonBorderColor = KryptonHelper.GetBorderColor();

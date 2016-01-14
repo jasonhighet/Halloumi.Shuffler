@@ -140,7 +140,7 @@ namespace Halloumi.Shuffler.Controls
             var samples = this.BassPlayer.Samples.ToList();
             samples.Reverse();
 
-            int i = 0;
+            var i = 0;
             foreach (var sample in samples)
             {
                 var samplePlayer = new SamplePlayer();
@@ -265,15 +265,15 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnTrackQueued()
         {
-            if (_bassPlayer_OnTrackQueued) return;
-            _bassPlayer_OnTrackQueued = true;
+            if (_bassPlayerOnTrackQueued) return;
+            _bassPlayerOnTrackQueued = true;
 
             if (_currentTrack != this.BassPlayer.CurrentTrack) RefreshSamples();
 
-            _bassPlayer_OnTrackQueued = false;
+            _bassPlayerOnTrackQueued = false;
         }
 
-        private bool _bassPlayer_OnTrackQueued = false;
+        private bool _bassPlayerOnTrackQueued = false;
 
         /// <summary>
         /// Handles the CheckedChanged event of the rdbDelay control.
@@ -291,9 +291,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEffect2_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.SamplerVSTPlugin2 != null)
+            if (this.BassPlayer.SamplerVstPlugin2 != null)
             {
-                this.BassPlayer.ShowVSTPluginConfig(BassPlayer.SamplerVSTPlugin2);
+                this.BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
             }
         }
 
@@ -302,9 +302,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEffect1_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.SamplerVSTPlugin != null)
+            if (this.BassPlayer.SamplerVstPlugin != null)
             {
-                this.BassPlayer.ShowVSTPluginConfig(BassPlayer.SamplerVSTPlugin);
+                this.BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
             }
         }
 

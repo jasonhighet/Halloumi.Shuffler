@@ -48,8 +48,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="searchFilter">The search filter.</param>
         /// <param name="playlistFilter">The playlist filter.</param>
         /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBPM">The min BPM.</param>
-        /// <param name="maxBPM">The max BPM.</param>
+        /// <param name="minBpm">The min BPM.</param>
+        /// <param name="maxBpm">The max BPM.</param>
         /// <param name="trackRankFilter">The track rank filter.</param>
         /// <param name="excludePlaylistFilter">The exclude playlist filter.</param>
         /// <returns>
@@ -58,12 +58,12 @@ namespace Halloumi.Shuffler.Engine
         public List<Genre> GetGenres(string searchFilter,
             string playlistFilter,
             ShufflerFilter shufflerFilter,
-            int minBPM,
-            int maxBPM,
+            int minBpm,
+            int maxBpm,
             TrackRankFilter trackRankFilter,
             string excludePlaylistFilter)
         {
-            return this.GetTracks("", "", "", "", searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter)
+            return this.GetTracks("", "", "", "", searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter)
                 .OrderBy(t => t.Genre)
                 .Where(t => t.Genre != "" && t.Genre != "(All)")
                 .Select(t => t.Genre)
@@ -101,8 +101,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="searchFilter">The search filter.</param>
         /// <param name="playlistFilter">The playlist filter.</param>
         /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBPM">The minimum BPM.</param>
-        /// <param name="maxBPM">The maximum BPM.</param>
+        /// <param name="minBpm">The minimum BPM.</param>
+        /// <param name="maxBpm">The maximum BPM.</param>
         /// <param name="trackRankFilter">The track rank filter.</param>
         /// <param name="excludePlaylistFilter">The exclude playlist filter.</param>
         /// <returns>
@@ -113,8 +113,8 @@ namespace Halloumi.Shuffler.Engine
             string searchFilter,
             string playlistFilter,
             ShufflerFilter shufflerFilter,
-            int minBPM,
-            int maxBPM,
+            int minBpm,
+            int maxBpm,
             TrackRankFilter trackRankFilter,
             string excludePlaylistFilter)
         {
@@ -135,8 +135,8 @@ namespace Halloumi.Shuffler.Engine
             {
                 foreach (var albumArtist in albumArtistFilters)
                 {
-                    albums.AddRange(this.GetTracks(genre, "", albumArtist, "", searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter)
-                        .Union(this.GetTracks(genre, albumArtist, "", "", searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter))
+                    albums.AddRange(this.GetTracks(genre, "", albumArtist, "", searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter)
+                        .Union(this.GetTracks(genre, albumArtist, "", "", searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter))
                         .OrderBy(t => t.Album)
                         .Where(t => t.Album != "")
                         .Select(t => t.Album)
@@ -168,8 +168,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="searchFilter">The search filter.</param>
         /// <param name="playlistFilter">The playlist filter.</param>
         /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBPM">The minimum BPM.</param>
-        /// <param name="maxBPM">The maximum BPM.</param>
+        /// <param name="minBpm">The minimum BPM.</param>
+        /// <param name="maxBpm">The maximum BPM.</param>
         /// <param name="trackRankFilter">The track rank filter.</param>
         /// <param name="excludePlaylistFilter">The exclude playlist filter.</param>
         /// <returns>
@@ -179,8 +179,8 @@ namespace Halloumi.Shuffler.Engine
             string searchFilter,
             string playlistFilter,
             ShufflerFilter shufflerFilter,
-            int minBPM,
-            int maxBPM,
+            int minBpm,
+            int maxBpm,
             TrackRankFilter trackRankFilter,
             string excludePlaylistFilter)
         {
@@ -193,7 +193,7 @@ namespace Halloumi.Shuffler.Engine
             var artists = new List<string>();
             foreach (var genreFilter in genreFilters)
             {
-                artists.AddRange(this.GetTracks(genreFilter, "", "", "", searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter)
+                artists.AddRange(this.GetTracks(genreFilter, "", "", "", searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter)
                     .OrderBy(t => t.AlbumArtist)
                     .Where(t => t.AlbumArtist != "")
                     .Select(t => t.AlbumArtist)
@@ -232,16 +232,16 @@ namespace Halloumi.Shuffler.Engine
             string searchFilter,
             string playlistFilter,
             ShufflerFilter shufflerFilter,
-            int minBPM,
-            int maxBPM,
+            int minBpm,
+            int maxBpm,
             TrackRankFilter trackRankFilter,
             string excludePlaylistFilter)
         {
-            var artists = this.GetTracks(genreFilter, "", "", "", searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter)
+            var artists = this.GetTracks(genreFilter, "", "", "", searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter)
                 .OrderBy(t => t.AlbumArtist)
                 .Where(t => t.AlbumArtist != "")
                 .Select(t => t.AlbumArtist)
-                .Union(this.GetTracks(genreFilter, "", "", "", searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter)
+                .Union(this.GetTracks(genreFilter, "", "", "", searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter)
                 .Where(t => t.Artist != "")
                 .OrderBy(t => t.Artist)
                 .Select(t => t.Artist))
@@ -283,8 +283,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="searchFilter">The search filter.</param>
         /// <param name="playlistFilter">The playlist filter.</param>
         /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBPM">The minimum BPM.</param>
-        /// <param name="maxBPM">The maximum BPM.</param>
+        /// <param name="minBpm">The minimum BPM.</param>
+        /// <param name="maxBpm">The maximum BPM.</param>
         /// <param name="trackRankFilter">The track rank filter.</param>
         /// <param name="excludePlaylistFilter">The exclude playlist filter.</param>
         /// <returns>
@@ -296,8 +296,8 @@ namespace Halloumi.Shuffler.Engine
             string searchFilter,
             string playlistFilter,
             ShufflerFilter shufflerFilter,
-            int minBPM,
-            int maxBPM,
+            int minBpm,
+            int maxBpm,
             TrackRankFilter trackRankFilter,
             string excludePlaylistFilter)
         {
@@ -321,8 +321,8 @@ namespace Halloumi.Shuffler.Engine
                 {
                     foreach (var album in albumFilters)
                     {
-                        tracks.AddRange(this.GetTracks(genre, "", artist, album, searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter)
-                            .Union(this.GetTracks(genre, artist, "", album, searchFilter, playlistFilter, shufflerFilter, minBPM, maxBPM, trackRankFilter, excludePlaylistFilter))
+                        tracks.AddRange(this.GetTracks(genre, "", artist, album, searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter)
+                            .Union(this.GetTracks(genre, artist, "", album, searchFilter, playlistFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter, excludePlaylistFilter))
                             .Distinct()
                             .ToList());
                     }
@@ -362,8 +362,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="searchFilter">The search filter.</param>
         /// <param name="playlistFilter">The playlist filter.</param>
         /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBPM">The minimum BPM.</param>
-        /// <param name="maxBPM">The maximum BPM.</param>
+        /// <param name="minBpm">The minimum BPM.</param>
+        /// <param name="maxBpm">The maximum BPM.</param>
         /// <param name="trackRankFilter">The track rank filter.</param>
         /// <param name="excludePlaylistFilter">The exclude playlist filter.</param>
         /// <returns>
@@ -376,8 +376,8 @@ namespace Halloumi.Shuffler.Engine
             string searchFilter,
             string playlistFilter,
             ShufflerFilter shufflerFilter,
-            int minBPM,
-            int maxBPM,
+            int minBpm,
+            int maxBpm,
             TrackRankFilter trackRankFilter,
             string excludePlaylistFilter)
         {
@@ -386,7 +386,7 @@ namespace Halloumi.Shuffler.Engine
             artistFilter = artistFilter.Replace(Library.AllFilter, "").ToLower().Trim();
             albumArtistFilter = albumArtistFilter.Replace(Library.AllFilter, "").ToLower().Trim();
 
-            if (maxBPM == 0) maxBPM = 200;
+            if (maxBpm == 0) maxBpm = 200;
 
             var tracks = new List<Track>();
             lock (this.Tracks)
@@ -396,7 +396,7 @@ namespace Halloumi.Shuffler.Engine
                     .Where(t => albumFilter == "" || t.Album.ToLower() == albumFilter)
                     .Where(t => artistFilter == "" || t.Artist.ToLower() == artistFilter)
                     .Where(t => albumArtistFilter == "" || t.AlbumArtist.ToLower() == albumArtistFilter)
-                    .Where(t => (t.StartBPM >= minBPM && t.StartBPM <= maxBPM) || (t.EndBPM >= minBPM && t.EndBPM <= maxBPM))
+                    .Where(t => (t.StartBpm >= minBpm && t.StartBpm <= maxBpm) || (t.EndBpm >= minBpm && t.EndBpm <= maxBpm))
                     .Distinct()
                     .OrderBy(t => t.AlbumArtist)
                     .ThenBy(t => t.Album)
@@ -571,8 +571,8 @@ namespace Halloumi.Shuffler.Engine
 
             track.OriginalDescription = track.Description;
 
-            if (track.EndBPM == 0 || track.EndBPM == 100) track.EndBPM = track.BPM;
-            if (track.StartBPM == 0 || track.StartBPM == 100) track.StartBPM = track.BPM;
+            if (track.EndBpm == 0 || track.EndBpm == 100) track.EndBpm = track.Bpm;
+            if (track.StartBpm == 0 || track.StartBpm == 100) track.StartBpm = track.Bpm;
         }
 
         /// <summary>
@@ -598,8 +598,8 @@ namespace Halloumi.Shuffler.Engine
                 }
             }
             track.OriginalDescription = track.Description;
-            if (track.EndBPM == 0 || track.EndBPM == 100) track.EndBPM = track.BPM;
-            if (track.StartBPM == 0 || track.StartBPM == 100) track.StartBPM = track.BPM;
+            if (track.EndBpm == 0 || track.EndBpm == 100) track.EndBpm = track.Bpm;
+            if (track.StartBpm == 0 || track.StartBpm == 100) track.StartBpm = track.Bpm;
         }
 
         private DateTime GetTrackLastModified(string filename)
@@ -671,7 +671,7 @@ namespace Halloumi.Shuffler.Engine
             }
 
             // update or add tracks from file system
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 if (_cancelImport) break;
                 ImportTrack(file);
@@ -1229,7 +1229,7 @@ namespace Halloumi.Shuffler.Engine
             playlist.Name = Path.GetFileNameWithoutExtension(playlistFile);
             playlist.Name = StringHelper.TitleCase(playlist.Name);
 
-            bool modified = false;
+            var modified = false;
 
             foreach (var entry in PlaylistHelper.GetPlaylistEntries(playlistFile))
             {
@@ -1286,7 +1286,7 @@ namespace Halloumi.Shuffler.Engine
                 return;
             }
 
-            StringBuilder content = new StringBuilder();
+            var content = new StringBuilder();
             content.AppendLine("#EXTM3U");
             foreach (var track in playlist.Tracks)
             {
@@ -1487,14 +1487,14 @@ namespace Halloumi.Shuffler.Engine
                 if (tags.LengthMilliseconds.HasValue) track.Length = (decimal)tags.LengthMilliseconds / 1000M;
 
                 decimal bpm = 0;
-                if (decimal.TryParse(tags.BPM, out bpm)) track.BPM = bpm;
+                if (decimal.TryParse(tags.BPM, out bpm)) track.Bpm = bpm;
 
-                track.BPM = BassHelper.NormaliseBPM(track.BPM);
-                track.EndBPM = track.BPM;
-                track.StartBPM = track.BPM;
-                track.BPM = BassHelper.GetAdjustedBPMAverage(track.StartBPM, track.EndBPM);
+                track.Bpm = BassHelper.NormaliseBpm(track.Bpm);
+                track.EndBpm = track.Bpm;
+                track.StartBpm = track.Bpm;
+                track.Bpm = BassHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
-                int trackNumber = 0;
+                var trackNumber = 0;
                 var trackNumberTag = (tags.TrackNumber + "/").Split('/')[0].Trim();
                 if (int.TryParse(trackNumberTag, out trackNumber)) track.TrackNumber = trackNumber;
 
@@ -1516,7 +1516,7 @@ namespace Halloumi.Shuffler.Engine
 
             if (attributes == null) return;
 
-            track.BPM = BassHelper.GetAdjustedBPMAverage(track.StartBPM, track.EndBPM);
+            track.Bpm = BassHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
 
         }
@@ -1597,7 +1597,7 @@ namespace Halloumi.Shuffler.Engine
             tags.Album = track.Album.Replace(Library.NoValue, "");
             tags.TrackNumber = track.TrackNumber.ToString();
             tags.LengthMilliseconds = Convert.ToInt32(track.FullLength * 1000M);
-            tags.BPM = track.BPM.ToString("0.00");
+            tags.BPM = track.Bpm.ToString("0.00");
             tags.InitialKey = track.Key;
 
             if (track.Artist == track.AlbumArtist)
@@ -1675,7 +1675,7 @@ namespace Halloumi.Shuffler.Engine
                 track.ShufflerAttribuesFile = newAttributesFile;
                 track.ShufflerMixesFile = newMixesFile;
 
-                TextReplacer replacer = new TextReplacer(track.OriginalDescription + ",",
+                var replacer = new TextReplacer(track.OriginalDescription + ",",
                     track.Description + ",",
                     false,
                     false,
@@ -1743,7 +1743,7 @@ namespace Halloumi.Shuffler.Engine
                     {
                         using (Image image = new Bitmap(folderImagePath))
                         {
-                            using (Image smallImage = ImageHelper.Resize(image, new Size(150, 150)))
+                            using (var smallImage = ImageHelper.Resize(image, new Size(150, 150)))
                             {
                                 ImageHelper.SaveJpg(albumArtImagePath, smallImage);
                                 File.SetAttributes(albumArtImagePath, FileAttributes.Hidden);
@@ -1806,23 +1806,23 @@ namespace Halloumi.Shuffler.Engine
 
             var attributes = PlaylistHelper.GetShufflerAttributes(track.ShufflerAttribuesFile);
 
-            if (attributes.ContainsKey("StartBPM")) track.StartBPM = BassHelper.NormaliseBPM(ConversionHelper.ToDecimal(attributes["StartBPM"], track.BPM));
-            if (attributes.ContainsKey("EndBPM")) track.EndBPM = BassHelper.NormaliseBPM(ConversionHelper.ToDecimal(attributes["EndBPM"], track.BPM));
+            if (attributes.ContainsKey("StartBPM")) track.StartBpm = BassHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
+            if (attributes.ContainsKey("EndBPM")) track.EndBpm = BassHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
 
             if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
 
             decimal start = 0;
             if (attributes.ContainsKey("FadeIn")) start = ConversionHelper.ToDecimal(attributes["FadeIn"], start);
-            decimal end = track.Length;
+            var end = track.Length;
             if (attributes.ContainsKey("FadeOut")) end = ConversionHelper.ToDecimal(attributes["FadeOut"], end);
             var length = end - start;
 
-            int inLoopCount = 0;
+            var inLoopCount = 0;
             if (attributes.ContainsKey("StartLoopCount")) inLoopCount = ConversionHelper.ToInt(attributes["StartLoopCount"], inLoopCount);
 
             decimal inLoopLength = 0;
             if (attributes.ContainsKey("FadeInLengthInSeconds")) inLoopLength = ConversionHelper.ToDecimal(attributes["FadeInLengthInSeconds"]);
-            if (inLoopLength > 0) track.StartBPM = BassHelper.GetBPMFromLoopLength(Convert.ToDouble(inLoopLength));
+            if (inLoopLength > 0) track.StartBpm = BassHelper.GetBpmFromLoopLength(Convert.ToDouble(inLoopLength));
 
             inLoopCount = inLoopCount - 1;
             if (inLoopCount > 0) length = length + (inLoopCount * inLoopLength);
@@ -1841,7 +1841,7 @@ namespace Halloumi.Shuffler.Engine
 
             decimal outLoopLength = 0;
             if (attributes.ContainsKey("FadeOutLengthInSeconds")) outLoopLength = ConversionHelper.ToDecimal(attributes["FadeOutLengthInSeconds"], 0);
-            if (outLoopLength > 0) track.EndBPM = BassHelper.GetBPMFromLoopLength(Convert.ToDouble(outLoopLength));
+            if (outLoopLength > 0) track.EndBpm = BassHelper.GetBpmFromLoopLength(Convert.ToDouble(outLoopLength));
 
             //outLoopCount = outLoopCount - 1;
             //if (outLoopCount > 0) length = length + (outLoopCount * outLoopLength);

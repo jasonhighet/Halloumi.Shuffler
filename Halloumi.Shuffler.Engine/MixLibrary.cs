@@ -117,7 +117,7 @@ namespace Halloumi.Shuffler.Engine
             var tracks = new List<Track>();
             if (track == null) return tracks;
 
-            var tracksInRange = GetTracksInStartBPMRange(track.EndBPM, 5M, this.AvailableTracks);
+            var tracksInRange = GetTracksInStartBpmRange(track.EndBpm, 5M, this.AvailableTracks);
             return tracksInRange
                 .Where(t => t.Description != track.Description)
                 .ToList();
@@ -133,7 +133,7 @@ namespace Halloumi.Shuffler.Engine
             var tracks = new List<Track>();
             if (track == null) return tracks;
 
-            var tracksInRange = GetTracksInEndBPMRange(track.StartBPM, 5M, this.AvailableTracks);
+            var tracksInRange = GetTracksInEndBpmRange(track.StartBpm, 5M, this.AvailableTracks);
             return tracksInRange
                 .Where(t => t.Description != track.Description)
                 .ToList();
@@ -146,10 +146,10 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="percentVariance">The percent variance.</param>
         /// <param name="tracks">The tracks.</param>
         /// <returns>A list of matching tracks</returns>
-        public List<Track> GetTracksInEndBPMRange(decimal bpm, decimal percentVariance, List<Track> tracks)
+        public List<Track> GetTracksInEndBpmRange(decimal bpm, decimal percentVariance, List<Track> tracks)
         {
             return tracks
-                .Where(t => BassHelper.IsBPMInRange(bpm, t.EndBPM, percentVariance))
+                .Where(t => BassHelper.IsBpmInRange(bpm, t.EndBpm, percentVariance))
                 .ToList();
         }
 
@@ -160,10 +160,10 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="percentVariance">The percent variance.</param>
         /// <param name="tracks">The tracks.</param>
         /// <returns>A list of matching tracks</returns>
-        public List<Track> GetTracksInStartBPMRange(decimal bpm, decimal percentVariance, List<Track> tracks)
+        public List<Track> GetTracksInStartBpmRange(decimal bpm, decimal percentVariance, List<Track> tracks)
         {
             return tracks
-                .Where(t => BassHelper.IsBPMInRange(bpm, t.StartBPM, percentVariance))
+                .Where(t => BassHelper.IsBpmInRange(bpm, t.StartBpm, percentVariance))
                 .ToList();
         }
 
@@ -465,7 +465,7 @@ namespace Halloumi.Shuffler.Engine
         {
             var mixes = new Dictionary<string, Dictionary<string, Track>>();
 
-            for (int i = 0; i < tracks.Count - 1; i++)
+            for (var i = 0; i < tracks.Count - 1; i++)
             {
                 var track1 = tracks[i];
                 var track2 = tracks[i + 1];
@@ -496,7 +496,7 @@ namespace Halloumi.Shuffler.Engine
             var mixRank = GetMixRank(track1.Description, track2.Description);
             if (mixRank != null) return mixRank.MixLevel;
 
-            if (BassHelper.IsBPMInRange(track1.EndBPM, track2.StartBPM, 5M)) return 1;
+            if (BassHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, 5M)) return 1;
 
             return 0;
         }
@@ -821,7 +821,7 @@ namespace Halloumi.Shuffler.Engine
         /// </returns>
         private string GetMixRankingFileName(string trackDescription)
         {
-            string filename = trackDescription
+            var filename = trackDescription
                 + ".Mixes.txt";
 
             filename = FileSystemHelper.StripInvalidFileNameChars(filename);
@@ -858,7 +858,7 @@ namespace Halloumi.Shuffler.Engine
                     mixRank.ToTrack = value.Substring(0, commaIndex).Trim();
 
                     var ranking = value.Substring(commaIndex + 1).Trim();
-                    int mixLevel = 1;
+                    var mixLevel = 1;
                     int.TryParse(ranking, out mixLevel);
                     mixRank.MixLevel = mixLevel;
                 }

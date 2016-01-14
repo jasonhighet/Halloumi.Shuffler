@@ -89,14 +89,14 @@ namespace Halloumi.Shuffler.Controls
             sldTrackFXVolume.Scrolled += new MediaSlider.MediaSlider.ScrollDelegate(sldTrackFXVolume_Scrolled);
             sldTrackFXVolume.Minimum = 0;
             sldTrackFXVolume.Maximum = 100;
-            var volume = Convert.ToInt32(this.BassPlayer.GetTrackSendFXVolume());
+            var volume = Convert.ToInt32(this.BassPlayer.GetTrackSendFxVolume());
             lblVolume.Text = volume.ToString();
             sldTrackFXVolume.Value = volume;
 
             rdbDelay2.Checked = true;
             cmbOutput.SelectedIndex = 0;
 
-            chkEnableTrackFXAutomation.Checked = this.BassPlayer.TrackFXAutomationEnabled;
+            chkEnableTrackFXAutomation.Checked = this.BassPlayer.TrackFxAutomationEnabled;
 
             cmbFadeOutType.SelectedIndex = 0;
 
@@ -111,11 +111,11 @@ namespace Halloumi.Shuffler.Controls
         /// Sets the track FX volume.
         /// </summary>
         /// <param name="volume">The volume.</param>
-        private void SetTrackFXVolume(decimal volume)
+        private void SetTrackFxVolume(decimal volume)
         {
             if (volume < 0 || volume > 100) return;
 
-            this.BassPlayer.SetTrackSendFXMixerVolume(volume);
+            this.BassPlayer.SetTrackSendFxMixerVolume(volume);
             lblVolume.Text = volume.ToString();
 
             if (sldTrackFXVolume.Value != volume) sldTrackFXVolume.Value = Convert.ToInt32(volume);
@@ -176,7 +176,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (powerDown)
             {
-                var powerDownFadeIn = BassHelper.GetDefaultLoopLength(track.StartBPM) / 4D;
+                var powerDownFadeIn = BassHelper.GetDefaultLoopLength(track.StartBpm) / 4D;
                 description += " (" + GetFormattedSeconds(powerDownFadeIn) + ")";
             }
             else
@@ -191,7 +191,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (looped) description += " looped";
 
-            description += "  " + track.StartBPM.ToString("00.00") + "BPM"; ;
+            description += "  " + track.StartBpm.ToString("00.00") + "BPM"; ;
 
             return description;
         }
@@ -231,7 +231,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (looped) description += " looped";
 
-            description += "  " + track.EndBPM.ToString("00.00") + "BPM";
+            description += "  " + track.EndBpm.ToString("00.00") + "BPM";
 
             return description;
         }
@@ -263,11 +263,11 @@ namespace Halloumi.Shuffler.Controls
         {
             _binding = true;
 
-            if (this.BassPlayer.TrackSendFXDelayNotes == 0.5M) rdbDelay1.Checked = true;
-            else if (this.BassPlayer.TrackSendFXDelayNotes == 0.25M) rdbDelay2.Checked = true;
-            else if (this.BassPlayer.TrackSendFXDelayNotes == 0.125M) rdbDelay3.Checked = true;
-            else if (this.BassPlayer.TrackSendFXDelayNotes == 0.0625M) rdbDelay4.Checked = true;
-            else if (this.BassPlayer.TrackSendFXDelayNotes == 0M) rdbDelayNone.Checked = true;
+            if (this.BassPlayer.TrackSendFxDelayNotes == 0.5M) rdbDelay1.Checked = true;
+            else if (this.BassPlayer.TrackSendFxDelayNotes == 0.25M) rdbDelay2.Checked = true;
+            else if (this.BassPlayer.TrackSendFxDelayNotes == 0.125M) rdbDelay3.Checked = true;
+            else if (this.BassPlayer.TrackSendFxDelayNotes == 0.0625M) rdbDelay4.Checked = true;
+            else if (this.BassPlayer.TrackSendFxDelayNotes == 0M) rdbDelayNone.Checked = true;
             else rdbDelay2.Checked = true;
 
             _binding = false;
@@ -320,17 +320,17 @@ namespace Halloumi.Shuffler.Controls
             {
                 var settings = Halloumi.Shuffler.Forms.Settings.Default;
 
-                this.BassPlayer.TrackSendFXDelayNotes = settings.TrackFXDelayNotes;
+                this.BassPlayer.TrackSendFxDelayNotes = settings.TrackFxDelayNotes;
                 BindDelayNotes();
 
-                SetTrackFXVolume(settings.TrackFXVolume);
+                SetTrackFxVolume(settings.TrackFxVolume);
 
                 this.BassPlayer.TrackOutput = settings.TrackOutput;
                 if (settings.TrackOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
                 if (settings.TrackOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
                 if (settings.TrackOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
 
-                this.BassPlayer.TrackFXAutomationEnabled = settings.EnableTrackFXAutomation;
+                this.BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
             }
             catch
             { }
@@ -456,19 +456,19 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnTrackChange()
         {
-            if (_bassPlayer_OnTrackChange) return;
-            _bassPlayer_OnTrackChange = true;
+            if (_bassPlayerOnTrackChange) return;
+            _bassPlayerOnTrackChange = true;
 
             SetTracks();
             SetFaderVolumes();
             BindData();
 
-            _bassPlayer_OnTrackChange = false;
+            _bassPlayerOnTrackChange = false;
 
             cmbFadeOutType.SelectedIndex = 0;
         }
 
-        private bool _bassPlayer_OnTrackChange = false;
+        private bool _bassPlayerOnTrackChange = false;
 
         /// <summary>
         /// Handles the Tick event of the Timer control.
@@ -490,22 +490,22 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void Timer_Tick()
         {
-            if (_timer_Tick) return;
-            _timer_Tick = true;
+            if (_timerTick) return;
+            _timerTick = true;
 
-            var trackFXDelayNotes = this.BassPlayer.TrackSendFXDelayNotes;
-            if (_lastTrackFXDelayNotes != trackFXDelayNotes)
+            var trackFxDelayNotes = this.BassPlayer.TrackSendFxDelayNotes;
+            if (_lastTrackFxDelayNotes != trackFxDelayNotes)
             {
                 BindDelayNotes();
             }
-            _lastTrackFXDelayNotes = trackFXDelayNotes;
+            _lastTrackFxDelayNotes = trackFxDelayNotes;
 
-            _timer_Tick = false;
+            _timerTick = false;
         }
 
-        private bool _timer_Tick = false;
+        private bool _timerTick = false;
 
-        private decimal _lastTrackFXDelayNotes = 0M;
+        private decimal _lastTrackFxDelayNotes = 0M;
 
         /// <summary>
         /// Handles the CheckedChanged event of the chkManualFading control.
@@ -565,7 +565,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnTrackFX_MouseDown(object sender, MouseEventArgs e)
         {
-            this.BassPlayer.StartTrackFXSend();
+            this.BassPlayer.StartTrackFxSend();
             if (this.BassPlayer.CurrentTrack == null) return;
         }
 
@@ -574,7 +574,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnTrackFX_MouseUp(object sender, MouseEventArgs e)
         {
-            this.BassPlayer.StopTrackFXSend();
+            this.BassPlayer.StopTrackFxSend();
             if (this.BassPlayer.CurrentTrack == null) return;
         }
 
@@ -612,7 +612,7 @@ namespace Halloumi.Shuffler.Controls
             var radioButton = sender as ComponentFactory.Krypton.Toolkit.KryptonRadioButton;
             if (!radioButton.Checked) return;
             var delayNotes = Decimal.Parse(radioButton.Tag.ToString());
-            this.BassPlayer.TrackSendFXDelayNotes = delayNotes;
+            this.BassPlayer.TrackSendFxDelayNotes = delayNotes;
         }
 
         /// <summary>
@@ -620,9 +620,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnTrackEffect_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.TrackVSTPlugin != null)
+            if (this.BassPlayer.TrackVstPlugin != null)
             {
-                this.BassPlayer.ShowVSTPluginConfig(BassPlayer.TrackVSTPlugin);
+                this.BassPlayer.ShowVstPluginConfig(BassPlayer.TrackVstPlugin);
             }
         }
 
@@ -631,9 +631,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnMainEffect_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.MainVSTPlugin != null)
+            if (this.BassPlayer.MainVstPlugin != null)
             {
-                this.BassPlayer.ShowVSTPluginConfig(BassPlayer.MainVSTPlugin);
+                this.BassPlayer.ShowVstPluginConfig(BassPlayer.MainVstPlugin);
             }
         }
 
@@ -651,9 +651,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEffect2_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.TrackSendFXVSTPlugin2 != null)
+            if (this.BassPlayer.TrackSendFxvstPlugin2 != null)
             {
-                this.BassPlayer.ShowVSTPluginConfig(BassPlayer.TrackSendFXVSTPlugin2);
+                this.BassPlayer.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin2);
             }
         }
 
@@ -662,9 +662,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEffect1_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.TrackSendFXVSTPlugin != null)
+            if (this.BassPlayer.TrackSendFxvstPlugin != null)
             {
-                this.BassPlayer.ShowVSTPluginConfig(BassPlayer.TrackSendFXVSTPlugin);
+                this.BassPlayer.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin);
             }
         }
 
@@ -674,7 +674,7 @@ namespace Halloumi.Shuffler.Controls
         private void chkEnableTrackFXAutomation_CheckedChanged(object sender, EventArgs e)
         {
             if (_binding) return;
-            this.BassPlayer.TrackFXAutomationEnabled = chkEnableTrackFXAutomation.Checked;
+            this.BassPlayer.TrackFxAutomationEnabled = chkEnableTrackFXAutomation.Checked;
             BindData();
         }
 
@@ -683,7 +683,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnSaveLastTrackFX_Click(object sender, EventArgs e)
         {
-            this.BassPlayer.SaveLastTrackFXTrigger();
+            this.BassPlayer.SaveLastTrackFxTrigger();
         }
 
         /// <summary>
@@ -692,7 +692,7 @@ namespace Halloumi.Shuffler.Controls
         private void sldTrackFXVolume_Scrolled(object sender, EventArgs e)
         {
             var volume = Convert.ToDecimal(sldTrackFXVolume.ScrollValue);
-            SetTrackFXVolume(Convert.ToDecimal(sldTrackFXVolume.ScrollValue));
+            SetTrackFxVolume(Convert.ToDecimal(sldTrackFXVolume.ScrollValue));
         }
 
         /// <summary>
@@ -705,7 +705,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (!MessageBoxHelper.Confirm("Are you sure you wish to clear all Track FX triggers for " + track.Description + "?")) return;
 
-            this.BassPlayer.ClearTrackFXTriggers(track);
+            this.BassPlayer.ClearTrackFxTriggers(track);
         }
 
         /// <summary>
@@ -715,7 +715,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var track = this.BassPlayer.CurrentTrack;
             if (track == null) return;
-            this.BassPlayer.RemovePreviousTrackFXTrigger();
+            this.BassPlayer.RemovePreviousTrackFxTrigger();
         }
 
         private void btnSaveMix_Click(object sender, EventArgs e)

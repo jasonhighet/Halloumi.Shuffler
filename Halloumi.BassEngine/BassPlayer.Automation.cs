@@ -19,7 +19,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets the last track FX attributes.
         /// </summary>
-        public TrackFXTrigger LastTrackFXTrigger
+        public TrackFxTrigger LastTrackFxTrigger
         {
             get;
             private set;
@@ -28,7 +28,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets the last track FX track.
         /// </summary>
-        public Track LastTrackFXTriggerTrack
+        public Track LastTrackFxTriggerTrack
         {
             get;
             private set;
@@ -44,33 +44,33 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Saves the last track FX.
         /// </summary>
-        public void SaveLastTrackFXTrigger()
+        public void SaveLastTrackFxTrigger()
         {
-            if (this.LastTrackFXTriggerTrack == null || this.LastTrackFXTrigger == null) return;
+            if (this.LastTrackFxTriggerTrack == null || this.LastTrackFxTrigger == null) return;
 
-            var attributes = GetAutomationAttributes(this.LastTrackFXTriggerTrack);
-            attributes.TrackFXTriggers.Add(this.LastTrackFXTrigger);
+            var attributes = GetAutomationAttributes(this.LastTrackFxTriggerTrack);
+            attributes.TrackFxTriggers.Add(this.LastTrackFxTrigger);
 
-            SaveAutomationAttributes(this.LastTrackFXTriggerTrack);
+            SaveAutomationAttributes(this.LastTrackFxTriggerTrack);
 
-            if (IsTrackInUse(this.LastTrackFXTriggerTrack)) ResetTrackSyncPositions();
+            if (IsTrackInUse(this.LastTrackFxTriggerTrack)) ResetTrackSyncPositions();
 
-            this.LastTrackFXTriggerTrack = null;
-            this.LastTrackFXTrigger = null;
+            this.LastTrackFxTriggerTrack = null;
+            this.LastTrackFxTrigger = null;
         }
 
         /// <summary>
         /// Clears the track FX triggers for the specifed track.
         /// </summary>
-        public void ClearTrackFXTriggers(Track track)
+        public void ClearTrackFxTriggers(Track track)
         {
             if (track == null) return;
             var attributes = GetAutomationAttributes(track);
 
-            if (attributes.TrackFXTriggers.Count == 0) return;
+            if (attributes.TrackFxTriggers.Count == 0) return;
 
             if (IsTrackInUse(track)) ClearTrackSyncPositions(track);
-            attributes.TrackFXTriggers.Clear();
+            attributes.TrackFxTriggers.Clear();
             SaveAutomationAttributes(track);
             if (IsTrackInUse(track)) ResetTrackSyncPositions();
         }
@@ -78,17 +78,17 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Removes the previous track FX automation.
         /// </summary>
-        public void RemovePreviousTrackFXTrigger()
+        public void RemovePreviousTrackFxTrigger()
         {
             if (this.CurrentTrack == null) return;
             var attributes = GetAutomationAttributes(this.CurrentTrack);
-            if (attributes.TrackFXTriggers.Count == 0) return;
+            if (attributes.TrackFxTriggers.Count == 0) return;
 
-            var automation = GetPrevTrackFXTrigger();
+            var automation = GetPrevTrackFxTrigger();
             if (automation == null) return;
 
             ClearTrackSyncPositions(this.CurrentTrack);
-            attributes.TrackFXTriggers.Remove(automation);
+            attributes.TrackFxTriggers.Remove(automation);
             SaveAutomationAttributes(this.CurrentTrack);
 
             ResetTrackSyncPositions();
@@ -132,7 +132,7 @@ namespace Halloumi.BassEngine
             if (this.LastSampleTriggerTrack == null || this.LastSampleTrigger == null) return;
 
             var attributes = GetAutomationAttributes(this.LastSampleTriggerTrack);
-            var sample = this.GetSampleBySampleID(this.LastSampleTrigger.SampleID);
+            var sample = this.GetSampleBySampleId(this.LastSampleTrigger.SampleId);
 
             if (sample != null)
             {
@@ -228,40 +228,40 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Stops the automated track FX.
         /// </summary>
-        private void StopTrackFXTrigger()
+        private void StopTrackFxTrigger()
         {
-            if (!this.TrackFXAutomationEnabled) return;
+            if (!this.TrackFxAutomationEnabled) return;
 
-            this.StopTrackFXSend();
+            this.StopTrackFxSend();
         }
 
         /// <summary>
         /// Starts the automated track FX.
         /// </summary>
-        private void StartTrackFXTrigger()
+        private void StartTrackFxTrigger()
         {
-            if (!this.TrackFXAutomationEnabled) return;
-            if (this.IsTrackFXSending()) return;
+            if (!this.TrackFxAutomationEnabled) return;
+            if (this.IsTrackFxSending()) return;
 
-            var trigger = this.GetCurrentTrackFXTrigger();
+            var trigger = this.GetCurrentTrackFxTrigger();
             if (trigger == null) return;
 
-            if (this.TrackSendFXDelayNotes != trigger.DelayNotes) this.TrackSendFXDelayNotes = trigger.DelayNotes;
+            if (this.TrackSendFxDelayNotes != trigger.DelayNotes) this.TrackSendFxDelayNotes = trigger.DelayNotes;
 
-            this.StartTrackFXSend();
+            this.StartTrackFxSend();
         }
 
         /// <summary>
         /// Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private TrackFXTrigger GetCurrentTrackFXTrigger()
+        private TrackFxTrigger GetCurrentTrackFxTrigger()
         {
             if (this.CurrentTrack == null) return null;
 
             var position = BassHelper.GetTrackPosition(this.CurrentTrack);
             return this.GetAutomationAttributes(this.CurrentTrack)
-                .TrackFXTriggers
+                .TrackFxTriggers
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
                 .FirstOrDefault();
         }
@@ -270,13 +270,13 @@ namespace Halloumi.BassEngine
         /// Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private TrackFXTrigger GetPrevTrackFXTrigger()
+        private TrackFxTrigger GetPrevTrackFxTrigger()
         {
             if (this.CurrentTrack == null) return null;
 
             var position = BassHelper.GetTrackPosition(this.CurrentTrack);
             return this.GetAutomationAttributes(this.CurrentTrack)
-                .TrackFXTriggers
+                .TrackFxTriggers
                 .Where(ta => ta.StartSample <= position)
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
                 .FirstOrDefault();
@@ -292,7 +292,7 @@ namespace Halloumi.BassEngine
             var trigger = this.GetPrevSampleTrigger();
             if (trigger == null) return;
 
-            var sample = this.GetSampleBySampleID(trigger.SampleID);
+            var sample = this.GetSampleBySampleId(trigger.SampleId);
             if (sample == null) return;
 
             this.MuteSample(sample);
@@ -308,7 +308,7 @@ namespace Halloumi.BassEngine
             var trigger = this.GetCurrentSampleTrigger();
             if (trigger == null) return;
 
-            var sample = this.GetSampleBySampleID(trigger.SampleID);
+            var sample = this.GetSampleBySampleId(trigger.SampleId);
             if (sample == null) return;
 
             if (this.SamplerDelayNotes != trigger.DelayNotes) this.SamplerDelayNotes = trigger.DelayNotes;
@@ -430,20 +430,20 @@ namespace Halloumi.BassEngine
         {
             if (track != this.CurrentTrack) return;
 
-            foreach (var trigger in this.GetAutomationAttributes(track).TrackFXTriggers)
+            foreach (var trigger in this.GetAutomationAttributes(track).TrackFxTriggers)
             {
                 trigger.StartSample = track.SecondsToSamples(trigger.Start);
                 trigger.EndSample = track.SecondsToSamples(trigger.Start + trigger.Length);
-                trigger.StartSyncID = SetTrackSync(track, trigger.StartSample, SyncType.StartTrackFXTrigger);
-                trigger.EndSyncID = SetTrackSync(track, trigger.EndSample, SyncType.EndTrackFXTrigger);
+                trigger.StartSyncId = SetTrackSync(track, trigger.StartSample, SyncType.StartTrackFxTrigger);
+                trigger.EndSyncId = SetTrackSync(track, trigger.EndSample, SyncType.EndTrackFxTrigger);
             }
 
             foreach (var trigger in this.GetCurrentSampleTriggers())
             {
                 trigger.StartSample = track.SecondsToSamples(trigger.Start);
                 trigger.EndSample = track.SecondsToSamples(trigger.Start + trigger.Length);
-                trigger.StartSyncID = SetTrackSync(track, trigger.StartSample, SyncType.StartSampleTrigger);
-                trigger.EndSyncID = SetTrackSync(track, trigger.EndSample, SyncType.EndSampleTrigger);
+                trigger.StartSyncId = SetTrackSync(track, trigger.StartSample, SyncType.StartSampleTrigger);
+                trigger.EndSyncId = SetTrackSync(track, trigger.EndSample, SyncType.EndSampleTrigger);
             }
         }
 
@@ -453,31 +453,31 @@ namespace Halloumi.BassEngine
         /// <param name="track">The track.</param>
         private void ClearAutomationSyncPositions(Track track)
         {
-            foreach (var trigger in this.GetAutomationAttributes(track).TrackFXTriggers)
+            foreach (var trigger in this.GetAutomationAttributes(track).TrackFxTriggers)
             {
-                if (trigger.StartSyncID != int.MinValue)
+                if (trigger.StartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncID);
-                    trigger.StartSyncID = int.MinValue;
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncId);
+                    trigger.StartSyncId = int.MinValue;
                 }
-                if (trigger.EndSyncID != int.MinValue)
+                if (trigger.EndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncID);
-                    trigger.EndSyncID = int.MinValue;
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
+                    trigger.EndSyncId = int.MinValue;
                 }
             }
 
             foreach (var trigger in this.GetCurrentSampleTriggers())
             {
-                if (trigger.StartSyncID != int.MinValue)
+                if (trigger.StartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncID);
-                    trigger.StartSyncID = int.MinValue;
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncId);
+                    trigger.StartSyncId = int.MinValue;
                 }
-                if (trigger.EndSyncID != int.MinValue)
+                if (trigger.EndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncID);
-                    trigger.EndSyncID = int.MinValue;
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
+                    trigger.EndSyncId = int.MinValue;
                 }
             }
         }
@@ -496,7 +496,7 @@ namespace Halloumi.BassEngine
             this.LastSampleTrigger = new SampleTrigger();
             this.LastSampleTrigger.Start = this.LastSampleTriggerTrack.SamplesToSeconds(position);
             this.LastSampleTrigger.DelayNotes = this.SamplerDelayNotes;
-            this.LastSampleTrigger.SampleID = sample.SampleID;
+            this.LastSampleTrigger.SampleId = sample.SampleId;
         }
 
         private void StopRecordingSampleTrigger()
@@ -633,7 +633,7 @@ namespace Halloumi.BassEngine
             {
                 var fadeOutLength = fromTrack.FullEndLoopLengthSeconds;
                 if (fadeOutLength == 0)
-                    fadeOutLength = BassHelper.GetDefaultLoopLength(fromTrack.EndBPM);
+                    fadeOutLength = BassHelper.GetDefaultLoopLength(fromTrack.EndBpm);
 
                 if (toTrack != null)
                     fadeOutLength = BassHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
@@ -696,10 +696,10 @@ namespace Halloumi.BassEngine
 
                 this.CurrentTrack.EndLoopCount = 0;
 
-                BassMix.BASS_Mixer_ChannelRemoveSync(this.CurrentTrack.Channel, this.CurrentTrack.FadeOutStartSyncID);
-                this.CurrentTrack.FadeOutStartSyncID = int.MinValue;
-                BassMix.BASS_Mixer_ChannelRemoveSync(this.CurrentTrack.Channel, this.CurrentTrack.FadeOutEndSyncID);
-                this.CurrentTrack.FadeOutEndSyncID = int.MinValue;
+                BassMix.BASS_Mixer_ChannelRemoveSync(this.CurrentTrack.Channel, this.CurrentTrack.FadeOutStartSyncId);
+                this.CurrentTrack.FadeOutStartSyncId = int.MinValue;
+                BassMix.BASS_Mixer_ChannelRemoveSync(this.CurrentTrack.Channel, this.CurrentTrack.FadeOutEndSyncId);
+                this.CurrentTrack.FadeOutEndSyncId = int.MinValue;
 
                 var position = BassHelper.GetTrackPosition(this.CurrentTrack);
                 this.CurrentTrack.FadeOutStart = position + this.CurrentTrack.SecondsToSamples(0.05M);

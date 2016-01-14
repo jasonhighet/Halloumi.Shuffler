@@ -16,9 +16,9 @@ using System.Drawing.Imaging;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmExportPlaylist : BaseForm
+    public partial class FrmExportPlaylist : BaseForm
     {
-        public frmExportPlaylist()
+        public FrmExportPlaylist()
         {
             InitializeComponent();
         }
@@ -148,7 +148,7 @@ namespace Halloumi.Shuffler.Forms
                 }
                 catch (Exception exception)
                 {
-                    string message = String.Format("{0}ERROR: Could not copy file '{1}' to '{2}'{0}{3}{0}",
+                    var message = String.Format("{0}ERROR: Could not copy file '{1}' to '{2}'{0}{3}{0}",
                         Environment.NewLine,
                         track.Description,
                         destinationFolder,

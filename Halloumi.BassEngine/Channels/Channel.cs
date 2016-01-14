@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Halloumi.BassEngine.Plugins;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
@@ -13,109 +13,125 @@ namespace Halloumi.BassEngine.Channels
 {
     public abstract class Channel
     {
-        public IBMPProvider BpmProvider { get; private set; }
+        /// <summary>
+        ///     Set to true once the WinAmp DSP engine has been initialized
+        /// </summary>
+        private static bool _waDspLoaded;
 
-        internal int InternalChannel { get; set; }
+        private decimal _delayNotes = 0.25M;
 
-        public Channel(IBMPProvider bpmProvider)
+        protected Channel(IBmpProvider bpmProvider)
         {
             BpmProvider = bpmProvider;
         }
 
+        public IBmpProvider BpmProvider { get; }
+
+        internal int InternalChannel { get; set; }
+
+        public VstPlugin VstPlugin1 { get; internal set; }
+
+        public VstPlugin VstPlugin2 { get; internal set; }
+
+        public decimal DelayNotes
+        {
+            get { return _delayNotes; }
+            set
+            {
+                if (value < 0 || value > 1) return;
+
+                _delayNotes = value;
+                SetPluginBpm();
+            }
+        }
+
+        public WaPlugin WaPlugin { get; private set; }
+
         public void AddInputChannel(MixerChannel inputChannel)
         {
-            if (inputChannel.OutputType == MixerChannelOutputType.SingleOutput)
+            switch (inputChannel.OutputType)
             {
-                BassHelper.AddChannelToDecoderMixer(this.InternalChannel, inputChannel.InternalChannel);
-            }
-            else if (inputChannel.OutputType == MixerChannelOutputType.MultipleOutputs)
-            {
-                var splitOutputChannel = BassHelper.SplitDecoderMixer(inputChannel.InternalChannel);
-                BassHelper.AddChannelToDecoderMixer(this.InternalChannel, splitOutputChannel);
+                case MixerChannelOutputType.SingleOutput:
+                    BassHelper.AddChannelToDecoderMixer(InternalChannel, inputChannel.InternalChannel);
+                    break;
+                case MixerChannelOutputType.MultipleOutputs:
+                    var splitOutputChannel = BassHelper.SplitDecoderMixer(inputChannel.InternalChannel);
+                    BassHelper.AddChannelToDecoderMixer(InternalChannel, splitOutputChannel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
         /// <summary>
-        /// Sets the volume.
+        ///     Sets the volume.
         /// </summary>
         /// <param name="volume">A value between 0 and 100</param>
         public void SetVolume(decimal volume)
         {
-            BassHelper.SetVolume(this.InternalChannel, volume);
+            BassHelper.SetVolume(InternalChannel, volume);
         }
 
         /// <summary>
-        /// Gets the volume.
+        ///     Gets the volume.
         /// </summary>
         /// <returns>A value between 0 and 100</returns>
         public decimal GetVolume()
         {
-            return BassHelper.GetVolume(this.InternalChannel);
+            return BassHelper.GetVolume(InternalChannel);
         }
 
         /// <summary>
-        /// Gets the current volume levels.
+        ///     Gets the current volume levels.
         /// </summary>
         /// <returns>A VolumeLevels object containing the left and right volume levels (0 - 32768)</returns>
         public VolumeLevels GetVolumeLevels()
         {
             var levels = new VolumeLevels();
-            int level = Bass.BASS_ChannelGetLevel(this.InternalChannel);
+            var level = Bass.BASS_ChannelGetLevel(InternalChannel);
             levels.Left = Utils.LowWord32(level);
             levels.Right = Utils.HighWord32(level);
             return levels;
         }
 
-        public VSTPlugin LoadVSTPlugin1(string location)
+        public VstPlugin LoadVstPlugin1(string location)
         {
-            if (this.VSTPlugin1 == null || this.VSTPlugin1.Location != location)
-            {
-                ClearVSTPlugin1();
-                this.VSTPlugin1 = LoadVSTPlugin(location, 1);
-                SetPluginBPM(this.VSTPlugin1);
-            }
-            return this.VSTPlugin1;
+            if (VstPlugin1 != null && VstPlugin1.Location == location)
+                return VstPlugin1;
+
+            ClearVstPlugin1();
+            VstPlugin1 = LoadVstPlugin(location, 1);
+            SetPluginBpm(VstPlugin1);
+            return VstPlugin1;
         }
 
-        public VSTPlugin LoadVSTPlugin2(string location)
+        public VstPlugin LoadVstPlugin2(string location)
         {
-            if (this.VSTPlugin2 == null || this.VSTPlugin2.Location != location)
-            {
-                ClearVSTPlugin2();
-                this.VSTPlugin2 = LoadVSTPlugin(location, 2);
-                SetPluginBPM(this.VSTPlugin2);
-            }
-            return this.VSTPlugin1;
+            if (VstPlugin2 != null && VstPlugin2.Location == location)
+                return VstPlugin1;
+
+            ClearVstPlugin2();
+            VstPlugin2 = LoadVstPlugin(location, 2);
+            SetPluginBpm(VstPlugin2);
+            return VstPlugin1;
         }
 
-        public void ClearVSTPlugin1()
+        public void ClearVstPlugin1()
         {
-            RemoveVSTPlugin(this.VSTPlugin1);
-            this.VSTPlugin1 = null;
+            RemoveVstPlugin(VstPlugin1);
+            VstPlugin1 = null;
         }
 
-        public void ClearVSTPlugin2()
+        public void ClearVstPlugin2()
         {
-            RemoveVSTPlugin(this.VSTPlugin2);
-            this.VSTPlugin2 = null;
+            RemoveVstPlugin(VstPlugin2);
+            VstPlugin2 = null;
         }
 
-        public VSTPlugin VSTPlugin1
-        {
-            get;
-            internal set;
-        }
-
-        public VSTPlugin VSTPlugin2
-        {
-            get;
-            internal set;
-        }
-
-        private void RemoveVSTPlugin(VSTPlugin plugin)
+        private void RemoveVstPlugin(VstPlugin plugin)
         {
             if (plugin == null) return;
-            DebugHelper.WriteLine("Unload plugin" + plugin.Name);
+            DebugHelper.WriteLine("Unload plug-in" + plugin.Name);
             if (plugin.Form != null)
             {
                 if (!plugin.Form.IsDisposed)
@@ -127,29 +143,30 @@ namespace Halloumi.BassEngine.Channels
                 }
             }
 
-            BassVst.BASS_VST_ChannelRemoveDSP(this.InternalChannel, plugin.ID);
+            BassVst.BASS_VST_ChannelRemoveDSP(InternalChannel, plugin.Id);
         }
 
         /// <summary>
-        /// Loads a VST plugin and applies it to the mixer
+        ///     Loads a VST plug-in and applies it to the mixer
         /// </summary>
-        /// <param name="location">The file location of the vst dll</param>
-        private VSTPlugin LoadVSTPlugin(string location, int priority)
+        /// <param name="location">The file location of the VST DLL</param>
+        /// <param name="priority">The priority.</param>
+        /// <returns>The VST plug-in</returns>
+        private VstPlugin LoadVstPlugin(string location, int priority)
         {
             if (location == "") return null;
 
-            //if (!location.Contains("\\")) location = Path.Combine(this.VSTPluginsFolder + "", location);
-            //if (!location.EndsWith(".dll")) location += ".dll";
-
             if (!File.Exists(location)) return null;
 
-            //BassMix.BASS_Mixer_ChannelPause(this.InternalChannel);
+            var plugin = new VstPlugin
+            {
+                Id = BassVst.BASS_VST_ChannelSetDSP(InternalChannel, location, BASSVSTDsp.BASS_VST_DEFAULT, priority)
+            };
 
-            VSTPlugin plugin = new VSTPlugin();
-            plugin.ID = BassVst.BASS_VST_ChannelSetDSP(this.InternalChannel, location, BASSVSTDsp.BASS_VST_DEFAULT, priority);
-            if (plugin.ID == 0) throw new Exception("Cannot load plugin " + Path.GetFileNameWithoutExtension(location));
+            if (plugin.Id == 0)
+                throw new Exception("Cannot load plug-in " + Path.GetFileNameWithoutExtension(location));
 
-            BASS_VST_INFO info = BassVst.BASS_VST_GetInfo(plugin.ID);
+            var info = BassVst.BASS_VST_GetInfo(plugin.Id);
             if (info != null)
             {
                 plugin.Name = info.effectName;
@@ -158,7 +175,9 @@ namespace Halloumi.BassEngine.Channels
             }
             else
             {
-                plugin.Name = StringHelper.TitleCase(Path.GetFileNameWithoutExtension(location).Replace("_", " "));
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(location);
+                if (fileNameWithoutExtension != null)
+                    plugin.Name = StringHelper.TitleCase(fileNameWithoutExtension.Replace("_", " "));
             }
 
             if (plugin.EditorWidth == 0) plugin.EditorWidth = 400;
@@ -166,174 +185,166 @@ namespace Halloumi.BassEngine.Channels
 
             plugin.Location = location;
 
-            SetPluginBPM(plugin);
-            //BassMix.BASS_Mixer_ChannelPlay(this.InternalChannel);
+            plugin.Parameters = new List<VstPlugin.VstPluginParameter>();
+
+            var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
+            for (var i = 0; i < parameterCount; i++)
+            {
+                var parameterInfo = BassVst.BASS_VST_GetParamInfo(plugin.Id, i);
+                plugin.Parameters.Add(new VstPlugin.VstPluginParameter
+                {
+                    Id = i,
+                    Name = parameterInfo.name
+                });
+            }
+
+            SetPluginBpm(plugin);
 
             return plugin;
         }
 
-        private decimal _delayNotes = 0.25M;
-
-        public decimal DelayNotes
-        {
-            get { return _delayNotes; }
-            set
-            {
-                if (value >= 0 && value <= 1)
-                {
-                    _delayNotes = value;
-                    SetPluginBPM();
-                }
-            }
-        }
-
         /// <summary>
-        /// Sets the delay by BPM.
+        ///     Sets the delay by BPM.
         /// </summary>
-        public void SetPluginBPM()
+        public void SetPluginBpm()
         {
             lock (this)
             {
-                SetPluginBPM(this.VSTPlugin1);
-                SetPluginBPM(this.VSTPlugin2);
+                SetPluginBpm(VstPlugin1);
+                SetPluginBpm(VstPlugin2);
             }
         }
 
-        private void SetPluginBPM(VSTPlugin plugin)
+        private void SetPluginBpm(VstPlugin plugin)
         {
             if (plugin == null)
                 return;
-            if (this.BpmProvider == null)
+            if (BpmProvider == null)
                 return;
 
             if (!plugin.Name.ToLower().Contains("delay"))
                 return;
 
-            var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.ID);
-            for (int i = 0; i < parameterCount; i++)
-            {
-                var info = BassVst.BASS_VST_GetParamInfo(plugin.ID, i);
-                if (info.name.ToLower() != "time") continue;
-                
-                var bpm = this.BpmProvider.GetCurrentBPM();
-                var quarterNoteDelayLength = BassHelper.GetDefaultDelayLength(bpm);
+            var timeParameter = plugin.Parameters.FirstOrDefault(x => x.Name.ToLower() == "time");
+            if (timeParameter == null)
+                return;
 
-                if (_delayNotes == 0)
-                {
-                    BassVst.BASS_VST_SetBypass(plugin.ID, true);
-                }
-                else
-                {
-                    BassVst.BASS_VST_SetBypass(plugin.ID, false);
-                    var tapeDelayValue = GetTapeDelayValue(quarterNoteDelayLength * ((double)_delayNotes / 0.25));
-                    BassVst.BASS_VST_SetParam(plugin.ID, i, tapeDelayValue);
-                }
-                
+            var bpm = BpmProvider.GetCurrentBpm();
+            var quarterNoteDelayLength = BassHelper.GetDefaultDelayLength(bpm);
+
+            if (_delayNotes == 0)
+            {
+                BassVst.BASS_VST_SetBypass(plugin.Id, true);
+            }
+            else
+            {
+                BassVst.BASS_VST_SetBypass(plugin.Id, false);
+                var tapeDelayValue = GetTapeDelayValue(quarterNoteDelayLength*((double) _delayNotes/0.25));
+                BassVst.BASS_VST_SetParam(plugin.Id, timeParameter.Id, tapeDelayValue);
             }
         }
 
         /// <summary>
-        /// Gets the tape delay value.
+        ///     Gets the delay value as a percentage (0% is 60ms, 100% is 1500ms)
+        ///     This specific to the TapeDelay VST plug-in.
         /// </summary>
-        /// <param name="delayLength">Length of the delay.</param>
+        /// <param name="delayLength">Length of the delay in milliseconds.</param>
         /// <returns>The tape delay value</returns>
-        private float GetTapeDelayValue(double delayLength)
+        private static float GetTapeDelayValue(double delayLength)
         {
-            var minMS = 60;
-            var maxMS = 1500;
-            if (delayLength < minMS) delayLength = minMS;
-            if (delayLength > maxMS) delayLength = maxMS;
+            const int minMs = 60;
+            const int maxMs = 1500;
+            if (delayLength < minMs) delayLength = minMs;
+            if (delayLength > maxMs) delayLength = maxMs;
 
-            return (float)((delayLength - minMS) / (maxMS - minMS));
+            return (float) ((delayLength - minMs)/(maxMs - minMs));
         }
 
         /// <summary>
-        /// Set to true once the winamp dsp engine has been intitalised
+        ///     Loads a WinAmp DSP plug-in and applies it to the mixer
         /// </summary>
-        private static bool _waDSPLoaded = false;
-
-        public WAPlugin WAPlugin { get; private set; }
-
-        /// <summary>
-        /// Loads a winamp DSP plugin and applies it to the mixer
-        /// </summary>
-        /// <param name="location">The file location of the winamp dsp dll</param>
-        public WAPlugin LoadWAPlugin(string location)
+        /// <param name="location">The file location of the WinAmp DSP DLL</param>
+        public WaPlugin LoadWaPlugin(string location)
         {
             if (location == "") return null;
 
-            //if (!location.Contains("\\")) location = Path.Combine(this.WAPluginsFolder, location);
-            //if (!location.EndsWith(".dll")) location += ".dll";
-
-            if (this.WAPlugin != null && this.WAPlugin.Location == location) return this.WAPlugin;
+            if (WaPlugin != null && WaPlugin.Location == location) return WaPlugin;
 
             if (!File.Exists(location)) return null;
 
-            BassMix.BASS_Mixer_ChannelPause(this.InternalChannel);
+            BassMix.BASS_Mixer_ChannelPause(InternalChannel);
 
-            if (!_waDSPLoaded) StartWADSPEngine();
+            if (!_waDspLoaded) StartWaDspEngine();
 
             DebugHelper.WriteLine("Load WAPlugin " + location);
 
-            WAPlugin plugin = new WAPlugin();
+            var plugin = new WaPlugin
+            {
+                Id = BassWaDsp.BASS_WADSP_Load(location, 10, 10, 300, 300, null),
+                Module = 0
+            };
 
-            plugin.ID = BassWaDsp.BASS_WADSP_Load(location, 10, 10, 300, 300, null);
-            plugin.Module = 0;
-            plugin.Name = BassWaDsp.BASS_WADSP_GetName(plugin.ID);
+            plugin.Name = BassWaDsp.BASS_WADSP_GetName(plugin.Id);
             plugin.Location = location;
-            BassWaDsp.BASS_WADSP_Start(plugin.ID, plugin.Module, this.InternalChannel);
-            BassWaDsp.BASS_WADSP_ChannelSetDSP(plugin.ID, this.InternalChannel, 1);
+            BassWaDsp.BASS_WADSP_Start(plugin.Id, plugin.Module, InternalChannel);
+            BassWaDsp.BASS_WADSP_ChannelSetDSP(plugin.Id, InternalChannel, 1);
 
-            this.WAPlugin = plugin;
+            WaPlugin = plugin;
 
-            BassMix.BASS_Mixer_ChannelPlay(this.InternalChannel);
+            BassMix.BASS_Mixer_ChannelPlay(InternalChannel);
 
             return plugin;
         }
 
-        public void ClearWAPlugin()
+        public void ClearWaPlugin()
         {
-            if (this.WAPlugin == null)
+            if (WaPlugin == null)
                 return;
 
-            DebugHelper.WriteLine("Unload plugin" + this.WAPlugin.Name);
+            DebugHelper.WriteLine("Unload plug-in" + WaPlugin.Name);
             try
             {
-                BassWaDsp.BASS_WADSP_Stop(this.WAPlugin.ID);
-            }
-            catch { }
-
-            try
-            {
-                BassWaDsp.BASS_WADSP_ChannelRemoveDSP(this.WAPlugin.ID);
+                BassWaDsp.BASS_WADSP_Stop(WaPlugin.Id);
             }
             catch
-            { }
+            {
+                // ignored
+            }
 
             try
             {
-                BassWaDsp.BASS_WADSP_FreeDSP(this.WAPlugin.ID);
+                BassWaDsp.BASS_WADSP_ChannelRemoveDSP(WaPlugin.Id);
             }
             catch
-            { }
+            {
+                // ignored
+            }
 
-            this.WAPlugin = null;
+            try
+            {
+                BassWaDsp.BASS_WADSP_FreeDSP(WaPlugin.Id);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            WaPlugin = null;
         }
 
         /// <summary>
-        /// Intialises the winamp dsp engine
+        ///     Initialises the WinAmp DSP engine
         /// </summary>
-        private void StartWADSPEngine()
+        private static void StartWaDspEngine()
         {
             DebugHelper.WriteLine("StartWADSPEngine");
-            //BassWaDsp.BASS_WADSP_Init(_windowHandle);
             BassWaDsp.BASS_WADSP_Init(IntPtr.Zero);
-            _waDSPLoaded = true;
+            _waDspLoaded = true;
         }
     }
 
-    public interface IBMPProvider
+    public interface IBmpProvider
     {
-        decimal GetCurrentBPM();
+        decimal GetCurrentBpm();
     }
 }

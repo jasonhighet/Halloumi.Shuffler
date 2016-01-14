@@ -13,9 +13,9 @@ using Halloumi.Shuffler.Controls;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmSampleLibrary : BaseForm
+    public partial class FrmSampleLibrary : BaseForm
     {
-        public frmSampleLibrary()
+        public FrmSampleLibrary()
         {
             InitializeComponent();
         }

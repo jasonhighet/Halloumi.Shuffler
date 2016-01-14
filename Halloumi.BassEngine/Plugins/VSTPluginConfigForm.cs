@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Plugins;
 using Un4seen.Bass.AddOn.Vst;
 using Halloumi.Common.Helpers;
 
 namespace Halloumi.BassEngine
 {
-    public class VSTPluginConfigForm : Form
+    public class VstPluginConfigForm : Form
     {
-        private ToolStripMenuItem mnuPresets;
-        private Panel pnlEditor;
-        private MenuStrip menuStrip;
-        private VSTPlugin Plugin;
-        private BassPlayer BassPlayer;
+        private ToolStripMenuItem _mnuPresets;
+        private Panel _pnlEditor;
+        private MenuStrip _menuStrip;
+        private VstPlugin _plugin;
+        private BassPlayer _bassPlayer;
     
-        public VSTPluginConfigForm(VSTPlugin plugin, BassPlayer bassPlayer) : base()
+        public VstPluginConfigForm(VstPlugin plugin, BassPlayer bassPlayer) : base()
         {
             InitializeComponent();
 
-            this.Plugin = plugin;
-            this.BassPlayer = bassPlayer;
+            this._plugin = plugin;
+            this._bassPlayer = bassPlayer;
 
             this.CanClose = false;
             this.FormClosing += new FormClosingEventHandler(VSTPluginConfigForm_FormClosing);
@@ -33,7 +34,7 @@ namespace Halloumi.BassEngine
 
             var borderSize = SystemInformation.BorderSize;
             this.Width = plugin.EditorWidth + (borderSize.Width * 2) + 15;
-            this.Height = plugin.EditorHeight + menuStrip.Height + (borderSize.Height * 2) + 35;
+            this.Height = plugin.EditorHeight + _menuStrip.Height + (borderSize.Height * 2) + 35;
 
             var icon = ApplicationHelper.GetIcon();
             if (icon != null) base.Icon = icon;
@@ -41,15 +42,15 @@ namespace Halloumi.BassEngine
             this.Text = plugin.Name;
 
 
-            BassVst.BASS_VST_EmbedEditor(plugin.ID, this.EditorPanelHandle);
+            BassVst.BASS_VST_EmbedEditor(plugin.Id, this.EditorPanelHandle);
             plugin.Form = this;
 
-            var presetNames = BassVst.BASS_VST_GetProgramNames(plugin.ID).ToList();
+            var presetNames = BassVst.BASS_VST_GetProgramNames(plugin.Id).ToList();
 
-            int i = 0;
+            var i = 0;
             foreach(var presetName in presetNames)
             {
-                var existingMenuItems = mnuPresets.DropDownItems.Cast<ToolStripItem>().Select(t => t.Text).ToList();
+                var existingMenuItems = _mnuPresets.DropDownItems.Cast<ToolStripItem>().Select(t => t.Text).ToList();
                 
                 if (presetName != null && presetName.Trim() != "" && !existingMenuItems.Contains(presetName.Trim()))
                 {
@@ -57,7 +58,7 @@ namespace Halloumi.BassEngine
                     menuItem.Text = presetName.Trim();
                     menuItem.Tag = i.ToString();
                     menuItem.Click += new System.EventHandler(mnuPreset_Click);
-                    mnuPresets.DropDownItems.Add(menuItem);
+                    _mnuPresets.DropDownItems.Add(menuItem);
                 }
                 
                 i++;
@@ -69,7 +70,7 @@ namespace Halloumi.BassEngine
             var menuItem = (ToolStripDropDownItem)sender;
             var index = int.Parse(menuItem.Tag.ToString());
 
-            this.BassPlayer.SetVSTPluginPreset(this.Plugin, index);
+            this._bassPlayer.SetVstPluginPreset(this._plugin, index);
         }
 
 
@@ -82,8 +83,8 @@ namespace Halloumi.BassEngine
             }
             else
             {
-                this.BassPlayer = null;
-                this.Plugin = null;
+                this._bassPlayer = null;
+                this._plugin = null;
             }
         }
 
@@ -95,50 +96,50 @@ namespace Halloumi.BassEngine
 
         public IntPtr EditorPanelHandle
         {
-            get { return this.pnlEditor.Handle; }
+            get { return this._pnlEditor.Handle; }
         }
 
         private void InitializeComponent()
         {
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.mnuPresets = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlEditor = new System.Windows.Forms.Panel();
-            this.menuStrip.SuspendLayout();
+            this._menuStrip = new System.Windows.Forms.MenuStrip();
+            this._mnuPresets = new System.Windows.Forms.ToolStripMenuItem();
+            this._pnlEditor = new System.Windows.Forms.Panel();
+            this._menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuPresets});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(284, 24);
-            this.menuStrip.TabIndex = 0;
-            this.menuStrip.Text = "menuStrip1";
+            this._menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._mnuPresets});
+            this._menuStrip.Location = new System.Drawing.Point(0, 0);
+            this._menuStrip.Name = "_menuStrip";
+            this._menuStrip.Size = new System.Drawing.Size(284, 24);
+            this._menuStrip.TabIndex = 0;
+            this._menuStrip.Text = "menuStrip1";
             // 
             // mnuPresets
             // 
-            this.mnuPresets.Name = "mnuPresets";
-            this.mnuPresets.Size = new System.Drawing.Size(56, 20);
-            this.mnuPresets.Text = "&Presets";
+            this._mnuPresets.Name = "_mnuPresets";
+            this._mnuPresets.Size = new System.Drawing.Size(56, 20);
+            this._mnuPresets.Text = "&Presets";
             // 
             // pnlEditor
             // 
-            this.pnlEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlEditor.Location = new System.Drawing.Point(0, 24);
-            this.pnlEditor.Name = "pnlEditor";
-            this.pnlEditor.Size = new System.Drawing.Size(284, 240);
-            this.pnlEditor.TabIndex = 1;
+            this._pnlEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._pnlEditor.Location = new System.Drawing.Point(0, 24);
+            this._pnlEditor.Name = "_pnlEditor";
+            this._pnlEditor.Size = new System.Drawing.Size(284, 240);
+            this._pnlEditor.TabIndex = 1;
             // 
             // VSTPluginConfigForm
             // 
             this.ClientSize = new System.Drawing.Size(284, 264);
-            this.Controls.Add(this.pnlEditor);
-            this.Controls.Add(this.menuStrip);
-            this.MainMenuStrip = this.menuStrip;
-            this.Name = "VSTPluginConfigForm";
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
+            this.Controls.Add(this._pnlEditor);
+            this.Controls.Add(this._menuStrip);
+            this.MainMenuStrip = this._menuStrip;
+            this.Name = "VstPluginConfigForm";
+            this._menuStrip.ResumeLayout(false);
+            this._menuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

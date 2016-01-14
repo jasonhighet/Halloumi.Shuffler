@@ -20,18 +20,18 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets the BPM of the sample
         /// </summary>
-        public decimal CalculateBPM(Track track)
+        public decimal CalculateBpm(Track track)
         {
             if (this.Key == "PreFadeIn")
             {
-                return track.StartBPM;
+                return track.StartBpm;
             }
             else if (this.Length != 0 && this.IsLooped)
             {
-                return BassHelper.GetBPMFromLoopLength(this.Length);
+                return BassHelper.GetBpmFromLoopLength(this.Length);
             }
 
-            return track.BPM;
+            return track.Bpm;
         }
 
         public TrackSample Clone()

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Halloumi.BassEngine
 {
-    public class TrackFXTrigger
+    public class TrackFxTrigger
     {
         /// <summary>
         /// Gets or sets the start.
@@ -35,20 +35,20 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the start track sync handle
         /// </summary>
-        internal int StartSyncID { get; set; }
+        internal int StartSyncId { get; set; }
         
         /// <summary>
         /// Gets or sets the end track fx sync handle
         /// </summary>
-        internal int EndSyncID { get; set; }
+        internal int EndSyncId { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the AutomatedTrackFX class.
         /// </summary>
-        public TrackFXTrigger()
+        public TrackFxTrigger()
         {
-            StartSyncID = int.MinValue;
-            EndSyncID = int.MinValue;
+            StartSyncId = int.MinValue;
+            EndSyncId = int.MinValue;
             Start = 0;
             Length = 0;
             DelayNotes = 0.25M;

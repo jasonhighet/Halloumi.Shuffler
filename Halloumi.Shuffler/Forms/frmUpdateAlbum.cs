@@ -11,9 +11,9 @@ using Halloumi.Shuffler.Engine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmUpdateAlbum : BaseForm
+    public partial class FrmUpdateAlbum : BaseForm
     {
-        public frmUpdateAlbum()
+        public FrmUpdateAlbum()
         {
             InitializeComponent();
             

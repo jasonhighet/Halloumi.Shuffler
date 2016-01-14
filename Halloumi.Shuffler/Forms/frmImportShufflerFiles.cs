@@ -13,9 +13,9 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmImportShufflerFiles : BaseForm
+    public partial class FrmImportShufflerFiles : BaseForm
     {
-        public frmImportShufflerFiles()
+        public FrmImportShufflerFiles()
         {
             InitializeComponent();
         }

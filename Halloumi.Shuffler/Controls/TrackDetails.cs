@@ -43,7 +43,7 @@ namespace Halloumi.Shuffler.Controls
 
                 var details = track.Album + " - " + track.Genre + " ";
                 details += " - " + track.LengthFormatted;
-                if (track.BPM != 0) details += " - " + track.BPM.ToString("0.00") + " BPM";
+                if (track.Bpm != 0) details += " - " + track.Bpm.ToString("0.00") + " BPM";
                 if (track.Key != "") details += " - " + BE.KeyHelper.GetDisplayKey(track.Key);
 
                 lblCurrentTrackDetails.Text = details;

@@ -202,7 +202,7 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="linkedSamples">The linked samples.</param>
         private void SaveLinkedSamples(string trackDescription, List<LinkedSample> linkedSamples)
         {
-            StringBuilder content = new StringBuilder();
+            var content = new StringBuilder();
             foreach (var linkedSample in linkedSamples)
             {
                 content.AppendLine(linkedSample.ToString());

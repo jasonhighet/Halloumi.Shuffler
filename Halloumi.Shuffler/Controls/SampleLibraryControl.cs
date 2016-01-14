@@ -21,9 +21,9 @@ namespace Halloumi.Shuffler.Controls
 
         private string SearchFilter { get; set; }
 
-        private int MinBPM { get; set; }
+        private int MinBpm { get; set; }
 
-        private int MaxBPM { get; set; }
+        private int MaxBpm { get; set; }
 
         private string KeyFilter { get; set; }
 
@@ -41,7 +41,7 @@ namespace Halloumi.Shuffler.Controls
 
             public decimal Length { get; set; }
 
-            public decimal BPM { get; set; }
+            public decimal Bpm { get; set; }
 
             public string Key { get; set; }
 
@@ -53,7 +53,7 @@ namespace Halloumi.Shuffler.Controls
                 this.Tags = string.Join(", ", sample.Tags.ToArray());
                 this.LengthFormatted = BE.BassHelper.GetFormattedLength(Convert.ToDecimal(sample.Length));
                 this.Length = Convert.ToDecimal(sample.Length);
-                this.BPM = sample.BPM;
+                this.Bpm = sample.Bpm;
                 this.Sample = sample;
                 this.Key = sample.IsAtonal
                     ? "Atonal"
@@ -79,8 +79,8 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            this.MinBPM = 0;
-            this.MaxBPM = 1000;
+            this.MinBpm = 0;
+            this.MaxBpm = 1000;
             grdSamples.VirtualMode = true;
 
             txtMinBPM.TextChanged += new EventHandler(txtMinBPM_TextChanged);
@@ -166,8 +166,8 @@ namespace Halloumi.Shuffler.Controls
                 criteria.Key = BE.KeyHelper.GetKeyFromDisplayKey(this.KeyFilter);
             }
 
-            criteria.MaxBPM = this.MaxBPM;
-            criteria.MinBPM = this.MinBPM;
+            criteria.MaxBpm = this.MaxBpm;
+            criteria.MinBpm = this.MinBpm;
 
             criteria.SearchText = this.SearchFilter;
             var samples = this.SampleLibrary.GetSamples(criteria);
@@ -201,7 +201,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _binding = true;
 
-            List<string> descriptions = new List<string>();
+            var descriptions = new List<string>();
 
             grdSamples.SaveSelectedRows();
 
@@ -216,7 +216,7 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "Description") sampleModels = sampleModels.OrderBy(t => t.Description).ToList();
                 if (sortField == "LengthFormatted") sampleModels = sampleModels.OrderBy(t => t.Length).ToList();
                 if (sortField == "Tags") sampleModels = sampleModels.OrderBy(t => t.Tags).ToList();
-                if (sortField == "BPM") sampleModels = sampleModels.OrderBy(t => t.BPM).ToList();
+                if (sortField == "BPM") sampleModels = sampleModels.OrderBy(t => t.Bpm).ToList();
                 if (sortField == "Key") sampleModels = sampleModels.OrderByDescending(t => t.Key).ToList();
 
                 if (grdSamples.SortOrder == SortOrder.Descending) sampleModels.Reverse();
@@ -245,7 +245,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (sampleModel == null) e.Value = "";
             else if (e.ColumnIndex == 0) e.Value = sampleModel.Description;
-            else if (e.ColumnIndex == 1) e.Value = sampleModel.BPM;
+            else if (e.ColumnIndex == 1) e.Value = sampleModel.Bpm;
             else if (e.ColumnIndex == 2) e.Value = sampleModel.Key;
             else if (e.ColumnIndex == 3) e.Value = sampleModel.LengthFormatted;
             else if (e.ColumnIndex == 4) e.Value = sampleModel.Tags;
@@ -344,18 +344,18 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
-        private void SetBPMFilter()
+        private void SetBpmFilter()
         {
-            int min = 0;
+            var min = 0;
             if (txtMinBPM.Text != "") min = Convert.ToInt32(txtMinBPM.Text);
 
-            int max = 1000;
+            var max = 1000;
             if (txtMaxBPM.Text != "") max = Convert.ToInt32(txtMaxBPM.Text);
 
-            if (min != this.MinBPM || max != this.MaxBPM)
+            if (min != this.MinBpm || max != this.MaxBpm)
             {
-                this.MinBPM = min;
-                this.MaxBPM = max;
+                this.MinBpm = min;
+                this.MaxBpm = max;
                 var bindData = new BindDataHandler(BindData);
                 this.BeginInvoke(bindData);
             }
@@ -413,7 +413,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void txtMaxBPM_TextChanged(object sender, EventArgs e)
         {
-            SetBPMFilter();
+            SetBpmFilter();
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void txtMinBPM_TextChanged(object sender, EventArgs e)
         {
-            SetBPMFilter();
+            SetBpmFilter();
         }
 
         private void cmbKey_SelectedIndexChanged(object sender, EventArgs e)
@@ -449,7 +449,7 @@ namespace Halloumi.Shuffler.Controls
 
             StopCurrentSample();
 
-            var form = new frmEditTrackSamples();
+            var form = new FrmEditTrackSamples();
             form.BassPlayer = this.BassPlayer;
             form.Filename = track.Filename;
             form.SampleLibrary = this.SampleLibrary;

@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmImportShufflerFiles
+    partial class FrmImportShufflerFiles
     {
         /// <summary>
         /// Required designer variable.
@@ -219,7 +219,7 @@
             this.Controls.Add(this.pnlButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "frmImportShufflerFiles";
+            this.Name = "FrmImportShufflerFiles";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Halloumi : Shuffler : Sync Shuffler Files";
             this.UseApplicationIcon = true;

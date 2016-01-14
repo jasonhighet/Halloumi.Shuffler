@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmUpdateTrackDetails
+    partial class FrmUpdateTrackDetails
     {
         /// <summary>
         /// Required designer variable.
@@ -419,7 +419,7 @@
             this.Controls.Add(this.pnlButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "frmUpdateTrackDetails";
+            this.Name = "FrmUpdateTrackDetails";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Update Track Details";

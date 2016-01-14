@@ -14,9 +14,9 @@ namespace Halloumi.BassEngine.Channels
 
         public IntPtr WindowHandle { get; private set; }
 
-        public string WAPluginsFolder { get; set; }
+        public string WaPluginsFolder { get; set; }
 
-        public string VSTPluginsFolder { get; set; }
+        public string VstPluginsFolder { get; set; }
 
         // private bool _locked = false;
 

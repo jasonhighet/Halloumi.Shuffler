@@ -18,7 +18,7 @@ namespace Halloumi.Shuffler.Engine
             this.IsAtonal = false;
             this.IsPrimaryLoop = false;
             this.TrackLength = 0M;
-            this.BPM = 0M;
+            this.Bpm = 0M;
             this.Tags = new List<string>();
             this.Gain = 0F;
         }
@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.Engine
 
         public string Description { get; set; }
 
-        public decimal BPM { get; set; }
+        public decimal Bpm { get; set; }
 
         public List<string> Tags { get; set; }
 
@@ -64,7 +64,7 @@ namespace Halloumi.Shuffler.Engine
                 Key = this.Key,
                 TrackArtist = this.TrackArtist,
                 TrackTitle = this.TrackTitle,
-                BPM = this.BPM,
+                Bpm = this.Bpm,
                 Description = this.Description,
                 TrackLength = this.TrackLength,
                 Tags = this.Tags,

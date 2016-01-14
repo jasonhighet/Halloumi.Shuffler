@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmPlugin
+    partial class FrmPlugin
     {
         /// <summary>
         /// Required designer variable.
@@ -487,7 +487,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmPlugin";
+            this.Name = "FrmPlugin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Halloumi : Shuffler : Effects";
             this.UseApplicationIcon = true;

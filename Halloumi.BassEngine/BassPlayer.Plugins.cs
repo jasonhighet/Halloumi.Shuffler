@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Halloumi.BassEngine.Plugins;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
@@ -20,7 +21,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// A collection of all loaded winamp plugins
         /// </summary>
-        private List<WAPlugin> _waPlugins = new List<WAPlugin>();
+        private List<WaPlugin> _waPlugins = new List<WaPlugin>();
 
         #endregion
 
@@ -29,76 +30,76 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Returns a collection of all loaded Winamp Plugins
         /// </summary>
-        public WAPlugin WAPlugin
+        public WaPlugin WaPlugin
         {
-            get { return this.SpeakerOutput.WAPlugin; }
+            get { return this._speakerOutput.WaPlugin; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded VST Plugins
         /// </summary>
-        public VSTPlugin MainVSTPlugin
+        public VstPlugin MainVstPlugin
         {
-            get { return this.SpeakerOutput.VSTPlugin1; }
+            get { return this._speakerOutput.VstPlugin1; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded VST Plugins
         /// </summary>
-        public VSTPlugin MainVSTPlugin2
+        public VstPlugin MainVstPlugin2
         {
-            get { return this.SpeakerOutput.VSTPlugin2; }
+            get { return this._speakerOutput.VstPlugin2; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded trackFX VST Plugins
         /// </summary>
-        public VSTPlugin SamplerVSTPlugin
+        public VstPlugin SamplerVstPlugin
         {
-            get { return this.SamplerMixer.VSTPlugin1; }
+            get { return this._samplerMixer.VstPlugin1; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded trackFX VST Plugins
         /// </summary>
-        public VSTPlugin SamplerVSTPlugin2
+        public VstPlugin SamplerVstPlugin2
         {
-            get { return this.SamplerMixer.VSTPlugin2; }
+            get { return this._samplerMixer.VstPlugin2; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded mixer VST Plugins
         /// </summary>
-        public VSTPlugin TrackVSTPlugin
+        public VstPlugin TrackVstPlugin
         {
-            get { return TrackMixer.VSTPlugin1; }
+            get { return _trackMixer.VstPlugin1; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded mixer VST Plugins
         /// </summary>
-        public VSTPlugin TrackSendFXVSTPlugin
+        public VstPlugin TrackSendFxvstPlugin
         {
-            get { return TrackSendFXMixer.VSTPlugin1; }
+            get { return _trackSendFxMixer.VstPlugin1; }
         }
 
         /// <summary>
         /// Returns a collection of all loaded mixer VST Plugins
         /// </summary>
-        public VSTPlugin TrackSendFXVSTPlugin2
+        public VstPlugin TrackSendFxvstPlugin2
         {
-            get { return TrackSendFXMixer.VSTPlugin2; }
+            get { return _trackSendFxMixer.VstPlugin2; }
         }
 
         /// <summary>
         /// Gets or sets the WA plugins folder.
         /// </summary>
-        public string WAPluginsFolder { get; set; }
+        public string WaPluginsFolder { get; set; }
 
         /// <summary>
         /// Gets or sets the VST plugins folder.
         /// </summary>
-        public string VSTPluginsFolder { get; set; }
+        public string VstPluginsFolder { get; set; }
 
         #endregion
 
@@ -108,7 +109,7 @@ namespace Halloumi.BassEngine
         /// Loads a winamp DSP plugin and applies it to the mixer
         /// </summary>
         /// <param name="location">The file location of the winamp dsp dll</param>
-        public WAPlugin LoadWAPlugin(string location)
+        public WaPlugin LoadWaPlugin(string location)
         {
             //if (location == "") return null;
 
@@ -120,7 +121,7 @@ namespace Halloumi.BassEngine
             var playing = (this.PlayState == PlayState.Playing);
             if (playing) this.Pause();
 
-            var plugin = SpeakerOutput.LoadWAPlugin(location);
+            var plugin = _speakerOutput.LoadWaPlugin(location);
 
             if (playing) this.Play();
 
@@ -131,90 +132,90 @@ namespace Halloumi.BassEngine
         /// Loads a VST plugin and applies it to the mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadMainVSTPlugin(string location)
+        public VstPlugin LoadMainVstPlugin(string location)
         {
-            return this.SpeakerOutput.LoadVSTPlugin1(location);
+            return this._speakerOutput.LoadVstPlugin1(location);
         }
 
         /// <summary>
         /// Loads a VST plugin and applies it to the mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadMainVSTPlugin2(string location)
+        public VstPlugin LoadMainVstPlugin2(string location)
         {
-            return this.SpeakerOutput.LoadVSTPlugin2(location);
+            return this._speakerOutput.LoadVstPlugin2(location);
         }
 
         /// <summary>
         /// Loads a VST plugin and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadSamplerVSTPlugin(string location)
+        public VstPlugin LoadSamplerVstPlugin(string location)
         {
-            return this.SamplerMixer.LoadVSTPlugin1(location);
+            return this._samplerMixer.LoadVstPlugin1(location);
         }
 
         /// <summary>
         /// Loads a VST plugin and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadSamplerVSTPlugin2(string location)
+        public VstPlugin LoadSamplerVstPlugin2(string location)
         {
-            return this.SamplerMixer.LoadVSTPlugin2(location);
+            return this._samplerMixer.LoadVstPlugin2(location);
         }
 
         /// <summary>
         /// Loads a VST plugin and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadTracksVSTPlugin(string location)
+        public VstPlugin LoadTracksVstPlugin(string location)
         {
-            return TrackMixer.LoadVSTPlugin1(location);
+            return _trackMixer.LoadVstPlugin1(location);
         }
 
         /// <summary>
         /// Loads a VST plugin and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadTrackSendFXVSTPlugin(string location)
+        public VstPlugin LoadTrackSendFxvstPlugin(string location)
         {
-            return TrackSendFXMixer.LoadVSTPlugin1(location);
+            return _trackSendFxMixer.LoadVstPlugin1(location);
         }
 
         /// <summary>
         /// Loads a VST plugin and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the vst dll</param>
-        public VSTPlugin LoadTrackSendFXVSTPlugin2(string location)
+        public VstPlugin LoadTrackSendFxvstPlugin2(string location)
         {
-            return TrackSendFXMixer.LoadVSTPlugin2(location);
+            return _trackSendFxMixer.LoadVstPlugin2(location);
         }
 
         /// <summary>
         /// Mutes the track FX.
         /// </summary>
-        public void StopTrackFXSend()
+        public void StopTrackFxSend()
         {
             DebugHelper.WriteLine("Start StopTrackFXSend");
 
-            this.TrackSendMixer.SetVolume(0);
+            this._trackSendMixer.SetVolume(0);
 
             if (this.CurrentTrack != null
-                && this.LastTrackFXTrigger != null
-                && this.LastTrackFXTriggerTrack != null)
+                && this.LastTrackFxTrigger != null
+                && this.LastTrackFxTriggerTrack != null)
             {
                 DebugHelper.WriteLine("Calculate TrackFXSend Length");
 
-                var position = BassHelper.GetTrackPosition(this.LastTrackFXTriggerTrack);
-                var positionSeconds = this.LastTrackFXTriggerTrack.SamplesToSeconds(position);
-                var length = positionSeconds - this.LastTrackFXTrigger.Start;
+                var position = BassHelper.GetTrackPosition(this.LastTrackFxTriggerTrack);
+                var positionSeconds = this.LastTrackFxTriggerTrack.SamplesToSeconds(position);
+                var length = positionSeconds - this.LastTrackFxTrigger.Start;
 
-                if (length <= 0 || position >= this.LastTrackFXTriggerTrack.FadeOutStart)
+                if (length <= 0 || position >= this.LastTrackFxTriggerTrack.FadeOutStart)
                 {
-                    length = LastTrackFXTriggerTrack.SamplesToSeconds(this.LastTrackFXTriggerTrack.FadeOutStart) - this.LastTrackFXTrigger.Start;
+                    length = LastTrackFxTriggerTrack.SamplesToSeconds(this.LastTrackFxTriggerTrack.FadeOutStart) - this.LastTrackFxTrigger.Start;
                 }
 
-                this.LastTrackFXTrigger.Length = length;
+                this.LastTrackFxTrigger.Length = length;
             }
 
             DebugHelper.WriteLine("End StopTrackFXSend");
@@ -223,60 +224,60 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Unmutes the track FX.
         /// </summary>
-        public void StartTrackFXSend()
+        public void StartTrackFxSend()
         {
-            TrackSendMixer.SetVolume(50M);
+            _trackSendMixer.SetVolume(50M);
             if (this.CurrentTrack == null) return;
 
-            this.LastTrackFXTriggerTrack = this.CurrentTrack;
+            this.LastTrackFxTriggerTrack = this.CurrentTrack;
 
-            var position = BassHelper.GetTrackPosition(this.LastTrackFXTriggerTrack);
-            this.LastTrackFXTrigger = new TrackFXTrigger();
-            this.LastTrackFXTrigger.Start = this.LastTrackFXTriggerTrack.SamplesToSeconds(position);
-            this.LastTrackFXTrigger.DelayNotes = this.TrackSendFXDelayNotes;
+            var position = BassHelper.GetTrackPosition(this.LastTrackFxTriggerTrack);
+            this.LastTrackFxTrigger = new TrackFxTrigger();
+            this.LastTrackFxTrigger.Start = this.LastTrackFxTriggerTrack.SamplesToSeconds(position);
+            this.LastTrackFxTrigger.DelayNotes = this.TrackSendFxDelayNotes;
 
-            TrackSendMixer.SetPluginBPM();
+            _trackSendMixer.SetPluginBpm();
         }
 
         /// <summary>
         /// Determines whether audio is being sent to the track FX.
         /// </summary>
         /// <returns>True if audio is being sent to the track FX; otherwise, false.</returns>
-        public bool IsTrackFXSending()
+        public bool IsTrackFxSending()
         {
-            return (this.TrackSendMixer.GetVolume() != 0M);
+            return (this._trackSendMixer.GetVolume() != 0M);
         }
 
         /// <summary>
         /// Gets the sample mixer volume.
         /// </summary>
         /// <returns>A value between 0 and 100</returns>
-        public decimal GetTrackSendFXVolume()
+        public decimal GetTrackSendFxVolume()
         {
-            return TrackSendFXMixer.GetVolume();
+            return _trackSendFxMixer.GetVolume();
         }
 
         /// <summary>
         /// Sets the sample mixer volume.
         /// </summary>
         /// <param name="volume">The volume as a value between 0 and 100.</param>
-        public void SetTrackSendFXMixerVolume(decimal volume)
+        public void SetTrackSendFxMixerVolume(decimal volume)
         {
-            TrackSendFXMixer.SetVolume(volume);
+            _trackSendFxMixer.SetVolume(volume);
         }
 
         /// <summary>
         /// Returns a list of all available (unloaded) VST plugins
         /// </summary>
         /// <returns>A list of all available (unloaded) VST plugins</returns>
-        public List<VSTPlugin> FindVSTPlugins()
+        public List<VstPlugin> FindVstPlugins()
         {
-            List<VSTPlugin> plugins = new List<VSTPlugin>();
-            if (Directory.Exists(this.VSTPluginsFolder))
+            var plugins = new List<VstPlugin>();
+            if (Directory.Exists(this.VstPluginsFolder))
             {
-                foreach (string pluginLocation in Directory.GetFiles(this.VSTPluginsFolder, "*.dll", SearchOption.AllDirectories))
+                foreach (var pluginLocation in Directory.GetFiles(this.VstPluginsFolder, "*.dll", SearchOption.AllDirectories))
                 {
-                    VSTPlugin plugin = new VSTPlugin();
+                    var plugin = new VstPlugin();
                     plugin.Location = pluginLocation;
                     plugin.Name = Path.GetFileNameWithoutExtension(pluginLocation);
                     plugin.Name = plugin.Name.Replace("_", " ");
@@ -290,101 +291,101 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Clears the main VST plugin.
         /// </summary>
-        public void ClearMainVSTPlugin()
+        public void ClearMainVstPlugin()
         {
-            this.SpeakerOutput.ClearVSTPlugin1();
+            this._speakerOutput.ClearVstPlugin1();
         }
 
         /// <summary>
         /// Clears the main VST plugin.
         /// </summary>
-        public void ClearMainVSTPlugin2()
+        public void ClearMainVstPlugin2()
         {
-            this.SpeakerOutput.ClearVSTPlugin2();
+            this._speakerOutput.ClearVstPlugin2();
         }
 
         /// <summary>
         /// Clears the trackFX VST plugin.
         /// </summary>
-        public void ClearSamplerVSTPlugin()
+        public void ClearSamplerVstPlugin()
         {
-            this.SamplerMixer.ClearVSTPlugin1();
+            this._samplerMixer.ClearVstPlugin1();
         }
 
         /// <summary>
         /// Clears the sampler VST plugin 2.
         /// </summary>
-        public void ClearSamplerVSTPlugin2()
+        public void ClearSamplerVstPlugin2()
         {
-            this.SamplerMixer.ClearVSTPlugin2();
+            this._samplerMixer.ClearVstPlugin2();
         }
 
         /// <summary>
         /// Clears the tracks VST plugin.
         /// </summary>
-        public void ClearTracksVSTPlugin()
+        public void ClearTracksVstPlugin()
         {
-            this.TrackMixer.ClearVSTPlugin1();
+            this._trackMixer.ClearVstPlugin1();
         }
 
         /// <summary>
         /// Clears the tracks VST plugin.
         /// </summary>
-        public void ClearTrackSendFXVSTPlugin()
+        public void ClearTrackSendFxvstPlugin()
         {
-            this.TrackSendFXMixer.ClearVSTPlugin1();
+            this._trackSendFxMixer.ClearVstPlugin1();
         }
 
         /// <summary>
         /// Clears the trackFX VST plugin 2.
         /// </summary>
-        public void ClearTrackSendFXVSTPlugin2()
+        public void ClearTrackSendFxvstPlugin2()
         {
-            this.TrackSendFXMixer.ClearVSTPlugin2();
+            this._trackSendFxMixer.ClearVstPlugin2();
         }
 
         /// <summary>
         /// Unloads all loaded VST plugins.
         /// </summary>
-        public void UnloadAllVSTPlugins()
+        public void UnloadAllVstPlugins()
         {
-            ClearMainVSTPlugin();
-            ClearMainVSTPlugin2();
-            ClearSamplerVSTPlugin();
-            ClearSamplerVSTPlugin2();
-            ClearTracksVSTPlugin();
-            ClearTrackSendFXVSTPlugin();
-            ClearTrackSendFXVSTPlugin2();
+            ClearMainVstPlugin();
+            ClearMainVstPlugin2();
+            ClearSamplerVstPlugin();
+            ClearSamplerVstPlugin2();
+            ClearTracksVstPlugin();
+            ClearTrackSendFxvstPlugin();
+            ClearTrackSendFxvstPlugin2();
         }
 
         /// <summary>
         /// Unloads all loaded WinAmp plugins.
         /// </summary>
-        public void UnloadAllWAPlugins()
+        public void UnloadAllWaPlugins()
         {
-            this.SpeakerOutput.ClearWAPlugin();
+            this._speakerOutput.ClearWaPlugin();
         }
 
         /// <summary>
         /// Shows the WinAmp DSP plugin config screen
         /// </summary>
         /// <param name="plugin">The WinAmp DSP plugin.</param>
-        public void ShowWAPluginConfig(WAPlugin plugin)
+        public void ShowWaPluginConfig(WaPlugin plugin)
         {
             if (plugin == null) return;
 
-            BassWaDsp.BASS_WADSP_Config(plugin.ID);
+            BassWaDsp.BASS_WADSP_Config(plugin.Id);
         }
 
         /// <summary>
         /// Shows the VST plugin config screen.
         /// </summary>
         /// <param name="plugin">The plugin.</param>
-        public void ShowVSTPluginConfig(VSTPlugin plugin)
+        public void ShowVstPluginConfig(VstPlugin plugin)
         {
             if (plugin == null) return;
 
-            SetDelayByBPM();
+            SetDelayByBpm();
 
             if (plugin.Form != null && !plugin.Form.IsDisposed)
             {
@@ -395,7 +396,7 @@ namespace Halloumi.BassEngine
 
             plugin.Form = null;
 
-            VSTPluginConfigForm containerForm = new VSTPluginConfigForm(plugin, this);
+            var containerForm = new VstPluginConfigForm(plugin, this);
             containerForm.Show();
         }
 
@@ -403,14 +404,14 @@ namespace Halloumi.BassEngine
         /// Returns a list of all available (unloaded) WinAmp DSP plugins
         /// </summary>
         /// <returns>A list of all available (unloaded) WinAmp DSP plugins</returns>
-        public List<WAPlugin> FindWAPlugins()
+        public List<WaPlugin> FindWaPlugins()
         {
-            List<WAPlugin> plugins = new List<WAPlugin>();
-            if (this.WAPluginsFolder == "") return plugins;
+            var plugins = new List<WaPlugin>();
+            if (this.WaPluginsFolder == "") return plugins;
 
-            foreach (string pluginLocation in Directory.GetFiles(this.WAPluginsFolder, "dsp_*.dll", SearchOption.AllDirectories))
+            foreach (var pluginLocation in Directory.GetFiles(this.WaPluginsFolder, "dsp_*.dll", SearchOption.AllDirectories))
             {
-                WAPlugin plugin = new WAPlugin();
+                var plugin = new WaPlugin();
                 plugin.Location = pluginLocation;
                 plugin.Name = Path.GetFileNameWithoutExtension(pluginLocation);
                 plugin.Name = plugin.Name.Replace("dsp_", "");
@@ -427,13 +428,13 @@ namespace Halloumi.BassEngine
         /// </summary>
         /// <param name="plugin">The plugin.</param>
         /// <returns>The settings as a key=value comma delimeted list</returns>
-        public string GetVstPluginParameters(VSTPlugin plugin)
+        public string GetVstPluginParameters(VstPlugin plugin)
         {
             var values = new List<string>();
-            var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.ID);
-            for (int i = 0; i < parameterCount; i++)
+            var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
+            for (var i = 0; i < parameterCount; i++)
             {
-                var value = BassVst.BASS_VST_GetParam(plugin.ID, i);
+                var value = BassVst.BASS_VST_GetParam(plugin.Id, i);
                 values.Add(value.ToString());
             }
             return string.Join(",", values.ToArray());
@@ -444,23 +445,23 @@ namespace Halloumi.BassEngine
         /// </summary>
         /// <param name="plugin">The plugin.</param>
         /// <param name="settings">The settings as a key=value comma delimeted list.</param>
-        public void SetVstPluginParameters(VSTPlugin plugin, string parameters)
+        public void SetVstPluginParameters(VstPlugin plugin, string parameters)
         {
             if (parameters.Trim() == "") return;
             var values = parameters.Split(',').ToList();
-            var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.ID);
-            for (int i = 0; i < parameterCount; i++)
+            var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
+            for (var i = 0; i < parameterCount; i++)
             {
                 try
                 {
                     if (i >= values.Count) continue;
                     var value = float.Parse(values[i]);
-                    BassVst.BASS_VST_SetParam(plugin.ID, i, value);
+                    BassVst.BASS_VST_SetParam(plugin.Id, i, value);
                 }
                 catch { }
             }
 
-            SetDelayByBPM();
+            SetDelayByBpm();
         }
 
         #endregion
@@ -470,18 +471,18 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Sets the delay by BPM.
         /// </summary>
-        private void SetDelayByBPM()
+        private void SetDelayByBpm()
         {
-            this.TrackSendFXMixer.SetPluginBPM();
-            this.SamplerMixer.SetPluginBPM();
+            this._trackSendFxMixer.SetPluginBpm();
+            this._samplerMixer.SetPluginBpm();
         }
 
-        public decimal GetCurrentBPM()
+        public decimal GetCurrentBpm()
         {
             var bpm = 100M;
             if (this.CurrentTrack != null)
             {
-                bpm = this.CurrentTrack.BPM;
+                bpm = this.CurrentTrack.Bpm;
 
                 //if (!this.IsLocked())
                 {
@@ -492,37 +493,37 @@ namespace Halloumi.BassEngine
 
                     if (position < this.CurrentTrack.FullStartLoopLength)
                     {
-                        bpm = this.CurrentTrack.StartBPM;
+                        bpm = this.CurrentTrack.StartBpm;
                     }
                     else
                     {
-                        var range = this.CurrentTrack.EndBPM - this.CurrentTrack.StartBPM;
+                        var range = this.CurrentTrack.EndBpm - this.CurrentTrack.StartBpm;
                         var percentComplete = (decimal)((double)position / (double)trackPosition.Length);
-                        bpm = this.CurrentTrack.StartBPM + (range * percentComplete);
+                        bpm = this.CurrentTrack.StartBpm + (range * percentComplete);
                     }
                 }
             }
 
-            bpm = BassHelper.NormaliseBPM(bpm);
+            bpm = BassHelper.NormaliseBpm(bpm);
             return bpm;
         }
 
-        public decimal TrackSendFXDelayNotes
+        public decimal TrackSendFxDelayNotes
         {
-            get { return TrackSendFXMixer.DelayNotes; }
-            set { TrackSendFXMixer.DelayNotes = value; }
+            get { return _trackSendFxMixer.DelayNotes; }
+            set { _trackSendFxMixer.DelayNotes = value; }
         }
 
         public decimal SamplerDelayNotes
         {
-            get { return SamplerMixer.DelayNotes; }
-            set { SamplerMixer.DelayNotes = value; }
+            get { return _samplerMixer.DelayNotes; }
+            set { _samplerMixer.DelayNotes = value; }
         }
 
-        public void SetVSTPluginPreset(VSTPlugin plugin, int presetIndex)
+        public void SetVstPluginPreset(VstPlugin plugin, int presetIndex)
         {
-            BassVst.BASS_VST_SetProgram(plugin.ID, presetIndex);
-            SetDelayByBPM();
+            BassVst.BASS_VST_SetProgram(plugin.Id, presetIndex);
+            SetDelayByBpm();
         }
 
         #endregion

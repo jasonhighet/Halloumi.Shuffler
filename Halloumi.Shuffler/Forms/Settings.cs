@@ -49,9 +49,9 @@ namespace Halloumi.Shuffler.Forms
             this.LibraryFolder = "";
             this.PlaylistFolder = "";
             this.ShufflerFolder = "";
-            this.WAPluginsFolder = "";
-            this.VSTPluginsFolder = "";
-            this.WAPlugin = "";
+            this.WaPluginsFolder = "";
+            this.VstPluginsFolder = "";
+            this.WaPlugin = "";
             this.LeftRightSplit = 0;
             this.FormStateSettings = "";
             this.TrackSplit = 0;
@@ -62,29 +62,29 @@ namespace Halloumi.Shuffler.Forms
             this.ShowMixableTracks = false;
             this.AnalogXScratchFolder = "";
             this.KeyFinderFolder = "";
-            this.MainMixerVSTPlugin = "";
-            this.MainMixerVSTPlugin2 = "";
-            this.SamplerVSTPlugin = "";
-            this.TrackVSTPlugin = "";
-            this.TrackFXVSTPlugin = "";
-            this.SamplerVSTPlugin2 = "";
-            this.TrackFXVSTPlugin2 = "";
-            this.MainMixerVSTPluginParameters = "";
-            this.MainMixerVSTPlugin2Parameters = "";
-            this.SamplerVSTPluginParameters = "";
-            this.TrackVSTPluginParameters = "";
-            this.TrackFXVSTPluginParameters = "";
-            this.SamplerVSTPlugin2Parameters = "";
-            this.TrackFXVSTPlugin2Parameters = "";
+            this.MainMixerVstPlugin = "";
+            this.MainMixerVstPlugin2 = "";
+            this.SamplerVstPlugin = "";
+            this.TrackVstPlugin = "";
+            this.TrackFxvstPlugin = "";
+            this.SamplerVstPlugin2 = "";
+            this.TrackFxvstPlugin2 = "";
+            this.MainMixerVstPluginParameters = "";
+            this.MainMixerVstPlugin2Parameters = "";
+            this.SamplerVstPluginParameters = "";
+            this.TrackVstPluginParameters = "";
+            this.TrackFxvstPluginParameters = "";
+            this.SamplerVstPlugin2Parameters = "";
+            this.TrackFxvstPlugin2Parameters = "";
             this.CutSamplerBass = true;
             this.BypassSamplerEffect1 = false;
             this.BypassSamplerEffect2 = false;
             this.SamplerVolume = 50;
             this.SamplerDelayNotes = 0.25M;
-            this.BypassTrackFXEffect1 = false;
-            this.BypassTrackFXEffect2 = false;
-            this.TrackFXVolume = 50;
-            this.TrackFXDelayNotes = 0.25M;
+            this.BypassTrackFxEffect1 = false;
+            this.BypassTrackFxEffect2 = false;
+            this.TrackFxVolume = 50;
+            this.TrackFxDelayNotes = 0.25M;
             this.SamplerOutput = Halloumi.BassEngine.Channels.SoundOutput.Speakers;
             this.TrackOutput = Halloumi.BassEngine.Channels.SoundOutput.Speakers;
             this.MonitorVolume = 5;
@@ -92,7 +92,7 @@ namespace Halloumi.Shuffler.Forms
             this.MixableKeyRankFilterIndex = 0;
             this.MixableViewIndex = 0;
             this.RawLoopOutput = Halloumi.BassEngine.Channels.SoundOutput.Speakers;
-            this.EnableTrackFXAutomation = true;
+            this.EnableTrackFxAutomation = true;
             this.EnableSampleAutomation = true;
             this.ShufflerMode = TrackSelector.MixStrategy.None;
             this.UpdateLibraryOnStartup = true;
@@ -106,15 +106,15 @@ namespace Halloumi.Shuffler.Forms
 
         public string ShufflerFolder { get; set; }
 
-        public string WAPluginsFolder { get; set; }
+        public string WaPluginsFolder { get; set; }
 
-        public string VSTPluginsFolder { get; set; }
+        public string VstPluginsFolder { get; set; }
 
-        public string MainMixerVSTPlugin { get; set; }
+        public string MainMixerVstPlugin { get; set; }
 
-        public string MainMixerVSTPlugin2 { get; set; }
+        public string MainMixerVstPlugin2 { get; set; }
 
-        public string WAPlugin { get; set; }
+        public string WaPlugin { get; set; }
 
         public int LeftRightSplit { get; set; }
 
@@ -136,29 +136,29 @@ namespace Halloumi.Shuffler.Forms
 
         public string KeyFinderFolder { get; set; }
 
-        public string SamplerVSTPlugin { get; set; }
+        public string SamplerVstPlugin { get; set; }
 
-        public string TrackVSTPlugin { get; set; }
+        public string TrackVstPlugin { get; set; }
 
-        public string TrackFXVSTPlugin { get; set; }
+        public string TrackFxvstPlugin { get; set; }
 
-        public string SamplerVSTPlugin2 { get; set; }
+        public string SamplerVstPlugin2 { get; set; }
 
-        public string TrackFXVSTPlugin2 { get; set; }
+        public string TrackFxvstPlugin2 { get; set; }
 
-        public string MainMixerVSTPluginParameters { get; set; }
+        public string MainMixerVstPluginParameters { get; set; }
 
-        public string MainMixerVSTPlugin2Parameters { get; set; }
+        public string MainMixerVstPlugin2Parameters { get; set; }
 
-        public string SamplerVSTPluginParameters { get; set; }
+        public string SamplerVstPluginParameters { get; set; }
 
-        public string TrackVSTPluginParameters { get; set; }
+        public string TrackVstPluginParameters { get; set; }
 
-        public string TrackFXVSTPluginParameters { get; set; }
+        public string TrackFxvstPluginParameters { get; set; }
 
-        public string SamplerVSTPlugin2Parameters { get; set; }
+        public string SamplerVstPlugin2Parameters { get; set; }
 
-        public string TrackFXVSTPlugin2Parameters { get; set; }
+        public string TrackFxvstPlugin2Parameters { get; set; }
 
         public bool CutSamplerBass { get; set; }
 
@@ -170,13 +170,13 @@ namespace Halloumi.Shuffler.Forms
 
         public decimal SamplerDelayNotes { get; set; }
 
-        public bool BypassTrackFXEffect1 { get; set; }
+        public bool BypassTrackFxEffect1 { get; set; }
 
-        public bool BypassTrackFXEffect2 { get; set; }
+        public bool BypassTrackFxEffect2 { get; set; }
 
-        public int TrackFXVolume { get; set; }
+        public int TrackFxVolume { get; set; }
 
-        public decimal TrackFXDelayNotes { get; set; }
+        public decimal TrackFxDelayNotes { get; set; }
 
         public BassEngine.Channels.SoundOutput SamplerOutput { get; set; }
 
@@ -194,7 +194,7 @@ namespace Halloumi.Shuffler.Forms
 
         public BassEngine.Channels.SoundOutput RawLoopOutput { get; set; }
 
-        public bool EnableTrackFXAutomation { get; set; }
+        public bool EnableTrackFxAutomation { get; set; }
 
         public bool EnableSampleAutomation { get; set; }
 

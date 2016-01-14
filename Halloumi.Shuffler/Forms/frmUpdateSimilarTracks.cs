@@ -15,7 +15,7 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmUpdateSimilarTracks : BaseForm
+    public partial class FrmUpdateSimilarTracks : BaseForm
     {
         public BE.BassPlayer BassPlayer { get; set; }
 
@@ -27,7 +27,7 @@ namespace Halloumi.Shuffler.Forms
 
         public List<Track> SimilarTracks { get; set; }
 
-        public frmUpdateSimilarTracks()
+        public FrmUpdateSimilarTracks()
         {
             InitializeComponent();
         }
@@ -38,7 +38,7 @@ namespace Halloumi.Shuffler.Forms
         private void UpdateTrackDetails()
         {
             if (this.GetSelectedTrack() == null) return;
-            var form = new frmUpdateTrackDetails();
+            var form = new FrmUpdateTrackDetails();
             form.Library = this.Library;
             form.Track = this.GetSelectedTrack();
             var result = form.ShowDialog();
@@ -52,7 +52,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (this.GetSelectedTrack() == null) return;
 
-            var form = new frmShufflerDetails();
+            var form = new FrmShufflerDetails();
             form.BassPlayer = this.BassPlayer;
             form.Filename = this.GetSelectedTrack().Filename;
 
@@ -82,7 +82,7 @@ namespace Halloumi.Shuffler.Forms
         private List<Track> GetSelectedTracks()
         {
             var tracks = new List<Track>();
-            for (int i = 0; i < grdTracks.Rows.Count; i++)
+            for (var i = 0; i < grdTracks.Rows.Count; i++)
             {
                 var row = grdTracks.Rows[i];
                 if (row.Selected) tracks.Add(row.DataBoundItem as Track);
@@ -191,7 +191,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (this.GetSelectedTracks().Count == 0) return;
 
-            var updateTrackAudio = new frmUpdateTrackAudio();
+            var updateTrackAudio = new FrmUpdateTrackAudio();
             updateTrackAudio.Library = this.Library;
             updateTrackAudio.DestinationTracks = this.GetSelectedTracks();
             updateTrackAudio.SourceTracks = this.GetSimilarTracks(this.GetSelectedTrack());
@@ -206,7 +206,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (this.GetSelectedTracks().Count == 0) return;
 
-            var form = new frmUpdateTrackTitle();
+            var form = new FrmUpdateTrackTitle();
             form.Library = this.Library;
             form.Tracks = this.GetSelectedTracks();
             form.ShowDialog();

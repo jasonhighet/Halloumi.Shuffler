@@ -78,7 +78,7 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnFadeEnded()
         {
             if (!this.AutoGenerateEnabled) return;
-            int tracksRemaining = this.PlaylistControl.GetNumberOfTracksRemaining();
+            var tracksRemaining = this.PlaylistControl.GetNumberOfTracksRemaining();
             if (tracksRemaining < TracksRemainingThreshold)
             {
                 AutoGeneratePlaylist();
@@ -87,11 +87,11 @@ namespace Halloumi.Shuffler.Controls
 
         private void AutoGeneratePlaylist()
         {
-            using (var generatePlaylist = new frmGeneratePlaylist())
+            using (var generatePlaylist = new FrmGeneratePlaylist())
             {
                 generatePlaylist.LibraryControl = this.LibraryControl;
                 generatePlaylist.PlaylistControl = this.PlaylistControl;
-                generatePlaylist.SetScreenMode(frmGeneratePlaylist.ScreenMode.AutoGeneratePlaylist);
+                generatePlaylist.SetScreenMode(FrmGeneratePlaylist.ScreenMode.AutoGeneratePlaylist);
                 generatePlaylist.ShowDialog();
             }
         }

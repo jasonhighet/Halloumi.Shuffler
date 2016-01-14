@@ -24,12 +24,12 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// The BPM at the start of the song
         /// </summary>
-        private decimal _startBMP = 100;
+        private decimal _startBmp = 100;
 
         /// <summary>
         /// The BPM at the end of the song
         /// </summary>
-        private decimal _endBMP = 100;
+        private decimal _endBmp = 100;
 
         #endregion
 
@@ -41,19 +41,19 @@ namespace Halloumi.BassEngine
         public Track()
         {
             this.Channels = new List<int>();
-            this.FadeInStartSyncID = int.MinValue;
-            this.FadeInEndSyncID = int.MinValue;
-            this.FadeOutStartSyncID = int.MinValue;
-            this.FadeOutEndSyncID = int.MinValue;
-            this.PreFadeInStartSyncID = int.MinValue;
-            this.TrackEndSyncID = int.MinValue;
-            this.ExtendedMixEndSyncID = int.MinValue;
+            this.FadeInStartSyncId = int.MinValue;
+            this.FadeInEndSyncId = int.MinValue;
+            this.FadeOutStartSyncId = int.MinValue;
+            this.FadeOutEndSyncId = int.MinValue;
+            this.PreFadeInStartSyncId = int.MinValue;
+            this.TrackEndSyncId = int.MinValue;
+            this.ExtendedMixEndSyncId = int.MinValue;
             this.ChangeTempoOnFadeOut = true;
             this.Gain = 0;
             this.UsePreFadeIn = false;
             this.PreFadeInStart = 0;
             this.PreFadeInStartVolume = 0;
-            this.BPMAdjustmentRatio = 1;
+            this.BpmAdjustmentRatio = 1;
             this.StartLoopCount = 0;
             this.CurrentStartLoop = 0;
             this.EndLoopCount = 0;
@@ -68,11 +68,11 @@ namespace Halloumi.BassEngine
             this.Image = null;
             this.RawLoopStart = 0;
             this.RawLoopEnd = 0;
-            this.RawLoopEndSyncID = int.MinValue;
+            this.RawLoopEndSyncId = int.MinValue;
             this.LoopFadeInIndefinitely = false;
             this.SkipStart = 0;
             this.SkipEnd = 0;
-            this.SkipSyncID = int.MinValue;
+            this.SkipSyncId = int.MinValue;
 
             this.Rank = 1;
         }
@@ -82,16 +82,16 @@ namespace Halloumi.BassEngine
         #region Properties
 
         /// <summary>
-        /// Gets or sets the ID for the track.
+        /// Gets or sets the Id for the track.
         /// </summary>
-        public int ID
+        public int Id
         {
             get;
             internal set;
         }
 
         /// <summary>
-        /// Gets or sets the bass channel ID for the track (set once the track is loaded by the bass engine)
+        /// Gets or sets the bass channel Id for the track (set once the track is loaded by the bass engine)
         /// </summary>
         public int Channel
         {
@@ -145,52 +145,52 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets the BPM at the start of the track
         /// </summary>
-        public decimal StartBPM
+        public decimal StartBpm
         {
             get
             {
                 if (this.FadeInLengthSeconds != 0)
-                    return BassHelper.GetBPMFromLoopLength(this.FadeInLengthSeconds);
+                    return BassHelper.GetBpmFromLoopLength(this.FadeInLengthSeconds);
 
                 if (!this.TagDataLoaded)
-                    return _startBMP;
+                    return _startBmp;
 
-                return this.TagBPM * this.BPMAdjustmentRatio;
+                return this.TagBpm * this.BpmAdjustmentRatio;
             }
             internal set
             {
-                _startBMP = value;
+                _startBmp = value;
             }
         }
 
         /// <summary>
         /// Gets the BPM at the end of the track
         /// </summary>
-        public decimal EndBPM
+        public decimal EndBpm
         {
             get
             {
                 //if (this.Channel == int.MinValue) return _endBMP;
                 if (this.FadeOutLengthSeconds != 0)
-                    return BassHelper.GetBPMFromLoopLength(this.FadeOutLengthSeconds);
+                    return BassHelper.GetBpmFromLoopLength(this.FadeOutLengthSeconds);
 
                 if (!this.TagDataLoaded)
-                    return _endBMP;
+                    return _endBmp;
 
-                return this.TagBPM * this.BPMAdjustmentRatio;
+                return this.TagBpm * this.BpmAdjustmentRatio;
             }
             internal set
             {
-                _endBMP = value;
+                _endBmp = value;
             }
         }
 
-        public decimal BPM
+        public decimal Bpm
         {
             get
             {
                 //return (this.StartBPM + this.EndBPM) / 2M;
-                return BassHelper.GetAdjustedBPMAverage(this.StartBPM, this.EndBPM);
+                return BassHelper.GetAdjustedBpmAverage(this.StartBpm, this.EndBpm);
             }
         }
 
@@ -485,7 +485,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the skip sync handle
         /// </summary>
-        internal int SkipSyncID { get; set; }
+        internal int SkipSyncId { get; set; }
 
         public Image Image
         {
@@ -507,37 +507,37 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the fade-in-start sync handle
         /// </summary>
-        internal int FadeInStartSyncID { get; set; }
+        internal int FadeInStartSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets the pre-fade-in-start sync handle (where the pre-fade of the next track starts)
         /// </summary>
-        internal int PreFadeInStartSyncID { get; set; }
+        internal int PreFadeInStartSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets the fade-in-end sync handle
         /// </summary>
-        internal int FadeInEndSyncID { get; set; }
+        internal int FadeInEndSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets the fade-out-start sync handle
         /// </summary>
-        internal int FadeOutStartSyncID { get; set; }
+        internal int FadeOutStartSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets the fade-out-end sync handle
         /// </summary>
-        internal int FadeOutEndSyncID { get; set; }
+        internal int FadeOutEndSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets the extended mix end sync handle
         /// </summary>
-        internal int ExtendedMixEndSyncID { get; set; }
+        internal int ExtendedMixEndSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets the track end sync handle
         /// </summary>
-        internal int TrackEndSyncID { get; set; }
+        internal int TrackEndSyncId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether pre-fade-in should be used.
@@ -557,7 +557,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the BPM adjustment.
         /// </summary>
-        public decimal BPMAdjustmentRatio { get; set; }
+        public decimal BpmAdjustmentRatio { get; set; }
 
         /// <summary>
         /// Gets the length of the pre-fade-in section in samples.
@@ -584,7 +584,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the BPM of the track (as specified in the MP3 tag)
         /// </summary>
-        public decimal TagBPM { get; set; }
+        public decimal TagBpm { get; set; }
 
         /// <summary>
         /// Gets or sets the number of times the start loop should be repeated.
@@ -637,7 +637,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets or sets the raw-loop-end sync handle
         /// </summary>
-        internal int RawLoopEndSyncID { get; set; }
+        internal int RawLoopEndSyncId { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this track is in raw-loop mode.

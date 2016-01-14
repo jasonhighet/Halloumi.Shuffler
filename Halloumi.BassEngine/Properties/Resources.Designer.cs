@@ -39,7 +39,7 @@ namespace Halloumi.BassEngine.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Halloumi.BassEngine.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("Halloumi.BassEngine.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,7 +65,7 @@ namespace Halloumi.BassEngine.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DefaultMusicImage {
             get {
-                object obj = ResourceManager.GetObject("DefaultMusicImage", resourceCulture);
+                var obj = ResourceManager.GetObject("DefaultMusicImage", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -75,7 +75,7 @@ namespace Halloumi.BassEngine.Properties {
         /// </summary>
         internal static byte[] silence_mp3 {
             get {
-                object obj = ResourceManager.GetObject("silence_mp3", resourceCulture);
+                var obj = ResourceManager.GetObject("silence_mp3", resourceCulture);
                 return ((byte[])(obj));
             }
         }

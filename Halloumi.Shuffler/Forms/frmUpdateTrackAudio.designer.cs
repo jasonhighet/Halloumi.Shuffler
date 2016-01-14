@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmUpdateTrackAudio
+    partial class FrmUpdateTrackAudio
     {
         /// <summary>
         /// Required designer variable.
@@ -135,7 +135,7 @@
             this.Controls.Add(this.pnlButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "frmUpdateTrackAudio";
+            this.Name = "FrmUpdateTrackAudio";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select Source Audio";

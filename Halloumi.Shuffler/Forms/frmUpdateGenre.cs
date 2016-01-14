@@ -11,12 +11,12 @@ using Halloumi.Shuffler.Engine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmUpdateGenre : BaseForm
+    public partial class FrmUpdateGenre : BaseForm
     {
         /// <summary>
         /// Initializes a new instance of the frmUpdateGenre class.
         /// </summary>
-        public frmUpdateGenre()
+        public FrmUpdateGenre()
         {
             InitializeComponent();
             

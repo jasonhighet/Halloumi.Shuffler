@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmMonitorSettings
+    partial class FrmMonitorSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -216,7 +216,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmMonitorSettings";
+            this.Name = "FrmMonitorSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Halloumi : Shuffler : Monitor Settings";
             this.UseApplicationIcon = true;

@@ -32,7 +32,7 @@ namespace Halloumi.Shuffler.Controls
 
             public string LengthFormatted { get; set; }
 
-            public decimal BPM { get; set; }
+            public decimal Bpm { get; set; }
 
             public decimal Length { get; set; }
 
@@ -56,7 +56,7 @@ namespace Halloumi.Shuffler.Controls
                 this.Filename = track.Filename;
                 this.LengthFormatted = track.LengthFormatted;
                 this.IsCurrent = false;
-                this.BPM = track.BPM;
+                this.Bpm = track.Bpm;
                 this.Length = track.Length;
                 this.TrackRank = track.Rank;
                 this.TrackRankDescription = mixLibrary.GetRankDescription(track.Rank);
@@ -399,7 +399,7 @@ namespace Halloumi.Shuffler.Controls
 
             grdPlaylist.SaveSelectedRows();
 
-            int trackCount = this.TrackModels.Count;
+            var trackCount = this.TrackModels.Count;
 
             if (grdPlaylist.RowCount != trackCount)
                 grdPlaylist.RowCount = trackCount;
@@ -449,7 +449,7 @@ namespace Halloumi.Shuffler.Controls
         private List<TrackModel> GetSelectedTracks()
         {
             var tracks = new List<TrackModel>();
-            for (int i = 0; i < grdPlaylist.Rows.Count; i++)
+            for (var i = 0; i < grdPlaylist.Rows.Count; i++)
             {
                 var row = grdPlaylist.Rows[i];
                 if (row.Selected && row.Index < this.TrackModels.Count && row.Index >= 0)
@@ -593,7 +593,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (this.GetSelectedTrack() == null) return;
 
-            var form = new frmShufflerDetails();
+            var form = new FrmShufflerDetails();
             form.BassPlayer = this.BassPlayer;
             form.Filename = this.GetSelectedTrack().Filename;
 
@@ -612,7 +612,7 @@ namespace Halloumi.Shuffler.Controls
         private void UpdateTrackDetails()
         {
             if (this.GetSelectedTrack() == null) return;
-            var form = new frmUpdateTrackDetails();
+            var form = new FrmUpdateTrackDetails();
             form.Library = this.Library;
             form.Track = this.GetSelectedTrack();
             var result = form.ShowDialog();
@@ -881,7 +881,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 currentTrackRank = this.GetSelectedTrack().Rank;
             }
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 mnuTrackRank.DropDownItems[i].Text = this.MixLibrary.GetRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuTrackRank.DropDownItems[i]).Checked = ((5 - i) == currentTrackRank);
@@ -901,7 +901,7 @@ namespace Halloumi.Shuffler.Controls
                 var mixRank = this.MixLibrary.GetMixLevel(track1, track2);
                 currentMixRank = mixRank;
             }
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 mnuMixRank.DropDownItems[i].Text = this.MixLibrary.GetRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuMixRank.DropDownItems[i]).Checked = ((5 - i) == currentMixRank);
@@ -995,7 +995,7 @@ namespace Halloumi.Shuffler.Controls
         private void mnuAddNewPlaylist_Click(object sender, EventArgs e)
         {
             var tracks = GetSelectedLibraryTracks();
-            var form = new frmAddPlaylist();
+            var form = new FrmAddPlaylist();
             form.Library = this.Library;
             form.Tracks = tracks;
             var result = form.ShowDialog();
@@ -1056,7 +1056,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void SetMixAndKeyRanks()
         {
-            for (int i = 0; i < this.TrackModels.Count; i++)
+            for (var i = 0; i < this.TrackModels.Count; i++)
             {
                 UpdateMixRank(i);
             }
@@ -1149,7 +1149,7 @@ namespace Halloumi.Shuffler.Controls
             if (trackModel == null) e.Value = "";
             else if (e.ColumnIndex == 0) e.Value = trackModel.Description;
             else if (e.ColumnIndex == 1) e.Value = trackModel.LengthFormatted;
-            else if (e.ColumnIndex == 2) e.Value = trackModel.BPM;
+            else if (e.ColumnIndex == 2) e.Value = trackModel.Bpm;
             else if (e.ColumnIndex == 3)
             {
                 UpdateMixRank(e.RowIndex);

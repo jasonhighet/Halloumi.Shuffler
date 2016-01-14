@@ -23,12 +23,12 @@ namespace Halloumi.Shuffler
             var settings = Settings.Default;
             if (settings.LibraryFolder == "")
             {
-                Application.Run(new frmSettings());
+                Application.Run(new FrmSettings());
             }
             if (settings.LibraryFolder != "")
             {
 #if DEBUG
-                 Application.Run(new frmMain());
+                 Application.Run(new FrmMain());
 #else
                 try
                 {

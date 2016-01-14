@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmSampleLibrary
+    partial class FrmSampleLibrary
     {
         /// <summary>
         /// Required designer variable.
@@ -45,7 +45,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1201, 566);
             this.Controls.Add(this.sampleLibraryControl);
-            this.Name = "frmSampleLibrary";
+            this.Name = "FrmSampleLibrary";
             this.Text = "frmSampleLibrary";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSampleLibrary_FormClosing);
             this.ResumeLayout(false);

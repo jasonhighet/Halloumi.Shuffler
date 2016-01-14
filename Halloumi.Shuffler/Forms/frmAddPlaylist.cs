@@ -11,9 +11,9 @@ using Halloumi.Shuffler.Engine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmAddPlaylist : BaseForm
+    public partial class FrmAddPlaylist : BaseForm
     {
-        public frmAddPlaylist()
+        public FrmAddPlaylist()
         {
             InitializeComponent();
 

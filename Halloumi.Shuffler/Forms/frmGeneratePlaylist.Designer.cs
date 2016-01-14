@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class frmGeneratePlaylist
+    partial class FrmGeneratePlaylist
     {
         /// <summary>
         /// Required designer variable.
@@ -633,7 +633,7 @@
             this.Controls.Add(this.pnlButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "frmGeneratePlaylist";
+            this.Name = "FrmGeneratePlaylist";
             this.Text = "Halloumi : Shuffler : Generate Playlist";
             this.UseApplicationIcon = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGeneratePlaylist_FormClosing);

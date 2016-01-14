@@ -16,7 +16,7 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmShufflerDetails : BaseForm
+    public partial class FrmShufflerDetails : BaseForm
     {
         #region Constructors
 
@@ -27,7 +27,7 @@ namespace Halloumi.Shuffler.Forms
         /// <summary>
         /// Initializes a new instance of the <see cref="frmTrack"/> class.
         /// </summary>
-        public frmShufflerDetails()
+        public FrmShufflerDetails()
         {
             InitializeComponent();
 
@@ -53,8 +53,8 @@ namespace Halloumi.Shuffler.Forms
 
             SetControlStates();
             BindData();
-            SetBPMValues();
-            PopulateTrackFXComboBox();
+            SetBpmValues();
+            PopulateTrackFxComboBox();
         }
 
         #endregion
@@ -85,14 +85,14 @@ namespace Halloumi.Shuffler.Forms
         {
             _bindingData = true;
 
-            List<double> loopLengths = BE.BassHelper.GetLoopLengths(this.Track.StartBPM);
+            var loopLengths = BE.BassHelper.GetLoopLengths(this.Track.StartBpm);
             cmbCustomFadeInLength.PopulateItemsFromSecondsList(loopLengths);
 
-            loopLengths = BE.BassHelper.GetLoopLengths(this.Track.EndBPM);
+            loopLengths = BE.BassHelper.GetLoopLengths(this.Track.EndBpm);
             cmbCustomFadeOutLength.PopulateItemsFromSecondsList(loopLengths);
 
-            lblStartBPM.Text = this.Track.StartBPM.ToString("0.00");
-            lblEndBPM.Text = this.Track.EndBPM.ToString("0.00");
+            lblStartBPM.Text = this.Track.StartBpm.ToString("0.00");
+            lblEndBPM.Text = this.Track.EndBpm.ToString("0.00");
 
             this.Text = "Halloumi : Shuffler : Shuffer Details : " + this.Track.Description;
 
@@ -203,28 +203,28 @@ namespace Halloumi.Shuffler.Forms
         /// <summary>
         /// Sets the BPM values.
         /// </summary>
-        private void SetBPMValues()
+        private void SetBpmValues()
         {
             if (_bindingData) return;
 
-            decimal startBPM = this.Track.StartBPM;
-            decimal endBPM = this.Track.EndBPM;
+            var startBpm = this.Track.StartBpm;
+            var endBpm = this.Track.EndBpm;
 
-            var fadeInLength = BE.BassHelper.GetDefaultLoopLength(this.Track.TagBPM);
+            var fadeInLength = BE.BassHelper.GetDefaultLoopLength(this.Track.TagBpm);
             if (cmbCustomFadeInLength.Seconds != 0)
             {
                 fadeInLength = cmbCustomFadeInLength.Seconds;
             }
-            startBPM = BE.BassHelper.GetBPMFromLoopLength(fadeInLength);
-            lblStartBPM.Text = startBPM.ToString("0.00");
+            startBpm = BE.BassHelper.GetBpmFromLoopLength(fadeInLength);
+            lblStartBPM.Text = startBpm.ToString("0.00");
 
-            var fadeOutLength = BE.BassHelper.GetDefaultLoopLength(this.Track.TagBPM);
+            var fadeOutLength = BE.BassHelper.GetDefaultLoopLength(this.Track.TagBpm);
             if (cmbCustomFadeOutLength.Seconds != 0)
             {
                 fadeOutLength = cmbCustomFadeOutLength.Seconds;
             }
-            endBPM = BE.BassHelper.GetBPMFromLoopLength(fadeOutLength);
-            lblEndBPM.Text = endBPM.ToString("0.00");
+            endBpm = BE.BassHelper.GetBpmFromLoopLength(fadeOutLength);
+            lblEndBPM.Text = endBpm.ToString("0.00");
 
             PopulateVolumeDropDownReverse(cmbPreFadeInStartVolume);
         }
@@ -299,18 +299,18 @@ namespace Halloumi.Shuffler.Forms
 
             trackWave.RefreshPositions();
 
-            SetBPMValues();
+            SetBpmValues();
             SetControlStates();
         }
 
         /// <summary>
         /// Populates the track FX combo box.
         /// </summary>
-        private void PopulateTrackFXComboBox()
+        private void PopulateTrackFxComboBox()
         {
             cmbTrackFX.Items.Clear();
 
-            foreach (var trigger in this.AutomationAttributes.TrackFXTriggers.OrderBy(t => t.Start).ToList())
+            foreach (var trigger in this.AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
             {
                 cmbTrackFX.Items.Add(BassHelper.GetFormattedSecondsNoHours(trigger.Start));
             }
@@ -327,16 +327,16 @@ namespace Halloumi.Shuffler.Forms
         /// Gets the selected track FX.
         /// </summary>
         /// <returns>The selected track FX.</returns>
-        private TrackFXTrigger GetSelectedTrackFX()
+        private TrackFxTrigger GetSelectedTrackFx()
         {
             if (cmbTrackFX.Items.Count == 0 || cmbTrackFX.SelectedIndex < 0) return null;
 
             var selectedText = cmbTrackFX.SelectedItem.ToString();
 
-            foreach (var trackFX in this.AutomationAttributes.TrackFXTriggers.OrderBy(t => t.Start).ToList())
+            foreach (var trackFx in this.AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
             {
-                if (selectedText == BassHelper.GetFormattedSecondsNoHours(trackFX.Start))
-                    return trackFX;
+                if (selectedText == BassHelper.GetFormattedSecondsNoHours(trackFx.Start))
+                    return trackFx;
             }
 
             return null;
@@ -374,14 +374,14 @@ namespace Halloumi.Shuffler.Forms
             if (this.CurrentSample == null)
             {
                 txtSampleStartPosition.Seconds = 0;
-                loopLengths = BE.BassHelper.GetLoopLengths(this.Track.BPM);
+                loopLengths = BE.BassHelper.GetLoopLengths(this.Track.Bpm);
                 cmbSampleLength.Seconds = 0;
                 chkLoopSample.Checked = false;
             }
             else
             {
                 txtSampleStartPosition.Seconds = this.CurrentSample.Start;
-                loopLengths = BE.BassHelper.GetLoopLengths(this.CurrentSample.CalculateBPM(this.Track));
+                loopLengths = BE.BassHelper.GetLoopLengths(this.CurrentSample.CalculateBpm(this.Track));
                 cmbSampleLength.Seconds = this.CurrentSample.Length;
                 chkLoopSample.Checked = this.CurrentSample.IsLooped;
             }
@@ -394,7 +394,7 @@ namespace Halloumi.Shuffler.Forms
             if (sampleName != "")
             {
                 var sampleKey = "";
-                for (int i = 0; i < 2000; i++)
+                for (var i = 0; i < 2000; i++)
                 {
                     sampleKey = "Sample" + (i + 1).ToString();
                     if (!this.CurrentSamples.Exists(s => s.Key == sampleKey))
@@ -710,7 +710,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void chkShowTrackFX_CheckedChanged(object sender, EventArgs e)
         {
-            trackWave.ShowTrackFX = chkShowTrackFX.Checked;
+            trackWave.ShowTrackFx = chkShowTrackFX.Checked;
         }
 
         /// <summary>
@@ -718,12 +718,12 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void cmbTrackFX_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var trackFX = GetSelectedTrackFX();
-            if (trackFX == null) rdbDelay2.Checked = true;
-            else if (trackFX.DelayNotes == 0.5M) rdbDelay1.Checked = true;
-            else if (trackFX.DelayNotes == 0.25M) rdbDelay2.Checked = true;
-            else if (trackFX.DelayNotes == 0.125M) rdbDelay3.Checked = true;
-            else if (trackFX.DelayNotes == 0.0625M) rdbDelay4.Checked = true;
+            var trackFx = GetSelectedTrackFx();
+            if (trackFx == null) rdbDelay2.Checked = true;
+            else if (trackFx.DelayNotes == 0.5M) rdbDelay1.Checked = true;
+            else if (trackFx.DelayNotes == 0.25M) rdbDelay2.Checked = true;
+            else if (trackFx.DelayNotes == 0.125M) rdbDelay3.Checked = true;
+            else if (trackFx.DelayNotes == 0.0625M) rdbDelay4.Checked = true;
             else rdbDelay2.Checked = true;
         }
 
@@ -731,47 +731,47 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnDeleteTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFX = this.GetSelectedTrackFX();
-            if (trackFX == null) return;
+            var trackFx = this.GetSelectedTrackFx();
+            if (trackFx == null) return;
 
-            this.AutomationAttributes.TrackFXTriggers.Remove(trackFX);
+            this.AutomationAttributes.TrackFxTriggers.Remove(trackFx);
 
-            PopulateTrackFXComboBox();
+            PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
         }
 
         private void btnUpdateTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFX = this.GetSelectedTrackFX();
-            if (trackFX == null) return;
+            var trackFx = this.GetSelectedTrackFx();
+            if (trackFx == null) return;
 
-            if (rdbDelay1.Checked) trackFX.DelayNotes = 0.5M;
-            if (rdbDelay2.Checked) trackFX.DelayNotes = 0.25M;
-            if (rdbDelay3.Checked) trackFX.DelayNotes = 0.125M;
-            if (rdbDelay4.Checked) trackFX.DelayNotes = 0.0625M;
+            if (rdbDelay1.Checked) trackFx.DelayNotes = 0.5M;
+            if (rdbDelay2.Checked) trackFx.DelayNotes = 0.25M;
+            if (rdbDelay3.Checked) trackFx.DelayNotes = 0.125M;
+            if (rdbDelay4.Checked) trackFx.DelayNotes = 0.0625M;
 
-            trackFX.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
-            trackFX.Length = this.Track.SamplesToSeconds(trackWave.ZoomLength);
+            trackFx.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
+            trackFx.Length = this.Track.SamplesToSeconds(trackWave.ZoomLength);
 
-            PopulateTrackFXComboBox();
+            PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
         }
 
         private void btnAddTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFX = new TrackFXTrigger();
+            var trackFx = new TrackFxTrigger();
 
-            if (rdbDelay1.Checked) trackFX.DelayNotes = 0.5M;
-            if (rdbDelay2.Checked) trackFX.DelayNotes = 0.25M;
-            if (rdbDelay3.Checked) trackFX.DelayNotes = 0.125M;
-            if (rdbDelay4.Checked) trackFX.DelayNotes = 0.0625M;
+            if (rdbDelay1.Checked) trackFx.DelayNotes = 0.5M;
+            if (rdbDelay2.Checked) trackFx.DelayNotes = 0.25M;
+            if (rdbDelay3.Checked) trackFx.DelayNotes = 0.125M;
+            if (rdbDelay4.Checked) trackFx.DelayNotes = 0.0625M;
 
-            trackFX.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
-            trackFX.Length = this.Track.SamplesToSeconds(trackWave.ZoomLength);
+            trackFx.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
+            trackFx.Length = this.Track.SamplesToSeconds(trackWave.ZoomLength);
 
-            this.AutomationAttributes.TrackFXTriggers.Add(trackFX);
+            this.AutomationAttributes.TrackFxTriggers.Add(trackFx);
 
-            PopulateTrackFXComboBox();
+            PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
         }
 
@@ -779,9 +779,9 @@ namespace Halloumi.Shuffler.Forms
         {
             if (!MessageBoxHelper.Confirm("Are you sure you wish to clear all Track FX triggers for " + this.Track.Description + "?")) return;
 
-            this.AutomationAttributes.TrackFXTriggers.Clear();
+            this.AutomationAttributes.TrackFxTriggers.Clear();
 
-            PopulateTrackFXComboBox();
+            PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
         }
 
@@ -790,11 +790,11 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnTrackFXZoom_Click(object sender, EventArgs e)
         {
-            var trackFX = this.GetSelectedTrackFX();
-            if (trackFX == null) return;
+            var trackFx = this.GetSelectedTrackFx();
+            if (trackFx == null) return;
 
-            var start = this.Track.SecondsToSamples(trackFX.Start);
-            var end = this.Track.SecondsToSamples(trackFX.Start + trackFX.Length);
+            var start = this.Track.SecondsToSamples(trackFx.Start);
+            var end = this.Track.SecondsToSamples(trackFx.Start + trackFx.Length);
 
             trackWave.Zoom(start, end);
         }

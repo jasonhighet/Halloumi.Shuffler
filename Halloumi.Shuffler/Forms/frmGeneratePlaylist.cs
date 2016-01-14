@@ -16,7 +16,7 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmGeneratePlaylist : BaseForm
+    public partial class FrmGeneratePlaylist : BaseForm
     {
         private List<Track> _displayedTracks = null;
 
@@ -25,7 +25,7 @@ namespace Halloumi.Shuffler.Forms
         /// <summary>
         /// Initializes a new instance of the frmGeneratePlaylist class.
         /// </summary>
-        public frmGeneratePlaylist()
+        public FrmGeneratePlaylist()
         {
             InitializeComponent();
 
@@ -85,7 +85,7 @@ namespace Halloumi.Shuffler.Forms
 
             PopulateApproxLength();
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
                 cmbTracksToGenerate.Items.Add((i + 1) * 5);
             cmbTracksToGenerate.SelectedIndex = 2;
 
@@ -97,7 +97,7 @@ namespace Halloumi.Shuffler.Forms
         {
             cmbApproxLength.Items.Add("No limit");
 
-            int i = 10;
+            var i = 10;
             while (i <= (24 * 60))
             {
                 cmbApproxLength.Items.Add(i.ToString() + " minutes");
@@ -140,20 +140,20 @@ namespace Halloumi.Shuffler.Forms
             {
                 var settings = GetSettings();
 
-                cmbDirection.SelectedIndex = settings.cmbDirection_SelectedIndex;
-                cmbAllowBearable.SelectedIndex = settings.cmbAllowBearable_SelectedIndex;
-                cmbApproxLength.SelectedIndex = settings.cmbApproxLength_SelectedIndex;
-                cmbMode.SelectedIndex = settings.cmbMode_SelectedIndex;
-                txtExcludeTracks.Text = settings.txtExcludeTracks_Text;
-                cmbExtendedMixes.SelectedIndex = settings.cmbExtendedMixes_SelectedIndex;
-                chkExlcudeMixesOnly.Checked = settings.chkExlcudeMixesOnly_Checked;
-                chkRestrictArtistClumping.Checked = settings.chkRestrictArtistClumping_Checked;
-                chkRestrictGenreClumping.Checked = settings.chkRestrictGenreClumping_Checked;
-                chkRestrictTitleClumping.Checked = settings.chkRestrictTitleClumping_Checked;
-                chkDisplayedTracksOnly.Checked = settings.chkDisplayedTracksOnly_Checked;
-                cmbTracksToGenerate.SelectedIndex = settings.cmbTracksToGenerate_SelectedIndex;
-                cmbContinueMix.SelectedIndex = settings.cmbContinueMix_SelectedIndex;
-                cmbKeyMixing.SelectedIndex = settings.cmbKeyMixing_SelectedIndex;
+                cmbDirection.SelectedIndex = settings.CmbDirectionSelectedIndex;
+                cmbAllowBearable.SelectedIndex = settings.CmbAllowBearableSelectedIndex;
+                cmbApproxLength.SelectedIndex = settings.CmbApproxLengthSelectedIndex;
+                cmbMode.SelectedIndex = settings.CmbModeSelectedIndex;
+                txtExcludeTracks.Text = settings.TxtExcludeTracksText;
+                cmbExtendedMixes.SelectedIndex = settings.CmbExtendedMixesSelectedIndex;
+                chkExlcudeMixesOnly.Checked = settings.ChkExlcudeMixesOnlyChecked;
+                chkRestrictArtistClumping.Checked = settings.ChkRestrictArtistClumpingChecked;
+                chkRestrictGenreClumping.Checked = settings.ChkRestrictGenreClumpingChecked;
+                chkRestrictTitleClumping.Checked = settings.ChkRestrictTitleClumpingChecked;
+                chkDisplayedTracksOnly.Checked = settings.ChkDisplayedTracksOnlyChecked;
+                cmbTracksToGenerate.SelectedIndex = settings.CmbTracksToGenerateSelectedIndex;
+                cmbContinueMix.SelectedIndex = settings.CmbContinueMixSelectedIndex;
+                cmbKeyMixing.SelectedIndex = settings.CmbKeyMixingSelectedIndex;
             }
             catch
             { }
@@ -172,50 +172,50 @@ namespace Halloumi.Shuffler.Forms
 
         public class Settings
         {
-            public int cmbDirection_SelectedIndex { get; set; }
+            public int CmbDirectionSelectedIndex { get; set; }
 
-            public int cmbAllowBearable_SelectedIndex { get; set; }
+            public int CmbAllowBearableSelectedIndex { get; set; }
 
-            public int cmbApproxLength_SelectedIndex { get; set; }
+            public int CmbApproxLengthSelectedIndex { get; set; }
 
-            public int cmbMode_SelectedIndex { get; set; }
+            public int CmbModeSelectedIndex { get; set; }
 
-            public string txtExcludeTracks_Text { get; set; }
+            public string TxtExcludeTracksText { get; set; }
 
-            public int cmbExtendedMixes_SelectedIndex { get; set; }
+            public int CmbExtendedMixesSelectedIndex { get; set; }
 
-            public bool chkExlcudeMixesOnly_Checked { get; set; }
+            public bool ChkExlcudeMixesOnlyChecked { get; set; }
 
-            public bool chkRestrictArtistClumping_Checked { get; set; }
+            public bool ChkRestrictArtistClumpingChecked { get; set; }
 
-            public bool chkRestrictGenreClumping_Checked { get; set; }
+            public bool ChkRestrictGenreClumpingChecked { get; set; }
 
-            public bool chkRestrictTitleClumping_Checked { get; set; }
+            public bool ChkRestrictTitleClumpingChecked { get; set; }
 
-            public bool chkDisplayedTracksOnly_Checked { get; set; }
+            public bool ChkDisplayedTracksOnlyChecked { get; set; }
 
-            public int cmbTracksToGenerate_SelectedIndex { get; set; }
+            public int CmbTracksToGenerateSelectedIndex { get; set; }
 
-            public int cmbContinueMix_SelectedIndex { get; set; }
+            public int CmbContinueMixSelectedIndex { get; set; }
 
-            public int cmbKeyMixing_SelectedIndex { get; set; }
+            public int CmbKeyMixingSelectedIndex { get; set; }
 
             public Settings()
             {
-                this.cmbDirection_SelectedIndex = 0;
-                this.cmbAllowBearable_SelectedIndex = 0;
-                this.cmbApproxLength_SelectedIndex = 0;
-                this.cmbMode_SelectedIndex = 0;
-                this.txtExcludeTracks_Text = "";
-                this.cmbExtendedMixes_SelectedIndex = 0;
-                this.chkExlcudeMixesOnly_Checked = false;
-                this.chkRestrictArtistClumping_Checked = false;
-                this.chkRestrictGenreClumping_Checked = false;
-                this.chkDisplayedTracksOnly_Checked = false;
-                this.chkRestrictTitleClumping_Checked = false;
-                this.cmbTracksToGenerate_SelectedIndex = 0;
-                this.cmbContinueMix_SelectedIndex = 0;
-                this.cmbKeyMixing_SelectedIndex = 0;
+                this.CmbDirectionSelectedIndex = 0;
+                this.CmbAllowBearableSelectedIndex = 0;
+                this.CmbApproxLengthSelectedIndex = 0;
+                this.CmbModeSelectedIndex = 0;
+                this.TxtExcludeTracksText = "";
+                this.CmbExtendedMixesSelectedIndex = 0;
+                this.ChkExlcudeMixesOnlyChecked = false;
+                this.ChkRestrictArtistClumpingChecked = false;
+                this.ChkRestrictGenreClumpingChecked = false;
+                this.ChkDisplayedTracksOnlyChecked = false;
+                this.ChkRestrictTitleClumpingChecked = false;
+                this.CmbTracksToGenerateSelectedIndex = 0;
+                this.CmbContinueMixSelectedIndex = 0;
+                this.CmbKeyMixingSelectedIndex = 0;
             }
         }
 
@@ -226,20 +226,20 @@ namespace Halloumi.Shuffler.Forms
         {
             var settings = new Settings
             {
-                cmbDirection_SelectedIndex = cmbDirection.SelectedIndex,
-                cmbAllowBearable_SelectedIndex = cmbAllowBearable.SelectedIndex,
-                cmbApproxLength_SelectedIndex = cmbApproxLength.SelectedIndex,
-                cmbMode_SelectedIndex = cmbMode.SelectedIndex,
-                txtExcludeTracks_Text = txtExcludeTracks.Text,
-                cmbExtendedMixes_SelectedIndex = cmbExtendedMixes.SelectedIndex,
-                chkExlcudeMixesOnly_Checked = chkExlcudeMixesOnly.Checked,
-                chkRestrictArtistClumping_Checked = chkRestrictArtistClumping.Checked,
-                chkRestrictGenreClumping_Checked = chkRestrictGenreClumping.Checked,
-                chkRestrictTitleClumping_Checked = chkRestrictTitleClumping.Checked,
-                chkDisplayedTracksOnly_Checked = chkDisplayedTracksOnly.Checked,
-                cmbTracksToGenerate_SelectedIndex = cmbTracksToGenerate.SelectedIndex,
-                cmbContinueMix_SelectedIndex = cmbContinueMix.SelectedIndex,
-                cmbKeyMixing_SelectedIndex = cmbKeyMixing.SelectedIndex
+                CmbDirectionSelectedIndex = cmbDirection.SelectedIndex,
+                CmbAllowBearableSelectedIndex = cmbAllowBearable.SelectedIndex,
+                CmbApproxLengthSelectedIndex = cmbApproxLength.SelectedIndex,
+                CmbModeSelectedIndex = cmbMode.SelectedIndex,
+                TxtExcludeTracksText = txtExcludeTracks.Text,
+                CmbExtendedMixesSelectedIndex = cmbExtendedMixes.SelectedIndex,
+                ChkExlcudeMixesOnlyChecked = chkExlcudeMixesOnly.Checked,
+                ChkRestrictArtistClumpingChecked = chkRestrictArtistClumping.Checked,
+                ChkRestrictGenreClumpingChecked = chkRestrictGenreClumping.Checked,
+                ChkRestrictTitleClumpingChecked = chkRestrictTitleClumping.Checked,
+                ChkDisplayedTracksOnlyChecked = chkDisplayedTracksOnly.Checked,
+                CmbTracksToGenerateSelectedIndex = cmbTracksToGenerate.SelectedIndex,
+                CmbContinueMixSelectedIndex = cmbContinueMix.SelectedIndex,
+                CmbKeyMixingSelectedIndex = cmbKeyMixing.SelectedIndex
             };
 
             var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.frmGeneratePlaylist.xml");

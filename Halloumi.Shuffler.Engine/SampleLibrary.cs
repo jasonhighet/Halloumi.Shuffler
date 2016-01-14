@@ -91,7 +91,7 @@ namespace Halloumi.Shuffler.Engine
         
         public List<Sample> GetSamples(SampleCriteria criteria)
         {
-            if (criteria.MaxBPM == 0) criteria.MaxBPM = 200;
+            if (criteria.MaxBpm == 0) criteria.MaxBpm = 200;
 
             var samples = new List<Sample>();
             lock (this.Samples)
@@ -104,7 +104,7 @@ namespace Halloumi.Shuffler.Engine
                     .Where(s => string.IsNullOrEmpty(criteria.Key) || s.Key == criteria.Key)
                     .Where(s => !criteria.Primary.HasValue || s.IsPrimaryLoop == criteria.Primary.Value)
                     .Where(s => !criteria.LoopMode.HasValue || s.LoopMode == criteria.LoopMode)
-                    .Where(s => s.BPM >= criteria.MinBPM && s.BPM <= criteria.MaxBPM)
+                    .Where(s => s.Bpm >= criteria.MinBpm && s.Bpm <= criteria.MaxBpm)
                     .OrderBy(s => s.Description)
                     .ToList();
             }
@@ -191,7 +191,7 @@ namespace Halloumi.Shuffler.Engine
             if (!Directory.Exists(sampleFolder))
                 Directory.CreateDirectory(sampleFolder);
 
-            string titleFolder = String.Format("{0} ({1})", sample.TrackTitle, BE.BassHelper.GetShortFormattedSeconds(sample.TrackLength));
+            var titleFolder = String.Format("{0} ({1})", sample.TrackTitle, BE.BassHelper.GetShortFormattedSeconds(sample.TrackLength));
             titleFolder = FileSystemHelper.StripInvalidFileNameChars(titleFolder);
 
             sampleFolder = Path.Combine(sampleFolder, titleFolder);
@@ -204,7 +204,7 @@ namespace Halloumi.Shuffler.Engine
         {
             var sampleFolder = Path.Combine(this.SampleLibraryFolder, FileSystemHelper.StripInvalidFileNameChars(sample.TrackArtist));
 
-            string titleFolder = String.Format("{0} ({1})", sample.TrackTitle, BE.BassHelper.GetShortFormattedSeconds(sample.TrackLength));
+            var titleFolder = String.Format("{0} ({1})", sample.TrackTitle, BE.BassHelper.GetShortFormattedSeconds(sample.TrackLength));
             titleFolder = FileSystemHelper.StripInvalidFileNameChars(titleFolder);
 
             sampleFolder = Path.Combine(sampleFolder, titleFolder);
@@ -294,9 +294,9 @@ namespace Halloumi.Shuffler.Engine
 
             public string Key { get; set; }
 
-            public decimal MinBPM { get; set; }
+            public decimal MinBpm { get; set; }
 
-            public decimal MaxBPM { get; set; }
+            public decimal MaxBpm { get; set; }
 
             public Nullable<bool> Atonal { get; set; }
 

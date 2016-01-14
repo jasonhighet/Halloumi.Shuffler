@@ -18,7 +18,7 @@ namespace Halloumi.BassEngine
             var playlistEntries = new List<PlaylistEntry>();
             using (var reader = new StreamReader(playlistFile, Encoding.UTF7))
             {
-                string currentLine = string.Empty;
+                var currentLine = string.Empty;
                 while ((currentLine = reader.ReadLine()) != null)
                 {
                     if (currentLine.Length > 0 && currentLine != "#EXTM3U")
@@ -121,7 +121,7 @@ namespace Halloumi.BassEngine
         /// <param name="tracks">The tracks to write to the playlist.</param>
         public static void SaveAsPlaylist(string filename, List<Track> tracks)
         {
-            StringBuilder content = new StringBuilder();
+            var content = new StringBuilder();
             content.AppendLine("#EXTM3U");
             foreach (var track in tracks)
             {

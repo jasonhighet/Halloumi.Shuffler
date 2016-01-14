@@ -3,9 +3,9 @@ using Halloumi.Common.Windows.Forms;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmSettings : BaseForm
+    public partial class FrmSettings : BaseForm
     {
-        public frmSettings()
+        public FrmSettings()
         {
             InitializeComponent();
         }
@@ -31,8 +31,8 @@ namespace Halloumi.Shuffler.Forms
             txtLibraryFolder.Text = settings.LibraryFolder;
             txtPlaylistFolder.Text = settings.PlaylistFolder;
             txtShufflerFolder.Text = settings.ShufflerFolder;
-            txtWinampPluginFolder.Text = settings.WAPluginsFolder;
-            txtVSTPluginFolder.Text = settings.VSTPluginsFolder;
+            txtWinampPluginFolder.Text = settings.WaPluginsFolder;
+            txtVSTPluginFolder.Text = settings.VstPluginsFolder;
             txtAnalogXScratchFolder.Text = settings.AnalogXScratchFolder;
             txtKeyFinderFolder.Text = settings.KeyFinderFolder;
         }
@@ -45,8 +45,8 @@ namespace Halloumi.Shuffler.Forms
             settings.LibraryFolder = txtLibraryFolder.Text;
             settings.PlaylistFolder = txtPlaylistFolder.Text;
             settings.ShufflerFolder = txtShufflerFolder.Text;
-            settings.VSTPluginsFolder = txtVSTPluginFolder.Text;
-            settings.WAPluginsFolder = txtWinampPluginFolder.Text;
+            settings.VstPluginsFolder = txtVSTPluginFolder.Text;
+            settings.WaPluginsFolder = txtWinampPluginFolder.Text;
             settings.AnalogXScratchFolder = txtAnalogXScratchFolder.Text;
             settings.KeyFinderFolder = txtKeyFinderFolder.Text;
             settings.Save();

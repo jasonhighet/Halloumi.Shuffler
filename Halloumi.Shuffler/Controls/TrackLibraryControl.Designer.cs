@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            var dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.mnuGenre = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRenameGenre = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuArtist = new System.Windows.Forms.ContextMenuStrip(this.components);

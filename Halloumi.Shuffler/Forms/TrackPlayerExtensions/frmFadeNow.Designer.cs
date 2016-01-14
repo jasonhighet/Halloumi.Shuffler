@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
 {
-    partial class frmFadeNow
+    partial class FrmFadeNow
     {
         /// <summary>
         /// Required designer variable.
@@ -122,7 +122,7 @@
             this.ClientSize = new System.Drawing.Size(373, 50);
             this.Controls.Add(this.panel3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "frmFadeNow";
+            this.Name = "FrmFadeNow";
             this.Text = "Fade Now";
             this.panel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

@@ -11,9 +11,9 @@ using Halloumi.Shuffler.Engine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmUpdateTrackAudio : BaseForm
+    public partial class FrmUpdateTrackAudio : BaseForm
     {
-        public frmUpdateTrackAudio()
+        public FrmUpdateTrackAudio()
         {
             InitializeComponent();
         }

@@ -39,7 +39,7 @@ namespace Halloumi.Shuffler.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Halloumi.Shuffler.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("Halloumi.Shuffler.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,7 +65,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap exit {
             get {
-                object obj = ResourceManager.GetObject("exit", resourceCulture);
+                var obj = ResourceManager.GetObject("exit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -75,7 +75,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap logo {
             get {
-                object obj = ResourceManager.GetObject("logo", resourceCulture);
+                var obj = ResourceManager.GetObject("logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -85,7 +85,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_end {
             get {
-                object obj = ResourceManager.GetObject("player_end", resourceCulture);
+                var obj = ResourceManager.GetObject("player_end", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -95,7 +95,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_end_small {
             get {
-                object obj = ResourceManager.GetObject("player_end_small", resourceCulture);
+                var obj = ResourceManager.GetObject("player_end_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -105,7 +105,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_fwd {
             get {
-                object obj = ResourceManager.GetObject("player_fwd", resourceCulture);
+                var obj = ResourceManager.GetObject("player_fwd", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -115,7 +115,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_fwd_small {
             get {
-                object obj = ResourceManager.GetObject("player_fwd_small", resourceCulture);
+                var obj = ResourceManager.GetObject("player_fwd_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -125,7 +125,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_pause {
             get {
-                object obj = ResourceManager.GetObject("player_pause", resourceCulture);
+                var obj = ResourceManager.GetObject("player_pause", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -135,7 +135,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_pause_small {
             get {
-                object obj = ResourceManager.GetObject("player_pause_small", resourceCulture);
+                var obj = ResourceManager.GetObject("player_pause_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -145,7 +145,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_play {
             get {
-                object obj = ResourceManager.GetObject("player_play", resourceCulture);
+                var obj = ResourceManager.GetObject("player_play", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -155,7 +155,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_play_small {
             get {
-                object obj = ResourceManager.GetObject("player_play_small", resourceCulture);
+                var obj = ResourceManager.GetObject("player_play_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -165,7 +165,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_restart {
             get {
-                object obj = ResourceManager.GetObject("player_restart", resourceCulture);
+                var obj = ResourceManager.GetObject("player_restart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -175,7 +175,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_restart_small {
             get {
-                object obj = ResourceManager.GetObject("player_restart_small", resourceCulture);
+                var obj = ResourceManager.GetObject("player_restart_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -185,7 +185,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_rew {
             get {
-                object obj = ResourceManager.GetObject("player_rew", resourceCulture);
+                var obj = ResourceManager.GetObject("player_rew", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -195,7 +195,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_rew1 {
             get {
-                object obj = ResourceManager.GetObject("player_rew1", resourceCulture);
+                var obj = ResourceManager.GetObject("player_rew1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -205,7 +205,7 @@ namespace Halloumi.Shuffler.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap player_stop {
             get {
-                object obj = ResourceManager.GetObject("player_stop", resourceCulture);
+                var obj = ResourceManager.GetObject("player_stop", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -19,7 +19,7 @@ namespace Halloumi.BassEngine
 {
     public static class BassHelper
     {
-        private const int _defaultSampleRate = 44100;
+        private const int DefaultSampleRate = 44100;
 
         private static Random _random = new Random(DateTime.Now.Millisecond);
 
@@ -38,7 +38,7 @@ namespace Halloumi.BassEngine
         {
             if (double.IsNaN(seconds)) return "";
 
-            TimeSpan timeSpan = TimeSpan.FromSeconds(seconds);
+            var timeSpan = TimeSpan.FromSeconds(seconds);
             return string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}",
                 timeSpan.Hours,
                 timeSpan.Minutes,
@@ -54,7 +54,7 @@ namespace Halloumi.BassEngine
         {
             if (double.IsNaN(seconds)) return "";
 
-            TimeSpan timeSpan = TimeSpan.FromSeconds(seconds);
+            var timeSpan = TimeSpan.FromSeconds(seconds);
             return string.Format("{0:D2}:{1:D2}.{2:D3}",
                 (timeSpan.Hours * 60) + timeSpan.Minutes,
                 timeSpan.Seconds,
@@ -76,7 +76,7 @@ namespace Halloumi.BassEngine
         /// <returns></returns>
         public static string GetShortFormattedSeconds(double seconds)
         {
-            TimeSpan timeSpan = TimeSpan.FromSeconds(seconds);
+            var timeSpan = TimeSpan.FromSeconds(seconds);
             if (timeSpan.Hours < 1) return string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
 
             return string.Format("{0}:{1:D2}:{2:D2}",
@@ -92,10 +92,10 @@ namespace Halloumi.BassEngine
         /// <param name="bpm2">The BPM being matched.</param>
         /// <param name="percentVariance">The percent variance.</param>
         /// <returns>True if BPM2 is in range of BMP1</returns>
-        public static bool IsBPMInRange(decimal bpm1, decimal bpm2, decimal percentVariance)
+        public static bool IsBpmInRange(decimal bpm1, decimal bpm2, decimal percentVariance)
         {
             percentVariance = Math.Abs(percentVariance);
-            return (GetAbsoluteBPMPercentChange(bpm1, bpm2) <= percentVariance);
+            return (GetAbsoluteBpmPercentChange(bpm1, bpm2) <= percentVariance);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Halloumi.BassEngine
         /// <param name="bpm1">The first BPM.</param>
         /// <param name="bpm2">The second BPM2.</param>
         /// <returns>The average BPM</returns>
-        public static decimal GetAdjustedBPMAverage(decimal bpm1, decimal bpm2)
+        public static decimal GetAdjustedBpmAverage(decimal bpm1, decimal bpm2)
         {
             var bpms = new List<decimal>()
                 {
@@ -114,7 +114,7 @@ namespace Halloumi.BassEngine
                 .OrderBy(bpm => bpm)
                 .ToList();
 
-            var diff = GetAdjustedBPMPercentChange(bpms[0], bpms[1]);
+            var diff = GetAdjustedBpmPercentChange(bpms[0], bpms[1]);
             var multiplier = 1M + (diff / 100);
             bpms[1] = bpms[0] * multiplier;
             return bpms.Average();
@@ -126,15 +126,15 @@ namespace Halloumi.BassEngine
         /// <param name="bpm1">The first BPM.</param>
         /// <param name="bpm2">The second BPM2.</param>
         /// <returns>The BPM change as a percent (-100 - 100)</returns>
-        public static decimal GetAdjustedBPMPercentChange(decimal bpm1, decimal bpm2)
+        public static decimal GetAdjustedBpmPercentChange(decimal bpm1, decimal bpm2)
         {
             if (bpm1 == 0M || bpm2 == 0M) return 100M;
 
             var percentChanges = new List<decimal>
                 {
-                    GetBPMPercentChange(bpm1, bpm2),
-                    GetBPMPercentChange(bpm1, bpm2 / 2),
-                    GetBPMPercentChange(bpm1, bpm2 * 2)
+                    GetBpmPercentChange(bpm1, bpm2),
+                    GetBpmPercentChange(bpm1, bpm2 / 2),
+                    GetBpmPercentChange(bpm1, bpm2 * 2)
                 };
 
             var minPercentChange = percentChanges
@@ -150,10 +150,10 @@ namespace Halloumi.BassEngine
         /// <param name="bpm1">The first BPM.</param>
         /// <param name="bpm2">The second BPM2.</param>
         /// <returns>The BPM change as a percent (-100 - 100)</returns>
-        public static decimal GetBPMPercentChange(decimal bpm1, decimal bpm2)
+        public static decimal GetBpmPercentChange(decimal bpm1, decimal bpm2)
         {
             if (bpm1 == 0M || bpm2 == 0M) return 100M;
-            decimal bpmDiff = bpm2 - bpm1;
+            var bpmDiff = bpm2 - bpm1;
             var percentChange = (bpmDiff / bpm2) * 100;
 
             return percentChange;
@@ -165,22 +165,22 @@ namespace Halloumi.BassEngine
         /// <param name="bpm1">The first BPM.</param>
         /// <param name="bpm2">The second BPM2.</param>
         /// <returns>The BPM change as a percent (0 - 100)</returns>
-        public static decimal GetAbsoluteBPMPercentChange(decimal bpm1, decimal bpm2)
+        public static decimal GetAbsoluteBpmPercentChange(decimal bpm1, decimal bpm2)
         {
-            return Math.Abs(GetAdjustedBPMPercentChange(bpm1, bpm2));
+            return Math.Abs(GetAdjustedBpmPercentChange(bpm1, bpm2));
         }
 
         public static List<double> GetLoopLengths(decimal bpm)
         {
             if (bpm == 0) return new List<double>();
 
-            List<double> loopLengths = new List<double>();
+            var loopLengths = new List<double>();
 
             // scale bpm to be between 70 and 140
-            bpm = NormaliseBPM(bpm);
+            bpm = NormaliseBpm(bpm);
 
-            double bps = ((double)bpm) / 60;
-            double spb = 1 / bps;
+            var bps = ((double)bpm) / 60;
+            var spb = 1 / bps;
 
             loopLengths.Add(spb * 4);
             loopLengths.Add(spb * 8);
@@ -209,7 +209,7 @@ namespace Halloumi.BassEngine
         /// <returns>The default delay time from the BPM (1/4 note delay)</returns>
         public static double GetDefaultDelayLength(decimal bpm)
         {
-            bpm = BassHelper.NormaliseBPM(bpm);
+            bpm = BassHelper.NormaliseBpm(bpm);
             return (1D / ((double)bpm / 60D)) * 1000D;
         }
 
@@ -226,7 +226,7 @@ namespace Halloumi.BassEngine
             var loopLengths = GetLoopLengths(bpm);
             var selectedLoopLengthIndex = 2;
 
-            for (int i = 0; i < loopLengths.Count; i++)
+            for (var i = 0; i < loopLengths.Count; i++)
             {
                 var difference = Math.Abs(preferredLength - loopLengths[i]);
                 var selectedIndexDifference = Math.Abs(preferredLength - loopLengths[selectedLoopLengthIndex]);
@@ -243,14 +243,14 @@ namespace Halloumi.BassEngine
         /// </summary>
         /// <param name="loopLength">Length of the loop in seconds.</param>
         /// <returns>The BPM of the loop</returns>
-        public static decimal GetBPMFromLoopLength(double loopLength)
+        public static decimal GetBpmFromLoopLength(double loopLength)
         {
             if (loopLength == 0) return 0;
             var spb = loopLength / 16;
             var bps = 1 / spb;
             var bpm = bps * 60;
 
-            return NormaliseBPM((decimal)bpm);
+            return NormaliseBpm((decimal)bpm);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         /// <param name="bpm">The BPM.</param>
         /// <returns>The scaled BPM</returns>
-        public static decimal NormaliseBPM(decimal bpm)
+        public static decimal NormaliseBpm(decimal bpm)
         {
             if (bpm == 0) bpm = 100;
             bpm = Math.Abs(bpm);
@@ -396,7 +396,7 @@ namespace Halloumi.BassEngine
             // set start volume
             SetTrackVolume(track, startVolume);
 
-            int miliseconds = (int)(seconds * 1000);
+            var miliseconds = (int)(seconds * 1000);
 
             // set the volume slide
             Bass.BASS_ChannelSlideAttribute(track.Channel, BASSAttribute.BASS_ATTRIB_VOL, endVolume, miliseconds);
@@ -413,7 +413,7 @@ namespace Halloumi.BassEngine
         {
             if (track == null || !track.IsAudioLoaded()) return;
 
-            double seconds = track.SamplesToSeconds(sampleDuration);
+            var seconds = track.SamplesToSeconds(sampleDuration);
             SetTrackVolumeSlide(track, startVolume, endVolume, seconds);
         }
 
@@ -431,7 +431,7 @@ namespace Halloumi.BassEngine
             // set start volume
             SetSampleVolume(sample, startVolume);
 
-            int miliseconds = (int)(seconds * 1000);
+            var miliseconds = (int)(seconds * 1000);
 
             // set the volume slide
             if (sample == null || sample.Channel == int.MinValue) return;
@@ -459,7 +459,7 @@ namespace Halloumi.BassEngine
         {
             if (channel == int.MinValue) return 0;
 
-            float trackSampleRate = _defaultSampleRate;
+            float trackSampleRate = DefaultSampleRate;
             Bass.BASS_ChannelGetAttribute(channel, BASSAttribute.BASS_ATTRIB_FREQ, ref trackSampleRate);
             return (int)trackSampleRate;
         }
@@ -504,7 +504,7 @@ namespace Halloumi.BassEngine
             if (!changeTrack.IsAudioLoaded()) return;
             if (!matchTrack.IsAudioLoaded()) return;
 
-            float sampleRate = GetTrackTempoChangeAsSampleRate(changeTrack, matchTrack);
+            var sampleRate = GetTrackTempoChangeAsSampleRate(changeTrack, matchTrack);
             Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
         }
 
@@ -519,7 +519,7 @@ namespace Halloumi.BassEngine
             if (!changeTrack.IsAudioLoaded()) return;
             if (!matchTrack.IsAudioLoaded()) return;
 
-            float percentChange = (float)(BassHelper.GetAdjustedBPMPercentChange(changeTrack.EndBPM, matchTrack.StartBPM));
+            var percentChange = (float)(BassHelper.GetAdjustedBpmPercentChange(changeTrack.EndBpm, matchTrack.StartBpm));
             Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -539,11 +539,11 @@ namespace Halloumi.BassEngine
         /// </summary>
         /// <param name="sample">The sample to change the temp of.</param>
         /// <param name="matchTrack">The BPM to match</param>
-        public static void SetSampleTempoToMatchBPM(Sample sample, decimal matchBPM)
+        public static void SetSampleTempoToMatchBpm(Sample sample, decimal matchBpm)
         {
             if (sample == null || sample.Channel == int.MinValue) return;
 
-            float percentChange = (float)(BassHelper.GetAdjustedBPMPercentChange(sample.BPM, matchBPM));
+            var percentChange = (float)(BassHelper.GetAdjustedBpmPercentChange(sample.Bpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(sample.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -601,8 +601,8 @@ namespace Halloumi.BassEngine
         /// <param name="track">The track.</param>
         public static void TrackSmoothPause(Track track)
         {
-            Action<Track> SmoothPauseAction = new Action<Track>(TrackSmoothPauseAsync);
-            SmoothPauseAction.BeginInvoke(track, null, null);
+            var smoothPauseAction = new Action<Track>(TrackSmoothPauseAsync);
+            smoothPauseAction.BeginInvoke(track, null, null);
         }
 
         /// <summary>
@@ -613,7 +613,7 @@ namespace Halloumi.BassEngine
         {
             if (track == null || !track.IsAudioLoaded()) return;
 
-            float volume = ((float)GetTrackVolume(track)) / 100F;
+            var volume = ((float)GetTrackVolume(track)) / 100F;
             SetTrackVolumeSlide(track, volume, 0F, 0.15D);
             Thread.Sleep(150);
 
@@ -679,7 +679,7 @@ namespace Halloumi.BassEngine
         {
             if (track1 == null || track2 == null) return 1f;
 
-            float percentChange = (float)(BassHelper.GetAdjustedBPMPercentChange(track1.EndBPM, track2.StartBPM));
+            var percentChange = (float)(BassHelper.GetAdjustedBpmPercentChange(track1.EndBpm, track2.StartBpm));
 
             return (1 + percentChange / 100f);
         }
@@ -692,7 +692,7 @@ namespace Halloumi.BassEngine
         /// <returns>The sample rate the first track needs to be changed to in order to match the second track</returns>
         private static float GetTrackTempoChangeAsSampleRate(Track track1, Track track2)
         {
-            if (track1 == null || track2 == null) return _defaultSampleRate;
+            if (track1 == null || track2 == null) return DefaultSampleRate;
 
             return track1.DefaultSampleRate * GetTrackTempoChangeAsRatio(track1, track2);
         }
@@ -702,7 +702,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public static void InitialiseBassEngine(IntPtr windowHandle)
         {
-            if (!Bass.BASS_Init(-1, _defaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, windowHandle))
+            if (!Bass.BASS_Init(-1, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, windowHandle))
             {
                 throw new Exception("Cannot create Bass Engine.");
             }
@@ -713,12 +713,12 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Initialises the monitor device.
         /// </summary>
-        /// <param name="monitorDeviceID">The monitor device ID.</param>
-        public static void InitialiseMonitorDevice(int monitorDeviceID)
+        /// <param name="monitorDeviceId">The monitor device Id.</param>
+        public static void InitialiseMonitorDevice(int monitorDeviceId)
         {
             if (BassHelper.GetWaveOutDevices().Count < 3) return;
 
-            if (!Bass.BASS_Init(monitorDeviceID, _defaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
+            if (!Bass.BASS_Init(monitorDeviceId, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
                 //throw new Exception("Cannot initialise Monitor device.");
                 return;
@@ -728,10 +728,10 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Intialises the mixer channel.
         /// </summary>
-        /// <returns>The channel ID of the mixer channel</returns>
+        /// <returns>The channel Id of the mixer channel</returns>
         public static int IntialiseOutputChannel()
         {
-            int mixerChannel = BassMix.BASS_Mixer_StreamCreate(_defaultSampleRate, 2, BASSFlag.BASS_SAMPLE_FLOAT);
+            var mixerChannel = BassMix.BASS_Mixer_StreamCreate(DefaultSampleRate, 2, BASSFlag.BASS_SAMPLE_FLOAT);
             if (mixerChannel == 0) throw new Exception("Cannot create Bass Mixer.");
             return mixerChannel;
         }
@@ -739,10 +739,10 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Intialises a decoder mixer channel.
         /// </summary>
-        /// <returns>The channel ID of the mixer channel</returns>
+        /// <returns>The channel Id of the mixer channel</returns>
         public static int IntialiseMixerChannel()
         {
-            int mixerChannel = BassMix.BASS_Mixer_StreamCreate(_defaultSampleRate, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
+            var mixerChannel = BassMix.BASS_Mixer_StreamCreate(DefaultSampleRate, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
             if (mixerChannel == 0) throw new Exception("Cannot create Bass Mixer.");
             return mixerChannel;
         }
@@ -760,10 +760,10 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Intialises a mono decoder mixer channel.
         /// </summary>
-        /// <returns>The channel ID of the mixer channel</returns>
+        /// <returns>The channel Id of the mixer channel</returns>
         public static int IntialiseMonoDecoderMixerChannel()
         {
-            int mixerChannel = BassMix.BASS_Mixer_StreamCreate(_defaultSampleRate, 1, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
+            var mixerChannel = BassMix.BASS_Mixer_StreamCreate(DefaultSampleRate, 1, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
             if (mixerChannel == 0) throw new Exception("Cannot create Bass Mixer.");
             return mixerChannel;
         }
@@ -786,8 +786,8 @@ namespace Halloumi.BassEngine
         /// <param name="track">The track.</param>
         public static void TrackPowerDown(Track track)
         {
-            Action<Track> PowerDownAction = new Action<Track>(TrackPowerDownAsync);
-            PowerDownAction.BeginInvoke(track, null, null);
+            var powerDownAction = new Action<Track>(TrackPowerDownAsync);
+            powerDownAction.BeginInvoke(track, null, null);
         }
 
         /// <summary>
@@ -798,13 +798,13 @@ namespace Halloumi.BassEngine
         {
             if (track == null || !track.IsAudioLoaded()) return;
 
-            int freq = track.DefaultSampleRate;
-            int interval = (int)(BassHelper.GetDefaultLoopLength(track.EndBPM) * 1000) / 128;
+            var freq = track.DefaultSampleRate;
+            var interval = (int)(BassHelper.GetDefaultLoopLength(track.EndBpm) * 1000) / 128;
 
             // set the volume slide
             Bass.BASS_ChannelSlideAttribute(track.Channel, BASSAttribute.BASS_ATTRIB_VOL, 0F, interval * 8);
 
-            double percentValue = 0.70;
+            var percentValue = 0.70;
             while (freq > 100)
             {
                 percentValue = percentValue / 1.2;
@@ -830,8 +830,8 @@ namespace Halloumi.BassEngine
         public static decimal CalculateTrackBPM(Track track)
         {
             DebugHelper.WriteLine("CalculateTrackBPM");
-            track.TagBPM = CalculateTrackBPM(track.Filename);
-            return track.TagBPM;
+            track.TagBpm = CalculateTrackBPM(track.Filename);
+            return track.TagBpm;
         }
 
         /// <summary>
@@ -849,7 +849,7 @@ namespace Halloumi.BassEngine
             var length = Bass.BASS_ChannelBytes2Seconds(channel, Bass.BASS_ChannelGetLength(channel));
             var bpm = (decimal)BassFx.BASS_FX_BPM_DecodeGet(channel, 0.0, length, 200, BASSFXBpm.BASS_FX_BPM_BKGRND | BASSFXBpm.BASS_FX_FREESOURCE, null);
 
-            bpm = BassHelper.NormaliseBPM(bpm);
+            bpm = BassHelper.NormaliseBpm(bpm);
 
             Bass.BASS_StreamFree(channel);
 
@@ -899,9 +899,9 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("SetReplayGain " + gain.ToString());
 
-            int fxChannel = Bass.BASS_ChannelSetFX(channel, BASSFXType.BASS_FX_BFX_VOLUME, int.MaxValue);
-            float volume = BassHelper.DecibelToPercent(gain);
-            BASS_BFX_VOLUME volumeParameters = new BASS_BFX_VOLUME(volume, BASSFXChan.BASS_BFX_CHANALL);
+            var fxChannel = Bass.BASS_ChannelSetFX(channel, BASSFXType.BASS_FX_BFX_VOLUME, int.MaxValue);
+            var volume = BassHelper.DecibelToPercent(gain);
+            var volumeParameters = new BASS_BFX_VOLUME(volume, BASSFXChan.BASS_BFX_CHANALL);
             Bass.BASS_FXSetParameters(fxChannel, volumeParameters);
         }
 
@@ -914,13 +914,13 @@ namespace Halloumi.BassEngine
             if (track.Image != null) return;
 
             track.Image = (Image)Halloumi.BassEngine.Properties.Resources.DefaultMusicImage;
-            IID3v2 tags = ID3v2Helper.CreateID3v2(track.Filename);
+            var tags = ID3v2Helper.CreateID3v2(track.Filename);
             if (tags.PictureList.Count > 0)
             {
                 try
                 {
                     var picture = tags.PictureList[0];
-                    using (MemoryStream stream = new MemoryStream(picture.PictureData))
+                    using (var stream = new MemoryStream(picture.PictureData))
                     {
                         track.Image = Image.FromStream(stream);
                     }
@@ -934,10 +934,10 @@ namespace Halloumi.BassEngine
         /// Saves the track BPM tag.
         /// </summary>
         /// <param name="track">The track.</param>
-        public static void SaveTrackBPMTag(Track track)
+        public static void SaveTrackBpmTag(Track track)
         {
-            IID3v2 tags = ID3v2Helper.CreateID3v2(track.Filename);
-            tags.BPM = track.TagBPM.ToString();
+            var tags = ID3v2Helper.CreateID3v2(track.Filename);
+            tags.BPM = track.TagBpm.ToString();
             tags.Save(track.Filename);
         }
 
@@ -972,7 +972,7 @@ namespace Halloumi.BassEngine
         /// <param name="length">The length in samples.</param>
         public static void SavePartialAsWave(string inFilename, string outFilename, long start, long length)
         {
-            EncoderWAV encoder = new EncoderWAV(0);
+            var encoder = new EncoderWAV(0);
             encoder.WAV_BitsPerSample = 16;
             BaseEncoder.EncodeFile(inFilename, outFilename, encoder, null, true, false, false, start, start + length);
         }
@@ -1016,7 +1016,7 @@ namespace Halloumi.BassEngine
             Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
             while (totalTransferLength > 0)
             {
-                byte[] buffer = new byte[65536];
+                var buffer = new byte[65536];
 
                 var transferLength = totalTransferLength;
                 if (transferLength > buffer.Length) transferLength = buffer.Length;
@@ -1071,7 +1071,7 @@ namespace Halloumi.BassEngine
         public static void SaveAsWave(byte[] audioData, string outFilename)
         {
             var audioDataHandle = GCHandle.Alloc(audioData, GCHandleType.Pinned);
-            IntPtr audioDataPointer = audioDataHandle.AddrOfPinnedObject();
+            var audioDataPointer = audioDataHandle.AddrOfPinnedObject();
 
             var channel = Bass.BASS_StreamCreateFile(audioDataPointer, 0, audioData.Length, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
             if (channel == 0) throw new Exception("Cannot load audio data");
@@ -1087,7 +1087,7 @@ namespace Halloumi.BassEngine
             Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
             while (totalTransferLength > 0)
             {
-                byte[] buffer = new byte[65536];
+                var buffer = new byte[65536];
 
                 var transferLength = totalTransferLength;
                 if (transferLength > buffer.Length) transferLength = buffer.Length;
@@ -1159,7 +1159,7 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("SaveAsMonoWave");
 
             var audioDataHandle = GCHandle.Alloc(audioData, GCHandleType.Pinned);
-            IntPtr audioDataPointer = audioDataHandle.AddrOfPinnedObject();
+            var audioDataPointer = audioDataHandle.AddrOfPinnedObject();
 
             var channel = Bass.BASS_StreamCreateFile(audioDataPointer, 0, audioData.Length, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
             if (channel == 0) throw new Exception("Cannot load audio data");
@@ -1184,7 +1184,7 @@ namespace Halloumi.BassEngine
             Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
             while (totalTransferLength > 0)
             {
-                byte[] buffer = new byte[65536];
+                var buffer = new byte[65536];
 
                 var transferLength = totalTransferLength;
                 if (transferLength > buffer.Length) transferLength = buffer.Length;
@@ -1214,7 +1214,7 @@ namespace Halloumi.BassEngine
         /// <param name="outFilename">The output filename.</param>
         public static void SaveAsWave(string inFilename, string outFilename)
         {
-            EncoderWAV encoder = new EncoderWAV(0);
+            var encoder = new EncoderWAV(0);
             encoder.WAV_BitsPerSample = 16;
             BaseEncoder.EncodeFile(inFilename, outFilename, encoder, null, true, false);
         }
@@ -1246,7 +1246,7 @@ namespace Halloumi.BassEngine
             trackDetails.Title = "";
             trackDetails.Description = "";
 
-            if (elements.Count > 3) for (int i = 3; i < elements.Count; i++) elements[2] += "-" + elements[i];
+            if (elements.Count > 3) for (var i = 3; i < elements.Count; i++) elements[2] += "-" + elements[i];
 
             if (elements.Count == 1)
             {
@@ -1431,9 +1431,9 @@ namespace Halloumi.BassEngine
         public static List<string> GetWaveOutDevices()
         {
             var devices = new List<string>();
-            int deviceCount = waveOutGetNumDevs();
+            var deviceCount = waveOutGetNumDevs();
 
-            for (int i = -1; i < deviceCount; i++)
+            for (var i = -1; i < deviceCount; i++)
             {
                 var waveOutCaps = new WaveOutCaps();
                 waveOutGetDevCaps(i, ref waveOutCaps, Marshal.SizeOf(typeof(WaveOutCaps)));
@@ -1462,7 +1462,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi)]
 
-        private static extern int waveOutGetDevCaps(int uDeviceID, ref WaveOutCaps lpCaps, int uSize);
+        private static extern int waveOutGetDevCaps(int uDeviceId, ref WaveOutCaps lpCaps, int uSize);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private struct WaveOutCaps

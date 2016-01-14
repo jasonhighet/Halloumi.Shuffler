@@ -849,7 +849,7 @@ namespace Halloumi.Shuffler.Engine
             {
                 // find all tracks in the list that have already been mixed into from the current track
                 var excludeTracks = new List<Track>();
-                for (int i = 1; i < currentPath.Count; i++)
+                for (var i = 1; i < currentPath.Count; i++)
                 {
                     if (currentPath[i - 1].Title == currentTrack.Title)
                         excludeTracks.Add(currentPath[i]);
@@ -869,7 +869,7 @@ namespace Halloumi.Shuffler.Engine
 
             mixTracks = mixTracks.OrderByDescending(t => BE.KeyHelper.GetKeyMixRank(currentTrack.Key, t.Key))
                 .ThenBy(t => t.Rank)
-                .ThenBy(t => BE.BassHelper.GetAdjustedBPMPercentChange(currentTrack.EndBPM, t.StartBPM))
+                .ThenBy(t => BE.BassHelper.GetAdjustedBpmPercentChange(currentTrack.EndBpm, t.StartBpm))
                 .ToList();
 
             return mixTracks;
@@ -952,8 +952,8 @@ namespace Halloumi.Shuffler.Engine
         private List<Track> FilterTracksByDirection(Track currentTrack, List<Track> tracks, Direction direction)
         {
             var filteredTracks = new List<Track>(tracks);
-            if (direction == Direction.Down) return filteredTracks.Where(t => t.StartBPM < currentTrack.EndBPM).ToList();
-            if (direction == Direction.Up) return filteredTracks.Where(t => t.StartBPM >= currentTrack.EndBPM).ToList();
+            if (direction == Direction.Down) return filteredTracks.Where(t => t.StartBpm < currentTrack.EndBpm).ToList();
+            if (direction == Direction.Up) return filteredTracks.Where(t => t.StartBpm >= currentTrack.EndBpm).ToList();
             else return filteredTracks;
         }
 
@@ -1002,13 +1002,13 @@ namespace Halloumi.Shuffler.Engine
             var fullHistory = new List<Track>(history);
             fullHistory.Add(track);
 
-            var medianBPM = GetMedianBPM(fullHistory);
-            if (track.BPM < medianBPM) direction = Direction.Up;
-            if (track.BPM > medianBPM) direction = Direction.Down;
+            var medianBpm = GetMedianBpm(fullHistory);
+            if (track.Bpm < medianBpm) direction = Direction.Up;
+            if (track.Bpm > medianBpm) direction = Direction.Down;
             return direction;
         }
 
-        private decimal GetMedianBPM(List<Track> history)
+        private decimal GetMedianBpm(List<Track> history)
         {
             if (history == null) return 0M;
             history = history.Where(t => t != null).ToList();
@@ -1017,30 +1017,30 @@ namespace Halloumi.Shuffler.Engine
             var historyLength = history.Sum(t => t.Length);
             var libraryLength = this.AvailableTracks.Sum(t => t.Length);
 
-            var available = this.AvailableTracks.OrderBy(t => t.BPM).ToList();
+            var available = this.AvailableTracks.OrderBy(t => t.Bpm).ToList();
             if (available.Count == 0) return 0;
 
             decimal cycleLength = GetCycleLength();
             if (cycleLength > libraryLength) cycleLength = libraryLength;
 
-            decimal halfCycle = cycleLength / 2;
-            decimal completedCycles = historyLength / cycleLength;
+            var halfCycle = cycleLength / 2;
+            var completedCycles = historyLength / cycleLength;
 
-            var firstTrackBPMPosition = 0;
-            for (int i = 0; i < available.Count; i++)
+            var firstTrackBpmPosition = 0;
+            for (var i = 0; i < available.Count; i++)
             {
-                if (history[0].BPM >= available[i].BPM)
+                if (history[0].Bpm >= available[i].Bpm)
                 {
-                    firstTrackBPMPosition = i;
+                    firstTrackBpmPosition = i;
                 }
             }
-            var firsTrackBPMAdjustment = (decimal)(firstTrackBPMPosition + 1) / (decimal)available.Count;
+            var firsTrackBpmAdjustment = (decimal)(firstTrackBpmPosition + 1) / (decimal)available.Count;
 
-            completedCycles += (firsTrackBPMAdjustment / 2);
+            completedCycles += (firsTrackBpmAdjustment / 2);
 
-            decimal currentCyclePosition = completedCycles - (int)completedCycles;
+            var currentCyclePosition = completedCycles - (int)completedCycles;
 
-            decimal halfCyclePosition = 0M;
+            var halfCyclePosition = 0M;
             var medianIndex = 0;
             if (currentCyclePosition < 0.5M)
             {
@@ -1055,10 +1055,10 @@ namespace Halloumi.Shuffler.Engine
 
             if (medianIndex < 0)
             {
-                return available.Average(t => t.BPM);
+                return available.Average(t => t.Bpm);
             }
 
-            return available[medianIndex].BPM;
+            return available[medianIndex].Bpm;
         }
 
         /// <summary>
@@ -1081,7 +1081,7 @@ namespace Halloumi.Shuffler.Engine
         {
             // get history excluding tracks not in current cycle
             var cycleHistory = new List<Track>();
-            for (int i = history.Count - 1; i >= 0; i--)
+            for (var i = history.Count - 1; i >= 0; i--)
             {
                 cycleHistory.Insert(0, history[i]);
                 if (cycleHistory.Sum(t => t.Length) > cycleLength) break;

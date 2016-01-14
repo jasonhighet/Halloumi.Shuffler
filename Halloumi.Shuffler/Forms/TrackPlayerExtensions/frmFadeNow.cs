@@ -10,9 +10,9 @@ using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
 {
-    public partial class frmFadeNow : TrackPlayerExtensionForm
+    public partial class FrmFadeNow : TrackPlayerExtensionForm
     {
-        public frmFadeNow()
+        public FrmFadeNow()
         {
             InitializeComponent();
             cmbFadeType.SelectedIndex = 0;

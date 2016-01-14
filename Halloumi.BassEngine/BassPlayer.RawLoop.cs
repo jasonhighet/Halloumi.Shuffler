@@ -25,8 +25,8 @@ namespace Halloumi.BassEngine
             private set;
         }
 
-        private MixerChannel RawLoopMixer = null;
-        private OutputSplitter RawLoopOutputSplitter = null;
+        private MixerChannel _rawLoopMixer = null;
+        private OutputSplitter _rawLoopOutputSplitter = null;
 
         /// <summary>
         /// Initialises the raw loop mixer.
@@ -35,8 +35,8 @@ namespace Halloumi.BassEngine
         {
             DebugHelper.WriteLine("InitialiseRawLoopMixer");
 
-            RawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
-            RawLoopOutputSplitter = new OutputSplitter(RawLoopMixer, this.SpeakerOutput, this.MonitorOutput);
+            _rawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
+            _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, this._speakerOutput, this._monitorOutput);
 
             DebugHelper.WriteLine("END InitialiseRawLoopMixer");
         }
@@ -51,8 +51,8 @@ namespace Halloumi.BassEngine
 
             if (this.RawLoopTrack != null) UnloadRawLoopTrack();
 
-            Track track = new Track();
-            track.ID = _nextTrackID++;
+            var track = new Track();
+            track.Id = _nextTrackId++;
             track.Filename = filename;
 
             SetArtistAndTitle(track, "", "");
@@ -71,7 +71,7 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Loading raw loop track " + track.Description);
 
-            BassHelper.AddTrackToMixer(track, RawLoopMixer.InternalChannel);
+            BassHelper.AddTrackToMixer(track, _rawLoopMixer.InternalChannel);
             //BassHelper.SetTrackVolume(track, 100M);
             this.RawLoopTrack = track;
 
@@ -166,8 +166,8 @@ namespace Halloumi.BassEngine
         /// </summary>
         public SoundOutput RawLoopOutput
         {
-            get { return RawLoopOutputSplitter.SoundOutput; }
-            set { RawLoopOutputSplitter.SoundOutput = value; }
+            get { return _rawLoopOutputSplitter.SoundOutput; }
+            set { _rawLoopOutputSplitter.SoundOutput = value; }
         }
     }
 }

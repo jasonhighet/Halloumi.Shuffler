@@ -13,14 +13,14 @@ using Halloumi.Shuffler.Engine;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmUpdateTrackDetails : BaseForm
+    public partial class FrmUpdateTrackDetails : BaseForm
     {
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the frmUpdateTrackDetails class.
         /// </summary>
-        public frmUpdateTrackDetails()
+        public FrmUpdateTrackDetails()
         {
             InitializeComponent();
         }
@@ -60,7 +60,7 @@ namespace Halloumi.Shuffler.Forms
 
             var trackNumbers = new List<string>();
             trackNumbers.Add("");
-            for (int i = 0; i <= 80; i++) trackNumbers.Add(i.ToString());
+            for (var i = 0; i <= 80; i++) trackNumbers.Add(i.ToString());
             cmbTrackNumber.DataSource = trackNumbers;
 
             txtTitle.Text = this.Track.Title;
