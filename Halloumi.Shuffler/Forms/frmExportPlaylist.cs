@@ -37,21 +37,21 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            var albumArtists = this.Tracks.Select(t => t.Artist)
-                .Union(this.Tracks.Select(t => t.AlbumArtist))
+            var albumArtists = Tracks.Select(t => t.Artist)
+                .Union(Tracks.Select(t => t.AlbumArtist))
                 .Distinct()
                 .Where(aa => aa != "Various")
-                .OrderBy(aa => this.Tracks.Count(t => t.Artist == aa) + this.Tracks.Count(t => t.AlbumArtist == aa))
+                .OrderBy(aa => Tracks.Count(t => t.Artist == aa) + Tracks.Count(t => t.AlbumArtist == aa))
                 .ToList();
 
             if (albumArtists.Count > 1) albumArtists.Insert(0, "Various");
 
             cmbAlbumArtist.DataSource = albumArtists;
 
-            txtAlbumName.Text = this.PlaylistName;
+            txtAlbumName.Text = PlaylistName;
             if (txtAlbumName.Text == "" && albumArtists.Count == 1) txtAlbumName.Text = albumArtists[0];
 
-            btnOK.Enabled = this.Tracks.Count > 0;
+            btnOK.Enabled = Tracks.Count > 0;
 
 
             var settings = Settings.Default;
@@ -81,14 +81,14 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (!this.ValidateData()) return;
+            if (!ValidateData()) return;
 
-            progressDialog.Maximum = this.Tracks.Count;
+            progressDialog.Maximum = Tracks.Count;
             progressDialog.Title = "Exporting Playlist";
             progressDialog.CloseOnComplete = false;
             progressDialog.CloseOnCancel = true;
             progressDialog.Start();
-            this.Close();
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -99,7 +99,7 @@ namespace Halloumi.Shuffler.Forms
         private void progressDialog_PerformProcessing(object sender, EventArgs e)
         {
             var albumArtist = "";
-            this.Invoke((MethodInvoker)delegate() { albumArtist = cmbAlbumArtist.Text; });
+            Invoke((MethodInvoker)delegate() { albumArtist = cmbAlbumArtist.Text; });
 
             var destinationFolder = txtOutputFolder.Text;
 
@@ -113,7 +113,7 @@ namespace Halloumi.Shuffler.Forms
             try { FileSystemHelper.DeleteFiles(destinationFolder, "*.mp3;*.jpg", false); }
             catch { }
 
-            foreach (var track in this.Tracks)
+            foreach (var track in Tracks)
             {
                 if (progressDialog.Cancelled) break;
 
@@ -127,19 +127,19 @@ namespace Halloumi.Shuffler.Forms
                     if (progressDialog.Cancelled) break;
 
 
-                    var destinationTrack = this.Library.LoadNonLibraryTrack(destination);
+                    var destinationTrack = Library.LoadNonLibraryTrack(destination);
 
                     destinationTrack.AlbumArtist = albumArtist;
                     destinationTrack.Album = txtAlbumName.Text;
                     if (chkTrackNumbers.Checked)
-                        destinationTrack.TrackNumber = this.Tracks.IndexOf(track) + 1;
+                        destinationTrack.TrackNumber = Tracks.IndexOf(track) + 1;
                     else
                         destinationTrack.TrackNumber = 0;
 
-                    this.Library.SaveNonLibraryTrack(destinationTrack);
+                    Library.SaveNonLibraryTrack(destinationTrack);
 
-                    if (this.AlbumImage != null)
-                        this.Library.SetTrackAlbumCover(destinationTrack, this.AlbumImage);
+                    if (AlbumImage != null)
+                        Library.SetTrackAlbumCover(destinationTrack, AlbumImage);
 
 
                     if (progressDialog.Cancelled) break;
@@ -164,8 +164,8 @@ namespace Halloumi.Shuffler.Forms
                 progressDialog.Value++;
             }
 
-            if (this.AlbumImage != null)
-                ImageHelper.SaveJpg(Path.Combine(destinationFolder, "folder.jpg"), this.AlbumImage);
+            if (AlbumImage != null)
+                ImageHelper.SaveJpg(Path.Combine(destinationFolder, "folder.jpg"), AlbumImage);
 
             progressDialog.Text = "Export completed.";
 
@@ -181,7 +181,7 @@ namespace Halloumi.Shuffler.Forms
         {
             try
             {
-                var oldImage = this.AlbumImage;
+                var oldImage = AlbumImage;
                 if (oldImage != null) oldImage.Dispose();
 
                 var newImage = Image.FromFile(txtAlbumImage.Text);
@@ -197,12 +197,12 @@ namespace Halloumi.Shuffler.Forms
                     oldImage.Dispose();
                 }
 
-                this.AlbumImage = resizedImage;
+                AlbumImage = resizedImage;
             }
             catch
             {
                 txtAlbumImage.Text = "";
-                this.AlbumImage = null;
+                AlbumImage = null;
             }
         }
 

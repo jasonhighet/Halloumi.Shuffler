@@ -42,19 +42,19 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            cmbArtist.DataSource = this.Library.GetAllArtists();
+            cmbArtist.DataSource = Library.GetAllArtists();
             cmbArtist.DisplayMember = "Name";
             cmbArtist.ValueMember = "Name";
 
-            cmbAlbumArtist.DataSource = this.Library.GetAllAlbumArtists();
+            cmbAlbumArtist.DataSource = Library.GetAllAlbumArtists();
             cmbAlbumArtist.DisplayMember = "Name";
             cmbAlbumArtist.ValueMember = "Name";
 
-            cmbGenre.DataSource = this.Library.GetAllGenres();
+            cmbGenre.DataSource = Library.GetAllGenres();
             cmbGenre.DisplayMember = "Name";
             cmbGenre.ValueMember = "Name";
 
-            cmbAlbum.DataSource = this.Library.GetAllAlbums();
+            cmbAlbum.DataSource = Library.GetAllAlbums();
             cmbAlbum.DisplayMember = "Name";
             cmbAlbum.ValueMember = "Name";
 
@@ -63,16 +63,16 @@ namespace Halloumi.Shuffler.Forms
             for (var i = 0; i <= 80; i++) trackNumbers.Add(i.ToString());
             cmbTrackNumber.DataSource = trackNumbers;
 
-            txtTitle.Text = this.Track.Title;
-            cmbAlbum.Text = this.Track.Album;
-            cmbAlbumArtist.Text = this.Track.AlbumArtist;
-            cmbGenre.Text = this.Track.Genre;
-            cmbArtist.Text = this.Track.Artist;
-            cmbTrackNumber.Text = this.Track.TrackNumber.ToString();
+            txtTitle.Text = Track.Title;
+            cmbAlbum.Text = Track.Album;
+            cmbAlbumArtist.Text = Track.AlbumArtist;
+            cmbGenre.Text = Track.Genre;
+            cmbArtist.Text = Track.Artist;
+            cmbTrackNumber.Text = Track.TrackNumber.ToString();
 
-            txtFile.Text = this.Track.Filename;
+            txtFile.Text = Track.Filename;
 
-            this.Text = "Update Title";
+            Text = "Update Title";
         }
 
         /// <summary>
@@ -80,12 +80,12 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void UpdateData()
         {
-            if (!this.ValidateData()) return;
+            if (!ValidateData()) return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            var saved = this.Library.UpdateTrackDetails(this.Track,
+            var saved = Library.UpdateTrackDetails(Track,
                 cmbArtist.Text,
                 txtTitle.Text,
                 cmbAlbum.Text,
@@ -100,9 +100,9 @@ namespace Halloumi.Shuffler.Forms
             }
             else
             {
-                this.DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
             }
-            this.Close();
+            Close();
         }
 
         /// <summary>

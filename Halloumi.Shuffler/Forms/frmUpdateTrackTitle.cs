@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindData()
         {
-            var names = this.Tracks.Select(t => t.Title)
+            var names = Tracks.Select(t => t.Title)
             .OrderBy(t => t)
             .Distinct()
             .ToList();
@@ -45,25 +45,25 @@ namespace Halloumi.Shuffler.Forms
         {
             if (cmbTitle.Text.Trim() == "") return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
 
-            var destinationTracks = this.Tracks.Where(t => t.Title != cmbTitle.Text).ToList();
+            var destinationTracks = Tracks.Where(t => t.Title != cmbTitle.Text).ToList();
             foreach (var track in destinationTracks)
             {
                 try
                 {
-                    this.Library.UpdateTitle(track, cmbTitle.Text, chkUpdateAuxillaryFiles.Checked);
+                    Library.UpdateTitle(track, cmbTitle.Text, chkUpdateAuxillaryFiles.Checked);
                 }
                 catch (Exception e)
                 {
-                    this.HandleException(e);
+                    HandleException(e);
                 }
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

@@ -9,8 +9,8 @@ namespace Halloumi.Shuffler.Engine
     {
         public GenreCode(int number, string name)
         {
-            this.Number = number;
-            this.Name = name;
+            Number = number;
+            Name = name;
         }
 
         public static bool IsGenreCode(string code)
@@ -31,7 +31,7 @@ namespace Halloumi.Shuffler.Engine
         public string Name { get; set; }
         public string Code
         {
-            get { return string.Format("({0})", this.Number); }
+            get { return string.Format("({0})", Number); }
         }
 
         private static List<GenreCode> GetAllGenres()

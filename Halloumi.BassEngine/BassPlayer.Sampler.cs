@@ -72,7 +72,7 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Unloading sample " + sample.Description);
 
-            BassHelper.RemoveSampleFromMixer(sample, this._samplerMixer.InternalChannel);
+            BassHelper.RemoveSampleFromMixer(sample, _samplerMixer.InternalChannel);
             BassHelper.UnloadSampleAudio(sample);
 
             _cachedSamples.Remove(sample);
@@ -143,7 +143,7 @@ namespace Halloumi.BassEngine
             Sample sample = null;
             try
             {
-                sample = this.LoadSample(filename, trackSample.Description, track.Gain);
+                sample = LoadSample(filename, trackSample.Description, track.Gain);
                 sample.IsLooped = trackSample.IsLooped;
                 sample.SampleKey = trackSample.Key;
                 sample.LinkedTrackDescription = track.Description;
@@ -267,10 +267,10 @@ namespace Halloumi.BassEngine
         /// <param name="filename">The filename of the sample.</param>
         private void UnloadSample(string filename)
         {
-            var sample = this.Samples.Where(s => s.Filename == filename).FirstOrDefault();
+            var sample = Samples.Where(s => s.Filename == filename).FirstOrDefault();
             if (sample != null)
             {
-                this.UnloadSample(sample);
+                UnloadSample(sample);
             }
         }
 
@@ -281,7 +281,7 @@ namespace Halloumi.BassEngine
         /// <returns>The loaded sample</returns>
         public Sample GetSampleBySampleId(string sampleId)
         {
-            return this.Samples.Where(s => s.SampleId == sampleId).FirstOrDefault();
+            return Samples.Where(s => s.SampleId == sampleId).FirstOrDefault();
         }
 
         /// <summary>
@@ -298,12 +298,12 @@ namespace Halloumi.BassEngine
                 if (sample.Channel == int.MinValue) return;
                 BassMix.BASS_Mixer_ChannelPause(sample.Channel);
 
-                if (this.CurrentTrack == null)
+                if (CurrentTrack == null)
                     BassHelper.ResetSampleTempo(sample);
-                else if (sample.LinkedTrackDescription == this.CurrentTrack.Description)
+                else if (sample.LinkedTrackDescription == CurrentTrack.Description)
                     BassHelper.ResetSampleTempo(sample);
                 else
-                    BassHelper.SetSampleTempoToMatchBpm(sample, this.CurrentTrack.Bpm);
+                    BassHelper.SetSampleTempoToMatchBpm(sample, CurrentTrack.Bpm);
 
                 if (sample.Channel == int.MinValue) return;
                 Bass.BASS_ChannelSetPosition(sample.Channel, 1);
@@ -313,9 +313,9 @@ namespace Halloumi.BassEngine
                 BassMix.BASS_Mixer_ChannelPlay(sample.Channel);
             }
 
-            this._samplerMixer.SetPluginBpm();
+            _samplerMixer.SetPluginBpm();
 
-            if (this.CurrentTrack == null) return;
+            if (CurrentTrack == null) return;
 
             StartRecordingSampleTrigger(sample);
         }
@@ -341,7 +341,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void StopSamples()
         {
-            foreach (var sample in this.Samples)
+            foreach (var sample in Samples)
             {
                 StopSample(sample);
             }
@@ -367,7 +367,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public decimal GetSamplerMixerVolume()
         {
-            return this._samplerMixer.GetVolume();
+            return _samplerMixer.GetVolume();
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace Halloumi.BassEngine
         /// <param name="volume">The volume as a value between 0 and 100.</param>
         public void SetSamplerMixerVolume(decimal volume)
         {
-            this._samplerMixer.SetVolume(volume);
+            _samplerMixer.SetVolume(volume);
         }
 
         /// <summary>
@@ -421,11 +421,11 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("InitialiseSampler");
 
             // create mixer channel
-            this._samplerMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
-            this._samplerMixer.SetVolume((decimal)this.DefaultFadeOutStartVolume);
-            this._samplerMixer.CutBass();
+            _samplerMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
+            _samplerMixer.SetVolume((decimal)DefaultFadeOutStartVolume);
+            _samplerMixer.CutBass();
 
-            this._samplerOutputSplitter = new OutputSplitter(this._samplerMixer, this._speakerOutput, this._monitorOutput);
+            _samplerOutputSplitter = new OutputSplitter(_samplerMixer, _speakerOutput, _monitorOutput);
 
             // delete any temporary sample files
             _tempSamplerFolder = Path.Combine(Path.GetTempPath(), "Sampler");
@@ -513,7 +513,7 @@ namespace Halloumi.BassEngine
 
             lock (_mixerLock)
             {
-                BassHelper.AddSampleToSampler(sample, this._samplerMixer.InternalChannel);
+                BassHelper.AddSampleToSampler(sample, _samplerMixer.InternalChannel);
             }
 
             // set sample sync event
@@ -607,11 +607,11 @@ namespace Halloumi.BassEngine
 
             if (syncType == SampleSyncType.SampleEnd)
             {
-                var sample = this.Samples.Where(s => s.Channel == channel).FirstOrDefault();
+                var sample = Samples.Where(s => s.Channel == channel).FirstOrDefault();
                 if (sample != null && sample.Channel != int.MinValue)
                 {
                     if (!sample.IsLooped) BassHelper.SetSampleVolume(sample, 0M);
-                    this.LoopSample(sample);
+                    LoopSample(sample);
                 }
             }
         }

@@ -32,7 +32,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public WaPlugin WaPlugin
         {
-            get { return this._speakerOutput.WaPlugin; }
+            get { return _speakerOutput.WaPlugin; }
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public VstPlugin MainVstPlugin
         {
-            get { return this._speakerOutput.VstPlugin1; }
+            get { return _speakerOutput.VstPlugin1; }
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public VstPlugin MainVstPlugin2
         {
-            get { return this._speakerOutput.VstPlugin2; }
+            get { return _speakerOutput.VstPlugin2; }
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public VstPlugin SamplerVstPlugin
         {
-            get { return this._samplerMixer.VstPlugin1; }
+            get { return _samplerMixer.VstPlugin1; }
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public VstPlugin SamplerVstPlugin2
         {
-            get { return this._samplerMixer.VstPlugin2; }
+            get { return _samplerMixer.VstPlugin2; }
         }
 
         /// <summary>
@@ -118,12 +118,12 @@ namespace Halloumi.BassEngine
 
             //if (!File.Exists(location)) return null;
 
-            var playing = (this.PlayState == PlayState.Playing);
-            if (playing) this.Pause();
+            var playing = (PlayState == PlayState.Playing);
+            if (playing) Pause();
 
             var plugin = _speakerOutput.LoadWaPlugin(location);
 
-            if (playing) this.Play();
+            if (playing) Play();
 
             return plugin;
         }
@@ -134,7 +134,7 @@ namespace Halloumi.BassEngine
         /// <param name="location">The file location of the vst dll</param>
         public VstPlugin LoadMainVstPlugin(string location)
         {
-            return this._speakerOutput.LoadVstPlugin1(location);
+            return _speakerOutput.LoadVstPlugin1(location);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Halloumi.BassEngine
         /// <param name="location">The file location of the vst dll</param>
         public VstPlugin LoadMainVstPlugin2(string location)
         {
-            return this._speakerOutput.LoadVstPlugin2(location);
+            return _speakerOutput.LoadVstPlugin2(location);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Halloumi.BassEngine
         /// <param name="location">The file location of the vst dll</param>
         public VstPlugin LoadSamplerVstPlugin(string location)
         {
-            return this._samplerMixer.LoadVstPlugin1(location);
+            return _samplerMixer.LoadVstPlugin1(location);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Halloumi.BassEngine
         /// <param name="location">The file location of the vst dll</param>
         public VstPlugin LoadSamplerVstPlugin2(string location)
         {
-            return this._samplerMixer.LoadVstPlugin2(location);
+            return _samplerMixer.LoadVstPlugin2(location);
         }
 
         /// <summary>
@@ -198,24 +198,24 @@ namespace Halloumi.BassEngine
         {
             DebugHelper.WriteLine("Start StopTrackFXSend");
 
-            this._trackSendMixer.SetVolume(0);
+            _trackSendMixer.SetVolume(0);
 
-            if (this.CurrentTrack != null
-                && this.LastTrackFxTrigger != null
-                && this.LastTrackFxTriggerTrack != null)
+            if (CurrentTrack != null
+                && LastTrackFxTrigger != null
+                && LastTrackFxTriggerTrack != null)
             {
                 DebugHelper.WriteLine("Calculate TrackFXSend Length");
 
-                var position = BassHelper.GetTrackPosition(this.LastTrackFxTriggerTrack);
-                var positionSeconds = this.LastTrackFxTriggerTrack.SamplesToSeconds(position);
-                var length = positionSeconds - this.LastTrackFxTrigger.Start;
+                var position = BassHelper.GetTrackPosition(LastTrackFxTriggerTrack);
+                var positionSeconds = LastTrackFxTriggerTrack.SamplesToSeconds(position);
+                var length = positionSeconds - LastTrackFxTrigger.Start;
 
-                if (length <= 0 || position >= this.LastTrackFxTriggerTrack.FadeOutStart)
+                if (length <= 0 || position >= LastTrackFxTriggerTrack.FadeOutStart)
                 {
-                    length = LastTrackFxTriggerTrack.SamplesToSeconds(this.LastTrackFxTriggerTrack.FadeOutStart) - this.LastTrackFxTrigger.Start;
+                    length = LastTrackFxTriggerTrack.SamplesToSeconds(LastTrackFxTriggerTrack.FadeOutStart) - LastTrackFxTrigger.Start;
                 }
 
-                this.LastTrackFxTrigger.Length = length;
+                LastTrackFxTrigger.Length = length;
             }
 
             DebugHelper.WriteLine("End StopTrackFXSend");
@@ -227,14 +227,14 @@ namespace Halloumi.BassEngine
         public void StartTrackFxSend()
         {
             _trackSendMixer.SetVolume(50M);
-            if (this.CurrentTrack == null) return;
+            if (CurrentTrack == null) return;
 
-            this.LastTrackFxTriggerTrack = this.CurrentTrack;
+            LastTrackFxTriggerTrack = CurrentTrack;
 
-            var position = BassHelper.GetTrackPosition(this.LastTrackFxTriggerTrack);
-            this.LastTrackFxTrigger = new TrackFxTrigger();
-            this.LastTrackFxTrigger.Start = this.LastTrackFxTriggerTrack.SamplesToSeconds(position);
-            this.LastTrackFxTrigger.DelayNotes = this.TrackSendFxDelayNotes;
+            var position = BassHelper.GetTrackPosition(LastTrackFxTriggerTrack);
+            LastTrackFxTrigger = new TrackFxTrigger();
+            LastTrackFxTrigger.Start = LastTrackFxTriggerTrack.SamplesToSeconds(position);
+            LastTrackFxTrigger.DelayNotes = TrackSendFxDelayNotes;
 
             _trackSendMixer.SetPluginBpm();
         }
@@ -245,7 +245,7 @@ namespace Halloumi.BassEngine
         /// <returns>True if audio is being sent to the track FX; otherwise, false.</returns>
         public bool IsTrackFxSending()
         {
-            return (this._trackSendMixer.GetVolume() != 0M);
+            return (_trackSendMixer.GetVolume() != 0M);
         }
 
         /// <summary>
@@ -273,9 +273,9 @@ namespace Halloumi.BassEngine
         public List<VstPlugin> FindVstPlugins()
         {
             var plugins = new List<VstPlugin>();
-            if (Directory.Exists(this.VstPluginsFolder))
+            if (Directory.Exists(VstPluginsFolder))
             {
-                foreach (var pluginLocation in Directory.GetFiles(this.VstPluginsFolder, "*.dll", SearchOption.AllDirectories))
+                foreach (var pluginLocation in Directory.GetFiles(VstPluginsFolder, "*.dll", SearchOption.AllDirectories))
                 {
                     var plugin = new VstPlugin();
                     plugin.Location = pluginLocation;
@@ -293,7 +293,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearMainVstPlugin()
         {
-            this._speakerOutput.ClearVstPlugin1();
+            _speakerOutput.ClearVstPlugin1();
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearMainVstPlugin2()
         {
-            this._speakerOutput.ClearVstPlugin2();
+            _speakerOutput.ClearVstPlugin2();
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearSamplerVstPlugin()
         {
-            this._samplerMixer.ClearVstPlugin1();
+            _samplerMixer.ClearVstPlugin1();
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearSamplerVstPlugin2()
         {
-            this._samplerMixer.ClearVstPlugin2();
+            _samplerMixer.ClearVstPlugin2();
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearTracksVstPlugin()
         {
-            this._trackMixer.ClearVstPlugin1();
+            _trackMixer.ClearVstPlugin1();
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearTrackSendFxvstPlugin()
         {
-            this._trackSendFxMixer.ClearVstPlugin1();
+            _trackSendFxMixer.ClearVstPlugin1();
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void ClearTrackSendFxvstPlugin2()
         {
-            this._trackSendFxMixer.ClearVstPlugin2();
+            _trackSendFxMixer.ClearVstPlugin2();
         }
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void UnloadAllWaPlugins()
         {
-            this._speakerOutput.ClearWaPlugin();
+            _speakerOutput.ClearWaPlugin();
         }
 
         /// <summary>
@@ -407,9 +407,9 @@ namespace Halloumi.BassEngine
         public List<WaPlugin> FindWaPlugins()
         {
             var plugins = new List<WaPlugin>();
-            if (this.WaPluginsFolder == "") return plugins;
+            if (WaPluginsFolder == "") return plugins;
 
-            foreach (var pluginLocation in Directory.GetFiles(this.WaPluginsFolder, "dsp_*.dll", SearchOption.AllDirectories))
+            foreach (var pluginLocation in Directory.GetFiles(WaPluginsFolder, "dsp_*.dll", SearchOption.AllDirectories))
             {
                 var plugin = new WaPlugin();
                 plugin.Location = pluginLocation;
@@ -473,16 +473,16 @@ namespace Halloumi.BassEngine
         /// </summary>
         private void SetDelayByBpm()
         {
-            this._trackSendFxMixer.SetPluginBpm();
-            this._samplerMixer.SetPluginBpm();
+            _trackSendFxMixer.SetPluginBpm();
+            _samplerMixer.SetPluginBpm();
         }
 
         public decimal GetCurrentBpm()
         {
             var bpm = 100M;
-            if (this.CurrentTrack != null)
+            if (CurrentTrack != null)
             {
-                bpm = this.CurrentTrack.Bpm;
+                bpm = CurrentTrack.Bpm;
 
                 //if (!this.IsLocked())
                 {
@@ -491,15 +491,15 @@ namespace Halloumi.BassEngine
                     var position = trackPosition.Positition;
                     if (position < 0) position = 0;
 
-                    if (position < this.CurrentTrack.FullStartLoopLength)
+                    if (position < CurrentTrack.FullStartLoopLength)
                     {
-                        bpm = this.CurrentTrack.StartBpm;
+                        bpm = CurrentTrack.StartBpm;
                     }
                     else
                     {
-                        var range = this.CurrentTrack.EndBpm - this.CurrentTrack.StartBpm;
+                        var range = CurrentTrack.EndBpm - CurrentTrack.StartBpm;
                         var percentComplete = (decimal)((double)position / (double)trackPosition.Length);
-                        bpm = this.CurrentTrack.StartBpm + (range * percentComplete);
+                        bpm = CurrentTrack.StartBpm + (range * percentComplete);
                     }
                 }
             }

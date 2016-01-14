@@ -16,15 +16,15 @@ namespace Halloumi.BassEngine.Channels
             //if (inputChannel.OutputType != MixerChannelOutputType.MultipleOutputs)
             //    throw new Exception("Multiple outputs required");
 
-            this.SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
-            this.SpeakerMixerChannel.AddInputChannel(inputChannel);
-            speakerChannel.AddInputChannel(this.SpeakerMixerChannel);
+            SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
+            SpeakerMixerChannel.AddInputChannel(inputChannel);
+            speakerChannel.AddInputChannel(SpeakerMixerChannel);
 
-            this.MonitorMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
-            this.MonitorMixerChannel.AddInputChannel(inputChannel);
-            monitorChannel.AddInputChannel(this.MonitorMixerChannel);
+            MonitorMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
+            MonitorMixerChannel.AddInputChannel(inputChannel);
+            monitorChannel.AddInputChannel(MonitorMixerChannel);
 
-            this.SoundOutput = SoundOutput.Speakers;
+            SoundOutput = SoundOutput.Speakers;
         }
 
         /// <summary>
@@ -37,18 +37,18 @@ namespace Halloumi.BassEngine.Channels
             {
                 if (value == SoundOutput.Monitor)
                 {
-                    this.SpeakerMixerChannel.SetVolume(0);
-                    this.MonitorMixerChannel.SetVolume(100);
+                    SpeakerMixerChannel.SetVolume(0);
+                    MonitorMixerChannel.SetVolume(100);
                 }
                 else if (value == SoundOutput.Speakers)
                 {
-                    this.SpeakerMixerChannel.SetVolume(100);
-                    this.MonitorMixerChannel.SetVolume(0);
+                    SpeakerMixerChannel.SetVolume(100);
+                    MonitorMixerChannel.SetVolume(0);
                 }
                 else if (value == SoundOutput.Both)
                 {
-                    this.SpeakerMixerChannel.SetVolume(100);
-                    this.MonitorMixerChannel.SetVolume(100);
+                    SpeakerMixerChannel.SetVolume(100);
+                    MonitorMixerChannel.SetVolume(100);
                 }
                 _soundOutput = value;
             }

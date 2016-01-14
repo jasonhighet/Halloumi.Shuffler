@@ -31,14 +31,14 @@ namespace Halloumi.Shuffler.Controls
         public Slider()
             : base()
         {
-            this.Style = PanelStyle.Custom;
+            Style = PanelStyle.Custom;
 
             // KryptonManager.GlobalPaletteChanged += new EventHandler(KryptonManager_GlobalPaletteChanged);
-            this.MouseDown += new MouseEventHandler(Slider_MouseDown);
-            this.MouseUp += new MouseEventHandler(Slider_MouseUp);
-            this.MouseWheel += new MouseEventHandler(Slider_MouseWheel);
-            this.KeyUp += new KeyEventHandler(Slider_KeyUp);
-            this.Resize += new EventHandler(Slider_Resize);
+            MouseDown += new MouseEventHandler(Slider_MouseDown);
+            MouseUp += new MouseEventHandler(Slider_MouseUp);
+            MouseWheel += new MouseEventHandler(Slider_MouseWheel);
+            KeyUp += new KeyEventHandler(Slider_KeyUp);
+            Resize += new EventHandler(Slider_Resize);
             base.ResizeRedraw = true;
 
             SetThemeState();
@@ -53,14 +53,14 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetThemeState()
         {
-            if (this.DesignMode) return;
+            if (DesignMode) return;
 
             var palette = KryptonHelper.GetCurrentPalette();
             base.TrackProgressColor = KryptonManager.GetPaletteForMode(palette).GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
             base.TrackBorderColor = KryptonHelper.GetBorderColor();
             base.ButtonBorderColor = KryptonHelper.GetBorderColor();
             SetBackgroundColour();
-            base.Invalidate();
+            Invalidate();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Halloumi.Shuffler.Controls
         private void RaiseSlidEvent()
         {
             _raisingSlidEvent = true;
-            if (this.Slid != null) Slid(this, EventArgs.Empty);
+            if (Slid != null) Slid(this, EventArgs.Empty);
             _raisingSlidEvent = false;
         }
 
@@ -80,15 +80,15 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetBackgroundColour()
         {
-            if (this.Style == PanelStyle.Custom)
+            if (Style == PanelStyle.Custom)
             {
                 base.BackColor = _backColor;
             }
             else
             {
-                base.BackColor = KryptonHelper.GetPanelColor(this.Style);
+                base.BackColor = KryptonHelper.GetPanelColor(Style);
             }
-            base.Invalidate();
+            Invalidate();
         }
 
         #endregion
@@ -116,8 +116,8 @@ namespace Halloumi.Shuffler.Controls
             set
             {
                 base.Dock = value;
-                base.Width = this.Width;
-                base.Invalidate();
+                Width = Width;
+                Invalidate();
             }
         }
 
@@ -190,7 +190,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 _backColor = value;
                 SetBackgroundColour();
-                if (this.DesignMode) this.Invalidate();
+                if (DesignMode) Invalidate();
             }
         }
 
@@ -216,7 +216,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 _style = value;
                 SetBackgroundColour();
-                if (this.DesignMode) this.Invalidate();
+                if (DesignMode) Invalidate();
             }
         }
 
@@ -238,7 +238,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void Slider_MouseUp(object sender, MouseEventArgs e)
         {
-            this.Value = base.Value;
+            Value = base.Value;
             RaiseSlidEvent();
             _slidingWithMouse = false;
         }

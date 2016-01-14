@@ -31,9 +31,9 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            this.SamplePlayers = new List<SamplePlayer>();
+            SamplePlayers = new List<SamplePlayer>();
 
-            var settings = Halloumi.Shuffler.Forms.Settings.Default;
+            var settings = Forms.Settings.Default;
             BE.AnalogXScratchHelper.SetApplicationFolder(settings.AnalogXScratchFolder);
         }
 
@@ -54,24 +54,24 @@ namespace Halloumi.Shuffler.Controls
             sldVolume.Minimum = 0;
             sldVolume.Maximum = 100;
 
-            SetVolume(Convert.ToInt32(this.BassPlayer.GetSamplerMixerVolume()));
+            SetVolume(Convert.ToInt32(BassPlayer.GetSamplerMixerVolume()));
 
             rdbDelay2.Checked = true;
-            chkEnableAutomation.Checked = this.BassPlayer.SampleAutomationEnabled;
+            chkEnableAutomation.Checked = BassPlayer.SampleAutomationEnabled;
             cmbOutput.SelectedIndex = 0;
 
             LoadSamples();
 
-            this.BassPlayer.OnTrackQueued += new EventHandler(BassPlayer_OnTrackQueued);
+            BassPlayer.OnTrackQueued += new EventHandler(BassPlayer_OnTrackQueued);
         }
 
         private void SetVolume(int volume)
         {
             if (volume < 0 || volume > 100) return;
 
-            this.BassPlayer.SetSamplerMixerVolume(Convert.ToDecimal(volume));
+            BassPlayer.SetSamplerMixerVolume(Convert.ToDecimal(volume));
 
-            volume = (int)this.BassPlayer.GetSamplerMixerVolume();
+            volume = (int)BassPlayer.GetSamplerMixerVolume();
 
             lblVolume.Text = volume.ToString();
 
@@ -89,23 +89,23 @@ namespace Halloumi.Shuffler.Controls
         private void LoadSamples()
         {
             //this.BassPlayer.UnloadSamples(_previousTrack);
-            this.BassPlayer.UnloadSamples(_currentTrack);
-            this.BassPlayer.UnloadSamples(_nextTrack);
-            this.BassPlayer.UnloadSamples(_additionalTrack);
+            BassPlayer.UnloadSamples(_currentTrack);
+            BassPlayer.UnloadSamples(_nextTrack);
+            BassPlayer.UnloadSamples(_additionalTrack);
 
-            _currentTrack = this.BassPlayer.CurrentTrack;
-            _nextTrack = this.BassPlayer.NextTrack;
+            _currentTrack = BassPlayer.CurrentTrack;
+            _nextTrack = BassPlayer.NextTrack;
             //_previousTrack = this.BassPlayer.PreviousTrack;
             //if (_previousTrack == null) _previousTrack = GetPreviousTrack();
 
-            this.BassPlayer.LoadSamples(_nextTrack);
-            this.BassPlayer.LoadSamples(_currentTrack);
+            BassPlayer.LoadSamples(_nextTrack);
+            BassPlayer.LoadSamples(_currentTrack);
             //this.BassPlayer.LoadTrackSamples(_previousTrack);
 
             if (!BassPlayer.IsTrackInUse(_additionalTrack))
-                this.BassPlayer.LoadSamples(_additionalTrack);
+                BassPlayer.LoadSamples(_additionalTrack);
 
-            this.PlaylistControl.Library.LinkedSampleLibrary.LoadLinkedSamples(this.BassPlayer, _currentTrack);
+            PlaylistControl.Library.LinkedSampleLibrary.LoadLinkedSamples(BassPlayer, _currentTrack);
 
             LoadSamplePlayers();
         }
@@ -115,11 +115,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void UnloadSamples()
         {
-            this.BassPlayer.UnloadSamples(_nextTrack);
-            this.BassPlayer.UnloadSamples(_currentTrack);
+            BassPlayer.UnloadSamples(_nextTrack);
+            BassPlayer.UnloadSamples(_currentTrack);
             //this.BassPlayer.UnloadSamples(_previousTrack);
-            this.BassPlayer.UnloadSamples(_additionalTrack);
-            this.BassPlayer.UnloadSamples();
+            BassPlayer.UnloadSamples(_additionalTrack);
+            BassPlayer.UnloadSamples();
         }
 
         /// <summary>
@@ -129,15 +129,15 @@ namespace Halloumi.Shuffler.Controls
         {
             flpLeft.SuspendLayout();
 
-            this.SamplePlayers.ForEach(sp => sp.Visible = false);
-            foreach (var samplePlayer in this.SamplePlayers)
+            SamplePlayers.ForEach(sp => sp.Visible = false);
+            foreach (var samplePlayer in SamplePlayers)
             {
                 flpLeft.Controls.Remove(samplePlayer);
                 samplePlayer.Dispose();
             }
-            this.SamplePlayers.Clear();
+            SamplePlayers.Clear();
 
-            var samples = this.BassPlayer.Samples.ToList();
+            var samples = BassPlayer.Samples.ToList();
             samples.Reverse();
 
             var i = 0;
@@ -145,17 +145,17 @@ namespace Halloumi.Shuffler.Controls
             {
                 var samplePlayer = new SamplePlayer();
 
-                samplePlayer.BackColor = System.Drawing.Color.White;
-                samplePlayer.Size = new System.Drawing.Size(577, 50);
-                samplePlayer.Dock = System.Windows.Forms.DockStyle.Top;
+                samplePlayer.BackColor = Color.White;
+                samplePlayer.Size = new Size(577, 50);
+                samplePlayer.Dock = DockStyle.Top;
 
-                samplePlayer.BassPlayer = this.BassPlayer;
-                samplePlayer.Library = this.PlaylistControl.Library;
+                samplePlayer.BassPlayer = BassPlayer;
+                samplePlayer.Library = PlaylistControl.Library;
 
                 if (i % 2 != 0) samplePlayer.BackColor = Color.WhiteSmoke;
 
                 samplePlayer.SetSample(sample);
-                this.SamplePlayers.Add(samplePlayer);
+                SamplePlayers.Add(samplePlayer);
                 flpLeft.Controls.Add(samplePlayer);
 
                 i++;
@@ -170,12 +170,12 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The previous track</returns>
         private BE.Track GetPreviousTrack()
         {
-            var prevTrack = this.PlaylistControl.GetPreviousTrack();
+            var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return null;
 
-            var track = this.BassPlayer.LoadTrack(prevTrack.Filename);
-            this.BassPlayer.LoadTrackAudioData(track);
-            this.BassPlayer.LoadExtendedAttributes(track);
+            var track = BassPlayer.LoadTrack(prevTrack.Filename);
+            BassPlayer.LoadTrackAudioData(track);
+            BassPlayer.LoadExtendedAttributes(track);
             return track;
         }
 
@@ -195,18 +195,18 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                var settings = Halloumi.Shuffler.Forms.Settings.Default;
+                var settings = Forms.Settings.Default;
 
                 if (settings.SamplerDelayNotes == 0.5M) rdbDelay1.Checked = true;
                 else if (settings.SamplerDelayNotes == 0.25M) rdbDelay2.Checked = true;
                 else if (settings.SamplerDelayNotes == 0.125M) rdbDelay3.Checked = true;
                 else if (settings.SamplerDelayNotes == 0.0625M) rdbDelay4.Checked = true;
                 else if (settings.SamplerDelayNotes == 0M) rdbDelayNone.Checked = true;
-                this.BassPlayer.SamplerDelayNotes = settings.SamplerDelayNotes;
+                BassPlayer.SamplerDelayNotes = settings.SamplerDelayNotes;
 
                 SetVolume(settings.SamplerVolume);
 
-                this.BassPlayer.SamplerOutput = settings.SamplerOutput;
+                BassPlayer.SamplerOutput = settings.SamplerOutput;
                 if (settings.SamplerOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
                 if (settings.SamplerOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
                 if (settings.SamplerOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
@@ -250,9 +250,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnTrackQueued(object sender, EventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new MethodInvoker(delegate()
+                BeginInvoke(new MethodInvoker(delegate()
                 {
                     BassPlayer_OnTrackQueued();
                 }));
@@ -268,7 +268,7 @@ namespace Halloumi.Shuffler.Controls
             if (_bassPlayerOnTrackQueued) return;
             _bassPlayerOnTrackQueued = true;
 
-            if (_currentTrack != this.BassPlayer.CurrentTrack) RefreshSamples();
+            if (_currentTrack != BassPlayer.CurrentTrack) RefreshSamples();
 
             _bassPlayerOnTrackQueued = false;
         }
@@ -283,7 +283,7 @@ namespace Halloumi.Shuffler.Controls
             var radioButton = sender as ComponentFactory.Krypton.Toolkit.KryptonRadioButton;
             if (!radioButton.Checked) return;
             var delayNotes = Decimal.Parse(radioButton.Tag.ToString());
-            this.BassPlayer.SamplerDelayNotes = delayNotes;
+            BassPlayer.SamplerDelayNotes = delayNotes;
         }
 
         /// <summary>
@@ -291,9 +291,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEffect2_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.SamplerVstPlugin2 != null)
+            if (BassPlayer.SamplerVstPlugin2 != null)
             {
-                this.BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
+                BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
             }
         }
 
@@ -302,9 +302,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEffect1_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.SamplerVstPlugin != null)
+            if (BassPlayer.SamplerVstPlugin != null)
             {
-                this.BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
+                BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
             }
         }
 
@@ -314,7 +314,7 @@ namespace Halloumi.Shuffler.Controls
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
             var outputType = cmbOutput.ParseEnum<BE.Channels.SoundOutput>();
-            this.BassPlayer.SamplerOutput = outputType;
+            BassPlayer.SamplerOutput = outputType;
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnSaveLastSampleTrigger_Click(object sender, EventArgs e)
         {
-            this.BassPlayer.SaveLastSampleTrigger();
+            BassPlayer.SaveLastSampleTrigger();
         }
 
         /// <summary>
@@ -330,9 +330,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnRemoveLastSampleTrigger_Click(object sender, EventArgs e)
         {
-            var track = this.BassPlayer.CurrentTrack;
+            var track = BassPlayer.CurrentTrack;
             if (track == null) return;
-            this.BassPlayer.RemovePreviousSampleTrigger();
+            BassPlayer.RemovePreviousSampleTrigger();
         }
 
         /// <summary>
@@ -340,17 +340,17 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnClearSampleTriggers_Click(object sender, EventArgs e)
         {
-            var track = this.BassPlayer.CurrentTrack;
+            var track = BassPlayer.CurrentTrack;
             if (track == null) return;
 
             if (!MessageBoxHelper.Confirm("Are you sure you wish to clear all sample triggers for " + track.Description + "?")) return;
 
-            this.BassPlayer.ClearSampleTriggers();
+            BassPlayer.ClearSampleTriggers();
         }
 
         private void chkEnableAutomation_CheckedChanged(object sender, EventArgs e)
         {
-            this.BassPlayer.SampleAutomationEnabled = chkEnableAutomation.Checked;
+            BassPlayer.SampleAutomationEnabled = chkEnableAutomation.Checked;
         }
     }
 }

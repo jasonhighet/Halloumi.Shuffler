@@ -21,28 +21,28 @@ namespace Halloumi.BassEngine
         {
             InitializeComponent();
 
-            this._plugin = plugin;
-            this._bassPlayer = bassPlayer;
+            _plugin = plugin;
+            _bassPlayer = bassPlayer;
 
-            this.CanClose = false;
-            this.FormClosing += new FormClosingEventHandler(VSTPluginConfigForm_FormClosing);
+            CanClose = false;
+            FormClosing += new FormClosingEventHandler(VSTPluginConfigForm_FormClosing);
 
-            this.MinimizeBox = true;
-            this.ShowInTaskbar = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.TopMost = true;
+            MinimizeBox = true;
+            ShowInTaskbar = true;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            TopMost = true;
 
             var borderSize = SystemInformation.BorderSize;
-            this.Width = plugin.EditorWidth + (borderSize.Width * 2) + 15;
-            this.Height = plugin.EditorHeight + _menuStrip.Height + (borderSize.Height * 2) + 35;
+            Width = plugin.EditorWidth + (borderSize.Width * 2) + 15;
+            Height = plugin.EditorHeight + _menuStrip.Height + (borderSize.Height * 2) + 35;
 
             var icon = ApplicationHelper.GetIcon();
-            if (icon != null) base.Icon = icon;
+            if (icon != null) Icon = icon;
             
-            this.Text = plugin.Name;
+            Text = plugin.Name;
 
 
-            BassVst.BASS_VST_EmbedEditor(plugin.Id, this.EditorPanelHandle);
+            BassVst.BASS_VST_EmbedEditor(plugin.Id, EditorPanelHandle);
             plugin.Form = this;
 
             var presetNames = BassVst.BASS_VST_GetProgramNames(plugin.Id).ToList();
@@ -57,7 +57,7 @@ namespace Halloumi.BassEngine
                     var menuItem = new ToolStripMenuItem();
                     menuItem.Text = presetName.Trim();
                     menuItem.Tag = i.ToString();
-                    menuItem.Click += new System.EventHandler(mnuPreset_Click);
+                    menuItem.Click += new EventHandler(mnuPreset_Click);
                     _mnuPresets.DropDownItems.Add(menuItem);
                 }
                 
@@ -70,21 +70,21 @@ namespace Halloumi.BassEngine
             var menuItem = (ToolStripDropDownItem)sender;
             var index = int.Parse(menuItem.Tag.ToString());
 
-            this._bassPlayer.SetVstPluginPreset(this._plugin, index);
+            _bassPlayer.SetVstPluginPreset(_plugin, index);
         }
 
 
         private void VSTPluginConfigForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!this.CanClose)
+            if (!CanClose)
             {
                 e.Cancel = true;
-                this.Visible = false;
+                Visible = false;
             }
             else
             {
-                this._bassPlayer = null;
-                this._plugin = null;
+                _bassPlayer = null;
+                _plugin = null;
             }
         }
 
@@ -96,52 +96,52 @@ namespace Halloumi.BassEngine
 
         public IntPtr EditorPanelHandle
         {
-            get { return this._pnlEditor.Handle; }
+            get { return _pnlEditor.Handle; }
         }
 
         private void InitializeComponent()
         {
-            this._menuStrip = new System.Windows.Forms.MenuStrip();
-            this._mnuPresets = new System.Windows.Forms.ToolStripMenuItem();
-            this._pnlEditor = new System.Windows.Forms.Panel();
-            this._menuStrip.SuspendLayout();
-            this.SuspendLayout();
+            _menuStrip = new MenuStrip();
+            _mnuPresets = new ToolStripMenuItem();
+            _pnlEditor = new Panel();
+            _menuStrip.SuspendLayout();
+            SuspendLayout();
             // 
             // menuStrip
             // 
-            this._menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._mnuPresets});
-            this._menuStrip.Location = new System.Drawing.Point(0, 0);
-            this._menuStrip.Name = "_menuStrip";
-            this._menuStrip.Size = new System.Drawing.Size(284, 24);
-            this._menuStrip.TabIndex = 0;
-            this._menuStrip.Text = "menuStrip1";
+            _menuStrip.Items.AddRange(new ToolStripItem[] {
+            _mnuPresets});
+            _menuStrip.Location = new System.Drawing.Point(0, 0);
+            _menuStrip.Name = "_menuStrip";
+            _menuStrip.Size = new System.Drawing.Size(284, 24);
+            _menuStrip.TabIndex = 0;
+            _menuStrip.Text = "menuStrip1";
             // 
             // mnuPresets
             // 
-            this._mnuPresets.Name = "_mnuPresets";
-            this._mnuPresets.Size = new System.Drawing.Size(56, 20);
-            this._mnuPresets.Text = "&Presets";
+            _mnuPresets.Name = "_mnuPresets";
+            _mnuPresets.Size = new System.Drawing.Size(56, 20);
+            _mnuPresets.Text = "&Presets";
             // 
             // pnlEditor
             // 
-            this._pnlEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._pnlEditor.Location = new System.Drawing.Point(0, 24);
-            this._pnlEditor.Name = "_pnlEditor";
-            this._pnlEditor.Size = new System.Drawing.Size(284, 240);
-            this._pnlEditor.TabIndex = 1;
+            _pnlEditor.Dock = DockStyle.Fill;
+            _pnlEditor.Location = new System.Drawing.Point(0, 24);
+            _pnlEditor.Name = "_pnlEditor";
+            _pnlEditor.Size = new System.Drawing.Size(284, 240);
+            _pnlEditor.TabIndex = 1;
             // 
             // VSTPluginConfigForm
             // 
-            this.ClientSize = new System.Drawing.Size(284, 264);
-            this.Controls.Add(this._pnlEditor);
-            this.Controls.Add(this._menuStrip);
-            this.MainMenuStrip = this._menuStrip;
-            this.Name = "VstPluginConfigForm";
-            this._menuStrip.ResumeLayout(false);
-            this._menuStrip.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            ClientSize = new System.Drawing.Size(284, 264);
+            Controls.Add(_pnlEditor);
+            Controls.Add(_menuStrip);
+            MainMenuStrip = _menuStrip;
+            Name = "VstPluginConfigForm";
+            _menuStrip.ResumeLayout(false);
+            _menuStrip.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
     }

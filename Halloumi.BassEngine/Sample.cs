@@ -35,13 +35,13 @@ namespace Halloumi.BassEngine
         /// </summary>
         public Sample()
         {
-            this.Channels = new List<int>();
-            this.SampleEndSyncId = int.MinValue;
-            this.Gain = 0;
-            this.IsLooped = false;
+            Channels = new List<int>();
+            SampleEndSyncId = int.MinValue;
+            Gain = 0;
+            IsLooped = false;
 
-            this.LinkedTrackDescription = "";
-            this.SampleKey = "None";
+            LinkedTrackDescription = "";
+            SampleKey = "None";
         }
 
         #endregion
@@ -96,7 +96,7 @@ namespace Halloumi.BassEngine
             get
             {
                 if (_bpm != -1) return _bpm;
-                else return BassHelper.GetBpmFromLoopLength(this.LengthSeconds);
+                else return BassHelper.GetBpmFromLoopLength(LengthSeconds);
             }
             set
             {
@@ -121,7 +121,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.Length);
+                return SamplesToSeconds(Length);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return FormatSeconds(this.LengthSeconds);
+                return FormatSeconds(LengthSeconds);
             }
         }
 
@@ -173,7 +173,7 @@ namespace Halloumi.BassEngine
 
         public string SampleId
         {
-            get { return this.LinkedTrackDescription + " - " + this.SampleKey; }
+            get { return LinkedTrackDescription + " - " + SampleKey; }
         }
 
         #endregion
@@ -195,10 +195,10 @@ namespace Halloumi.BassEngine
                     return _cachedConversions.Where(c => c.Samples == samples).FirstOrDefault().Seconds;
             }
 
-            if (this.Channel == int.MinValue) return (double)samples * _samplesToSecondsRatio;
+            if (Channel == int.MinValue) return (double)samples * _samplesToSecondsRatio;
             else
             {
-                var value = Bass.BASS_ChannelBytes2Seconds(this.Channel, samples);
+                var value = Bass.BASS_ChannelBytes2Seconds(Channel, samples);
                 if (value == -1)
                 {
                     value = GuessSecondsFromSamples(samples);
@@ -230,10 +230,10 @@ namespace Halloumi.BassEngine
                     return _cachedConversions.Where(c => c.Seconds == seconds).FirstOrDefault().Samples;
             }
 
-            if (this.Channel == int.MinValue) return (long)((double)seconds / _samplesToSecondsRatio);
+            if (Channel == int.MinValue) return (long)((double)seconds / _samplesToSecondsRatio);
             else
             {
-                var value = Bass.BASS_ChannelSeconds2Bytes(this.Channel, seconds);
+                var value = Bass.BASS_ChannelSeconds2Bytes(Channel, seconds);
                 if (value == -1)
                 {
                     value = GuessSamplesFromSeconds(seconds);
@@ -291,14 +291,14 @@ namespace Halloumi.BassEngine
         /// <returns> A string that represents this instance.</returns>
         public override string ToString()
         {
-            return this.Description;
+            return Description;
         }
 
         internal System.Runtime.InteropServices.GCHandle AudioDataHandle { get; set; }
 
         internal byte[] AudioData { get; set; }
 
-        internal IntPtr AudioDataPointer { get { return this.AudioDataHandle.AddrOfPinnedObject(); } }
+        internal IntPtr AudioDataPointer { get { return AudioDataHandle.AddrOfPinnedObject(); } }
 
         #endregion
     }

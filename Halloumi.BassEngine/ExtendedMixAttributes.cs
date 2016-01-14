@@ -51,12 +51,12 @@ namespace Halloumi.BassEngine
         /// </summary>
         public ExtendedMixAttributes()
         {
-            this.SampleTriggers = new List<SampleTrigger>();
-            this.FadeLength = 0;
-            this.FadeEnd = 0;
-            this.FadeEndLoop = 0;
-            this.PowerDownAfterFade = false;
-            this.ExtendedFadeType = ExtendedFadeType.Default;
+            SampleTriggers = new List<SampleTrigger>();
+            FadeLength = 0;
+            FadeEnd = 0;
+            FadeEndLoop = 0;
+            PowerDownAfterFade = false;
+            ExtendedFadeType = ExtendedFadeType.Default;
         }
     }
 }

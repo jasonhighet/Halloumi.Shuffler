@@ -17,9 +17,9 @@ namespace Halloumi.Shuffler.Forms
         {
             InitializeComponent();
             
-            this.Tracks = null;
-            this.Artist = "";
-            this.Album = "";
+            Tracks = null;
+            Artist = "";
+            Album = "";
         }
 
         public Library Library { get; set; }
@@ -34,29 +34,29 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindData()
         {
-            var albums = this.Library.GetAllArtists();
+            var albums = Library.GetAllArtists();
             cmbArtist.ValueMember = "Name";
             cmbArtist.DisplayMember = "Name";
             cmbArtist.DataSource = albums;
             
 
-            if (this.Album != "")
+            if (Album != "")
             {
-                this.Text = "Update Album Artist";
+                Text = "Update Album Artist";
 
-                var albumTracks = this.Library.GetAllTracksForAlbum(this.Album);
+                var albumTracks = Library.GetAllTracksForAlbum(Album);
                 if (albumTracks.Count > 0) cmbArtist.Text = albumTracks[0].AlbumArtist;
 
             }
-            else if (this.Tracks != null)
+            else if (Tracks != null)
             {
-                this.Text = "Rename Artist";
-                cmbArtist.Text = this.Tracks[0].Artist;
+                Text = "Rename Artist";
+                cmbArtist.Text = Tracks[0].Artist;
             }
             else
             {
-                this.Text = "Update Artist";
-                cmbArtist.Text = this.Artist;
+                Text = "Update Artist";
+                cmbArtist.Text = Artist;
             }
 
         }
@@ -70,24 +70,24 @@ namespace Halloumi.Shuffler.Forms
         {
             if (cmbArtist.Text.Trim() == "") return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            if (this.Album != "")
+            if (Album != "")
             {
-                this.Library.UpdateAlbumArtist(this.Album, cmbArtist.Text);
+                Library.UpdateAlbumArtist(Album, cmbArtist.Text);
             }
-            else if (this.Tracks != null)
+            else if (Tracks != null)
             {
-                this.Library.UpdateArtist(this.Tracks, cmbArtist.Text);
+                Library.UpdateArtist(Tracks, cmbArtist.Text);
             }
             else
             {
-                this.Library.RenameArtist(this.Artist, cmbArtist.Text);
+                Library.RenameArtist(Artist, cmbArtist.Text);
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

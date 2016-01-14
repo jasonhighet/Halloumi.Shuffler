@@ -42,20 +42,20 @@ namespace Halloumi.Shuffler.Forms
         private void Initialise()
         {
             trackWave.Mode = TrackWave.TrackWaveMode.Sampler;
-            trackWave.BassPlayer = this.BassPlayer;
-            this.Track = trackWave.LoadTrack(this.Filename);
-            this.LibraryTrack = this.Library.GetTrackByFilename(this.Filename);
+            trackWave.BassPlayer = BassPlayer;
+            Track = trackWave.LoadTrack(Filename);
+            LibraryTrack = Library.GetTrackByFilename(Filename);
 
             cmbOutput.SelectedIndex = 0;
 
-            this.Samples = new List<Sample>();
-            var samples = this.SampleLibrary.GetSamples(this.LibraryTrack);
+            Samples = new List<Sample>();
+            var samples = SampleLibrary.GetSamples(LibraryTrack);
 
             foreach (var sample in samples)
             {
-                this.Samples.Add(sample.Clone());
+                Samples.Add(sample.Clone());
             }
-            this.trackWave.Samples = this.Samples;
+            trackWave.Samples = Samples;
 
             BindData();
         }
@@ -71,8 +71,8 @@ namespace Halloumi.Shuffler.Forms
         {
             try
             {
-                var settings = Halloumi.Shuffler.Forms.Settings.Default;
-                this.BassPlayer.RawLoopOutput = settings.RawLoopOutput;
+                var settings = Settings.Default;
+                BassPlayer.RawLoopOutput = settings.RawLoopOutput;
                 if (settings.RawLoopOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
                 if (settings.RawLoopOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
                 if (settings.RawLoopOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
@@ -97,13 +97,13 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindTrack()
         {
-            lblTrackBPM.Text = this.Track.Bpm.ToString("0.00");
-            this.Text = "Halloumi : Shuffler : Sample Details : " + this.Track.Description;
+            lblTrackBPM.Text = Track.Bpm.ToString("0.00");
+            Text = "Halloumi : Shuffler : Sample Details : " + Track.Description;
 
-            lblTrackArtist.Text = this.LibraryTrack.Artist;
-            lblTrackTitle.Text = this.LibraryTrack.Title;
-            lblTrackGenre.Text = this.LibraryTrack.Genre;
-            lblTrackKey.Text = BE.KeyHelper.GetDisplayKey(this.LibraryTrack.Key);
+            lblTrackArtist.Text = LibraryTrack.Artist;
+            lblTrackTitle.Text = LibraryTrack.Title;
+            lblTrackGenre.Text = LibraryTrack.Genre;
+            lblTrackKey.Text = BE.KeyHelper.GetDisplayKey(LibraryTrack.Key);
         }
 
         private bool _bindingData = false;
@@ -118,19 +118,19 @@ namespace Halloumi.Shuffler.Forms
             RefreshTrackWavePositions();
             UpdateCurrentSample();
 
-            foreach (var sample in this.Samples)
+            foreach (var sample in Samples)
             {
-                sample.Gain = this.trackWave.GetNormalizationGain(sample.Start, sample.Length);
+                sample.Gain = trackWave.GetNormalizationGain(sample.Start, sample.Length);
             }
 
-            this.SampleLibrary.UpdateTrackSamples(this.LibraryTrack, this.Samples);
-            this.SampleLibrary.SaveCache();
+            SampleLibrary.UpdateTrackSamples(LibraryTrack, Samples);
+            SampleLibrary.SaveCache();
 
-            this.SampleLibrary.SaveSampleFiles(this.LibraryTrack);
+            SampleLibrary.SaveSampleFiles(LibraryTrack);
 
             //_saved = true;
 
-            this.Close();
+            Close();
         }
 
         //private bool _saved = false;
@@ -162,11 +162,11 @@ namespace Halloumi.Shuffler.Forms
         {
             lstSamples.SuspendLayout();
             lstSamples.Items.Clear();
-            foreach (var sample in this.Samples)
+            foreach (var sample in Samples)
             {
                 var item = new ListViewItem(sample.Description);
                 lstSamples.Items.Add(item);
-                item.Selected = (sample == this.CurrentSample);
+                item.Selected = (sample == CurrentSample);
             }
             lstSamples.ResumeLayout();
             trackWave.RefreshPositions();
@@ -175,11 +175,11 @@ namespace Halloumi.Shuffler.Forms
         private void BindSample()
         {
             List<double> loopLengths = null;
-            if (this.CurrentSample == null)
+            if (CurrentSample == null)
             {
                 txtSampleStartPosition.Seconds = 0;
                 txtSampleOffsetPosition.Seconds = 0;
-                loopLengths = BE.BassHelper.GetLoopLengths(this.Track.Bpm);
+                loopLengths = BE.BassHelper.GetLoopLengths(Track.Bpm);
                 cmbSampleLength.Seconds = 0;
                 SetLoopModeOnDropdown(LoopMode.FullLoop);
                 chkAtonal.Checked = false;
@@ -189,19 +189,19 @@ namespace Halloumi.Shuffler.Forms
             }
             else
             {
-                loopLengths = BE.BassHelper.GetLoopLengths(this.CurrentSample.Bpm);
+                loopLengths = BE.BassHelper.GetLoopLengths(CurrentSample.Bpm);
 
-                txtSampleStartPosition.Seconds = this.CurrentSample.Start;
-                txtSampleOffsetPosition.Seconds = this.CurrentSample.Offset;
+                txtSampleStartPosition.Seconds = CurrentSample.Start;
+                txtSampleOffsetPosition.Seconds = CurrentSample.Offset;
 
-                lblSampleBPM.Text = string.Format("0.00", this.CurrentSample.Bpm);
+                lblSampleBPM.Text = string.Format("0.00", CurrentSample.Bpm);
 
-                cmbSampleLength.Seconds = this.CurrentSample.Length;
-                SetLoopModeOnDropdown(this.CurrentSample.LoopMode);
-                chkAtonal.Checked = this.CurrentSample.IsAtonal;
-                chkPrimaryLoop.Checked = this.CurrentSample.IsPrimaryLoop;
+                cmbSampleLength.Seconds = CurrentSample.Length;
+                SetLoopModeOnDropdown(CurrentSample.LoopMode);
+                chkAtonal.Checked = CurrentSample.IsAtonal;
+                chkPrimaryLoop.Checked = CurrentSample.IsPrimaryLoop;
 
-                txtTags.Text = string.Join(", ", this.CurrentSample.Tags.ToArray());
+                txtTags.Text = string.Join(", ", CurrentSample.Tags.ToArray());
             }
 
             // SetSampleCheckBoxes();
@@ -242,10 +242,10 @@ namespace Halloumi.Shuffler.Forms
             if (GetLoopModeFromDropdown() == LoopMode.FullLoop)
                 return BE.BassHelper.GetBpmFromLoopLength(length);
 
-            var samples = this.Samples.Where(x => x.LoopMode == LoopMode.FullLoop).ToList();
-            samples.Remove(this.CurrentSample);
+            var samples = Samples.Where(x => x.LoopMode == LoopMode.FullLoop).ToList();
+            samples.Remove(CurrentSample);
 
-            if (samples.Count() == 0) return this.Track.Bpm;
+            if (samples.Count() == 0) return Track.Bpm;
 
             return samples
                 .OrderByDescending(x => Math.Abs(start - x.Start))
@@ -263,15 +263,15 @@ namespace Halloumi.Shuffler.Forms
                     Description = sampleName,
                 };
 
-                this.SampleLibrary.UpdateSampleFromTrack(sample, this.LibraryTrack);
+                SampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
 
-                this.Samples.Add(sample);
-                this.CurrentSample = sample;
-                this.trackWave.CurrentSample = sample;
-                this.trackWave.Samples = this.Samples;
+                Samples.Add(sample);
+                CurrentSample = sample;
+                trackWave.CurrentSample = sample;
+                trackWave.Samples = Samples;
 
-                sample.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
-                sample.Length = this.Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
+                sample.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
+                sample.Length = Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
                 sample.Bpm = BE.BassHelper.GetBpmFromLoopLength(sample.Length);
 
                 RefreshTrackWavePositions();
@@ -282,15 +282,15 @@ namespace Halloumi.Shuffler.Forms
 
         private void RemoveSample()
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            var message = "Are you sure you wish to delete sample '" + this.CurrentSample.Description + "'?";
+            var message = "Are you sure you wish to delete sample '" + CurrentSample.Description + "'?";
             if (MessageBoxHelper.Confirm(message))
             {
-                this.Samples.Remove(this.CurrentSample);
-                this.CurrentSample = null;
-                this.trackWave.CurrentSample = null;
-                this.trackWave.RefreshPositions();
+                Samples.Remove(CurrentSample);
+                CurrentSample = null;
+                trackWave.CurrentSample = null;
+                trackWave.RefreshPositions();
 
                 BindData();
             }
@@ -298,30 +298,30 @@ namespace Halloumi.Shuffler.Forms
 
         private void RenameSample()
         {
-            if (this.CurrentSample == null) return;
-            var sampleName = UserInputHelper.GetUserInput("Rename Sample", this.CurrentSample.Description, this);
-            if (sampleName != this.CurrentSample.Description)
+            if (CurrentSample == null) return;
+            var sampleName = UserInputHelper.GetUserInput("Rename Sample", CurrentSample.Description, this);
+            if (sampleName != CurrentSample.Description)
             {
-                this.CurrentSample.Description = sampleName;
+                CurrentSample.Description = sampleName;
                 BindData();
             }
         }
 
         private void UpdateCurrentSample()
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            this.CurrentSample.LoopMode = GetLoopModeFromDropdown();
-            this.CurrentSample.IsAtonal = chkAtonal.Checked;
-            this.CurrentSample.IsPrimaryLoop = chkPrimaryLoop.Checked;
+            CurrentSample.LoopMode = GetLoopModeFromDropdown();
+            CurrentSample.IsAtonal = chkAtonal.Checked;
+            CurrentSample.IsPrimaryLoop = chkPrimaryLoop.Checked;
 
-            if (txtSampleStartPosition.Seconds != 0) this.CurrentSample.Start = txtSampleStartPosition.Seconds;
-            if (txtSampleOffsetPosition.Seconds != 0) this.CurrentSample.Offset = txtSampleOffsetPosition.Seconds;
-            if (cmbSampleLength.Seconds != 0) this.CurrentSample.Length = cmbSampleLength.Seconds;
+            if (txtSampleStartPosition.Seconds != 0) CurrentSample.Start = txtSampleStartPosition.Seconds;
+            if (txtSampleOffsetPosition.Seconds != 0) CurrentSample.Offset = txtSampleOffsetPosition.Seconds;
+            if (cmbSampleLength.Seconds != 0) CurrentSample.Length = cmbSampleLength.Seconds;
 
-            this.CurrentSample.Bpm = CalculateSampleBpm();
+            CurrentSample.Bpm = CalculateSampleBpm();
 
-            this.CurrentSample.Tags = txtTags.Text
+            CurrentSample.Tags = txtTags.Text
                 .Split(',')
                 .Select(x => x.ToLower().Trim())
                 .OrderBy(x => x)
@@ -353,7 +353,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         /// <summary>
@@ -382,8 +382,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnSampleUpdate_Click(object sender, EventArgs e)
         {
-            txtSampleStartPosition.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomStart);
-            cmbSampleLength.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomLength);
+            txtSampleStartPosition.Seconds = Track.SamplesToSeconds(trackWave.ZoomStart);
+            cmbSampleLength.Seconds = Track.SamplesToSeconds(trackWave.ZoomLength);
             UpdateCurrentSample();
         }
 
@@ -394,8 +394,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void ZoomToSample()
         {
-            if (this.CurrentSample == null) return;
-            trackWave.Zoom(this.CurrentSample.Start, this.CurrentSample.Length, this.CurrentSample.Offset);
+            if (CurrentSample == null) return;
+            trackWave.Zoom(CurrentSample.Start, CurrentSample.Length, CurrentSample.Offset);
         }
 
         private void cmbSampleLength_SelectedIndexChanged(object sender, EventArgs e)
@@ -432,7 +432,7 @@ namespace Halloumi.Shuffler.Forms
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
             var outputType = cmbOutput.ParseEnum<BE.Channels.SoundOutput>();
-            this.BassPlayer.RawLoopOutput = outputType;
+            BassPlayer.RawLoopOutput = outputType;
         }
 
         #endregion
@@ -444,21 +444,21 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_bindingData) return;
 
-            this.trackWave.Stop();
+            trackWave.Stop();
 
             UpdateCurrentSample();
             if (lstSamples.SelectedItems.Count == 0)
             {
-                this.CurrentSample = null;
-                this.trackWave.CurrentSample = null;
+                CurrentSample = null;
+                trackWave.CurrentSample = null;
             }
             else
             {
                 var description = lstSamples.SelectedItems[0].Text;
-                this.CurrentSample = this.Samples.Where(s => s.Description == description).FirstOrDefault();
-                this.trackWave.CurrentSample = this.CurrentSample;
+                CurrentSample = Samples.Where(s => s.Description == description).FirstOrDefault();
+                trackWave.CurrentSample = CurrentSample;
             }
-            this.trackWave.RefreshPositions();
+            trackWave.RefreshPositions();
             BindSample();
             ZoomToSample();
         }
@@ -480,7 +480,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnCalculateKey_Click(object sender, EventArgs e)
         {
-            BE.KeyHelper.CalculateKey(this.trackWave.Filename);
+            BE.KeyHelper.CalculateKey(trackWave.Filename);
         }
 
         private void txtSampleOffsetPosition_TextChanged(object sender, EventArgs e)
@@ -500,8 +500,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnImportSamplesFromMix_Click(object sender, EventArgs e)
         {
-            var mixSamples = this.SampleLibrary.GetMixSectionsAsSamples(this.LibraryTrack);
-            this.Samples.AddRange(mixSamples);
+            var mixSamples = SampleLibrary.GetMixSectionsAsSamples(LibraryTrack);
+            Samples.AddRange(mixSamples);
 
             UpdateCurrentSample();
             BindSamples();

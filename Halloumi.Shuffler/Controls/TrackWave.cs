@@ -38,7 +38,7 @@ namespace Halloumi.Shuffler.Controls
             _timer = new BASSTimer(50);
             _timer.Tick += new EventHandler(timer_Tick);
 
-            this.Mode = TrackWaveMode.Shuffler;
+            Mode = TrackWaveMode.Shuffler;
         }
 
         #endregion
@@ -51,13 +51,13 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="fileName">Name of the file.</param>
         public BE.Track LoadTrack(string fileName)
         {
-            this.Filename = fileName;
-            this.BassTrack = this.BassPlayer.LoadRawLoopTrack(this.Filename);
+            Filename = fileName;
+            BassTrack = BassPlayer.LoadRawLoopTrack(Filename);
 
             LoadTrackWaveData();
             DrawWave();
 
-            return this.BassTrack;
+            return BassTrack;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void Unload()
         {
-            this.BassPlayer.UnloadRawLoopTrack();
+            BassPlayer.UnloadRawLoopTrack();
             _timer.Stop();
         }
 
@@ -74,7 +74,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void RefreshPositions()
         {
-            if (this.Wave == null) return;
+            if (Wave == null) return;
             SetMarkers();
             DrawWave();
         }
@@ -87,11 +87,11 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="currentPositionSeconds">The current position seconds.</param>
         public void Zoom(double startSeconds, double lengthSeconds, double currentPositionSeconds)
         {
-            var start = this.BassTrack.SecondsToSamples(startSeconds);
-            var end = this.BassTrack.SecondsToSamples(startSeconds + lengthSeconds);
+            var start = BassTrack.SecondsToSamples(startSeconds);
+            var end = BassTrack.SecondsToSamples(startSeconds + lengthSeconds);
             var currentPosition = start;
             if (currentPositionSeconds != 0D)
-                currentPosition = this.BassTrack.SecondsToSamples(currentPositionSeconds);
+                currentPosition = BassTrack.SecondsToSamples(currentPositionSeconds);
 
             Zoom(start, end, currentPosition);
         }
@@ -127,7 +127,7 @@ namespace Halloumi.Shuffler.Controls
         public void Zoom(long start, long end, long currentPosition)
         {
             if (start < 0) return;
-            if (end > this.BassTrack.Length) return;
+            if (end > BassTrack.Length) return;
 
             if (start > end)
             {
@@ -142,9 +142,9 @@ namespace Halloumi.Shuffler.Controls
             if (currentPosition < start || currentPosition > end)
                 currentPosition = start;
 
-            this.ZoomStart = start;
-            this.ZoomEnd = end;
-            this.CurrentPosition = currentPosition;
+            ZoomStart = start;
+            ZoomEnd = end;
+            CurrentPosition = currentPosition;
             DrawWave();
         }
 
@@ -157,10 +157,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void DrawWave()
         {
-            if (this.Wave == null) return;
-            if (this.ZoomLength == 0) return;
+            if (Wave == null) return;
+            if (ZoomLength == 0) return;
 
-            this.BeginInvoke((MethodInvoker)delegate
+            BeginInvoke((MethodInvoker)delegate
             {
                 var oldBitmap = picWaveForm.BackgroundImage;
                 var bitmap = this.Wave.CreateBitmap(picWaveForm.Width,
@@ -201,26 +201,26 @@ namespace Halloumi.Shuffler.Controls
         {
             _waveRendered = false;
 
-            if (!File.Exists(this.Filename)) return;
+            if (!File.Exists(Filename)) return;
 
-            this.Wave = new WaveForm(this.Filename, new WAVEFORMPROC(WaveForm_Callback), this);
-            this.Wave.FrameResolution = 0.001f; // 10ms are nice
-            this.Wave.CallbackFrequency = 30000; // every 5min.
-            this.Wave.ColorBackground = Color.Black;  //Color.FromArgb(20, 20, 20);
-            this.Wave.ColorLeft = Color.Navy;
-            this.Wave.ColorLeftEnvelope = Color.LightGray;
-            this.Wave.ColorRight = Color.Navy;
-            this.Wave.ColorRightEnvelope = Color.LightGray;
-            this.Wave.ColorMarker = Color.Gold;
-            this.Wave.ColorBeat = Color.LightSkyBlue;
-            this.Wave.ColorVolume = Color.White;
-            this.Wave.DrawEnvelope = false;
-            this.Wave.DrawWaveForm = WaveForm.WAVEFORMDRAWTYPE.Mono;
+            Wave = new WaveForm(Filename, new WAVEFORMPROC(WaveForm_Callback), this);
+            Wave.FrameResolution = 0.001f; // 10ms are nice
+            Wave.CallbackFrequency = 30000; // every 5min.
+            Wave.ColorBackground = Color.Black;  //Color.FromArgb(20, 20, 20);
+            Wave.ColorLeft = Color.Navy;
+            Wave.ColorLeftEnvelope = Color.LightGray;
+            Wave.ColorRight = Color.Navy;
+            Wave.ColorRightEnvelope = Color.LightGray;
+            Wave.ColorMarker = Color.Gold;
+            Wave.ColorBeat = Color.LightSkyBlue;
+            Wave.ColorVolume = Color.White;
+            Wave.DrawEnvelope = false;
+            Wave.DrawWaveForm = WaveForm.WAVEFORMDRAWTYPE.Mono;
 
-            this.Wave.DrawMarker = WaveForm.MARKERDRAWTYPE.Line | WaveForm.MARKERDRAWTYPE.Name | WaveForm.MARKERDRAWTYPE.NameBoxFilled;
+            Wave.DrawMarker = WaveForm.MARKERDRAWTYPE.Line | WaveForm.MARKERDRAWTYPE.Name | WaveForm.MARKERDRAWTYPE.NameBoxFilled;
 
-            this.Wave.MarkerLength = 0.9f;
-            this.Wave.RenderStart(true, BASSFlag.BASS_DEFAULT);
+            Wave.MarkerLength = 0.9f;
+            Wave.RenderStart(true, BASSFlag.BASS_DEFAULT);
 
             SetMarkers();
 
@@ -234,10 +234,10 @@ namespace Halloumi.Shuffler.Controls
         private void UpdateViewText()
         {
             lblViewDetails.Text = String.Format("View: {0} to {1} ({2})     Cursor: {3}",
-                BE.BassHelper.GetFormattedSecondsNoHours(this.BassTrack.SamplesToSeconds(this.ZoomStart)),
-                BE.BassHelper.GetFormattedSecondsNoHours(this.BassTrack.SamplesToSeconds(this.ZoomEnd)),
-                BE.BassHelper.GetFormattedSecondsNoHours(this.BassTrack.SamplesToSeconds(this.ZoomLength)),
-                BE.BassHelper.GetFormattedSecondsNoHours(this.BassTrack.SamplesToSeconds(this.CurrentPosition)));
+                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomStart)),
+                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomEnd)),
+                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomLength)),
+                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(CurrentPosition)));
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetMarkers()
         {
-            if (this.Mode == TrackWaveMode.Shuffler)
+            if (Mode == TrackWaveMode.Shuffler)
                 SetShufflerMarkers();
             else
                 SetSamplerMarkers();
@@ -253,101 +253,101 @@ namespace Halloumi.Shuffler.Controls
 
         private void SetSamplerMarkers()
         {
-            if (this.Wave == null) return;
+            if (Wave == null) return;
 
             for (var i = 1; i <= 2000; i++)
             {
-                this.Wave.RemoveMarker("S" + i.ToString() + "S");
-                this.Wave.RemoveMarker("S" + i.ToString() + "E");
+                Wave.RemoveMarker("S" + i.ToString() + "S");
+                Wave.RemoveMarker("S" + i.ToString() + "E");
             }
 
-            if (this.Samples != null)
+            if (Samples != null)
             {
-                for (var i = 1; i <= this.Samples.Count; i++)
+                for (var i = 1; i <= Samples.Count; i++)
                 {
-                    var sample = this.Samples[i - 1];
+                    var sample = Samples[i - 1];
 
-                    if (sample == this.CurrentSample)
+                    if (sample == CurrentSample)
                         continue;
 
                     if (sample.Start == 0 && sample.Length == 0) continue;
 
-                    this.Wave.AddMarker("S" + i.ToString() + "S", sample.Start);
-                    this.Wave.AddMarker("S" + i.ToString() + "E", sample.Start + sample.Length);
+                    Wave.AddMarker("S" + i.ToString() + "S", sample.Start);
+                    Wave.AddMarker("S" + i.ToString() + "E", sample.Start + sample.Length);
                 }
             }
 
-            this.Wave.RemoveMarker("CSS");
-            this.Wave.RemoveMarker("CSE");
-            this.Wave.RemoveMarker("CSO");
+            Wave.RemoveMarker("CSS");
+            Wave.RemoveMarker("CSE");
+            Wave.RemoveMarker("CSO");
 
-            if (this.CurrentSample != null)
+            if (CurrentSample != null)
             {
-                this.Wave.AddMarker("CSS", this.CurrentSample.Start);
+                Wave.AddMarker("CSS", CurrentSample.Start);
 
-                if (this.CurrentSample.Offset != 0D)
-                    this.Wave.AddMarker("CSO", this.CurrentSample.Offset);
+                if (CurrentSample.Offset != 0D)
+                    Wave.AddMarker("CSO", CurrentSample.Offset);
 
-                this.Wave.AddMarker("CSE", this.CurrentSample.Start + this.CurrentSample.Length);
+                Wave.AddMarker("CSE", CurrentSample.Start + CurrentSample.Length);
             }
         }
 
         private void SetShufflerMarkers()
         {
-            if (this.Wave == null) return;
+            if (Wave == null) return;
 
-            this.Wave.RemoveMarker("PFI");
-            this.Wave.RemoveMarker("FIS");
-            this.Wave.RemoveMarker("FIE");
-            this.Wave.RemoveMarker("FOS");
-            this.Wave.RemoveMarker("FOE");
-            this.Wave.RemoveMarker("SKS");
-            this.Wave.RemoveMarker("SKE");
+            Wave.RemoveMarker("PFI");
+            Wave.RemoveMarker("FIS");
+            Wave.RemoveMarker("FIE");
+            Wave.RemoveMarker("FOS");
+            Wave.RemoveMarker("FOE");
+            Wave.RemoveMarker("SKS");
+            Wave.RemoveMarker("SKE");
 
-            var attributes = this.BassPlayer.GetAutomationAttributes(this.BassTrack);
+            var attributes = BassPlayer.GetAutomationAttributes(BassTrack);
             foreach (var trigger in attributes.TrackFxTriggers)
             {
-                this.Wave.RemoveMarker("TS" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
-                this.Wave.RemoveMarker("TE" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
+                Wave.RemoveMarker("TS" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
+                Wave.RemoveMarker("TE" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
             }
 
             for (var i = 1; i <= 2000; i++)
             {
-                this.Wave.RemoveMarker("S" + i.ToString() + "S");
-                this.Wave.RemoveMarker("S" + i.ToString() + "E");
+                Wave.RemoveMarker("S" + i.ToString() + "S");
+                Wave.RemoveMarker("S" + i.ToString() + "E");
             }
 
-            this.Wave.AddMarker("PFI", this.BassTrack.SamplesToSeconds(this.BassTrack.PreFadeInStart));
-            this.Wave.AddMarker("FIS", this.BassTrack.SamplesToSeconds(this.BassTrack.FadeInStart));
-            this.Wave.AddMarker("FIE", this.BassTrack.SamplesToSeconds(this.BassTrack.FadeInEnd));
-            this.Wave.AddMarker("FOS", this.BassTrack.SamplesToSeconds(this.BassTrack.FadeOutStart));
-            this.Wave.AddMarker("FOE", this.BassTrack.SamplesToSeconds(this.BassTrack.FadeOutEnd));
+            Wave.AddMarker("PFI", BassTrack.SamplesToSeconds(BassTrack.PreFadeInStart));
+            Wave.AddMarker("FIS", BassTrack.SamplesToSeconds(BassTrack.FadeInStart));
+            Wave.AddMarker("FIE", BassTrack.SamplesToSeconds(BassTrack.FadeInEnd));
+            Wave.AddMarker("FOS", BassTrack.SamplesToSeconds(BassTrack.FadeOutStart));
+            Wave.AddMarker("FOE", BassTrack.SamplesToSeconds(BassTrack.FadeOutEnd));
 
-            if (this.BassTrack.HasSkipSection)
+            if (BassTrack.HasSkipSection)
             {
-                this.Wave.AddMarker("SKS", this.BassTrack.SamplesToSeconds(this.BassTrack.SkipStart));
-                this.Wave.AddMarker("SKE", this.BassTrack.SamplesToSeconds(this.BassTrack.SkipEnd));
+                Wave.AddMarker("SKS", BassTrack.SamplesToSeconds(BassTrack.SkipStart));
+                Wave.AddMarker("SKE", BassTrack.SamplesToSeconds(BassTrack.SkipEnd));
             }
 
-            if (this.TrackSamples != null)
+            if (TrackSamples != null)
             {
-                for (var i = 1; i <= this.TrackSamples.Count; i++)
+                for (var i = 1; i <= TrackSamples.Count; i++)
                 {
-                    var trackSample = this.TrackSamples[i - 1];
+                    var trackSample = TrackSamples[i - 1];
 
                     if (trackSample.Start == 0 && trackSample.Length == 0) continue;
 
-                    this.Wave.AddMarker("S" + i.ToString() + "S", trackSample.Start);
-                    this.Wave.AddMarker("S" + i.ToString() + "E", trackSample.Start + trackSample.Length);
+                    Wave.AddMarker("S" + i.ToString() + "S", trackSample.Start);
+                    Wave.AddMarker("S" + i.ToString() + "E", trackSample.Start + trackSample.Length);
                 }
             }
 
-            if (this.ShowTrackFx)
+            if (ShowTrackFx)
             {
                 foreach (var trackFx in attributes.TrackFxTriggers)
                 {
-                    this.Wave.AddMarker("TS" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start);
-                    this.Wave.AddMarker("TE" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start + trackFx.Length);
+                    Wave.AddMarker("TS" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start);
+                    Wave.AddMarker("TE" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start + trackFx.Length);
                 }
             }
         }
@@ -357,7 +357,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void ZoomIn()
         {
-            var zoomLength = this.ZoomLength;
+            var zoomLength = ZoomLength;
             zoomLength = (int)((decimal)zoomLength * _zoomRatio);
             Zoom(zoomLength);
         }
@@ -368,14 +368,14 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="zoomLength">Length of the zoom.</param>
         private void Zoom(long zoomLength)
         {
-            this.ZoomEnd = this.ZoomStart + zoomLength;
-            if (this.ZoomEnd > this.BassTrack.Length)
+            ZoomEnd = ZoomStart + zoomLength;
+            if (ZoomEnd > BassTrack.Length)
             {
-                this.ZoomEnd = this.BassTrack.Length;
-                this.ZoomStart = this.BassTrack.Length - zoomLength;
+                ZoomEnd = BassTrack.Length;
+                ZoomStart = BassTrack.Length - zoomLength;
             }
-            if (this.ZoomEnd < 0) this.ZoomEnd = this.BassTrack.Length;
-            if (this.ZoomStart < 0) this.ZoomStart = 0;
+            if (ZoomEnd < 0) ZoomEnd = BassTrack.Length;
+            if (ZoomStart < 0) ZoomStart = 0;
             DrawWave();
         }
 
@@ -386,7 +386,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void ZoomOut()
         {
-            var zoomLength = this.ZoomLength;
+            var zoomLength = ZoomLength;
             zoomLength = (int)((decimal)zoomLength / _zoomRatio);
             Zoom(zoomLength);
         }
@@ -396,8 +396,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void ZoomFull()
         {
-            this.ZoomStart = 0;
-            this.ZoomEnd = this.BassTrack.Length;
+            ZoomStart = 0;
+            ZoomEnd = BassTrack.Length;
             DrawWave();
         }
 
@@ -406,9 +406,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void DrawCurrentPosition()
         {
-            var position = BE.BassHelper.GetTrackPosition(this.BassPlayer.RawLoopTrack);
+            var position = BE.BassHelper.GetTrackPosition(BassPlayer.RawLoopTrack);
 
-            this.BeginInvoke((MethodInvoker)delegate
+            BeginInvoke((MethodInvoker)delegate
             {
                 var oldBitmap = picWaveForm.Image;
                 var bitmap = new Bitmap(this.picWaveForm.Width, this.picWaveForm.Height);
@@ -443,12 +443,12 @@ namespace Halloumi.Shuffler.Controls
             DrawWave();
 
             // raise track changed event
-            if (this.PositionsChanged != null) PositionsChanged(this, EventArgs.Empty);
+            if (PositionsChanged != null) PositionsChanged(this, EventArgs.Empty);
         }
 
         private void Play()
         {
-            this.BeginInvoke((MethodInvoker)delegate
+            BeginInvoke((MethodInvoker)delegate
             {
                 this.BassPlayer.SetRawLoopPositions(this.ZoomStart, this.ZoomEnd, this.CurrentPosition);
                 this.BassPlayer.PlayRawLoop();
@@ -493,7 +493,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public long ZoomLength
         {
-            get { return this.ZoomEnd - this.ZoomStart; }
+            get { return ZoomEnd - ZoomStart; }
         }
 
         /// <summary>
@@ -533,11 +533,11 @@ namespace Halloumi.Shuffler.Controls
         {
             var end = start + length;
 
-            var startFrame = this.Wave.Position2Frames(start);
-            var endFrame = this.Wave.Position2Frames(end);
+            var startFrame = Wave.Position2Frames(start);
+            var endFrame = Wave.Position2Frames(end);
 
             var peak = 0F;
-            var gain = this.Wave.GetNormalizationGain(startFrame, endFrame, ref peak);
+            var gain = Wave.GetNormalizationGain(startFrame, endFrame, ref peak);
 
             return gain;
         }
@@ -563,8 +563,8 @@ namespace Halloumi.Shuffler.Controls
         {
             if (finished)
             {
-                this.ZoomStart = 0;
-                this.ZoomEnd = this.BassTrack.Length;
+                ZoomStart = 0;
+                ZoomEnd = BassTrack.Length;
                 _waveRendered = true;
             }
             DrawWave();
@@ -614,11 +614,11 @@ namespace Halloumi.Shuffler.Controls
             if (_scrolling) return;
             _scrolling = true;
 
-            var zoomLength = this.ZoomLength;
-            this.ZoomStart = scrollBar.Value;
-            this.ZoomEnd = this.ZoomStart + zoomLength;
-            if (this.ZoomEnd < 0) this.ZoomEnd = this.BassTrack.Length;
-            if (this.ZoomStart < 0) this.ZoomStart = 0;
+            var zoomLength = ZoomLength;
+            ZoomStart = scrollBar.Value;
+            ZoomEnd = ZoomStart + zoomLength;
+            if (ZoomEnd < 0) ZoomEnd = BassTrack.Length;
+            if (ZoomStart < 0) ZoomStart = 0;
             DrawWave();
 
             _scrolling = false;
@@ -632,16 +632,16 @@ namespace Halloumi.Shuffler.Controls
         private void picWaveForm_MouseUp(object sender, MouseEventArgs e)
         {
             var percent = (double)e.X / (double)picWaveForm.Width;
-            var viewPercent = percent * (double)this.ZoomLength;
-            var position = this.ZoomStart + Convert.ToInt32(Math.Round(viewPercent, 0));
+            var viewPercent = percent * (double)ZoomLength;
+            var position = ZoomStart + Convert.ToInt32(Math.Round(viewPercent, 0));
 
-            if (Control.ModifierKeys == Keys.Shift)
+            if (ModifierKeys == Keys.Shift)
             {
-                Zoom(this.CurrentPosition, position);
+                Zoom(CurrentPosition, position);
             }
             else
             {
-                this.CurrentPosition = position;
+                CurrentPosition = position;
                 DrawWave();
             }
         }
@@ -651,7 +651,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetPreFadeInStart_Click(object sender, EventArgs e)
         {
-            this.BassTrack.PreFadeInStart = this.CurrentPosition;
+            BassTrack.PreFadeInStart = CurrentPosition;
             UpdatePositions();
         }
 
@@ -660,7 +660,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetFadeInStart_Click(object sender, EventArgs e)
         {
-            this.BassTrack.FadeInStart = this.CurrentPosition;
+            BassTrack.FadeInStart = CurrentPosition;
             UpdatePositions();
         }
 
@@ -669,7 +669,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetFadeInEnd_Click(object sender, EventArgs e)
         {
-            this.BassTrack.FadeInEnd = this.CurrentPosition;
+            BassTrack.FadeInEnd = CurrentPosition;
             UpdatePositions();
         }
 
@@ -678,7 +678,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetFadeOutStart_Click(object sender, EventArgs e)
         {
-            this.BassTrack.FadeOutStart = this.CurrentPosition;
+            BassTrack.FadeOutStart = CurrentPosition;
             UpdatePositions();
         }
 
@@ -687,7 +687,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetFadeOutEnd_Click(object sender, EventArgs e)
         {
-            this.BassTrack.FadeOutEnd = this.CurrentPosition;
+            BassTrack.FadeOutEnd = CurrentPosition;
             UpdatePositions();
         }
 
@@ -696,7 +696,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetSkipStart_Click(object sender, EventArgs e)
         {
-            this.BassTrack.SkipStart = this.CurrentPosition;
+            BassTrack.SkipStart = CurrentPosition;
             UpdatePositions();
         }
 
@@ -705,7 +705,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuSetSkipEnd_Click(object sender, EventArgs e)
         {
-            this.BassTrack.SkipEnd = this.CurrentPosition;
+            BassTrack.SkipEnd = CurrentPosition;
             UpdatePositions();
         }
 
@@ -721,7 +721,7 @@ namespace Halloumi.Shuffler.Controls
         {
             picWaveForm.Image = null;
             _timer.Enabled = false;
-            this.BassPlayer.StopRawLoop();
+            BassPlayer.StopRawLoop();
         }
 
         /// <summary>
@@ -760,7 +760,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (!File.Exists(editPath)) return;
 
-            BE.BassHelper.SaveAsWave(this.BassTrack.Filename, output);
+            BE.BassHelper.SaveAsWave(BassTrack.Filename, output);
 
             if (!File.Exists(output)) return;
             output = string.Format("\"{0}\"", output);
@@ -777,37 +777,37 @@ namespace Halloumi.Shuffler.Controls
 
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
-            mnuSetFadeInEnd.Visible = (this.Mode == TrackWaveMode.Shuffler);
-            mnuSetFadeInStart.Visible = (this.Mode == TrackWaveMode.Shuffler);
-            mnuSetFadeOutEnd.Visible = (this.Mode == TrackWaveMode.Shuffler);
-            mnuSetFadeOutStart.Visible = (this.Mode == TrackWaveMode.Shuffler);
-            mnuSetSkipStart.Visible = (this.Mode == TrackWaveMode.Shuffler);
-            mnuSetSkipEnd.Visible = (this.Mode == TrackWaveMode.Shuffler);
-            mnuSetPreFadeInStart.Visible = (this.Mode == TrackWaveMode.Shuffler);
+            mnuSetFadeInEnd.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetFadeInStart.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetFadeOutEnd.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetFadeOutStart.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetSkipStart.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetSkipEnd.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetPreFadeInStart.Visible = (Mode == TrackWaveMode.Shuffler);
 
-            mnuSetSampleEnd.Visible = (this.Mode == TrackWaveMode.Sampler);
-            mnuSetSampleStart.Visible = (this.Mode == TrackWaveMode.Sampler);
-            mnuSetSampleOffset.Visible = (this.Mode == TrackWaveMode.Sampler);
+            mnuSetSampleEnd.Visible = (Mode == TrackWaveMode.Sampler);
+            mnuSetSampleStart.Visible = (Mode == TrackWaveMode.Sampler);
+            mnuSetSampleOffset.Visible = (Mode == TrackWaveMode.Sampler);
 
-            mnuSetSampleEnd.Enabled = (this.CurrentSample != null);
-            mnuSetSampleStart.Enabled = (this.CurrentSample != null);
-            mnuSetSampleOffset.Enabled = (this.CurrentSample != null);
+            mnuSetSampleEnd.Enabled = (CurrentSample != null);
+            mnuSetSampleStart.Enabled = (CurrentSample != null);
+            mnuSetSampleOffset.Enabled = (CurrentSample != null);
         }
 
         private void mnuSetSampleStart_Click(object sender, EventArgs e)
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            this.CurrentSample.Start = this.BassTrack.SamplesToSeconds(this.CurrentPosition);
+            CurrentSample.Start = BassTrack.SamplesToSeconds(CurrentPosition);
             UpdatePositions();
         }
 
         private void mnuSetSampleEnd_Click(object sender, EventArgs e)
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            var end = this.BassTrack.SamplesToSeconds(this.CurrentPosition);
-            var start = this.CurrentSample.Start;
+            var end = BassTrack.SamplesToSeconds(CurrentPosition);
+            var start = CurrentSample.Start;
 
             if (start > end)
             {
@@ -817,17 +817,17 @@ namespace Halloumi.Shuffler.Controls
             }
             var length = end - start;
 
-            this.CurrentSample.Start = start;
-            this.CurrentSample.Length = length;
+            CurrentSample.Start = start;
+            CurrentSample.Length = length;
 
             UpdatePositions();
         }
 
         private void mnuSetSampleOffset_Click(object sender, EventArgs e)
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            this.CurrentSample.Offset = this.BassTrack.SamplesToSeconds(this.CurrentPosition);
+            CurrentSample.Offset = BassTrack.SamplesToSeconds(CurrentPosition);
             UpdatePositions();
         }
     }

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Halloumi.Shuffler.Controls
 {
-    public class DataGridView : Halloumi.Common.Windows.Controls.DataGridView
+    public class DataGridView : Common.Windows.Controls.DataGridView
     {
         #region Constructors
 
@@ -17,11 +17,11 @@ namespace Halloumi.Shuffler.Controls
         public DataGridView()
             : base()
         {
-            this.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(DataGridView_ColumnHeaderMouseClick);
-            this.ColumnHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(DataGridView_ColumnHeaderMouseDoubleClick);
-            this.SortColumnIndex = -1;
+            ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(DataGridView_ColumnHeaderMouseClick);
+            ColumnHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(DataGridView_ColumnHeaderMouseDoubleClick);
+            SortColumnIndex = -1;
             base.ColumnHeadersHeight = 26;
-            base.DoubleBuffered = true;
+            DoubleBuffered = true;
 
             //this.MouseDown += new MouseEventHandler(DataGridView_MouseDown);
             //this.DragDrop += new DragEventHandler(DataGridView_DragDrop);
@@ -33,10 +33,10 @@ namespace Halloumi.Shuffler.Controls
 
         public void SetSortColumn(int columnIndex, SortOrder sortOrder)
         {
-            if (columnIndex < 0 || columnIndex >= this.ColumnCount) return;
+            if (columnIndex < 0 || columnIndex >= ColumnCount) return;
 
-            this.SortColumnIndex = columnIndex;
-            this.SortOrder = sortOrder;
+            SortColumnIndex = columnIndex;
+            SortOrder = sortOrder;
             SetSortGlyph();
         }
 
@@ -47,12 +47,12 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetSortGlyph()
         {
-            for (var i = 0; i < this.Columns.Count; i++)
+            for (var i = 0; i < Columns.Count; i++)
             {
-                if (this.Columns[i].SortMode != DataGridViewColumnSortMode.Programmatic) continue;
+                if (Columns[i].SortMode != DataGridViewColumnSortMode.Programmatic) continue;
                 var sortOrder = SortOrder.None;
-                if (i == this.SortColumnIndex) sortOrder = this.SortOrder;
-                this.Columns[i].HeaderCell.SortGlyphDirection = sortOrder;
+                if (i == SortColumnIndex) sortOrder = SortOrder;
+                Columns[i].HeaderCell.SortGlyphDirection = sortOrder;
             }
         }
 
@@ -62,24 +62,24 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="columnIndex">Index of the sort column that was clicked.</param>
         private void SetNewSortOrder(int columnIndex)
         {
-            var oldSortColumnIndex = this.SortColumnIndex;
-            this.SortColumnIndex = columnIndex;
+            var oldSortColumnIndex = SortColumnIndex;
+            SortColumnIndex = columnIndex;
 
-            if (this.SortColumnIndex == oldSortColumnIndex)
+            if (SortColumnIndex == oldSortColumnIndex)
             {
-                if (this.SortOrder == SortOrder.Ascending) this.SortOrder = SortOrder.Descending;
-                else this.SortOrder = SortOrder.None;
+                if (SortOrder == SortOrder.Ascending) SortOrder = SortOrder.Descending;
+                else SortOrder = SortOrder.None;
             }
             else
             {
-                this.SortOrder = SortOrder.Ascending;
+                SortOrder = SortOrder.Ascending;
             }
 
-            if (this.SortOrder == SortOrder.None) this.SortColumnIndex = -1;
+            if (SortOrder == SortOrder.None) SortColumnIndex = -1;
 
             SetSortGlyph();
 
-            if (this.SortOrderChanged != null) SortOrderChanged(this, EventArgs.Empty);
+            if (SortOrderChanged != null) SortOrderChanged(this, EventArgs.Empty);
         }
 
         ///// <summary>
@@ -158,8 +158,8 @@ namespace Halloumi.Shuffler.Controls
         {
             get
             {
-                if (this.SortColumnIndex < 0 || this.SortColumnIndex >= this.ColumnCount) return null;
-                return this.Columns[this.SortColumnIndex];
+                if (SortColumnIndex < 0 || SortColumnIndex >= ColumnCount) return null;
+                return Columns[SortColumnIndex];
             }
         }
 
@@ -197,7 +197,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void DataGridView_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (this.Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic) SetNewSortOrder(e.ColumnIndex);
+            if (Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic) SetNewSortOrder(e.ColumnIndex);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void DataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (this.Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic) SetNewSortOrder(e.ColumnIndex);
+            if (Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic) SetNewSortOrder(e.ColumnIndex);
         }
 
         ///// <summary>

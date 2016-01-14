@@ -22,13 +22,13 @@ namespace Halloumi.BassEngine
         /// </summary>
         public decimal CalculateBpm(Track track)
         {
-            if (this.Key == "PreFadeIn")
+            if (Key == "PreFadeIn")
             {
                 return track.StartBpm;
             }
-            else if (this.Length != 0 && this.IsLooped)
+            else if (Length != 0 && IsLooped)
             {
-                return BassHelper.GetBpmFromLoopLength(this.Length);
+                return BassHelper.GetBpmFromLoopLength(Length);
             }
 
             return track.Bpm;
@@ -38,11 +38,11 @@ namespace Halloumi.BassEngine
         {
             return new TrackSample()
             {
-                Start = this.Start,
-                Length = this.Length,
-                IsLooped = this.IsLooped,
-                Key = this.Key,
-                Description = this.Description
+                Start = Start,
+                Length = Length,
+                IsLooped = IsLooped,
+                Key = Key,
+                Description = Description
             };
         }
     }

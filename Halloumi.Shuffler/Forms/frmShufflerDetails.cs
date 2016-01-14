@@ -20,7 +20,7 @@ namespace Halloumi.Shuffler.Forms
     {
         #region Constructors
 
-        public BE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         public string Filename { get; set; }
 
@@ -40,16 +40,16 @@ namespace Halloumi.Shuffler.Forms
 
         private void Initialise()
         {
-            trackWave.BassPlayer = this.BassPlayer;
-            this.Track = trackWave.LoadTrack(this.Filename);
+            trackWave.BassPlayer = BassPlayer;
+            Track = trackWave.LoadTrack(Filename);
             cmbOutput.SelectedIndex = 0;
 
-            this.CurrentSamples = new List<TrackSample>();
-            foreach (var trackSample in this.AutomationAttributes.TrackSamples)
+            CurrentSamples = new List<TrackSample>();
+            foreach (var trackSample in AutomationAttributes.TrackSamples)
             {
-                this.CurrentSamples.Add(trackSample.Clone());
+                CurrentSamples.Add(trackSample.Clone());
             }
-            this.trackWave.TrackSamples = this.CurrentSamples;
+            trackWave.TrackSamples = CurrentSamples;
 
             SetControlStates();
             BindData();
@@ -68,8 +68,8 @@ namespace Halloumi.Shuffler.Forms
         {
             try
             {
-                var settings = Halloumi.Shuffler.Forms.Settings.Default;
-                this.BassPlayer.RawLoopOutput = settings.RawLoopOutput;
+                var settings = Settings.Default;
+                BassPlayer.RawLoopOutput = settings.RawLoopOutput;
                 if (settings.RawLoopOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
                 if (settings.RawLoopOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
                 if (settings.RawLoopOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
@@ -85,52 +85,52 @@ namespace Halloumi.Shuffler.Forms
         {
             _bindingData = true;
 
-            var loopLengths = BE.BassHelper.GetLoopLengths(this.Track.StartBpm);
+            var loopLengths = BassHelper.GetLoopLengths(Track.StartBpm);
             cmbCustomFadeInLength.PopulateItemsFromSecondsList(loopLengths);
 
-            loopLengths = BE.BassHelper.GetLoopLengths(this.Track.EndBpm);
+            loopLengths = BassHelper.GetLoopLengths(Track.EndBpm);
             cmbCustomFadeOutLength.PopulateItemsFromSecondsList(loopLengths);
 
-            lblStartBPM.Text = this.Track.StartBpm.ToString("0.00");
-            lblEndBPM.Text = this.Track.EndBpm.ToString("0.00");
+            lblStartBPM.Text = Track.StartBpm.ToString("0.00");
+            lblEndBPM.Text = Track.EndBpm.ToString("0.00");
 
-            this.Text = "Halloumi : Shuffler : Shuffer Details : " + this.Track.Description;
+            Text = "Halloumi : Shuffler : Shuffer Details : " + Track.Description;
 
-            chkUsePreFadeIn.Checked = this.Track.UsePreFadeIn;
+            chkUsePreFadeIn.Checked = Track.UsePreFadeIn;
 
-            chkUseSkipSection.Checked = this.Track.HasSkipSection;
-            txtSkipStart.Seconds = this.Track.SamplesToSeconds(this.Track.SkipStart);
-            cmbSkipLength.Seconds = this.Track.SkipLengthSeconds;
+            chkUseSkipSection.Checked = Track.HasSkipSection;
+            txtSkipStart.Seconds = Track.SamplesToSeconds(Track.SkipStart);
+            cmbSkipLength.Seconds = Track.SkipLengthSeconds;
             cmbSkipLength.PopulateItemsFromSecondsList(loopLengths);
 
-            txtFadeInPosition.Seconds = this.Track.SamplesToSeconds(this.Track.FadeInStart);
-            txtFadeOutStartPosition.Seconds = this.Track.SamplesToSeconds(this.Track.FadeOutStart);
-            txtPreFadeInStartPosition.Seconds = this.Track.SamplesToSeconds(this.Track.PreFadeInStart);
+            txtFadeInPosition.Seconds = Track.SamplesToSeconds(Track.FadeInStart);
+            txtFadeOutStartPosition.Seconds = Track.SamplesToSeconds(Track.FadeOutStart);
+            txtPreFadeInStartPosition.Seconds = Track.SamplesToSeconds(Track.PreFadeInStart);
 
-            if (this.Track.FadeInEnd != 0D) cmbCustomFadeInLength.Seconds = this.Track.SamplesToSeconds(this.Track.FadeInEnd - this.Track.FadeInStart);
-            if (this.Track.FadeOutEnd != 0D) cmbCustomFadeOutLength.Seconds = this.Track.SamplesToSeconds(this.Track.FadeOutEnd - this.Track.FadeOutStart);
+            if (Track.FadeInEnd != 0D) cmbCustomFadeInLength.Seconds = Track.SamplesToSeconds(Track.FadeInEnd - Track.FadeInStart);
+            if (Track.FadeOutEnd != 0D) cmbCustomFadeOutLength.Seconds = Track.SamplesToSeconds(Track.FadeOutEnd - Track.FadeOutStart);
 
-            cmbPreFadeInStartVolume.Text = (this.Track.PreFadeInStartVolume * 100).ToString();
+            cmbPreFadeInStartVolume.Text = (Track.PreFadeInStartVolume * 100).ToString();
 
-            if (!this.Track.IsLoopedAtStart)
+            if (!Track.IsLoopedAtStart)
             {
                 cmbFadeInLoopCount.Text = "0";
             }
             else
             {
-                cmbFadeInLoopCount.Text = this.Track.StartLoopCount.ToString();
+                cmbFadeInLoopCount.Text = Track.StartLoopCount.ToString();
             }
 
-            if (!this.Track.IsLoopedAtEnd)
+            if (!Track.IsLoopedAtEnd)
             {
                 cmbFadeOutLoopCount.Text = "0";
             }
             else
             {
-                cmbFadeOutLoopCount.Text = this.Track.EndLoopCount.ToString();
+                cmbFadeOutLoopCount.Text = Track.EndLoopCount.ToString();
             }
 
-            chkPowerDown.Checked = this.Track.PowerDownOnEnd;
+            chkPowerDown.Checked = Track.PowerDownOnEnd;
 
             BindSamples();
             BindSample();
@@ -144,7 +144,7 @@ namespace Halloumi.Shuffler.Forms
         /// Populates the volume drop down.
         /// </summary>
         /// <param name="comboBox">The combo box.</param>
-        private void PopulateVolumeDropDown(Halloumi.Common.Windows.Controls.ComboBox comboBox)
+        private void PopulateVolumeDropDown(Common.Windows.Controls.ComboBox comboBox)
         {
             comboBox.Items.Clear();
             comboBox.Items.Add("0");
@@ -168,7 +168,7 @@ namespace Halloumi.Shuffler.Forms
         /// Populates the volume drop down.
         /// </summary>
         /// <param name="comboBox">The combo box.</param>
-        private void PopulateVolumeDropDownReverse(Halloumi.Common.Windows.Controls.ComboBox comboBox)
+        private void PopulateVolumeDropDownReverse(Common.Windows.Controls.ComboBox comboBox)
         {
             comboBox.Items.Clear();
             comboBox.Items.Add("100");
@@ -207,23 +207,23 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_bindingData) return;
 
-            var startBpm = this.Track.StartBpm;
-            var endBpm = this.Track.EndBpm;
+            var startBpm = Track.StartBpm;
+            var endBpm = Track.EndBpm;
 
-            var fadeInLength = BE.BassHelper.GetDefaultLoopLength(this.Track.TagBpm);
+            var fadeInLength = BassHelper.GetDefaultLoopLength(Track.TagBpm);
             if (cmbCustomFadeInLength.Seconds != 0)
             {
                 fadeInLength = cmbCustomFadeInLength.Seconds;
             }
-            startBpm = BE.BassHelper.GetBpmFromLoopLength(fadeInLength);
+            startBpm = BassHelper.GetBpmFromLoopLength(fadeInLength);
             lblStartBPM.Text = startBpm.ToString("0.00");
 
-            var fadeOutLength = BE.BassHelper.GetDefaultLoopLength(this.Track.TagBpm);
+            var fadeOutLength = BassHelper.GetDefaultLoopLength(Track.TagBpm);
             if (cmbCustomFadeOutLength.Seconds != 0)
             {
                 fadeOutLength = cmbCustomFadeOutLength.Seconds;
             }
-            endBpm = BE.BassHelper.GetBpmFromLoopLength(fadeOutLength);
+            endBpm = BassHelper.GetBpmFromLoopLength(fadeOutLength);
             lblEndBPM.Text = endBpm.ToString("0.00");
 
             PopulateVolumeDropDownReverse(cmbPreFadeInStartVolume);
@@ -237,21 +237,21 @@ namespace Halloumi.Shuffler.Forms
             UpdateData();
             UpdateCurrentSample();
 
-            this.AutomationAttributes.TrackSamples.Clear();
-            foreach (var sample in this.CurrentSamples)
+            AutomationAttributes.TrackSamples.Clear();
+            foreach (var sample in CurrentSamples)
             {
                 if (sample.Length == 0 && sample.Start == 0) continue;
-                this.AutomationAttributes.TrackSamples.Add(sample);
+                AutomationAttributes.TrackSamples.Add(sample);
             }
 
-            this.BassPlayer.SaveExtendedAttributes(this.Track);
-            this.BassPlayer.ReloadTrack(this.Track.Filename);
-            this.BassPlayer.SaveAutomationAttributes(this.Track);
-            this.BassPlayer.ReloadTrack(this.Track.Filename);
+            BassPlayer.SaveExtendedAttributes(Track);
+            BassPlayer.ReloadTrack(Track.Filename);
+            BassPlayer.SaveAutomationAttributes(Track);
+            BassPlayer.ReloadTrack(Track.Filename);
 
             _saved = true;
 
-            this.Close();
+            Close();
         }
 
         private bool _saved = false;
@@ -263,39 +263,39 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_bindingData) return;
 
-            this.Track.ChangeTempoOnFadeOut = true;
+            Track.ChangeTempoOnFadeOut = true;
 
-            this.Track.FadeInStart = this.Track.SecondsToSamples(txtFadeInPosition.Seconds);
-            this.Track.FadeInEnd = this.Track.FadeInStart + this.Track.SecondsToSamples(cmbCustomFadeInLength.Seconds);
+            Track.FadeInStart = Track.SecondsToSamples(txtFadeInPosition.Seconds);
+            Track.FadeInEnd = Track.FadeInStart + Track.SecondsToSamples(cmbCustomFadeInLength.Seconds);
 
-            this.Track.FadeOutStart = this.Track.SecondsToSamples(txtFadeOutStartPosition.Seconds);
-            this.Track.FadeOutEnd = this.Track.FadeOutStart + this.Track.SecondsToSamples(cmbCustomFadeOutLength.Seconds);
+            Track.FadeOutStart = Track.SecondsToSamples(txtFadeOutStartPosition.Seconds);
+            Track.FadeOutEnd = Track.FadeOutStart + Track.SecondsToSamples(cmbCustomFadeOutLength.Seconds);
 
-            this.Track.UsePreFadeIn = chkUsePreFadeIn.Checked;
+            Track.UsePreFadeIn = chkUsePreFadeIn.Checked;
             if (chkUsePreFadeIn.Checked)
             {
-                this.Track.PreFadeInStart = this.Track.SecondsToSamples(txtPreFadeInStartPosition.Seconds);
-                this.Track.PreFadeInStartVolume = float.Parse(cmbPreFadeInStartVolume.Text) / 100F;
+                Track.PreFadeInStart = Track.SecondsToSamples(txtPreFadeInStartPosition.Seconds);
+                Track.PreFadeInStartVolume = float.Parse(cmbPreFadeInStartVolume.Text) / 100F;
             }
             else
             {
-                this.Track.PreFadeInStart = 0;
-                this.Track.PreFadeInStartVolume = 0F;
+                Track.PreFadeInStart = 0;
+                Track.PreFadeInStartVolume = 0F;
             }
 
-            this.Track.PowerDownOnEnd = chkPowerDown.Checked;
+            Track.PowerDownOnEnd = chkPowerDown.Checked;
 
             if (cmbFadeInLoopCount.Text == "") cmbFadeInLoopCount.Text = "0";
             if (cmbFadeOutLoopCount.Text == "") cmbFadeOutLoopCount.Text = "0";
 
-            this.Track.StartLoopCount = int.Parse(cmbFadeInLoopCount.Text);
-            this.Track.EndLoopCount = int.Parse(cmbFadeOutLoopCount.Text);
+            Track.StartLoopCount = int.Parse(cmbFadeInLoopCount.Text);
+            Track.EndLoopCount = int.Parse(cmbFadeOutLoopCount.Text);
 
-            this.Track.SkipStart = this.Track.SecondsToSamples(txtSkipStart.Seconds);
-            if (this.Track.SkipStart != 0)
-                this.Track.SkipEnd = this.Track.SkipStart + this.Track.SecondsToSamples(cmbSkipLength.Seconds);
+            Track.SkipStart = Track.SecondsToSamples(txtSkipStart.Seconds);
+            if (Track.SkipStart != 0)
+                Track.SkipEnd = Track.SkipStart + Track.SecondsToSamples(cmbSkipLength.Seconds);
             else
-                this.Track.SkipEnd = 0;
+                Track.SkipEnd = 0;
 
             trackWave.RefreshPositions();
 
@@ -310,7 +310,7 @@ namespace Halloumi.Shuffler.Forms
         {
             cmbTrackFX.Items.Clear();
 
-            foreach (var trigger in this.AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
+            foreach (var trigger in AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
             {
                 cmbTrackFX.Items.Add(BassHelper.GetFormattedSecondsNoHours(trigger.Start));
             }
@@ -320,7 +320,7 @@ namespace Halloumi.Shuffler.Forms
 
         private AutomationAttributes AutomationAttributes
         {
-            get { return this.BassPlayer.GetAutomationAttributes(this.Track); }
+            get { return BassPlayer.GetAutomationAttributes(Track); }
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace Halloumi.Shuffler.Forms
 
             var selectedText = cmbTrackFX.SelectedItem.ToString();
 
-            foreach (var trackFx in this.AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
+            foreach (var trackFx in AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
             {
                 if (selectedText == BassHelper.GetFormattedSecondsNoHours(trackFx.Start))
                     return trackFx;
@@ -358,11 +358,11 @@ namespace Halloumi.Shuffler.Forms
         {
             lstSamples.SuspendLayout();
             lstSamples.Items.Clear();
-            foreach (var trackSample in this.CurrentSamples)
+            foreach (var trackSample in CurrentSamples)
             {
                 var item = new ListViewItem(trackSample.Description);
                 lstSamples.Items.Add(item);
-                item.Selected = (trackSample == this.CurrentSample);
+                item.Selected = (trackSample == CurrentSample);
             }
             lstSamples.ResumeLayout();
             trackWave.RefreshPositions();
@@ -371,19 +371,19 @@ namespace Halloumi.Shuffler.Forms
         private void BindSample()
         {
             List<double> loopLengths = null;
-            if (this.CurrentSample == null)
+            if (CurrentSample == null)
             {
                 txtSampleStartPosition.Seconds = 0;
-                loopLengths = BE.BassHelper.GetLoopLengths(this.Track.Bpm);
+                loopLengths = BassHelper.GetLoopLengths(Track.Bpm);
                 cmbSampleLength.Seconds = 0;
                 chkLoopSample.Checked = false;
             }
             else
             {
-                txtSampleStartPosition.Seconds = this.CurrentSample.Start;
-                loopLengths = BE.BassHelper.GetLoopLengths(this.CurrentSample.CalculateBpm(this.Track));
-                cmbSampleLength.Seconds = this.CurrentSample.Length;
-                chkLoopSample.Checked = this.CurrentSample.IsLooped;
+                txtSampleStartPosition.Seconds = CurrentSample.Start;
+                loopLengths = BassHelper.GetLoopLengths(CurrentSample.CalculateBpm(Track));
+                cmbSampleLength.Seconds = CurrentSample.Length;
+                chkLoopSample.Checked = CurrentSample.IsLooped;
             }
             cmbSampleLength.PopulateItemsFromSecondsList(loopLengths);
         }
@@ -397,7 +397,7 @@ namespace Halloumi.Shuffler.Forms
                 for (var i = 0; i < 2000; i++)
                 {
                     sampleKey = "Sample" + (i + 1).ToString();
-                    if (!this.CurrentSamples.Exists(s => s.Key == sampleKey))
+                    if (!CurrentSamples.Exists(s => s.Key == sampleKey))
                     {
                         break;
                     }
@@ -408,8 +408,8 @@ namespace Halloumi.Shuffler.Forms
                     Description = sampleName,
                     Key = sampleKey
                 };
-                this.CurrentSamples.Add(trackSample);
-                this.CurrentSample = trackSample;
+                CurrentSamples.Add(trackSample);
+                CurrentSample = trackSample;
 
                 BindSamples();
                 BindSample();
@@ -418,13 +418,13 @@ namespace Halloumi.Shuffler.Forms
 
         private void RemoveSample()
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            var message = "Are you sure you wish to delete sample '" + this.CurrentSample.Description + "'?";
+            var message = "Are you sure you wish to delete sample '" + CurrentSample.Description + "'?";
             if (MessageBoxHelper.Confirm(message))
             {
-                this.CurrentSamples.Remove(this.CurrentSample);
-                this.CurrentSample = null;
+                CurrentSamples.Remove(CurrentSample);
+                CurrentSample = null;
                 BindSamples();
                 BindSample();
             }
@@ -432,11 +432,11 @@ namespace Halloumi.Shuffler.Forms
 
         private void RenameSample()
         {
-            if (this.CurrentSample == null) return;
-            var sampleName = UserInputHelper.GetUserInput("Rename Sample", this.CurrentSample.Description, this);
-            if (sampleName != this.CurrentSample.Description)
+            if (CurrentSample == null) return;
+            var sampleName = UserInputHelper.GetUserInput("Rename Sample", CurrentSample.Description, this);
+            if (sampleName != CurrentSample.Description)
             {
-                this.CurrentSample.Description = sampleName;
+                CurrentSample.Description = sampleName;
                 BindSamples();
                 BindSample();
             }
@@ -444,18 +444,18 @@ namespace Halloumi.Shuffler.Forms
 
         private void UpdateCurrentSample()
         {
-            if (this.CurrentSample == null) return;
+            if (CurrentSample == null) return;
 
-            this.CurrentSample.IsLooped = chkLoopSample.Checked;
-            if (txtSampleStartPosition.Seconds != 0) this.CurrentSample.Start = txtSampleStartPosition.Seconds;
-            if (cmbSampleLength.Seconds != 0) this.CurrentSample.Length = cmbSampleLength.Seconds;
+            CurrentSample.IsLooped = chkLoopSample.Checked;
+            if (txtSampleStartPosition.Seconds != 0) CurrentSample.Start = txtSampleStartPosition.Seconds;
+            if (cmbSampleLength.Seconds != 0) CurrentSample.Length = cmbSampleLength.Seconds;
         }
 
         #endregion
 
         #region Properties
 
-        public BE.Track Track { get; private set; }
+        public Track Track { get; private set; }
 
         #endregion
 
@@ -493,7 +493,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         /// <summary>
@@ -536,8 +536,8 @@ namespace Halloumi.Shuffler.Forms
             trackWave.Unload();
             if (_saved)
             {
-                this.BassPlayer.ReloadAutomationAttributes(this.Track);
-                this.BassPlayer.ReloadTrack(this.Track.Filename);
+                BassPlayer.ReloadAutomationAttributes(Track);
+                BassPlayer.ReloadTrack(Track.Filename);
             }
         }
 
@@ -580,16 +580,16 @@ namespace Halloumi.Shuffler.Forms
         {
             _bindingData = true;
 
-            chkUsePreFadeIn.Checked = this.Track.UsePreFadeIn;
-            txtFadeInPosition.Seconds = this.Track.SamplesToSeconds(this.Track.FadeInStart);
-            txtFadeOutStartPosition.Seconds = this.Track.SamplesToSeconds(this.Track.FadeOutStart);
-            txtPreFadeInStartPosition.Seconds = this.Track.SamplesToSeconds(this.Track.PreFadeInStart);
-            if (this.Track.FadeInEnd != 0D) cmbCustomFadeInLength.Seconds = this.Track.SamplesToSeconds(this.Track.FadeInEnd - this.Track.FadeInStart);
-            if (this.Track.FadeOutEnd != 0D) cmbCustomFadeOutLength.Seconds = this.Track.SamplesToSeconds(this.Track.FadeOutEnd - this.Track.FadeOutStart);
+            chkUsePreFadeIn.Checked = Track.UsePreFadeIn;
+            txtFadeInPosition.Seconds = Track.SamplesToSeconds(Track.FadeInStart);
+            txtFadeOutStartPosition.Seconds = Track.SamplesToSeconds(Track.FadeOutStart);
+            txtPreFadeInStartPosition.Seconds = Track.SamplesToSeconds(Track.PreFadeInStart);
+            if (Track.FadeInEnd != 0D) cmbCustomFadeInLength.Seconds = Track.SamplesToSeconds(Track.FadeInEnd - Track.FadeInStart);
+            if (Track.FadeOutEnd != 0D) cmbCustomFadeOutLength.Seconds = Track.SamplesToSeconds(Track.FadeOutEnd - Track.FadeOutStart);
 
-            chkUseSkipSection.Checked = this.Track.HasSkipSection;
-            txtSkipStart.Seconds = this.Track.SamplesToSeconds(this.Track.SkipStart);
-            if (this.Track.SkipEnd != 0D) cmbSkipLength.Seconds = this.Track.SamplesToSeconds(this.Track.SkipEnd - this.Track.SkipStart);
+            chkUseSkipSection.Checked = Track.HasSkipSection;
+            txtSkipStart.Seconds = Track.SamplesToSeconds(Track.SkipStart);
+            if (Track.SkipEnd != 0D) cmbSkipLength.Seconds = Track.SamplesToSeconds(Track.SkipEnd - Track.SkipStart);
 
             _bindingData = false;
         }
@@ -599,8 +599,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnFadeInUpdate_Click(object sender, EventArgs e)
         {
-            txtFadeInPosition.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomStart);
-            cmbCustomFadeInLength.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomLength);
+            txtFadeInPosition.Seconds = Track.SamplesToSeconds(trackWave.ZoomStart);
+            cmbCustomFadeInLength.Seconds = Track.SamplesToSeconds(trackWave.ZoomLength);
             UpdateData();
         }
 
@@ -609,15 +609,15 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnFadeOutUpdate_Click(object sender, EventArgs e)
         {
-            txtFadeOutStartPosition.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomStart);
-            cmbCustomFadeOutLength.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomLength);
+            txtFadeOutStartPosition.Seconds = Track.SamplesToSeconds(trackWave.ZoomStart);
+            cmbCustomFadeOutLength.Seconds = Track.SamplesToSeconds(trackWave.ZoomLength);
             UpdateData();
         }
 
         private void btnSampleUpdate_Click(object sender, EventArgs e)
         {
-            txtSampleStartPosition.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomStart);
-            cmbSampleLength.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomLength);
+            txtSampleStartPosition.Seconds = Track.SamplesToSeconds(trackWave.ZoomStart);
+            cmbSampleLength.Seconds = Track.SamplesToSeconds(trackWave.ZoomLength);
             UpdateCurrentSample();
         }
 
@@ -628,8 +628,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void ZoomToSample()
         {
-            if (this.CurrentSample == null) return;
-            trackWave.Zoom(this.CurrentSample.Start, this.CurrentSample.Length);
+            if (CurrentSample == null) return;
+            trackWave.Zoom(CurrentSample.Start, CurrentSample.Length);
         }
 
         private void cmbSampleLength_SelectedIndexChanged(object sender, EventArgs e)
@@ -665,7 +665,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnZoomFadeIn_Click(object sender, EventArgs e)
         {
-            trackWave.Zoom(this.Track.FadeInStart, this.Track.FadeInEnd);
+            trackWave.Zoom(Track.FadeInStart, Track.FadeInEnd);
         }
 
         /// <summary>
@@ -673,7 +673,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnZoomPreFade_Click(object sender, EventArgs e)
         {
-            trackWave.Zoom(this.Track.PreFadeInStart, this.Track.FadeInStart);
+            trackWave.Zoom(Track.PreFadeInStart, Track.FadeInStart);
         }
 
         /// <summary>
@@ -681,7 +681,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnZoomFadeOut_Click(object sender, EventArgs e)
         {
-            trackWave.Zoom(this.Track.FadeOutStart, this.Track.FadeOutEnd);
+            trackWave.Zoom(Track.FadeOutStart, Track.FadeOutEnd);
         }
 
         /// <summary>
@@ -690,7 +690,7 @@ namespace Halloumi.Shuffler.Forms
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
             var outputType = cmbOutput.ParseEnum<BE.Channels.SoundOutput>();
-            this.BassPlayer.RawLoopOutput = outputType;
+            BassPlayer.RawLoopOutput = outputType;
         }
 
         /// <summary>
@@ -698,9 +698,9 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnPreFadeInUpdate_Click(object sender, EventArgs e)
         {
-            if (this.trackWave.ZoomStart < this.Track.FadeInStart)
+            if (trackWave.ZoomStart < Track.FadeInStart)
             {
-                txtPreFadeInStartPosition.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomStart);
+                txtPreFadeInStartPosition.Seconds = Track.SamplesToSeconds(trackWave.ZoomStart);
                 UpdateData();
             }
         }
@@ -731,10 +731,10 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnDeleteTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFx = this.GetSelectedTrackFx();
+            var trackFx = GetSelectedTrackFx();
             if (trackFx == null) return;
 
-            this.AutomationAttributes.TrackFxTriggers.Remove(trackFx);
+            AutomationAttributes.TrackFxTriggers.Remove(trackFx);
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -742,7 +742,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnUpdateTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFx = this.GetSelectedTrackFx();
+            var trackFx = GetSelectedTrackFx();
             if (trackFx == null) return;
 
             if (rdbDelay1.Checked) trackFx.DelayNotes = 0.5M;
@@ -750,8 +750,8 @@ namespace Halloumi.Shuffler.Forms
             if (rdbDelay3.Checked) trackFx.DelayNotes = 0.125M;
             if (rdbDelay4.Checked) trackFx.DelayNotes = 0.0625M;
 
-            trackFx.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
-            trackFx.Length = this.Track.SamplesToSeconds(trackWave.ZoomLength);
+            trackFx.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
+            trackFx.Length = Track.SamplesToSeconds(trackWave.ZoomLength);
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -766,10 +766,10 @@ namespace Halloumi.Shuffler.Forms
             if (rdbDelay3.Checked) trackFx.DelayNotes = 0.125M;
             if (rdbDelay4.Checked) trackFx.DelayNotes = 0.0625M;
 
-            trackFx.Start = this.Track.SamplesToSeconds(trackWave.ZoomStart);
-            trackFx.Length = this.Track.SamplesToSeconds(trackWave.ZoomLength);
+            trackFx.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
+            trackFx.Length = Track.SamplesToSeconds(trackWave.ZoomLength);
 
-            this.AutomationAttributes.TrackFxTriggers.Add(trackFx);
+            AutomationAttributes.TrackFxTriggers.Add(trackFx);
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -777,9 +777,9 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnClearTrackFX_Click(object sender, EventArgs e)
         {
-            if (!MessageBoxHelper.Confirm("Are you sure you wish to clear all Track FX triggers for " + this.Track.Description + "?")) return;
+            if (!MessageBoxHelper.Confirm("Are you sure you wish to clear all Track FX triggers for " + Track.Description + "?")) return;
 
-            this.AutomationAttributes.TrackFxTriggers.Clear();
+            AutomationAttributes.TrackFxTriggers.Clear();
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -790,11 +790,11 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnTrackFXZoom_Click(object sender, EventArgs e)
         {
-            var trackFx = this.GetSelectedTrackFx();
+            var trackFx = GetSelectedTrackFx();
             if (trackFx == null) return;
 
-            var start = this.Track.SecondsToSamples(trackFx.Start);
-            var end = this.Track.SecondsToSamples(trackFx.Start + trackFx.Length);
+            var start = Track.SecondsToSamples(trackFx.Start);
+            var end = Track.SecondsToSamples(trackFx.Start + trackFx.Length);
 
             trackWave.Zoom(start, end);
         }
@@ -813,14 +813,14 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnSkipUpdate_Click(object sender, EventArgs e)
         {
-            txtSkipStart.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomStart);
-            cmbSkipLength.Seconds = this.Track.SamplesToSeconds(this.trackWave.ZoomLength);
+            txtSkipStart.Seconds = Track.SamplesToSeconds(trackWave.ZoomStart);
+            cmbSkipLength.Seconds = Track.SamplesToSeconds(trackWave.ZoomLength);
             UpdateData();
         }
 
         private void btnSkipZoom_Click(object sender, EventArgs e)
         {
-            trackWave.Zoom(this.Track.SkipStart, this.Track.SkipEnd);
+            trackWave.Zoom(Track.SkipStart, Track.SkipEnd);
         }
 
         private void cmbSkipLength_TextChanged(object sender, EventArgs e)
@@ -846,12 +846,12 @@ namespace Halloumi.Shuffler.Forms
             UpdateCurrentSample();
             if (lstSamples.SelectedItems.Count == 0)
             {
-                this.CurrentSample = null;
+                CurrentSample = null;
             }
             else
             {
                 var description = lstSamples.SelectedItems[0].Text;
-                this.CurrentSample = this.CurrentSamples.Where(s => s.Description == description).FirstOrDefault();
+                CurrentSample = CurrentSamples.Where(s => s.Description == description).FirstOrDefault();
             }
             BindSample();
             ZoomToSample();
@@ -874,7 +874,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnCalculateKey_Click(object sender, EventArgs e)
         {
-            BE.KeyHelper.CalculateKey(this.trackWave.Filename);
+            KeyHelper.CalculateKey(trackWave.Filename);
         }
     }
 }

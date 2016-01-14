@@ -48,7 +48,7 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                picCover.Image = this.Library.GetAlbumCover(new Album(track.Album));
+                picCover.Image = Library.GetAlbumCover(new Album(track.Album));
 
                 _currentFilename = track.Filename;
             }

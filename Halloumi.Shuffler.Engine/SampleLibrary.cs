@@ -19,13 +19,13 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public SampleLibrary(BE.BassPlayer bassPlayer, Library trackLibrary)
         {
-            this.Samples = new List<Sample>();
-            this.BassPlayer = bassPlayer;
-            this.TrackLibrary = trackLibrary;
+            Samples = new List<Sample>();
+            BassPlayer = bassPlayer;
+            TrackLibrary = trackLibrary;
 
-            this.SampleLibraryFolder = Path.Combine(Path.GetTempPath(), "SampleLibary");
-            if (!Directory.Exists(this.SampleLibraryFolder))
-                Directory.CreateDirectory(this.SampleLibraryFolder);
+            SampleLibraryFolder = Path.Combine(Path.GetTempPath(), "SampleLibary");
+            if (!Directory.Exists(SampleLibraryFolder))
+                Directory.CreateDirectory(SampleLibraryFolder);
         }
 
         /// <summary>
@@ -33,14 +33,14 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public void LoadFromCache()
         {
-            if (File.Exists(this.SampleLibraryFilename))
+            if (File.Exists(SampleLibraryFilename))
             {
-                var samples = SerializationHelper<List<Sample>>.FromXmlFile(this.SampleLibraryFilename);
+                var samples = SerializationHelper<List<Sample>>.FromXmlFile(SampleLibraryFilename);
 
-                lock (this.Samples)
+                lock (Samples)
                 {
-                    this.Samples.Clear();
-                    this.Samples.AddRange(samples.ToArray());
+                    Samples.Clear();
+                    Samples.AddRange(samples.ToArray());
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public void SaveCache()
         {
-            SerializationHelper<List<Sample>>.ToXmlFile(this.Samples, this.SampleLibraryFilename);
+            SerializationHelper<List<Sample>>.ToXmlFile(Samples, SampleLibraryFilename);
         }
 
         public void UpdateSampleFromTrack(Sample sample, Track track)
@@ -66,19 +66,19 @@ namespace Halloumi.Shuffler.Engine
 
         public void UpdateTrackSamples(Track track, List<Sample> trackSamples)
         {
-            this.Samples.RemoveAll(x => x.TrackTitle == track.Title && x.TrackArtist == track.Artist && x.TrackLength == track.FullLength);
+            Samples.RemoveAll(x => x.TrackTitle == track.Title && x.TrackArtist == track.Artist && x.TrackLength == track.FullLength);
 
             trackSamples.ForEach(x => UpdateSampleFromTrack(x, track));
 
-            this.Samples.AddRange(trackSamples);
+            Samples.AddRange(trackSamples);
         }
 
         public List<Sample> GetSamples(string trackArtist, string trackTitle, string description)
         {
             var samples = new List<Sample>();
-            lock (this.Samples)
+            lock (Samples)
             {
-                samples = this.Samples
+                samples = Samples
                     .Where(s => string.IsNullOrEmpty(trackArtist) || s.TrackArtist == trackArtist)
                     .Where(s => string.IsNullOrEmpty(trackTitle) || s.TrackTitle == trackTitle)
                     .Where(s => string.IsNullOrEmpty(description) || s.Description == description)
@@ -94,9 +94,9 @@ namespace Halloumi.Shuffler.Engine
             if (criteria.MaxBpm == 0) criteria.MaxBpm = 200;
 
             var samples = new List<Sample>();
-            lock (this.Samples)
+            lock (Samples)
             {
-                samples = this.Samples
+                samples = Samples
                     .Where(s => string.IsNullOrEmpty(criteria.TrackArtist) || s.Description == criteria.TrackArtist)
                     .Where(s => string.IsNullOrEmpty(criteria.TrackTitle) || s.TrackTitle == criteria.TrackTitle)
                     .Where(s => string.IsNullOrEmpty(criteria.Description) || s.Description == criteria.Description)
@@ -123,7 +123,7 @@ namespace Halloumi.Shuffler.Engine
 
         public List<Sample> GetSamples(Track track)
         {
-            var samples = this.Samples
+            var samples = Samples
                 .Where(x => x.TrackTitle == track.Title && x.TrackArtist == track.Artist && x.TrackLength == track.FullLength)
                 .OrderBy(x => x.Description)
                 .ToList();
@@ -133,7 +133,7 @@ namespace Halloumi.Shuffler.Engine
 
         public Track GetTrackFromSample(Sample sample)
         {
-            return this.TrackLibrary.GetTrack(sample.TrackArtist, sample.TrackTitle, sample.TrackLength);
+            return TrackLibrary.GetTrack(sample.TrackArtist, sample.TrackTitle, sample.TrackLength);
         }
 
         public void SaveSampleFiles(Track track)
@@ -150,14 +150,14 @@ namespace Halloumi.Shuffler.Engine
 
             FileSystemHelper.DeleteFiles(folder);
 
-            var bassTrack = this.BassPlayer.LoadTrackAndAudio(track.Filename);
+            var bassTrack = BassPlayer.LoadTrackAndAudio(track.Filename);
 
             foreach (var sample in samples)
             {
                 SaveSampleFile(bassTrack, sample);
             }
 
-            this.BassPlayer.UnloadTrackAudioData(bassTrack);
+            BassPlayer.UnloadTrackAudioData(bassTrack);
         }
 
         private void SaveSampleFile(BE.Track bassTrack, Sample sample)
@@ -186,7 +186,7 @@ namespace Halloumi.Shuffler.Engine
 
         private void CreateSampleFolder(Sample sample)
         {
-            var sampleFolder = Path.Combine(this.SampleLibraryFolder, FileSystemHelper.StripInvalidFileNameChars(sample.TrackArtist));
+            var sampleFolder = Path.Combine(SampleLibraryFolder, FileSystemHelper.StripInvalidFileNameChars(sample.TrackArtist));
 
             if (!Directory.Exists(sampleFolder))
                 Directory.CreateDirectory(sampleFolder);
@@ -202,7 +202,7 @@ namespace Halloumi.Shuffler.Engine
 
         private string GetSampleFolder(Sample sample)
         {
-            var sampleFolder = Path.Combine(this.SampleLibraryFolder, FileSystemHelper.StripInvalidFileNameChars(sample.TrackArtist));
+            var sampleFolder = Path.Combine(SampleLibraryFolder, FileSystemHelper.StripInvalidFileNameChars(sample.TrackArtist));
 
             var titleFolder = String.Format("{0} ({1})", sample.TrackTitle, BE.BassHelper.GetShortFormattedSeconds(sample.TrackLength));
             titleFolder = FileSystemHelper.StripInvalidFileNameChars(titleFolder);
@@ -242,14 +242,14 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         private string SampleLibraryFilename
         {
-            get { return Path.Combine(this.TrackLibrary.ShufflerFolder, "Halloumi.Shuffler.SampleLibrary.xml"); }
+            get { return Path.Combine(TrackLibrary.ShufflerFolder, "Halloumi.Shuffler.SampleLibrary.xml"); }
         }
 
         #endregion
 
         public List<Sample> GetMixSectionsAsSamples(Track track)
         {
-            var bassTrack = this.BassPlayer.LoadTrackAndAudio(track.Filename);
+            var bassTrack = BassPlayer.LoadTrackAndAudio(track.Filename);
             var samples = new List<Sample>();
 
             var fadeIn = new Sample();
@@ -257,7 +257,7 @@ namespace Halloumi.Shuffler.Engine
             fadeIn.Start = bassTrack.SamplesToSeconds(bassTrack.FadeInStart);
             fadeIn.Length = bassTrack.FadeOutLengthSeconds;
 
-            this.UpdateSampleFromTrack(fadeIn, track);
+            UpdateSampleFromTrack(fadeIn, track);
 
             samples.Add(fadeIn);
 
@@ -266,7 +266,7 @@ namespace Halloumi.Shuffler.Engine
             fadeOut.Start = bassTrack.SamplesToSeconds(bassTrack.FadeOutStart);
             fadeOut.Length = bassTrack.FadeOutLengthSeconds;
 
-            this.UpdateSampleFromTrack(fadeOut, track);
+            UpdateSampleFromTrack(fadeOut, track);
 
             samples.Add(fadeOut);
 
@@ -278,12 +278,12 @@ namespace Halloumi.Shuffler.Engine
                 preFadeIn.Length = bassTrack.SamplesToSeconds(bassTrack.FadeInStart - bassTrack.PreFadeInStart);
                 preFadeIn.LoopMode = LoopMode.PartialLoopAnchorEnd;
 
-                this.UpdateSampleFromTrack(preFadeIn, track);
+                UpdateSampleFromTrack(preFadeIn, track);
 
                 samples.Add(preFadeIn);
             }
 
-            this.BassPlayer.UnloadTrackAudioData(bassTrack);
+            BassPlayer.UnloadTrackAudioData(bassTrack);
 
             return samples;
         }
@@ -313,13 +313,13 @@ namespace Halloumi.Shuffler.Engine
 
         public void CalculateSampleKey(Sample sample)
         {
-            var track = this.GetTrackFromSample(sample);
+            var track = GetTrackFromSample(sample);
             if (track == null) return;
 
             BE.KeyHelper.CalculateKey(track.Filename);
-            this.TrackLibrary.ReloadTrackMetaData(track.Filename);
+            TrackLibrary.ReloadTrackMetaData(track.Filename);
             
-            var samples = this.GetTrackSamples(track);
+            var samples = GetTrackSamples(track);
 
             samples.ForEach(x => x.Key = track.Key);
             
@@ -327,7 +327,7 @@ namespace Halloumi.Shuffler.Engine
 
         private List<Sample> GetTrackSamples(Track track)
         {
-            return this.Samples.Where(x => x.TrackArtist == track.Artist && x.TrackTitle == track.Title).ToList();
+            return Samples.Where(x => x.TrackArtist == track.Artist && x.TrackTitle == track.Title).ToList();
         }
     }
 }

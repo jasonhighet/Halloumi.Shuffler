@@ -37,10 +37,10 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void UpdateTrackDetails()
         {
-            if (this.GetSelectedTrack() == null) return;
+            if (GetSelectedTrack() == null) return;
             var form = new FrmUpdateTrackDetails();
-            form.Library = this.Library;
-            form.Track = this.GetSelectedTrack();
+            form.Library = Library;
+            form.Track = GetSelectedTrack();
             var result = form.ShowDialog();
             if (result == DialogResult.OK) BindData();
         }
@@ -50,17 +50,17 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void UpdateShufflerDetails()
         {
-            if (this.GetSelectedTrack() == null) return;
+            if (GetSelectedTrack() == null) return;
 
             var form = new FrmShufflerDetails();
-            form.BassPlayer = this.BassPlayer;
-            form.Filename = this.GetSelectedTrack().Filename;
+            form.BassPlayer = BassPlayer;
+            form.Filename = GetSelectedTrack().Filename;
 
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
             {
-                this.Library.ReloadTrack(this.GetSelectedTrack().Filename);
-                this.BassPlayer.ReloadTrack(this.GetSelectedTrack().Filename);
+                Library.ReloadTrack(GetSelectedTrack().Filename);
+                BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
                 BindData();
             }
         }
@@ -102,42 +102,42 @@ namespace Halloumi.Shuffler.Forms
 
             public TrackDetail(Track track)
             {
-                this.Title = track.Title;
-                this.Length = track.FullLength;
-                this.Filename = track.Filename;
-                this.IsShuffler = track.IsShufflerTrack;
+                Title = track.Title;
+                Length = track.FullLength;
+                Filename = track.Filename;
+                IsShuffler = track.IsShufflerTrack;
             }
 
             public override string ToString()
             {
-                return this.Title + " " + this.Length.ToString();
+                return Title + " " + Length.ToString();
             }
         }
 
         private void frmSimilarTracks_Load(object sender, EventArgs e)
         {
-            this.SimilarTracks = GetSimilarTracks();
+            SimilarTracks = GetSimilarTracks();
             BindData();
         }
 
         private void BindData()
         {
-            grdTracks.DataSource = this.SimilarTracks;
+            grdTracks.DataSource = SimilarTracks;
         }
 
         private List<Track> GetSimilarTracks()
         {
             var similarTracks = new List<Track>();
-            var allTracks = this.Library.GetTracks();
+            var allTracks = Library.GetTracks();
 
-            var artists = this.Tracks
+            var artists = Tracks
                 .Select(t => t.Artist)
                 .Distinct()
                 .ToList();
 
             foreach (var artist in artists)
             {
-                var trackTitles = this.Tracks
+                var trackTitles = Tracks
                     .Where(t => t.Artist == artist)
                     .Select(t => t.Title)
                     .Distinct()
@@ -145,7 +145,7 @@ namespace Halloumi.Shuffler.Forms
 
                 foreach (var trackTitle in trackTitles)
                 {
-                    var track = this.Tracks
+                    var track = Tracks
                         .Where(t => t.Artist == artist && t.Title == trackTitle)
                         .OrderBy(t => t.Filename)
                         .FirstOrDefault();
@@ -189,12 +189,12 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuUpdateAudioData_Click(object sender, EventArgs e)
         {
-            if (this.GetSelectedTracks().Count == 0) return;
+            if (GetSelectedTracks().Count == 0) return;
 
             var updateTrackAudio = new FrmUpdateTrackAudio();
-            updateTrackAudio.Library = this.Library;
-            updateTrackAudio.DestinationTracks = this.GetSelectedTracks();
-            updateTrackAudio.SourceTracks = this.GetSimilarTracks(this.GetSelectedTrack());
+            updateTrackAudio.Library = Library;
+            updateTrackAudio.DestinationTracks = GetSelectedTracks();
+            updateTrackAudio.SourceTracks = GetSimilarTracks(GetSelectedTrack());
             updateTrackAudio.ShowDialog();
             BindData();
         }
@@ -204,11 +204,11 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuUpdateTrackTitle_Click(object sender, EventArgs e)
         {
-            if (this.GetSelectedTracks().Count == 0) return;
+            if (GetSelectedTracks().Count == 0) return;
 
             var form = new FrmUpdateTrackTitle();
-            form.Library = this.Library;
-            form.Tracks = this.GetSelectedTracks();
+            form.Library = Library;
+            form.Tracks = GetSelectedTracks();
             form.ShowDialog();
             BindData();
         }
@@ -220,7 +220,7 @@ namespace Halloumi.Shuffler.Forms
         /// <returns>A list of similar tracks</returns>
         private List<Track> GetSimilarTracks(Track track)
         {
-            return this.SimilarTracks.Where(t => t.Artist == track.Artist && StringHelper.FuzzyCompare(track.Title, t.Title)).ToList();
+            return SimilarTracks.Where(t => t.Artist == track.Artist && StringHelper.FuzzyCompare(track.Title, t.Title)).ToList();
         }
     }
 }

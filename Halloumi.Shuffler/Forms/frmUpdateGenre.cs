@@ -20,8 +20,8 @@ namespace Halloumi.Shuffler.Forms
         {
             InitializeComponent();
             
-            this.Tracks = null;
-            this.Genre = "";
+            Tracks = null;
+            Genre = "";
         }
 
         /// <summary>
@@ -44,20 +44,20 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            var genres = this.Library.GetAllGenres();
+            var genres = Library.GetAllGenres();
             cmbGenre.ValueMember = "Name";
             cmbGenre.DisplayMember = "Name";
             cmbGenre.DataSource = genres;
 
-            if (this.Tracks == null)
+            if (Tracks == null)
             {
-                this.Text = "Rename Genre";
-                cmbGenre.Text = this.Genre;
+                Text = "Rename Genre";
+                cmbGenre.Text = Genre;
             }
             else
             {
-                this.Text = "Update Genre";
-                cmbGenre.Text = this.Tracks[0].Genre;
+                Text = "Update Genre";
+                cmbGenre.Text = Tracks[0].Genre;
             }
         }
 
@@ -68,20 +68,20 @@ namespace Halloumi.Shuffler.Forms
         {
             if (cmbGenre.Text.Trim() == "") return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            if (this.Tracks != null)
+            if (Tracks != null)
             {
-                this.Library.UpdateGenre(this.Tracks, cmbGenre.Text);
+                Library.UpdateGenre(Tracks, cmbGenre.Text);
             }
             else
             {
-                this.Library.RenameGenre(this.Genre, cmbGenre.Text);
+                Library.RenameGenre(Genre, cmbGenre.Text);
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
 

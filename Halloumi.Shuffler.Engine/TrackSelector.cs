@@ -131,22 +131,22 @@ namespace Halloumi.Shuffler.Engine
                 workingTrack = currentPlaylist.Last();
             }
 
-            this.GeneratePlayListStatus = "";
-            this.MixLibrary = mixLibrary;
+            GeneratePlayListStatus = "";
+            MixLibrary = mixLibrary;
 
-            this.AvailableTracks = new List<Track>();
+            AvailableTracks = new List<Track>();
             foreach (var track in availableTracks)
             {
-                if (!this.AvailableTracks.Exists(t => t.Description == track.Description))
+                if (!AvailableTracks.Exists(t => t.Description == track.Description))
                 {
-                    this.AvailableTracks.Add(track);
+                    AvailableTracks.Add(track);
                 }
             }
-            if (strategy == MixStrategy.Working) this.AvailableTracks.RemoveAll(t => this.MixLibrary.GetMixOutCount(t) == 0);
+            if (strategy == MixStrategy.Working) AvailableTracks.RemoveAll(t => MixLibrary.GetMixOutCount(t) == 0);
 
-            if (this.AvailableTracks.Count == 0) return currentPlaylist;
+            if (AvailableTracks.Count == 0) return currentPlaylist;
 
-            var availableTrackDescriptions = GetDistinctTrackDescriptions(this.AvailableTracks);
+            var availableTrackDescriptions = GetDistinctTrackDescriptions(AvailableTracks);
 
             var trackCountLimit = int.MaxValue;
             if (approximateLength > 0 && approximateLength != int.MaxValue)
@@ -155,7 +155,7 @@ namespace Halloumi.Shuffler.Engine
                 var requiredLength = Convert.ToInt32((approximateLength * 60) - currentLength);
 
                 if (requiredLength <= 0) return new List<Track>();
-                var averageLength = this.AvailableTracks.Average(t => t.Length);
+                var averageLength = AvailableTracks.Average(t => t.Length);
 
                 trackCountLimit = (requiredLength / Convert.ToInt32(averageLength)) + currentPlaylist.Count;
 
@@ -169,9 +169,9 @@ namespace Halloumi.Shuffler.Engine
 
             if (strategy != MixStrategy.Unranked && strategy != MixStrategy.Working)
             {
-                if (trackCountLimit > this.AvailableTracks.Count)
+                if (trackCountLimit > AvailableTracks.Count)
                 {
-                    trackCountLimit = this.AvailableTracks.Count;
+                    trackCountLimit = AvailableTracks.Count;
                 }
             }
 
@@ -180,7 +180,7 @@ namespace Halloumi.Shuffler.Engine
             var currentPaths = new List<TrackPath>();
             if (currentPlaylist.Count == 0)
             {
-                foreach (var track in this.AvailableTracks)
+                foreach (var track in AvailableTracks)
                 {
                     var path = new TrackPath(track);
                     CalculateAverageRankForPath(path);
@@ -189,7 +189,7 @@ namespace Halloumi.Shuffler.Engine
             }
             else if (continueMix == ContinueMix.No)
             {
-                foreach (var track in this.AvailableTracks)
+                foreach (var track in AvailableTracks)
                 {
                     var playlist = new List<Track>(currentPlaylist);
                     playlist.Add(track);
@@ -229,7 +229,7 @@ namespace Halloumi.Shuffler.Engine
 
                 if (nextPaths.Count == 0) break;
 
-                this.GeneratePlayListStatus = string.Format("Generated {0} possible paths for {1} of {2} tracks.",
+                GeneratePlayListStatus = string.Format("Generated {0} possible paths for {1} of {2} tracks.",
                         nextPaths.Count,
                         nextPaths[0].Tracks.Count,
                         trackCountLimit);
@@ -262,7 +262,7 @@ namespace Halloumi.Shuffler.Engine
                 && resultPath.Tracks.Count < trackCountLimit
                 && resultPath.Tracks.Count > 0)
             {
-                availableTrackDescriptions = GetDistinctTrackDescriptions(this.AvailableTracks);
+                availableTrackDescriptions = GetDistinctTrackDescriptions(AvailableTracks);
                 var excludeTrackDescriptions = GetDistinctTrackDescriptions(resultPath.Tracks);
                 var currentTrack = resultPath.Tracks[resultPath.Tracks.Count - 1];
                 var nextTrack = GetBestMixTracks(currentTrack, resultPath.Tracks, allowBearable, availableTrackDescriptions, excludeTrackDescriptions, restrictArtistClumping, restrictArtistClumping, restrictTitleClumping, keyMixStrategy)
@@ -448,7 +448,7 @@ namespace Halloumi.Shuffler.Engine
             public TrackPath(Track newTrack, TrackPath existingTracks)
                 : this(newTrack, existingTracks.Tracks)
             {
-                this.AverageRank = existingTracks.AverageRank;
+                AverageRank = existingTracks.AverageRank;
             }
 
             public TrackPath(List<Track> existingTracks)
@@ -457,17 +457,17 @@ namespace Halloumi.Shuffler.Engine
 
             public TrackPath(Track newTrack, List<Track> existingTracks)
             {
-                this.Tracks = new List<Track>();
+                Tracks = new List<Track>();
 
                 if (existingTracks != null && existingTracks != null && existingTracks.Count > 0)
                 {
-                    this.Tracks.AddRange(existingTracks);
+                    Tracks.AddRange(existingTracks);
                 }
 
                 if (newTrack != null)
-                    this.Tracks.Add(newTrack);
+                    Tracks.Add(newTrack);
 
-                this.AverageRank = 0;
+                AverageRank = 0;
             }
         }
 
@@ -521,7 +521,7 @@ namespace Halloumi.Shuffler.Engine
             bool restrictTitleClumping,
             KeyMixStrategy keyMixStrategy)
         {
-            var mixTracks = this.MixLibrary
+            var mixTracks = MixLibrary
                 .GetGoodTracks(currentTrack)
                 .Where(t => !excludeTrackDescriptions.Contains(t.Description))
                 .Where(t => availableTrackDescriptions.Contains(t.Description))
@@ -541,7 +541,7 @@ namespace Halloumi.Shuffler.Engine
 
             if (bearableAllowed)
             {
-                var bearableTracks = this.MixLibrary
+                var bearableTracks = MixLibrary
                     .GetBearableTracks(currentTrack)
                     .Where(t => !excludeTrackDescriptions.Contains(t.Description))
                     .Where(t => availableTrackDescriptions.Contains(t.Description))
@@ -579,7 +579,7 @@ namespace Halloumi.Shuffler.Engine
             KeyMixStrategy keyMixStrategy,
             List<Track> mixTracks)
         {
-            var cycleTracks = this.GetCycleHistory(currentPath);
+            var cycleTracks = GetCycleHistory(currentPath);
 
             if (restrictTitleClumping)
                 FilterMixableTracksByTitle(mixTracks, cycleTracks);
@@ -619,7 +619,7 @@ namespace Halloumi.Shuffler.Engine
 
             if (keyMixStrategy != KeyMixStrategy.Good && keyMixStrategy != KeyMixStrategy.VeryGood)
             {
-                var mixLevel = this.MixLibrary.GetExtendedMixLevel(track1, track2);
+                var mixLevel = MixLibrary.GetExtendedMixLevel(track1, track2);
                 if (mixLevel >= 5) keyRank += 3;
                 else if (mixLevel >= 4) keyRank += 2;
                 else if (mixLevel >= 3) keyRank += 1;
@@ -651,13 +651,13 @@ namespace Halloumi.Shuffler.Engine
                 if (currentPath.Count > 1)
                 {
                     var lastTrack = currentPath[currentPath.Count - 2];
-                    var lastMixRank = this.MixLibrary.GetMixLevel(lastTrack, currentTrack);
+                    var lastMixRank = MixLibrary.GetMixLevel(lastTrack, currentTrack);
                     if (lastMixRank <= 2 || lastTrack.Rank == 2) lastMixBearable = true;
 
                     if (currentPath.Count > 2)
                     {
                         var penultimateTrack = currentPath[currentPath.Count - 3];
-                        var penultimateMixRank = this.MixLibrary.GetMixLevel(penultimateTrack, lastTrack);
+                        var penultimateMixRank = MixLibrary.GetMixLevel(penultimateTrack, lastTrack);
                         if (penultimateMixRank <= 2 || penultimateTrack.Rank == 2) penultimateMixBearable = true;
                     }
                 }
@@ -832,10 +832,10 @@ namespace Halloumi.Shuffler.Engine
             KeyMixStrategy keyMixStrategy,
             bool toTracksOnly)
         {
-            var mixTracks = this.MixLibrary.GetUnrankedToTracks(currentTrack).ToList();
+            var mixTracks = MixLibrary.GetUnrankedToTracks(currentTrack).ToList();
 
             if (!toTracksOnly)
-                mixTracks.AddRange(this.MixLibrary.GetUnrankedFromTracks(currentTrack));
+                mixTracks.AddRange(MixLibrary.GetUnrankedFromTracks(currentTrack));
 
             mixTracks = mixTracks
                 .Where(t => !excludeTrackDescriptions.Contains(t.Description))
@@ -856,9 +856,9 @@ namespace Halloumi.Shuffler.Engine
                 }
 
                 // get all unranked tracks apart from those ones
-                mixTracks = this.MixLibrary
+                mixTracks = MixLibrary
                     .GetUnrankedToTracks(currentTrack)
-                    .Union(this.MixLibrary.GetUnrankedFromTracks(currentTrack))
+                    .Union(MixLibrary.GetUnrankedFromTracks(currentTrack))
                     .Except(excludeTracks)
                     .Where(t => availableTrackDescriptions.Contains(t.Description))
                     .Distinct()
@@ -928,7 +928,7 @@ namespace Halloumi.Shuffler.Engine
             // must equal 3
             const double totalWeight = mixRankWeight + trackRankWeight + keyRankWeight;
 
-            var mixRank = this.MixLibrary.GetExtendedMixLevel(track1, track2);
+            var mixRank = MixLibrary.GetExtendedMixLevel(track1, track2);
             var keyMixRank = GetAdjustedKeyMixRank(track1, track2, KeyMixStrategy.Any);
             if (keyMixRank == 5) keyMixRank = 4;
             if (keyMixRank == 0) keyMixRank = 1;
@@ -966,7 +966,7 @@ namespace Halloumi.Shuffler.Engine
         /// <returns>The filtered tracks</returns>
         private List<Track> FilterTracksByExtendedMix(Track currentTrack, List<Track> mixTracks, UseExtendedMixes useExtendedMixes)
         {
-            var extendedMixTracks = mixTracks.Where(mt => this.MixLibrary.HasExtendedMix(currentTrack, mt));
+            var extendedMixTracks = mixTracks.Where(mt => MixLibrary.HasExtendedMix(currentTrack, mt));
 
             if (useExtendedMixes == UseExtendedMixes.Always)
                 return extendedMixTracks.ToList();
@@ -1015,9 +1015,9 @@ namespace Halloumi.Shuffler.Engine
             if (history.Count == 0) return 0M;
 
             var historyLength = history.Sum(t => t.Length);
-            var libraryLength = this.AvailableTracks.Sum(t => t.Length);
+            var libraryLength = AvailableTracks.Sum(t => t.Length);
 
-            var available = this.AvailableTracks.OrderBy(t => t.Bpm).ToList();
+            var available = AvailableTracks.OrderBy(t => t.Bpm).ToList();
             if (available.Count == 0) return 0;
 
             decimal cycleLength = GetCycleLength();

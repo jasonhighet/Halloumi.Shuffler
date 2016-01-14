@@ -29,9 +29,9 @@ namespace Halloumi.Shuffler.Forms
         {
             InitializeComponent();
 
-            this.Load += frmGeneratePlaylist_Load;
+            Load += frmGeneratePlaylist_Load;
 
-            this.TrackSelector = new TrackSelector();
+            TrackSelector = new TrackSelector();
 
             InitialiseControls();
         }
@@ -40,7 +40,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_screenMode == ScreenMode.AutoGeneratePlaylist)
             {
-                this.Opacity = 0;
+                Opacity = 0;
                 StartGeneratingPlaylist();
             }
         }
@@ -202,20 +202,20 @@ namespace Halloumi.Shuffler.Forms
 
             public Settings()
             {
-                this.CmbDirectionSelectedIndex = 0;
-                this.CmbAllowBearableSelectedIndex = 0;
-                this.CmbApproxLengthSelectedIndex = 0;
-                this.CmbModeSelectedIndex = 0;
-                this.TxtExcludeTracksText = "";
-                this.CmbExtendedMixesSelectedIndex = 0;
-                this.ChkExlcudeMixesOnlyChecked = false;
-                this.ChkRestrictArtistClumpingChecked = false;
-                this.ChkRestrictGenreClumpingChecked = false;
-                this.ChkDisplayedTracksOnlyChecked = false;
-                this.ChkRestrictTitleClumpingChecked = false;
-                this.CmbTracksToGenerateSelectedIndex = 0;
-                this.CmbContinueMixSelectedIndex = 0;
-                this.CmbKeyMixingSelectedIndex = 0;
+                CmbDirectionSelectedIndex = 0;
+                CmbAllowBearableSelectedIndex = 0;
+                CmbApproxLengthSelectedIndex = 0;
+                CmbModeSelectedIndex = 0;
+                TxtExcludeTracksText = "";
+                CmbExtendedMixesSelectedIndex = 0;
+                ChkExlcudeMixesOnlyChecked = false;
+                ChkRestrictArtistClumpingChecked = false;
+                ChkRestrictGenreClumpingChecked = false;
+                ChkDisplayedTracksOnlyChecked = false;
+                ChkRestrictTitleClumpingChecked = false;
+                CmbTracksToGenerateSelectedIndex = 0;
+                CmbContinueMixSelectedIndex = 0;
+                CmbKeyMixingSelectedIndex = 0;
             }
         }
 
@@ -318,7 +318,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (tracks.Count == 0) return;
 
-            var currentTrackCount = this.PlaylistControl.GetTracks().Count;
+            var currentTrackCount = PlaylistControl.GetTracks().Count;
             var additionalTrackCount = tracks.Count - currentTrackCount;
 
             if (additionalTrackCount <= 0) return;
@@ -328,7 +328,7 @@ namespace Halloumi.Shuffler.Forms
             tracks.Reverse();
 
             //this.PlaylistControl.ClearTracks();
-            this.PlaylistControl.QueueTracks(tracks);
+            PlaylistControl.QueueTracks(tracks);
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnStop_Click(object sender, EventArgs e)
         {
-            this.TrackSelector.StopGeneratePlayList();
+            TrackSelector.StopGeneratePlayList();
         }
 
         /// <summary>
@@ -366,12 +366,12 @@ namespace Halloumi.Shuffler.Forms
             if (backgroundWorker.IsBusy)
             {
                 _cancel = true;
-                this.TrackSelector.CancelGeneratePlayList();
+                TrackSelector.CancelGeneratePlayList();
             }
             else
             {
-                this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                DialogResult = DialogResult.Cancel;
+                Close();
             }
         }
 
@@ -390,7 +390,7 @@ namespace Halloumi.Shuffler.Forms
             }
             else
             {
-                availableTracks = this.LibraryControl
+                availableTracks = LibraryControl
                     .GetAvailableTracks()
                     .Where(t => t.IsShufflerTrack)
                     .ToList();
@@ -403,14 +403,14 @@ namespace Halloumi.Shuffler.Forms
             if (txtExcludeTracks.Text != "" && File.Exists(txtExcludeTracks.Text))
             {
                 var excludeTracks = BE.PlaylistHelper.GetFilesInPlaylist(txtExcludeTracks.Text)
-                                      .Select(f => this.LibraryControl.Library.GetTrackByFilename(f))
+                                      .Select(f => LibraryControl.Library.GetTrackByFilename(f))
                                       .Where(t => t != null)
                                       .ToList();
 
                 if (chkExlcudeMixesOnly.Checked)
                 {
                     if (excludeTracks.Count > 1)
-                        excludedMixes = this.LibraryControl.MixLibrary.ConvertPlaylistToMixDictionary(excludeTracks);
+                        excludedMixes = LibraryControl.MixLibrary.ConvertPlaylistToMixDictionary(excludeTracks);
                 }
                 else
                 {
@@ -444,9 +444,9 @@ namespace Halloumi.Shuffler.Forms
                 tracksToAdd = Convert.ToInt32(cmbTracksToGenerate.GetTextThreadSafe());
             }
 
-            var mixPath = this.TrackSelector.GeneratePlayList(availableTracks,
-                this.LibraryControl.MixLibrary,
-                this.PlaylistControl.GetTracks(),
+            var mixPath = TrackSelector.GeneratePlayList(availableTracks,
+                LibraryControl.MixLibrary,
+                PlaylistControl.GetTracks(),
                 direction,
                 approxLength,
                 allowBearable,
@@ -462,9 +462,9 @@ namespace Halloumi.Shuffler.Forms
 
             if (!_cancel)
             {
-                if (this.InvokeRequired)
+                if (InvokeRequired)
                 {
-                    this.BeginInvoke(new MethodInvoker(() => QueueTracks(mixPath)));
+                    BeginInvoke(new MethodInvoker(() => QueueTracks(mixPath)));
                 }
                 else QueueTracks(mixPath);
             }
@@ -475,9 +475,9 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void timer_Tick(object sender, EventArgs e)
         {
-            var status = this.TrackSelector.GeneratePlayListStatus;
+            var status = TrackSelector.GeneratePlayListStatus;
             if (status != lblStatus.Text && status != "")
-                lblStatus.Text = this.TrackSelector.GeneratePlayListStatus;
+                lblStatus.Text = TrackSelector.GeneratePlayListStatus;
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace Halloumi.Shuffler.Forms
         {
             timer.Stop();
             EnableControls();
-            this.Close();
+            Close();
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace Halloumi.Shuffler.Forms
         {
             DisableControls();
 
-            _displayedTracks = this.LibraryControl
+            _displayedTracks = LibraryControl
                 .GetDisplayedTracks()
                 .Where(t => t.IsShufflerTrack)
                 .ToList();
@@ -516,7 +516,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void frmGeneratePlaylist_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.DialogResult != DialogResult.Cancel)
+            if (DialogResult != DialogResult.Cancel)
                 SaveSettings();
         }
 
@@ -534,7 +534,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

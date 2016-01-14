@@ -17,7 +17,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public TrackPosition()
         {
-            this.Positition = 0;
+            Positition = 0;
         }
 
         #endregion
@@ -64,7 +64,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.Length - this.Positition;
+                return Length - Positition;
             }
         }
 
@@ -75,8 +75,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (this.Track == null) return "00:00:00";
-                return this.Track.ActiveLengthFormatted;
+                if (Track == null) return "00:00:00";
+                return Track.ActiveLengthFormatted;
             }
         }
 
@@ -87,8 +87,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (this.Track == null) return "00:00:00";
-                return this.Track.FormatSeconds(this.Track.SamplesToSeconds(this.Positition));
+                if (Track == null) return "00:00:00";
+                return Track.FormatSeconds(Track.SamplesToSeconds(Positition));
             }
         }
 
@@ -99,8 +99,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (this.Track == null) return "00:00:00";
-                return this.Track.FormatSeconds(this.Track.SamplesToSeconds(this.ChannelPosition));
+                if (Track == null) return "00:00:00";
+                return Track.FormatSeconds(Track.SamplesToSeconds(ChannelPosition));
             }
         }
 
@@ -112,8 +112,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (this.Track == null) return "00:00:00";
-                return this.Track.FormatSeconds(this.Track.SamplesToSeconds(this.Remaining));
+                if (Track == null) return "00:00:00";
+                return Track.FormatSeconds(Track.SamplesToSeconds(Remaining));
             }
         }
 
@@ -122,14 +122,14 @@ namespace Halloumi.BassEngine
         public override string ToString()
         {
             return string.Format("Pos:{0} ({2}) \t CPos:{1} ({3})\t SFI:{4} ({5})\t SFO:{6} ({7})\t", 
-                this.Positition, 
-                this.ChannelPosition, 
-                this.ElapsedFormatted, 
-                this.ChannelFormatted,
-                this.Track.FadeInStart,
-                this.Track.SamplesToSeconds(this.Track.FadeInStart),
-                this.Track.FadeInEnd,
-                this.Track.SamplesToSeconds(this.Track.FadeInEnd));
+                Positition, 
+                ChannelPosition, 
+                ElapsedFormatted, 
+                ChannelFormatted,
+                Track.FadeInStart,
+                Track.SamplesToSeconds(Track.FadeInStart),
+                Track.FadeInEnd,
+                Track.SamplesToSeconds(Track.FadeInEnd));
         }
     }
 }

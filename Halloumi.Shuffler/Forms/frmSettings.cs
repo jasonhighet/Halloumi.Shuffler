@@ -50,13 +50,13 @@ namespace Halloumi.Shuffler.Forms
             settings.AnalogXScratchFolder = txtAnalogXScratchFolder.Text;
             settings.KeyFinderFolder = txtKeyFinderFolder.Text;
             settings.Save();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

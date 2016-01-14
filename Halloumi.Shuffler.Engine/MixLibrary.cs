@@ -44,8 +44,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="mixDetailsFolder">The mix details folder.</param>
         public MixLibrary(string mixDetailsFolder)
         {
-            this.MixDetailsFolder = mixDetailsFolder;
-            this.AvailableTracks = new List<Track>();
+            MixDetailsFolder = mixDetailsFolder;
+            AvailableTracks = new List<Track>();
         }
 
         #endregion
@@ -57,7 +57,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public void LoadAllMixDetails()
         {
-            var availableTracks = this.AvailableTracks.Where(t => t.IsShufflerTrack).ToList();
+            var availableTracks = AvailableTracks.Where(t => t.IsShufflerTrack).ToList();
             foreach (var track in availableTracks)
             {
                 LoadMixRankings(track.Description);
@@ -117,7 +117,7 @@ namespace Halloumi.Shuffler.Engine
             var tracks = new List<Track>();
             if (track == null) return tracks;
 
-            var tracksInRange = GetTracksInStartBpmRange(track.EndBpm, 5M, this.AvailableTracks);
+            var tracksInRange = GetTracksInStartBpmRange(track.EndBpm, 5M, AvailableTracks);
             return tracksInRange
                 .Where(t => t.Description != track.Description)
                 .ToList();
@@ -133,7 +133,7 @@ namespace Halloumi.Shuffler.Engine
             var tracks = new List<Track>();
             if (track == null) return tracks;
 
-            var tracksInRange = GetTracksInEndBpmRange(track.StartBpm, 5M, this.AvailableTracks);
+            var tracksInRange = GetTracksInEndBpmRange(track.StartBpm, 5M, AvailableTracks);
             return tracksInRange
                 .Where(t => t.Description != track.Description)
                 .ToList();
@@ -308,7 +308,7 @@ namespace Halloumi.Shuffler.Engine
         private List<Track> GetToTracksFromMixes(List<MixRanking> mixRankings)
         {
             var toTracks = mixRankings.Select(r => r.ToTrack).ToList();
-            return this.AvailableTracks.Where(t => toTracks.Contains(t.Description)).ToList();
+            return AvailableTracks.Where(t => toTracks.Contains(t.Description)).ToList();
         }
 
         private List<Track> GetDistinctToTracksFromMixes(List<MixRanking> mixRankings)
@@ -329,7 +329,7 @@ namespace Halloumi.Shuffler.Engine
         private List<Track> GetFromTracksFromMixes(List<MixRanking> mixRankings)
         {
             var fromTracks = mixRankings.Select(r => r.FromTrack).ToList();
-            return this.AvailableTracks.Where(t => fromTracks.Contains(t.Description)).ToList();
+            return AvailableTracks.Where(t => fromTracks.Contains(t.Description)).ToList();
         }
 
         private List<Track> GetDistinctFromTracksFromMixes(List<MixRanking> mixRankings)
@@ -435,7 +435,7 @@ namespace Halloumi.Shuffler.Engine
         /// <returns>The extended mix attributes.</returns>
         private ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription, string fadeInTrackDescription)
         {
-            var attributes = AutomationAttributes.GetAutomationAttributes(fadeOutTrackDescription, this.MixDetailsFolder);
+            var attributes = AutomationAttributes.GetAutomationAttributes(fadeOutTrackDescription, MixDetailsFolder);
             if (attributes == null) return null;
             return attributes.GetExtendedMixAttributes(fadeInTrackDescription);
         }
@@ -561,7 +561,7 @@ namespace Halloumi.Shuffler.Engine
 
             FileSystemHelper.DeleteFiles(folder, "*.Mixes.txt", false);
 
-            var sourceFiles = FileSystemHelper.SearchFiles(this.MixDetailsFolder, "*.Mixes.txt", false);
+            var sourceFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
             foreach (var source in sourceFiles)
             {
                 var destinationFile = Path.Combine(folder, Path.GetFileName(source));
@@ -605,7 +605,7 @@ namespace Halloumi.Shuffler.Engine
 
             if (!deleteAfterImport)
             {
-                var existingFiles = FileSystemHelper.SearchFiles(this.MixDetailsFolder, "*.Mixes.txt", false);
+                var existingFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
                 foreach (var existingFile in existingFiles)
                 {
                     var importFile = Path.Combine(folder, Path.GetFileName(existingFile));
@@ -826,7 +826,7 @@ namespace Halloumi.Shuffler.Engine
 
             filename = FileSystemHelper.StripInvalidFileNameChars(filename);
 
-            return Path.Combine(this.MixDetailsFolder, filename);
+            return Path.Combine(MixDetailsFolder, filename);
         }
 
         #endregion
@@ -843,7 +843,7 @@ namespace Halloumi.Shuffler.Engine
 
             public override string ToString()
             {
-                return this.ToTrack + ", " + MixLevel.ToString();
+                return ToTrack + ", " + MixLevel.ToString();
             }
 
             public static MixRanking FromString(string value, string fromTrack)

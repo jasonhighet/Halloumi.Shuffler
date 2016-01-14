@@ -28,15 +28,15 @@ namespace Halloumi.BassEngine.Channels
 
             StartAudioEngine();
 
-            this.SpeakerOutput = new SpeakerOutputChannel();
-            this.MonitorOutput = new MonitorOutputChannel();
+            SpeakerOutput = new SpeakerOutputChannel();
+            MonitorOutput = new MonitorOutputChannel();
         }
 
         private void StartAudioEngine()
         {
             if (_engineStarted) return;
 
-            BassHelper.InitialiseBassEngine(this.WindowHandle);
+            BassHelper.InitialiseBassEngine(WindowHandle);
 
             _engineStarted = true;
         }

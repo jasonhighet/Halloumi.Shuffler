@@ -52,15 +52,15 @@ namespace Halloumi.Shuffler.Controls
 
             public TrackModel(Track track, MixLibrary mixLibrary)
             {
-                this.Description = track.Description;
-                this.Filename = track.Filename;
-                this.LengthFormatted = track.LengthFormatted;
-                this.IsCurrent = false;
-                this.Bpm = track.Bpm;
-                this.Length = track.Length;
-                this.TrackRank = track.Rank;
-                this.TrackRankDescription = mixLibrary.GetRankDescription(track.Rank);
-                this.Key = BE.KeyHelper.GetDisplayKey(track.Key);
+                Description = track.Description;
+                Filename = track.Filename;
+                LengthFormatted = track.LengthFormatted;
+                IsCurrent = false;
+                Bpm = track.Bpm;
+                Length = track.Length;
+                TrackRank = track.Rank;
+                TrackRankDescription = mixLibrary.GetRankDescription(track.Rank);
+                Key = BE.KeyHelper.GetDisplayKey(track.Key);
             }
 
             public static List<TrackModel> ToList(List<Track> tracks, MixLibrary mixLibrary)
@@ -80,7 +80,7 @@ namespace Halloumi.Shuffler.Controls
 
             grdPlaylist.CellDoubleClick += new DataGridViewCellEventHandler(grdPlaylist_CellContentDoubleClick);
             grdPlaylist.CellFormatting += new DataGridViewCellFormattingEventHandler(grdPlaylist_CellFormatting);
-            grdPlaylist.CellValueNeeded += new DataGridViewCellValueEventHandler(this.grdPlaylist_CellValueNeeded);
+            grdPlaylist.CellValueNeeded += new DataGridViewCellValueEventHandler(grdPlaylist_CellValueNeeded);
             grdPlaylist.SelectionChanged += new EventHandler(grdPlaylist_SelectionChanged);
             //grdPlaylist.CellClick += new DataGridViewCellEventHandler(grdPlaylist_CellClick);
 
@@ -95,8 +95,8 @@ namespace Halloumi.Shuffler.Controls
             btnRemove.Click += new EventHandler(btnRemove_Click);
             btnSave.Click += new EventHandler(btnSave_Click);
 
-            this.Load += new EventHandler(PlaylistControl_Load);
-            this.TrackModels = new List<TrackModel>();
+            Load += new EventHandler(PlaylistControl_Load);
+            TrackModels = new List<TrackModel>();
         }
 
         #endregion
@@ -114,18 +114,18 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initalize()
         {
-            trackDetails.Library = this.Library;
+            trackDetails.Library = Library;
             trackDetails.DisplayTrackDetails(null);
 
-            mixableTracks.MixLibrary = this.MixLibrary;
+            mixableTracks.MixLibrary = MixLibrary;
             mixableTracks.PlaylistControl = this;
             mixableTracks.Initialize();
 
-            if (this.BassPlayer != null)
+            if (BassPlayer != null)
             {
-                this.BassPlayer.OnTrackChange += new EventHandler(BassPlayer_OnTrackChange);
-                this.BassPlayer.OnSkipToEnd += new EventHandler(BassPlayer_OnFadeEnded);
-                this.BassPlayer.OnEndFadeIn += new EventHandler(BassPlayer_OnFadeEnded);
+                BassPlayer.OnTrackChange += new EventHandler(BassPlayer_OnTrackChange);
+                BassPlayer.OnSkipToEnd += new EventHandler(BassPlayer_OnFadeEnded);
+                BassPlayer.OnEndFadeIn += new EventHandler(BassPlayer_OnFadeEnded);
             }
         }
 
@@ -134,9 +134,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnFadeEnded(object sender, EventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new MethodInvoker(delegate()
+                BeginInvoke(new MethodInvoker(delegate()
                 {
                     PreloadTrack();
                 }));
@@ -152,7 +152,7 @@ namespace Halloumi.Shuffler.Controls
             var preloadTrack = GetTrackAfterNext();
             if (preloadTrack != null)
             {
-                this.BassPlayer.PreloadTrack(preloadTrack.Filename);
+                BassPlayer.PreloadTrack(preloadTrack.Filename);
             }
         }
 
@@ -162,27 +162,27 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="queueTracks">The queue tracks.</param>
         public void QueueTracks(List<Track> queueTracks)
         {
-            this.TrackModels.AddRange(TrackModel.ToList(queueTracks, this.MixLibrary));
+            TrackModels.AddRange(TrackModel.ToList(queueTracks, MixLibrary));
 
             //Application.DoEvents();
-            if (this.BassPlayer.CurrentTrack == null && this.TrackModels.Count > 0)
+            if (BassPlayer.CurrentTrack == null && TrackModels.Count > 0)
             {
                 var track = GetTrackByIndex(0);
-                this.BassPlayer.QueueTrack(track.Filename);
+                BassPlayer.QueueTrack(track.Filename);
             }
             SetNextBassPlayerTrack();
             PreloadTrack();
 
-            if (this.PlaylistChanged != null) PlaylistChanged(this, EventArgs.Empty);
+            if (PlaylistChanged != null) PlaylistChanged(this, EventArgs.Empty);
             BindData();
         }
 
         private Track GetLibraryTrack(TrackModel trackModel)
         {
-            var track = this.Library.GetTrackByFilename(trackModel.Filename);
+            var track = Library.GetTrackByFilename(trackModel.Filename);
             if (track == null || !File.Exists(track.Filename))
             {
-                track = this.Library.GetTracksByDescription(trackModel.Description)
+                track = Library.GetTracksByDescription(trackModel.Description)
                     .Where(t => File.Exists(t.Filename))
                     .FirstOrDefault();
             }
@@ -192,10 +192,10 @@ namespace Halloumi.Shuffler.Controls
 
         private Track GetLibraryTrack(string filename)
         {
-            var track = this.Library.GetTrackByFilename(filename);
+            var track = Library.GetTrackByFilename(filename);
             if (track != null && !File.Exists(track.Filename))
             {
-                track = this.Library.GetTracksByDescription(track.Description)
+                track = Library.GetTracksByDescription(track.Description)
                     .Where(t => File.Exists(t.Filename))
                     .FirstOrDefault();
             }
@@ -222,18 +222,18 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                this.Cursor = Cursors.WaitCursor;
+                Cursor = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                this.CurrentPlaylistFile = playlistName;
-                var playlist = this.Library.LoadPlaylist(playlistName);
+                CurrentPlaylistFile = playlistName;
+                var playlist = Library.LoadPlaylist(playlistName);
                 QueuePlaylist(playlist);
             }
             catch (Exception e)
             {
-                this.HandleException(e);
+                HandleException(e);
             }
-            this.Cursor = Cursors.Default;
+            Cursor = Cursors.Default;
             Application.DoEvents();
         }
 
@@ -245,12 +245,12 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                this.TrackModels.Clear();
-                this.QueueTracks(playlist.Tracks);
+                TrackModels.Clear();
+                QueueTracks(playlist.Tracks);
             }
             catch (Exception e)
             {
-                this.HandleException(e);
+                HandleException(e);
             }
         }
 
@@ -260,7 +260,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The next track.</returns>
         public Track GetCurrentTrack()
         {
-            return GetTrackByIndex(this.GetCurrentTrackIndex());
+            return GetTrackByIndex(GetCurrentTrackIndex());
         }
 
         /// <summary>
@@ -270,8 +270,8 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The track at the index</returns>
         private Track GetTrackByIndex(int index)
         {
-            if (index >= 0 && index < this.TrackModels.Count)
-                return GetLibraryTrack(this.TrackModels[index]);
+            if (index >= 0 && index < TrackModels.Count)
+                return GetLibraryTrack(TrackModels[index]);
             else
                 return null;
         }
@@ -282,7 +282,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The next track.</returns>
         public Track GetNextTrack()
         {
-            return GetTrackByIndex(this.GetCurrentTrackIndex() + 1);
+            return GetTrackByIndex(GetCurrentTrackIndex() + 1);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The next track.</returns>
         private Track GetTrackAfterNext()
         {
-            return GetTrackByIndex(this.GetCurrentTrackIndex() + 2);
+            return GetTrackByIndex(GetCurrentTrackIndex() + 2);
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The previous track.</returns>
         public Track GetPreviousTrack()
         {
-            return GetTrackByIndex(this.GetCurrentTrackIndex() - 1);
+            return GetTrackByIndex(GetCurrentTrackIndex() - 1);
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The selected track</returns>
         public Track GetSelectedTrack()
         {
-            var tracks = this.GetSelectedTracks();
+            var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return null;
             return GetLibraryTrack(tracks[0]);
         }
@@ -320,8 +320,8 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The last track</returns>
         public Track GetLastTrack()
         {
-            if (this.TrackModels.Count == 0) return null;
-            return GetLibraryTrack(this.TrackModels.Last());
+            if (TrackModels.Count == 0) return null;
+            return GetLibraryTrack(TrackModels.Last());
         }
 
         /// <summary>
@@ -330,8 +330,8 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The last track</returns>
         public Track GetSecondToLastTrack()
         {
-            if (this.TrackModels.Count < 2) return null;
-            return GetLibraryTrack(this.TrackModels[TrackModels.Count - 2]);
+            if (TrackModels.Count < 2) return null;
+            return GetLibraryTrack(TrackModels[TrackModels.Count - 2]);
         }
 
         /// <summary>
@@ -339,8 +339,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void RemoveLastTrack()
         {
-            if (this.TrackModels.Count == 0) return;
-            var lastTrack = this.TrackModels.Last();
+            if (TrackModels.Count == 0) return;
+            var lastTrack = TrackModels.Last();
             if (lastTrack != null) RemoveTrack(lastTrack);
         }
 
@@ -350,7 +350,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The tracks in the playlist</returns>
         public List<Track> GetTracks()
         {
-            return this.TrackModels.Select(t => this.GetLibraryTrack(t)).ToList();
+            return TrackModels.Select(t => GetLibraryTrack(t)).ToList();
         }
 
         /// <summary>
@@ -358,14 +358,14 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void PlayNextTrack()
         {
-            var track = this.GetNextTrack();
+            var track = GetNextTrack();
             if (track != null)
             {
-                var currentIndex = this.GetCurrentTrackIndex();
+                var currentIndex = GetCurrentTrackIndex();
                 if (currentIndex != -1)
-                    this.TrackModels[currentIndex].IsCurrent = false;
-                this.TrackModels[currentIndex + 1].IsCurrent = true;
-                this.BassPlayer.ForcePlay(track.Filename);
+                    TrackModels[currentIndex].IsCurrent = false;
+                TrackModels[currentIndex + 1].IsCurrent = true;
+                BassPlayer.ForcePlay(track.Filename);
             }
         }
 
@@ -374,13 +374,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void PlayPreviousTrack()
         {
-            var track = this.GetPreviousTrack();
+            var track = GetPreviousTrack();
             if (track != null)
             {
-                var currentIndex = this.GetCurrentTrackIndex();
-                this.TrackModels[currentIndex].IsCurrent = false;
-                this.TrackModels[currentIndex - 1].IsCurrent = true;
-                this.BassPlayer.ForcePlay(track.Filename);
+                var currentIndex = GetCurrentTrackIndex();
+                TrackModels[currentIndex].IsCurrent = false;
+                TrackModels[currentIndex - 1].IsCurrent = true;
+                BassPlayer.ForcePlay(track.Filename);
             }
         }
 
@@ -399,7 +399,7 @@ namespace Halloumi.Shuffler.Controls
 
             grdPlaylist.SaveSelectedRows();
 
-            var trackCount = this.TrackModels.Count;
+            var trackCount = TrackModels.Count;
 
             if (grdPlaylist.RowCount != trackCount)
                 grdPlaylist.RowCount = trackCount;
@@ -422,11 +422,11 @@ namespace Halloumi.Shuffler.Controls
 
             if (nextTrack != null)
             {
-                if (this.BassPlayer.NextTrack == null
+                if (BassPlayer.NextTrack == null
                     ||
-                    (this.BassPlayer.NextTrack != null && this.BassPlayer.NextTrack.Description != nextTrack.Description))
+                    (BassPlayer.NextTrack != null && BassPlayer.NextTrack.Description != nextTrack.Description))
                 {
-                    this.BassPlayer.QueueTrack(nextTrack.Filename);
+                    BassPlayer.QueueTrack(nextTrack.Filename);
                 }
             }
         }
@@ -439,7 +439,7 @@ namespace Halloumi.Shuffler.Controls
             //Application.DoEvents();
             var previousTrack = GetPreviousTrack();
             if (previousTrack != null)
-                this.BassPlayer.SetPreviousTrack(previousTrack.Filename);
+                BassPlayer.SetPreviousTrack(previousTrack.Filename);
         }
 
         /// <summary>
@@ -452,8 +452,8 @@ namespace Halloumi.Shuffler.Controls
             for (var i = 0; i < grdPlaylist.Rows.Count; i++)
             {
                 var row = grdPlaylist.Rows[i];
-                if (row.Selected && row.Index < this.TrackModels.Count && row.Index >= 0)
-                    tracks.Add(this.TrackModels[row.Index]);
+                if (row.Selected && row.Index < TrackModels.Count && row.Index >= 0)
+                    tracks.Add(TrackModels[row.Index]);
             }
             return tracks;
         }
@@ -464,7 +464,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The selected library tracks</returns>
         private List<Track> GetSelectedLibraryTracks()
         {
-            return this.GetSelectedTracks().Select(t => this.GetLibraryTrack(t)).ToList();
+            return GetSelectedTracks().Select(t => GetLibraryTrack(t)).ToList();
         }
 
         /// <summary>
@@ -477,13 +477,13 @@ namespace Halloumi.Shuffler.Controls
             {
                 var playlist = new Playlist();
                 playlist.Filename = playlistFile;
-                playlist.Tracks = this.GetTracks();
-                this.Library.SavePlaylist(playlist);
-                this.CurrentPlaylistFile = playlistFile;
+                playlist.Tracks = GetTracks();
+                Library.SavePlaylist(playlist);
+                CurrentPlaylistFile = playlistFile;
             }
             catch (Exception e)
             {
-                this.HandleException(e);
+                HandleException(e);
             }
         }
 
@@ -493,39 +493,39 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The index of the current track.</returns>
         public int GetCurrentTrackIndex()
         {
-            var currentTrack = this.TrackModels.Where(t => t.IsCurrent).FirstOrDefault();
+            var currentTrack = TrackModels.Where(t => t.IsCurrent).FirstOrDefault();
             if (currentTrack == null)
             {
                 return GetCurrentTrackIndexFromBassPlayer();
             }
 
-            var currentBassTrack = this.BassPlayer.CurrentTrack == null ? "" : this.BassPlayer.CurrentTrack.Filename;
+            var currentBassTrack = BassPlayer.CurrentTrack == null ? "" : BassPlayer.CurrentTrack.Filename;
 
             if (currentBassTrack != currentTrack.Filename)
             {
-                var currentIndex = this.TrackModels.IndexOf(currentTrack);
-                var match = this.TrackModels.Where(t => t.Filename == currentBassTrack && this.TrackModels.IndexOf(t) > currentIndex).FirstOrDefault();
+                var currentIndex = TrackModels.IndexOf(currentTrack);
+                var match = TrackModels.Where(t => t.Filename == currentBassTrack && TrackModels.IndexOf(t) > currentIndex).FirstOrDefault();
                 if (match == null) return GetCurrentTrackIndexFromBassPlayer();
                 else
                 {
                     currentTrack.IsCurrent = false;
                     match.IsCurrent = true;
-                    return this.TrackModels.IndexOf(match);
+                    return TrackModels.IndexOf(match);
                 }
             }
             else
             {
-                return this.TrackModels.IndexOf(currentTrack);
+                return TrackModels.IndexOf(currentTrack);
             }
         }
 
         private int GetCurrentTrackIndexFromBassPlayer()
         {
-            if (this.BassPlayer.CurrentTrack == null)
+            if (BassPlayer.CurrentTrack == null)
             {
-                if (this.TrackModels.Count > 0)
+                if (TrackModels.Count > 0)
                 {
-                    this.TrackModels[0].IsCurrent = true;
+                    TrackModels[0].IsCurrent = true;
                     return 0;
                 }
                 {
@@ -534,11 +534,11 @@ namespace Halloumi.Shuffler.Controls
             }
             else
             {
-                var currentTrack = this.TrackModels.Where(t => t.Filename == this.BassPlayer.CurrentTrack.Filename).FirstOrDefault();
+                var currentTrack = TrackModels.Where(t => t.Filename == BassPlayer.CurrentTrack.Filename).FirstOrDefault();
                 if (currentTrack != null)
                 {
                     currentTrack.IsCurrent = true;
-                    return this.TrackModels.IndexOf(currentTrack);
+                    return TrackModels.IndexOf(currentTrack);
                 }
                 else
                 {
@@ -557,7 +557,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (trackToRemove == null) return;
             var tracksToRemove = new TrackModel[] { trackToRemove }.ToList();
-            this.RemoveTracks(tracksToRemove);
+            RemoveTracks(tracksToRemove);
         }
 
         /// <summary>
@@ -567,13 +567,13 @@ namespace Halloumi.Shuffler.Controls
         private void RemoveTracks(List<TrackModel> tracksToRemove)
         {
             if (tracksToRemove.Count == 0) return;
-            var tracks = this.TrackModels.Except(tracksToRemove).ToList();
-            this.TrackModels = tracks;
+            var tracks = TrackModels.Except(tracksToRemove).ToList();
+            TrackModels = tracks;
             grdPlaylist.ClearSelectedRows();
             SetNextBassPlayerTrack();
             BindData();
 
-            if (this.PlaylistChanged != null) PlaylistChanged(this, EventArgs.Empty);
+            if (PlaylistChanged != null) PlaylistChanged(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -591,17 +591,17 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void UpdateShufflerDetails()
         {
-            if (this.GetSelectedTrack() == null) return;
+            if (GetSelectedTrack() == null) return;
 
             var form = new FrmShufflerDetails();
-            form.BassPlayer = this.BassPlayer;
-            form.Filename = this.GetSelectedTrack().Filename;
+            form.BassPlayer = BassPlayer;
+            form.Filename = GetSelectedTrack().Filename;
 
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
             {
-                this.Library.ReloadTrack(this.GetSelectedTrack().Filename);
-                this.BassPlayer.ReloadTrack(this.GetSelectedTrack().Filename);
+                Library.ReloadTrack(GetSelectedTrack().Filename);
+                BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
                 BindData();
             }
         }
@@ -611,10 +611,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void UpdateTrackDetails()
         {
-            if (this.GetSelectedTrack() == null) return;
+            if (GetSelectedTrack() == null) return;
             var form = new FrmUpdateTrackDetails();
-            form.Library = this.Library;
-            form.Track = this.GetSelectedTrack();
+            form.Library = Library;
+            form.Track = GetSelectedTrack();
             var result = form.ShowDialog();
             if (result == DialogResult.OK) BindData();
         }
@@ -663,7 +663,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (this.TrackModels.Count == 0) return;
+            if (TrackModels.Count == 0) return;
             var playlist = FileDialogHelper.SaveAs("Playlist (*.m3u)|*.m3u", "");
             if (playlist != "") SavePlaylist(playlist);
         }
@@ -675,7 +675,7 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void PlaylistControl_Load(object sender, EventArgs e)
         {
-            if (this.DesignMode) return;
+            if (DesignMode) return;
             if (_loaded) return;
 
             _loaded = true;
@@ -688,9 +688,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnTrackChange(object sender, EventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new MethodInvoker(delegate()
+                BeginInvoke(new MethodInvoker(delegate()
                 {
                     BassPlayer_OnTrackChange();
                 }));
@@ -708,14 +708,14 @@ namespace Halloumi.Shuffler.Controls
 
             grdPlaylist.Invalidate();
 
-            var currentTrack = this.GetCurrentTrack();
+            var currentTrack = GetCurrentTrack();
             var currentTrackDescription = currentTrack == null ? "" : currentTrack.Description;
 
-            var nextTrack = this.GetNextTrack();
+            var nextTrack = GetNextTrack();
             var nextTrackDescription = nextTrack == null ? "" : nextTrack.Description;
 
-            var currentBassTrackDescription = this.BassPlayer.CurrentTrack == null ? "" : this.BassPlayer.CurrentTrack.Description;
-            var nextBassTrackDescription = this.BassPlayer.NextTrack == null ? "" : this.BassPlayer.NextTrack.Description;
+            var currentBassTrackDescription = BassPlayer.CurrentTrack == null ? "" : BassPlayer.CurrentTrack.Description;
+            var nextBassTrackDescription = BassPlayer.NextTrack == null ? "" : BassPlayer.NextTrack.Description;
 
             if (currentBassTrackDescription != currentTrackDescription || nextBassTrackDescription != nextTrackDescription)
             {
@@ -747,11 +747,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void ClearTracks()
         {
-            this.CurrentPlaylistFile = "";
+            CurrentPlaylistFile = "";
             var tracks = new List<TrackModel>();
-            this.TrackModels = tracks;
+            TrackModels = tracks;
             BindData();
-            if (this.PlaylistChanged != null) PlaylistChanged(this, EventArgs.Empty);
+            if (PlaylistChanged != null) PlaylistChanged(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -771,7 +771,7 @@ namespace Halloumi.Shuffler.Controls
             var currentTrack = GetLibraryTrack(SetCurrentTrack(e.RowIndex));
 
             var forcePlay = new ForcePlayTrackHandler(ForcePlayTrack);
-            this.BeginInvoke(forcePlay, currentTrack);
+            BeginInvoke(forcePlay, currentTrack);
         }
 
         private delegate void ForcePlayTrackHandler(Track track);
@@ -780,7 +780,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _doNotBind = true;
 
-            this.BassPlayer.ForcePlay(track.Filename);
+            BassPlayer.ForcePlay(track.Filename);
 
             _doNotBind = false;
 
@@ -792,9 +792,9 @@ namespace Halloumi.Shuffler.Controls
         private TrackModel SetCurrentTrack(int trackIndex)
         {
             _currentTrackIndex = trackIndex;
-            this.TrackModels.ForEach(t => t.IsCurrent = false);
-            this.TrackModels[trackIndex].IsCurrent = true;
-            return this.TrackModels[trackIndex];
+            TrackModels.ForEach(t => t.IsCurrent = false);
+            TrackModels[trackIndex].IsCurrent = true;
+            return TrackModels[trackIndex];
         }
 
         ///// <summary>
@@ -851,7 +851,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuTrack_Opening(object sender, CancelEventArgs e)
         {
-            var singleTrack = (this.GetSelectedTracks().Count == 1);
+            var singleTrack = (GetSelectedTracks().Count == 1);
             mnuPlay.Visible = singleTrack;
             mnuSep1.Visible = singleTrack;
             mnuOpenFileLocation.Visible = singleTrack;
@@ -862,7 +862,7 @@ namespace Halloumi.Shuffler.Controls
             mnuSep4.Visible = singleTrack;
             mnuMixRank.Visible = (grdPlaylist.SelectedRows.Count > 0 && grdPlaylist.SelectedRows[0].Index > 0);
 
-            this.BeginInvoke(new MethodInvoker(delegate()
+            BeginInvoke(new MethodInvoker(delegate()
             {
                 BindTrackRankMenu();
                 if (mnuMixRank.Visible) BindMixRankMenu();
@@ -877,13 +877,13 @@ namespace Halloumi.Shuffler.Controls
         private void BindTrackRankMenu()
         {
             var currentTrackRank = -1;
-            if (this.GetSelectedTracks().Count == 1)
+            if (GetSelectedTracks().Count == 1)
             {
-                currentTrackRank = this.GetSelectedTrack().Rank;
+                currentTrackRank = GetSelectedTrack().Rank;
             }
             for (var i = 0; i < 6; i++)
             {
-                mnuTrackRank.DropDownItems[i].Text = this.MixLibrary.GetRankDescription(5 - i);
+                mnuTrackRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuTrackRank.DropDownItems[i]).Checked = ((5 - i) == currentTrackRank);
             }
         }
@@ -894,28 +894,28 @@ namespace Halloumi.Shuffler.Controls
         private void BindMixRankMenu()
         {
             var currentMixRank = -1;
-            if (this.GetSelectedTracks().Count == 1 && grdPlaylist.SelectedRows[0].Index > 0)
+            if (GetSelectedTracks().Count == 1 && grdPlaylist.SelectedRows[0].Index > 0)
             {
-                var track2 = this.GetSelectedTrack();
+                var track2 = GetSelectedTrack();
                 var track1 = GetTrackByIndex(grdPlaylist.SelectedRows[0].Index - 1);
-                var mixRank = this.MixLibrary.GetMixLevel(track1, track2);
+                var mixRank = MixLibrary.GetMixLevel(track1, track2);
                 currentMixRank = mixRank;
             }
             for (var i = 0; i < 6; i++)
             {
-                mnuMixRank.DropDownItems[i].Text = this.MixLibrary.GetRankDescription(5 - i);
+                mnuMixRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuMixRank.DropDownItems[i]).Checked = ((5 - i) == currentMixRank);
             }
         }
 
         private void BindAddTrackToPlaylistMenu()
         {
-            var selectedTracks = this.GetSelectedLibraryTracks();
+            var selectedTracks = GetSelectedLibraryTracks();
 
             Track selectedTrack = null;
             if (selectedTracks.Count == 1) selectedTrack = selectedTracks[0];
 
-            var playlists = this.Library.GetAllPlaylists();
+            var playlists = Library.GetAllPlaylists();
 
             // generate 'add to playlist' sub menu
             mnuAddTrackToPlaylist.DropDownItems.Clear();
@@ -942,7 +942,7 @@ namespace Halloumi.Shuffler.Controls
         {
             // generate 'remove from playlist' sub menu
             mnuRemoveTrackFromPlaylist.DropDownItems.Clear();
-            var selectedPlaylists = this.Library.GetPlaylistsForTracks(this.GetSelectedLibraryTracks());
+            var selectedPlaylists = Library.GetPlaylistsForTracks(GetSelectedLibraryTracks());
             foreach (var playlist in selectedPlaylists)
             {
                 mnuRemoveTrackFromPlaylist.DropDownItems.Add(playlist.Name, null, mnuRemoveTrackFromPlaylist_Click);
@@ -985,8 +985,8 @@ namespace Halloumi.Shuffler.Controls
         private void mnuAddTrackToPlaylist_Click(object sender, EventArgs e)
         {
             var menu = sender as ToolStripMenuItem;
-            var playlist = this.Library.GetPlaylistByName(menu.Text);
-            this.Library.AddTracksToPlaylist(playlist, this.GetSelectedLibraryTracks());
+            var playlist = Library.GetPlaylistByName(menu.Text);
+            Library.AddTracksToPlaylist(playlist, GetSelectedLibraryTracks());
         }
 
         /// <summary>
@@ -996,7 +996,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var tracks = GetSelectedLibraryTracks();
             var form = new FrmAddPlaylist();
-            form.Library = this.Library;
+            form.Library = Library;
             form.Tracks = tracks;
             var result = form.ShowDialog();
             if (result == DialogResult.OK) BindData();
@@ -1008,8 +1008,8 @@ namespace Halloumi.Shuffler.Controls
         private void mnuRemoveTrackFromPlaylist_Click(object sender, EventArgs e)
         {
             var menu = sender as ToolStripMenuItem;
-            var playlist = this.Library.GetPlaylistByName(menu.Text);
-            this.Library.RemoveTracksFromPlaylist(playlist, this.GetSelectedLibraryTracks());
+            var playlist = Library.GetPlaylistByName(menu.Text);
+            Library.RemoveTracksFromPlaylist(playlist, GetSelectedLibraryTracks());
         }
 
         /// <summary>
@@ -1018,7 +1018,7 @@ namespace Halloumi.Shuffler.Controls
         private void mnuPlay_Click(object sender, EventArgs e)
         {
             var track = GetSelectedTrack();
-            this.BassPlayer.ForcePlay(track.Filename);
+            BassPlayer.ForcePlay(track.Filename);
         }
 
         #endregion
@@ -1031,7 +1031,7 @@ namespace Halloumi.Shuffler.Controls
             var message = string.Format("Are you sure you wish to remove the shuffler details for '{0}'?", track.Description);
             if (MessageBoxHelper.Confirm(message))
             {
-                this.Library.RemoveShufflerDetails(track);
+                Library.RemoveShufflerDetails(track);
                 BindData();
             }
         }
@@ -1045,18 +1045,18 @@ namespace Halloumi.Shuffler.Controls
 
         private void SetToolStripLabel()
         {
-            if (this.ToolStripLabel == null) return;
+            if (ToolStripLabel == null) return;
 
             var text = string.Format("{0} playlist tracks. Length: {1}",
-                this.TrackModels.Count,
-                BE.BassHelper.GetFormattedLength(this.TrackModels.Sum(t => t.Length)));
+                TrackModels.Count,
+                BE.BassHelper.GetFormattedLength(TrackModels.Sum(t => t.Length)));
 
-            this.ToolStripLabel.Text = text;
+            ToolStripLabel.Text = text;
         }
 
         private void SetMixAndKeyRanks()
         {
-            for (var i = 0; i < this.TrackModels.Count; i++)
+            for (var i = 0; i < TrackModels.Count; i++)
             {
                 UpdateMixRank(i);
             }
@@ -1066,33 +1066,33 @@ namespace Halloumi.Shuffler.Controls
         {
             if (rowIndex == 0)
             {
-                this.TrackModels[0].MixRank = 0;
-                this.TrackModels[0].MixRankDescription = "";
+                TrackModels[0].MixRank = 0;
+                TrackModels[0].MixRankDescription = "";
                 return;
             }
 
             var track1 = GetTrackByIndex(rowIndex - 1);
             var track2 = GetTrackByIndex(rowIndex);
-            var mixRank = this.MixLibrary.GetMixLevel(track1, track2);
-            var hasExtendedMix = this.MixLibrary.HasExtendedMix(track1, track2);
+            var mixRank = MixLibrary.GetMixLevel(track1, track2);
+            var hasExtendedMix = MixLibrary.HasExtendedMix(track1, track2);
 
-            this.TrackModels[rowIndex].MixRank = mixRank;
-            this.TrackModels[rowIndex].MixRankDescription = this.MixLibrary.GetRankDescription(mixRank);
-            if (hasExtendedMix) this.TrackModels[rowIndex].MixRankDescription += "*";
+            TrackModels[rowIndex].MixRank = mixRank;
+            TrackModels[rowIndex].MixRankDescription = MixLibrary.GetRankDescription(mixRank);
+            if (hasExtendedMix) TrackModels[rowIndex].MixRankDescription += "*";
 
-            this.TrackModels[rowIndex].KeyRankDescription = BE.KeyHelper.GetKeyMixRankDescription(track1.Key, track2.Key);
+            TrackModels[rowIndex].KeyRankDescription = BE.KeyHelper.GetKeyMixRankDescription(track1.Key, track2.Key);
         }
 
         private void mnuTrackRank_Click(object sender, EventArgs e)
         {
             var trackRankDescription = (sender as ToolStripDropDownItem).Text;
-            var trackRank = this.MixLibrary.GetRankFromDescription(trackRankDescription);
+            var trackRank = MixLibrary.GetRankFromDescription(trackRankDescription);
 
             foreach (var track in GetSelectedLibraryTracks())
             {
                 track.Rank = trackRank;
-                this.Library.SaveRank(track);
-                var trackModel = this.TrackModels.Where(t => t.Description == track.Description).FirstOrDefault();
+                Library.SaveRank(track);
+                var trackModel = TrackModels.Where(t => t.Description == track.Description).FirstOrDefault();
                 trackModel.TrackRank = trackRank;
                 trackModel.TrackRankDescription = trackRankDescription;
             }
@@ -1103,16 +1103,16 @@ namespace Halloumi.Shuffler.Controls
         private void mnuMixRank_Click(object sender, EventArgs e)
         {
             var mixRankDescription = (sender as ToolStripDropDownItem).Text;
-            var mixRank = this.MixLibrary.GetRankFromDescription(mixRankDescription);
+            var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
 
             foreach (DataGridViewRow row in grdPlaylist.SelectedRows)
             {
                 if (row.Index == 0) continue;
-                var track2 = this.GetTrackByIndex(row.Index);
-                var track1 = this.GetTrackByIndex(row.Index - 1);
-                this.MixLibrary.SetMixLevel(track1, track2, mixRank);
+                var track2 = GetTrackByIndex(row.Index);
+                var track1 = GetTrackByIndex(row.Index - 1);
+                MixLibrary.SetMixLevel(track1, track2, mixRank);
 
-                var trackModel = this.GetTrackModelByIndex(row.Index);
+                var trackModel = GetTrackModelByIndex(row.Index);
                 trackModel.MixRank = mixRank;
                 trackModel.MixRankDescription = mixRankDescription;
             }
@@ -1162,9 +1162,9 @@ namespace Halloumi.Shuffler.Controls
 
         private TrackModel GetTrackModelByIndex(int index)
         {
-            if (this.TrackModels == null) return null;
-            if (index < 0 || index >= this.TrackModels.Count) return null;
-            return this.TrackModels[index];
+            if (TrackModels == null) return null;
+            if (index < 0 || index >= TrackModels.Count) return null;
+            return TrackModels[index];
         }
 
         public void QueueFiles(List<string> files)
@@ -1172,7 +1172,7 @@ namespace Halloumi.Shuffler.Controls
             var tracks = new List<Track>();
             foreach (var file in files)
             {
-                var track = this.Library.GetTrackByFilename(file);
+                var track = Library.GetTrackByFilename(file);
                 if (track != null) tracks.Add(track);
             }
 
@@ -1207,9 +1207,9 @@ namespace Halloumi.Shuffler.Controls
             SetCurrentTrack(index);
 
             _doNotBind = true;
-            this.BassPlayer.ForcePlay(previousTrack.Filename);
-            this.BassPlayer.SkipToEnd();
-            this.BassPlayer.Play();
+            BassPlayer.ForcePlay(previousTrack.Filename);
+            BassPlayer.SkipToEnd();
+            BassPlayer.Play();
 
             _doNotBind = false;
 
@@ -1219,7 +1219,7 @@ namespace Halloumi.Shuffler.Controls
 
         public int GetNumberOfTracksRemaining()
         {
-            return this.TrackModels.Count - (GetCurrentTrackIndex() + 1);
+            return TrackModels.Count - (GetCurrentTrackIndex() + 1);
         }
     }
 }

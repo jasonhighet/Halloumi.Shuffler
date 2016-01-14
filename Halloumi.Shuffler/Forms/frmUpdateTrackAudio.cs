@@ -35,7 +35,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindData()
         {
-            var sourceTracks = this.SourceTracks.Select(t => new TrackModel()
+            var sourceTracks = SourceTracks.Select(t => new TrackModel()
             {
                 Description = string.Format("{0} ({1}) - {2}", t.Title, t.Album, t.FullLengthFormatted),
                 Filename = t.Filename
@@ -43,9 +43,9 @@ namespace Halloumi.Shuffler.Forms
             .OrderBy(t => t.Description)
             .ToList();
 
-            if (this.DestinationTracks.Count == 1)
+            if (DestinationTracks.Count == 1)
             {
-                var sourceTrack = sourceTracks.Where(t => t.Filename == this.SourceTracks[0].Filename).FirstOrDefault();
+                var sourceTrack = sourceTracks.Where(t => t.Filename == SourceTracks[0].Filename).FirstOrDefault();
                 sourceTracks.Remove(sourceTrack);
             }
 
@@ -65,28 +65,28 @@ namespace Halloumi.Shuffler.Forms
         {
             if (cmbSourceTrack.Text.Trim() == "") return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
             var sourceTrackFile = cmbSourceTrack.SelectedValue.ToString();
-            var sourceTrack = this.SourceTracks.Where(t => t.Filename == sourceTrackFile).FirstOrDefault();
+            var sourceTrack = SourceTracks.Where(t => t.Filename == sourceTrackFile).FirstOrDefault();
 
-            foreach (var destinationTrack in this.DestinationTracks)
+            foreach (var destinationTrack in DestinationTracks)
             {
                 if (destinationTrack.Filename == sourceTrack.Filename) continue;
 
                 try
                 {
-                    this.Library.CopyAudioFromAnotherTrack(destinationTrack, sourceTrack);
+                    Library.CopyAudioFromAnotherTrack(destinationTrack, sourceTrack);
                 }
                 catch (Exception e)
                 {
-                    this.HandleException(e);
+                    HandleException(e);
                 }
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

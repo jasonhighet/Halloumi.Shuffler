@@ -199,7 +199,7 @@ namespace Halloumi.BassEngine
         public static double GetDefaultLoopLength(decimal bpm)
         {
             if (bpm == 0) return 10;
-            return BassHelper.GetLoopLengths(bpm)[2];
+            return GetLoopLengths(bpm)[2];
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace Halloumi.BassEngine
         /// <returns>The default delay time from the BPM (1/4 note delay)</returns>
         public static double GetDefaultDelayLength(decimal bpm)
         {
-            bpm = BassHelper.NormaliseBpm(bpm);
+            bpm = NormaliseBpm(bpm);
             return (1D / ((double)bpm / 60D)) * 1000D;
         }
 
@@ -519,7 +519,7 @@ namespace Halloumi.BassEngine
             if (!changeTrack.IsAudioLoaded()) return;
             if (!matchTrack.IsAudioLoaded()) return;
 
-            var percentChange = (float)(BassHelper.GetAdjustedBpmPercentChange(changeTrack.EndBpm, matchTrack.StartBpm));
+            var percentChange = (float)(GetAdjustedBpmPercentChange(changeTrack.EndBpm, matchTrack.StartBpm));
             Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -543,7 +543,7 @@ namespace Halloumi.BassEngine
         {
             if (sample == null || sample.Channel == int.MinValue) return;
 
-            var percentChange = (float)(BassHelper.GetAdjustedBpmPercentChange(sample.Bpm, matchBpm));
+            var percentChange = (float)(GetAdjustedBpmPercentChange(sample.Bpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(sample.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -648,9 +648,9 @@ namespace Halloumi.BassEngine
         public static bool IsTrackPlaying(Track track)
         {
             if (track == null) return false;
-            var position1 = BassHelper.GetTrackPosition(track);
+            var position1 = GetTrackPosition(track);
             Thread.Sleep(50);
-            var position2 = BassHelper.GetTrackPosition(track);
+            var position2 = GetTrackPosition(track);
             return (position1 != position2);
         }
 
@@ -679,7 +679,7 @@ namespace Halloumi.BassEngine
         {
             if (track1 == null || track2 == null) return 1f;
 
-            var percentChange = (float)(BassHelper.GetAdjustedBpmPercentChange(track1.EndBpm, track2.StartBpm));
+            var percentChange = (float)(GetAdjustedBpmPercentChange(track1.EndBpm, track2.StartBpm));
 
             return (1 + percentChange / 100f);
         }
@@ -716,7 +716,7 @@ namespace Halloumi.BassEngine
         /// <param name="monitorDeviceId">The monitor device Id.</param>
         public static void InitialiseMonitorDevice(int monitorDeviceId)
         {
-            if (BassHelper.GetWaveOutDevices().Count < 3) return;
+            if (GetWaveOutDevices().Count < 3) return;
 
             if (!Bass.BASS_Init(monitorDeviceId, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
@@ -799,7 +799,7 @@ namespace Halloumi.BassEngine
             if (track == null || !track.IsAudioLoaded()) return;
 
             var freq = track.DefaultSampleRate;
-            var interval = (int)(BassHelper.GetDefaultLoopLength(track.EndBpm) * 1000) / 128;
+            var interval = (int)(GetDefaultLoopLength(track.EndBpm) * 1000) / 128;
 
             // set the volume slide
             Bass.BASS_ChannelSlideAttribute(track.Channel, BASSAttribute.BASS_ATTRIB_VOL, 0F, interval * 8);
@@ -816,10 +816,10 @@ namespace Halloumi.BassEngine
                     Thread.Sleep(interval);
                 }
             }
-            BassHelper.TrackPause(track);
+            TrackPause(track);
             if (track == null || !track.IsAudioLoaded()) return;
             Bass.BASS_ChannelSetAttribute(track.Channel, BASSAttribute.BASS_ATTRIB_FREQ, track.DefaultSampleRate);
-            BassHelper.SetTrackVolume(track, 100M);
+            SetTrackVolume(track, 100M);
         }
 
         /// <summary>
@@ -849,7 +849,7 @@ namespace Halloumi.BassEngine
             var length = Bass.BASS_ChannelBytes2Seconds(channel, Bass.BASS_ChannelGetLength(channel));
             var bpm = (decimal)BassFx.BASS_FX_BPM_DecodeGet(channel, 0.0, length, 200, BASSFXBpm.BASS_FX_BPM_BKGRND | BASSFXBpm.BASS_FX_FREESOURCE, null);
 
-            bpm = BassHelper.NormaliseBpm(bpm);
+            bpm = NormaliseBpm(bpm);
 
             Bass.BASS_StreamFree(channel);
 
@@ -900,7 +900,7 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("SetReplayGain " + gain.ToString());
 
             var fxChannel = Bass.BASS_ChannelSetFX(channel, BASSFXType.BASS_FX_BFX_VOLUME, int.MaxValue);
-            var volume = BassHelper.DecibelToPercent(gain);
+            var volume = DecibelToPercent(gain);
             var volumeParameters = new BASS_BFX_VOLUME(volume, BASSFXChan.BASS_BFX_CHANALL);
             Bass.BASS_FXSetParameters(fxChannel, volumeParameters);
         }
@@ -913,7 +913,7 @@ namespace Halloumi.BassEngine
         {
             if (track.Image != null) return;
 
-            track.Image = (Image)Halloumi.BassEngine.Properties.Resources.DefaultMusicImage;
+            track.Image = (Image)Properties.Resources.DefaultMusicImage;
             var tags = ID3v2Helper.CreateID3v2(track.Filename);
             if (tags.PictureList.Count > 0)
             {
@@ -1346,9 +1346,9 @@ namespace Halloumi.BassEngine
 
             public TrackDetails()
             {
-                this.Artist = "";
-                this.Title = "";
-                this.TrackNumber = "";
+                Artist = "";
+                Title = "";
+                TrackNumber = "";
             }
         }
 
@@ -1624,7 +1624,7 @@ namespace Halloumi.BassEngine
             AddChannelToMixer(sample.Channel, mixerChannel);
             DebugHelper.WriteLine("done");
 
-            BassHelper.SetSampleReplayGain(sample);
+            SetSampleReplayGain(sample);
         }
 
         public static bool IsSameTrack(Track track1, Track track2)

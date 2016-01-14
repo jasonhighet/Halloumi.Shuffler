@@ -11,16 +11,16 @@ namespace Halloumi.Shuffler.Engine
     {
         public Sample()
         {
-            this.Start = 0D;
-            this.Length = 0D;
-            this.Offset = 0D;
-            this.LoopMode = LoopMode.FullLoop;
-            this.IsAtonal = false;
-            this.IsPrimaryLoop = false;
-            this.TrackLength = 0M;
-            this.Bpm = 0M;
-            this.Tags = new List<string>();
-            this.Gain = 0F;
+            Start = 0D;
+            Length = 0D;
+            Offset = 0D;
+            LoopMode = LoopMode.FullLoop;
+            IsAtonal = false;
+            IsPrimaryLoop = false;
+            TrackLength = 0M;
+            Bpm = 0M;
+            Tags = new List<string>();
+            Gain = 0F;
         }
 
         public double Start { get; set; }
@@ -55,19 +55,19 @@ namespace Halloumi.Shuffler.Engine
         {
             return new Sample()
             {
-                Start = this.Start,
-                Length = this.Length,
-                Offset = this.Offset,
-                LoopMode = this.LoopMode,
-                IsAtonal = this.IsAtonal,
-                IsPrimaryLoop = this.IsPrimaryLoop,
-                Key = this.Key,
-                TrackArtist = this.TrackArtist,
-                TrackTitle = this.TrackTitle,
-                Bpm = this.Bpm,
-                Description = this.Description,
-                TrackLength = this.TrackLength,
-                Tags = this.Tags,
+                Start = Start,
+                Length = Length,
+                Offset = Offset,
+                LoopMode = LoopMode,
+                IsAtonal = IsAtonal,
+                IsPrimaryLoop = IsPrimaryLoop,
+                Key = Key,
+                TrackArtist = TrackArtist,
+                TrackTitle = TrackTitle,
+                Bpm = Bpm,
+                Description = Description,
+                TrackLength = TrackLength,
+                Tags = Tags,
                 Gain = 0F
             };
         }

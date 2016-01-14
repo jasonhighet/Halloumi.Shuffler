@@ -16,10 +16,10 @@ namespace Halloumi.BassEngine
 
         public AutomationAttributes()
         {
-            this.TrackFxTriggers = new List<TrackFxTrigger>();
-            this.SampleTriggers = new List<SampleTrigger>();
-            this.ExtendedMixes = new List<ExtendedMixAttributes>();
-            this.TrackSamples = new List<TrackSample>();
+            TrackFxTriggers = new List<TrackFxTrigger>();
+            SampleTriggers = new List<SampleTrigger>();
+            ExtendedMixes = new List<ExtendedMixAttributes>();
+            TrackSamples = new List<TrackSample>();
         }
 
         public ExtendedMixAttributes GetExtendedMixAttributes(Track track)
@@ -31,7 +31,7 @@ namespace Halloumi.BassEngine
         public ExtendedMixAttributes GetExtendedMixAttributes(string trackDescription)
         {
             if (trackDescription == "") return null;
-            return this.ExtendedMixes
+            return ExtendedMixes
                 .Where(em => em.TrackDescription == trackDescription)
                 .FirstOrDefault();
         }
@@ -40,7 +40,7 @@ namespace Halloumi.BassEngine
         {
             if (trackDescription == "") return;
             var extendedMix = GetExtendedMixAttributes(trackDescription);
-            if (extendedMix != null) this.ExtendedMixes.Remove(extendedMix);
+            if (extendedMix != null) ExtendedMixes.Remove(extendedMix);
         }
 
         public static AutomationAttributes GetAutomationAttributes(Track track, string folder)
@@ -126,7 +126,7 @@ namespace Halloumi.BassEngine
 
         public TrackSample GetTrackSampleByKey(string key)
         {
-            return this.TrackSamples.Where(ts => ts.Key == key).FirstOrDefault();
+            return TrackSamples.Where(ts => ts.Key == key).FirstOrDefault();
         }
     }
 }

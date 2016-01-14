@@ -28,14 +28,14 @@ namespace Halloumi.Shuffler.Forms
             sldVolume.Minimum = 0;
             sldVolume.Maximum = 100;
 
-            SetVolume(Convert.ToInt32(this.BassPlayer.GetMonitorVolume()));
+            SetVolume(Convert.ToInt32(BassPlayer.GetMonitorVolume()));
         }
 
         private void SetVolume(int volume)
         {
             if (volume < 0 || volume > 100) return;
 
-            this.BassPlayer.SetMonitorVolume(Convert.ToDecimal(volume));
+            BassPlayer.SetMonitorVolume(Convert.ToDecimal(volume));
             lblVolume.Text = volume.ToString();
 
             if (sldVolume.Value != volume) sldVolume.Value = volume;
@@ -84,7 +84,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

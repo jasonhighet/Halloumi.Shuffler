@@ -40,41 +40,41 @@ namespace Halloumi.BassEngine
         /// </summary>
         public Track()
         {
-            this.Channels = new List<int>();
-            this.FadeInStartSyncId = int.MinValue;
-            this.FadeInEndSyncId = int.MinValue;
-            this.FadeOutStartSyncId = int.MinValue;
-            this.FadeOutEndSyncId = int.MinValue;
-            this.PreFadeInStartSyncId = int.MinValue;
-            this.TrackEndSyncId = int.MinValue;
-            this.ExtendedMixEndSyncId = int.MinValue;
-            this.ChangeTempoOnFadeOut = true;
-            this.Gain = 0;
-            this.UsePreFadeIn = false;
-            this.PreFadeInStart = 0;
-            this.PreFadeInStartVolume = 0;
-            this.BpmAdjustmentRatio = 1;
-            this.StartLoopCount = 0;
-            this.CurrentStartLoop = 0;
-            this.EndLoopCount = 0;
-            this.CurrentEndLoop = 0;
-            this.TagDataLoaded = false;
-            this.FadeInEnd = 0;
-            this.FadeInStart = 0;
-            this.FadeOutEnd = 0;
-            this.FadeOutStart = 0;
-            this.PowerDownOnEnd = false;
-            this.PowerDownOnEndOriginal = false;
-            this.Image = null;
-            this.RawLoopStart = 0;
-            this.RawLoopEnd = 0;
-            this.RawLoopEndSyncId = int.MinValue;
-            this.LoopFadeInIndefinitely = false;
-            this.SkipStart = 0;
-            this.SkipEnd = 0;
-            this.SkipSyncId = int.MinValue;
+            Channels = new List<int>();
+            FadeInStartSyncId = int.MinValue;
+            FadeInEndSyncId = int.MinValue;
+            FadeOutStartSyncId = int.MinValue;
+            FadeOutEndSyncId = int.MinValue;
+            PreFadeInStartSyncId = int.MinValue;
+            TrackEndSyncId = int.MinValue;
+            ExtendedMixEndSyncId = int.MinValue;
+            ChangeTempoOnFadeOut = true;
+            Gain = 0;
+            UsePreFadeIn = false;
+            PreFadeInStart = 0;
+            PreFadeInStartVolume = 0;
+            BpmAdjustmentRatio = 1;
+            StartLoopCount = 0;
+            CurrentStartLoop = 0;
+            EndLoopCount = 0;
+            CurrentEndLoop = 0;
+            TagDataLoaded = false;
+            FadeInEnd = 0;
+            FadeInStart = 0;
+            FadeOutEnd = 0;
+            FadeOutStart = 0;
+            PowerDownOnEnd = false;
+            PowerDownOnEndOriginal = false;
+            Image = null;
+            RawLoopStart = 0;
+            RawLoopEnd = 0;
+            RawLoopEndSyncId = int.MinValue;
+            LoopFadeInIndefinitely = false;
+            SkipStart = 0;
+            SkipEnd = 0;
+            SkipSyncId = int.MinValue;
 
-            this.Rank = 1;
+            Rank = 1;
         }
 
         #endregion
@@ -133,7 +133,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.Artist + " - " + this.Title;
+                return Artist + " - " + Title;
             }
         }
 
@@ -149,13 +149,13 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (this.FadeInLengthSeconds != 0)
-                    return BassHelper.GetBpmFromLoopLength(this.FadeInLengthSeconds);
+                if (FadeInLengthSeconds != 0)
+                    return BassHelper.GetBpmFromLoopLength(FadeInLengthSeconds);
 
-                if (!this.TagDataLoaded)
+                if (!TagDataLoaded)
                     return _startBmp;
 
-                return this.TagBpm * this.BpmAdjustmentRatio;
+                return TagBpm * BpmAdjustmentRatio;
             }
             internal set
             {
@@ -171,13 +171,13 @@ namespace Halloumi.BassEngine
             get
             {
                 //if (this.Channel == int.MinValue) return _endBMP;
-                if (this.FadeOutLengthSeconds != 0)
-                    return BassHelper.GetBpmFromLoopLength(this.FadeOutLengthSeconds);
+                if (FadeOutLengthSeconds != 0)
+                    return BassHelper.GetBpmFromLoopLength(FadeOutLengthSeconds);
 
-                if (!this.TagDataLoaded)
+                if (!TagDataLoaded)
                     return _endBmp;
 
-                return this.TagBpm * this.BpmAdjustmentRatio;
+                return TagBpm * BpmAdjustmentRatio;
             }
             internal set
             {
@@ -190,7 +190,7 @@ namespace Halloumi.BassEngine
             get
             {
                 //return (this.StartBPM + this.EndBPM) / 2M;
-                return BassHelper.GetAdjustedBpmAverage(this.StartBpm, this.EndBpm);
+                return BassHelper.GetAdjustedBpmAverage(StartBpm, EndBpm);
             }
         }
 
@@ -211,7 +211,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.Length);
+                return SamplesToSeconds(Length);
             }
         }
 
@@ -222,7 +222,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return FormatSeconds(this.LengthSeconds);
+                return FormatSeconds(LengthSeconds);
             }
         }
 
@@ -243,7 +243,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.FadeInEnd - this.FadeInStart;
+                return FadeInEnd - FadeInStart;
             }
         }
 
@@ -254,7 +254,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.FadeInLength);
+                return SamplesToSeconds(FadeInLength);
             }
         }
 
@@ -285,7 +285,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.FadeOutEnd - this.FadeOutStart;
+                return FadeOutEnd - FadeOutStart;
             }
         }
 
@@ -296,7 +296,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.FadeOutLength);
+                return SamplesToSeconds(FadeOutLength);
             }
         }
 
@@ -328,7 +328,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return (this.FadeOutStart - this.FadeInStart) + this.AdditionalStartLoopLength - this.SkipLength;
+                return (FadeOutStart - FadeInStart) + AdditionalStartLoopLength - SkipLength;
             }
         }
 
@@ -337,7 +337,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public bool IsLoopedAtStart
         {
-            get { return (this.StartLoopCount >= 2); }
+            get { return (StartLoopCount >= 2); }
         }
 
         /// <summary>
@@ -347,8 +347,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (!this.IsLoopedAtStart) return 0;
-                return (this.StartLoopCount - 1) * this.FadeInLength;
+                if (!IsLoopedAtStart) return 0;
+                return (StartLoopCount - 1) * FadeInLength;
             }
         }
 
@@ -359,8 +359,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (!this.IsLoopedAtStart) return this.FadeInLength;
-                return this.StartLoopCount * this.FadeInLength;
+                if (!IsLoopedAtStart) return FadeInLength;
+                return StartLoopCount * FadeInLength;
             }
         }
 
@@ -371,7 +371,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.FullStartLoopLength);
+                return SamplesToSeconds(FullStartLoopLength);
             }
         }
 
@@ -380,7 +380,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public bool IsLoopedAtEnd
         {
-            get { return (this.EndLoopCount >= 2); }
+            get { return (EndLoopCount >= 2); }
         }
 
         /// <summary>
@@ -390,8 +390,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (!this.IsLoopedAtEnd) return 0;
-                return (this.EndLoopCount - 1) * this.FadeOutLength;
+                if (!IsLoopedAtEnd) return 0;
+                return (EndLoopCount - 1) * FadeOutLength;
             }
         }
 
@@ -402,8 +402,8 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                if (!this.IsLoopedAtEnd) return this.FadeOutLength;
-                return this.EndLoopCount * this.FadeOutLength;
+                if (!IsLoopedAtEnd) return FadeOutLength;
+                return EndLoopCount * FadeOutLength;
             }
         }
 
@@ -414,7 +414,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.FullEndLoopLength);
+                return SamplesToSeconds(FullEndLoopLength);
             }
         }
 
@@ -426,7 +426,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.ActiveLength);
+                return SamplesToSeconds(ActiveLength);
             }
         }
 
@@ -438,7 +438,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return FormatSeconds(this.ActiveLengthSeconds);
+                return FormatSeconds(ActiveLengthSeconds);
             }
         }
 
@@ -459,7 +459,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SkipEnd - this.SkipStart;
+                return SkipEnd - SkipStart;
             }
         }
 
@@ -470,7 +470,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.SkipLength);
+                return SamplesToSeconds(SkipLength);
             }
         }
 
@@ -479,7 +479,7 @@ namespace Halloumi.BassEngine
         /// </summary>
         public bool HasSkipSection
         {
-            get { return this.SkipStart != 0 && this.SkipLength > 0; }
+            get { return SkipStart != 0 && SkipLength > 0; }
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.FadeInStart - this.PreFadeInStart;
+                return FadeInStart - PreFadeInStart;
             }
         }
 
@@ -577,7 +577,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return this.SamplesToSeconds(this.PreFadeInLength);
+                return SamplesToSeconds(PreFadeInLength);
             }
         }
 
@@ -646,7 +646,7 @@ namespace Halloumi.BassEngine
         {
             get
             {
-                return (this.RawLoopEnd != 0);
+                return (RawLoopEnd != 0);
             }
         }
 
@@ -678,10 +678,10 @@ namespace Halloumi.BassEngine
                     return _cachedConversions.Where(c => c.Samples == samples).FirstOrDefault().Seconds;
             }
 
-            if (this.Channel == int.MinValue) return (double)samples * _samplesToSecondsRatio;
+            if (Channel == int.MinValue) return (double)samples * _samplesToSecondsRatio;
             else
             {
-                var value = Bass.BASS_ChannelBytes2Seconds(this.Channel, samples);
+                var value = Bass.BASS_ChannelBytes2Seconds(Channel, samples);
                 if (value == -1)
                 {
                     value = GuessSecondsFromSamples(samples);
@@ -723,10 +723,10 @@ namespace Halloumi.BassEngine
                     return _cachedConversions.Where(c => c.Seconds == seconds).FirstOrDefault().Samples;
             }
 
-            if (this.Channel == int.MinValue) return (long)((double)seconds / _samplesToSecondsRatio);
+            if (Channel == int.MinValue) return (long)((double)seconds / _samplesToSecondsRatio);
             else
             {
-                var value = Bass.BASS_ChannelSeconds2Bytes(this.Channel, seconds);
+                var value = Bass.BASS_ChannelSeconds2Bytes(Channel, seconds);
                 if (value == -1)
                 {
                     value = GuessSamplesFromSeconds(seconds);
@@ -784,25 +784,25 @@ namespace Halloumi.BassEngine
         /// <returns> A string that represents this instance.</returns>
         public override string ToString()
         {
-            return this.Filename;
+            return Filename;
         }
 
         internal System.Runtime.InteropServices.GCHandle AudioDataHandle { get; set; }
 
         internal byte[] AudioData { get; set; }
 
-        internal IntPtr AudioDataPointer { get { return this.AudioDataHandle.AddrOfPinnedObject(); } }
+        internal IntPtr AudioDataPointer { get { return AudioDataHandle.AddrOfPinnedObject(); } }
 
         #endregion
 
         internal void ResetPowerDownOnEnd()
         {
-            this.PowerDownOnEnd = PowerDownOnEndOriginal;
+            PowerDownOnEnd = PowerDownOnEndOriginal;
         }
 
         public bool IsAudioLoaded()
         {
-            return this.Channel != int.MinValue;
+            return Channel != int.MinValue;
         }
     }
 }

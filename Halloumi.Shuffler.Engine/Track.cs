@@ -19,25 +19,25 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public Track()
         {
-            this.Filename = "";
-            this.AlbumArtist = "";
-            this.Album = "";
-            this.Artist = "";
-            this.Bpm = 0;
-            this.LastModified = DateTime.MinValue;
-            this.Genre = "";
-            this.Length = 0;
-            this.Title = "";
-            this.TrackNumber = 0;
-            this.CannotCalculateBpm = false;
-            this.IsShufflerTrack = false;
-            this.ShufflerAttribuesFile = "";
-            this.ShufflerMixesFile = "";
-            this.StartBpm = 0;
-            this.EndBpm = 0;
-            this.Rank = 1;
-            this.PowerDown = false;
-            this.Key = "";
+            Filename = "";
+            AlbumArtist = "";
+            Album = "";
+            Artist = "";
+            Bpm = 0;
+            LastModified = DateTime.MinValue;
+            Genre = "";
+            Length = 0;
+            Title = "";
+            TrackNumber = 0;
+            CannotCalculateBpm = false;
+            IsShufflerTrack = false;
+            ShufflerAttribuesFile = "";
+            ShufflerMixesFile = "";
+            StartBpm = 0;
+            EndBpm = 0;
+            Rank = 1;
+            PowerDown = false;
+            Key = "";
         }
 
         #endregion
@@ -74,7 +74,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public string TrackNumberFormatted
         {
-            get { return this.TrackNumber == 0 ? "" : this.TrackNumber.ToString(); }
+            get { return TrackNumber == 0 ? "" : TrackNumber.ToString(); }
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Halloumi.Shuffler.Engine
         {
             get
             {
-                return BassHelper.GetFormattedLength(this.Length);
+                return BassHelper.GetFormattedLength(Length);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Halloumi.Shuffler.Engine
         {
             get
             {
-                return BassHelper.GetFormattedLength(this.FullLength);
+                return BassHelper.GetFormattedLength(FullLength);
             }
         }
 
@@ -151,11 +151,11 @@ namespace Halloumi.Shuffler.Engine
         {
             get
             {
-                if (this.Rank == 5) return "Excellent";
-                if (this.Rank == 4) return "Very Good";
-                if (this.Rank == 3) return "Good";
-                if (this.Rank == 2) return "Bearable";
-                if (this.Rank == 0) return "Forbidden";
+                if (Rank == 5) return "Excellent";
+                if (Rank == 4) return "Very Good";
+                if (Rank == 3) return "Good";
+                if (Rank == 2) return "Bearable";
+                if (Rank == 0) return "Forbidden";
                 return "Unranked";
             }
         }
@@ -185,7 +185,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public string Description
         {
-            get { return this.Artist + " - " + this.Title; }
+            get { return Artist + " - " + Title; }
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         public override string ToString()
         {
-            if (this.Description != "") return this.Description;
+            if (Description != "") return Description;
             return base.ToString();
         }
 

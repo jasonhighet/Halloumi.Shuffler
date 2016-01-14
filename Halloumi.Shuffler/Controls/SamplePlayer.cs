@@ -27,7 +27,7 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="sample">The sample.</param>
         public void SetSample(BE.Sample sample)
         {
-            this.Sample = sample;
+            Sample = sample;
             BindData();
         }
 
@@ -36,15 +36,15 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindData()
         {
-            lblSampleDescription.Text = (this.Sample.LinkedTrackDescription + " - " + this.Sample.Description).Trim().Replace("&", "&&");
-            if (this.CurrentTrack == null
-                || this.Sample == null
-                || this.Sample.LinkedTrackDescription == this.CurrentTrack.Description)
+            lblSampleDescription.Text = (Sample.LinkedTrackDescription + " - " + Sample.Description).Trim().Replace("&", "&&");
+            if (CurrentTrack == null
+                || Sample == null
+                || Sample.LinkedTrackDescription == CurrentTrack.Description)
             {
                 btnLink.Text = "&Link";
                 btnLink.Enabled = false;
             }
-            else if (this.LinkedSampleLibrary.IsSampleLinkedToTrack(this.CurrentTrack, this.Sample))
+            else if (LinkedSampleLibrary.IsSampleLinkedToTrack(CurrentTrack, Sample))
             {
                 btnLink.Text = "&Unlink";
                 btnLink.Enabled = true;
@@ -75,7 +75,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private LinkedSampleLibrary LinkedSampleLibrary
         {
-            get { return this.Library.LinkedSampleLibrary; }
+            get { return Library.LinkedSampleLibrary; }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private BE.Track CurrentTrack
         {
-            get { return this.BassPlayer.CurrentTrack; }
+            get { return BassPlayer.CurrentTrack; }
         }
 
         /// <summary>
@@ -100,17 +100,17 @@ namespace Halloumi.Shuffler.Controls
             {
                 if (btnPlay.Text == "&Stop")
                 {
-                    this.BassPlayer.MuteSample(this.Sample);
+                    BassPlayer.MuteSample(Sample);
                     btnPlay.Text = "&Play";
                 }
                 else
                 {
-                    this.BassPlayer.PlaySample(this.Sample);
+                    BassPlayer.PlaySample(Sample);
                 }
             }
-            else if (this.Sample.IsLooped)
+            else if (Sample.IsLooped)
             {
-                this.BassPlayer.PlaySample(this.Sample);
+                BassPlayer.PlaySample(Sample);
                 btnPlay.Text = "&Stop";
             }
         }
@@ -122,7 +122,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (e.Button == MouseButtons.Left)
             {
-                this.BassPlayer.MuteSample(this.Sample);
+                BassPlayer.MuteSample(Sample);
             }
         }
 
@@ -132,9 +132,9 @@ namespace Halloumi.Shuffler.Controls
         private void btnScratch_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
-                BE.AnalogXScratchHelper.LaunchShort(this.Sample);
+                BE.AnalogXScratchHelper.LaunchShort(Sample);
             else
-                BE.AnalogXScratchHelper.Launch(this.Sample);
+                BE.AnalogXScratchHelper.Launch(Sample);
         }
 
         /// <summary>
@@ -144,11 +144,11 @@ namespace Halloumi.Shuffler.Controls
         {
             if (btnLink.Text == "&Link")
             {
-                this.LinkedSampleLibrary.LinkSampleToTrack(this.CurrentTrack, this.Sample);
+                LinkedSampleLibrary.LinkSampleToTrack(CurrentTrack, Sample);
             }
             else if (btnLink.Text == "&Unlink")
             {
-                this.LinkedSampleLibrary.UnlinkSampleFromTrack(this.CurrentTrack, this.Sample);
+                LinkedSampleLibrary.UnlinkSampleFromTrack(CurrentTrack, Sample);
             }
             BindData();
         }

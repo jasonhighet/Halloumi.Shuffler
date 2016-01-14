@@ -13,7 +13,7 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="name">The name of the artist.</param>
         public Artist(string name)
         {
-            this.Name = name;
+            Name = name;
         }
         
         /// <summary>

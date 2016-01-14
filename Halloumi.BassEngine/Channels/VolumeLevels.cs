@@ -17,8 +17,8 @@ namespace Halloumi.BassEngine
         /// </summary>
         public VolumeLevels()
         {
-            this.Right = 0;
-            this.Left = 0;
+            Right = 0;
+            Left = 0;
         }
 
         #endregion

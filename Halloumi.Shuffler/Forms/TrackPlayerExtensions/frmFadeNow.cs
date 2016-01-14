@@ -21,8 +21,8 @@ namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
         private void btnFadeNow_Click(object sender, EventArgs e)
         {
             var fadeType = cmbFadeType.ParseEnum<BE.ForceFadeType>();
-            this.BassPlayer.ForceFadeNow(fadeType);
-            this.Close();
+            BassPlayer.ForceFadeNow(fadeType);
+            Close();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MixLibrary MixLibrary
         {
-            get { return this.PlaylistControl.MixLibrary; }
+            get { return PlaylistControl.MixLibrary; }
         }
 
         /// <summary>

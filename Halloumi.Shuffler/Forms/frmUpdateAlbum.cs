@@ -17,8 +17,8 @@ namespace Halloumi.Shuffler.Forms
         {
             InitializeComponent();
             
-            this.Tracks = null;
-            this.Album = "";
+            Tracks = null;
+            Album = "";
         }
 
         public Library Library { get; set; }
@@ -33,20 +33,20 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindData()
         {
-            var albums = this.Library.GetAllAlbums();
+            var albums = Library.GetAllAlbums();
             cmbAlbum.ValueMember = "Name";
             cmbAlbum.DisplayMember = "Name";
             cmbAlbum.DataSource = albums;
 
-            if (this.Tracks == null)
+            if (Tracks == null)
             {
-                this.Text = "Rename Album";
-                cmbAlbum.Text = this.Album;
+                Text = "Rename Album";
+                cmbAlbum.Text = Album;
             }
             else
             {
-                this.Text = "Update Album";
-                cmbAlbum.Text = this.Tracks[0].Album;
+                Text = "Update Album";
+                cmbAlbum.Text = Tracks[0].Album;
 
             }
         }
@@ -60,20 +60,20 @@ namespace Halloumi.Shuffler.Forms
         {
             if (cmbAlbum.Text.Trim() == "") return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            if (this.Tracks != null)
+            if (Tracks != null)
             {
-                this.Library.UpdateAlbum(this.Tracks, cmbAlbum.Text);
+                Library.UpdateAlbum(Tracks, cmbAlbum.Text);
             }
             else
             {
-                this.Library.RenameAlbum(this.Album, cmbAlbum.Text);
+                Library.RenameAlbum(Album, cmbAlbum.Text);
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Halloumi.Shuffler.Engine
 
         public Playlist()
         {
-            this.Tracks = new List<Track>();
+            Tracks = new List<Track>();
         }
     }
 }

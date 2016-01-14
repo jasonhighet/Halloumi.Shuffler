@@ -54,7 +54,7 @@ namespace Halloumi.Shuffler.Controls
 
             // BindData();
             var bindData = new BindDataHandler(BindData);
-            this.BeginInvoke(bindData);
+            BeginInvoke(bindData);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _bindDataAllowed = false;
 
-            var settings = Halloumi.Shuffler.Forms.Settings.Default;
+            var settings = Forms.Settings.Default;
             cmbRank.SelectedIndex = settings.MixableRankFilterIndex;
             cmbKeyRank.SelectedIndex = settings.MixableKeyRankFilterIndex;
             cmbView.SelectedIndex = settings.MixableViewIndex;
@@ -79,8 +79,8 @@ namespace Halloumi.Shuffler.Controls
         private void grdMixableTracks_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             var track = GetSelectedTrack();
-            if (track != null && this.PlaylistControl != null)
-                this.PlaylistControl.QueueTrack(track);
+            if (track != null && PlaylistControl != null)
+                PlaylistControl.QueueTrack(track);
         }
 
         /// <summary>
@@ -108,13 +108,13 @@ namespace Halloumi.Shuffler.Controls
             else if (keyRankFilter == "Not Good") minimumKeyRank = 0;
 
             var tracks = (view == View.FromTracks)
-                ? this.MixLibrary.GetMixableFromTracks(_parentTrack, ranks)
-                : this.MixLibrary.GetMixableToTracks(_parentTrack, ranks);
+                ? MixLibrary.GetMixableFromTracks(_parentTrack, ranks)
+                : MixLibrary.GetMixableToTracks(_parentTrack, ranks);
 
             var playListTracks = new List<Track>();
-            if (this.PlaylistControl != null)
+            if (PlaylistControl != null)
             {
-                playListTracks = this.PlaylistControl.GetTracks();
+                playListTracks = PlaylistControl.GetTracks();
             }
 
             if (minimumKeyRank == 0)
@@ -143,18 +143,18 @@ namespace Halloumi.Shuffler.Controls
                     Bpm = track.Bpm,
                     Diff = BE.BassHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
                     MixRank = (view == View.FromTracks)
-                        ? this.MixLibrary.GetExtendedMixLevel(track, _parentTrack)
-                        : this.MixLibrary.GetExtendedMixLevel(_parentTrack, track),
+                        ? MixLibrary.GetExtendedMixLevel(track, _parentTrack)
+                        : MixLibrary.GetExtendedMixLevel(_parentTrack, track),
 
                     Rank = track.Rank,
-                    RankDescription = this.MixLibrary.GetRankDescription(track.Rank),
+                    RankDescription = MixLibrary.GetRankDescription(track.Rank),
                     Key = BE.KeyHelper.GetDisplayKey(track.Key),
                     KeyDiff = BE.KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
                     KeyRankDescription = BE.KeyHelper.GetKeyMixRankDescription(_parentTrack.Key, track.Key)
                 };
 
-                mixableTrack.MixRankDescription = this.MixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
-                var hasExtendedMix = this.MixLibrary.HasExtendedMix(_parentTrack, track);
+                mixableTrack.MixRankDescription = MixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
+                var hasExtendedMix = MixLibrary.HasExtendedMix(_parentTrack, track);
                 if (hasExtendedMix) mixableTrack.MixRankDescription += "*";
 
                 mixableTracks.Add(mixableTrack);
@@ -209,7 +209,7 @@ namespace Halloumi.Shuffler.Controls
         private void grdMixableTracks_SortOrderChanged(object sender, EventArgs e)
         {
             var bindData = new BindDataHandler(BindData);
-            this.BeginInvoke(bindData);
+            BeginInvoke(bindData);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbRank_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Halloumi.Shuffler.Forms.Settings.Default.MixableRankFilterIndex = cmbRank.SelectedIndex;
+            Forms.Settings.Default.MixableRankFilterIndex = cmbRank.SelectedIndex;
             BindData();
         }
 
@@ -259,7 +259,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void chkExcludeQueued_CheckedChanged(object sender, EventArgs e)
         {
-            Halloumi.Shuffler.Forms.Settings.Default.MixableTracksExcludeQueued = chkExcludeQueued.Checked;
+            Forms.Settings.Default.MixableTracksExcludeQueued = chkExcludeQueued.Checked;
             BindData();
         }
 
@@ -268,13 +268,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbKeyRank_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Halloumi.Shuffler.Forms.Settings.Default.MixableKeyRankFilterIndex = cmbKeyRank.SelectedIndex;
+            Forms.Settings.Default.MixableKeyRankFilterIndex = cmbKeyRank.SelectedIndex;
             BindData();
         }
 
         private void cmbView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Halloumi.Shuffler.Forms.Settings.Default.MixableViewIndex = cmbView.SelectedIndex;
+            Forms.Settings.Default.MixableViewIndex = cmbView.SelectedIndex;
             BindData();
         }
     }

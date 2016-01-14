@@ -21,7 +21,7 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="library">The library.</param>
         public LinkedSampleLibrary(Library library)
         {
-            this.Library = library;
+            Library = library;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Halloumi.Shuffler.Engine
 
             foreach (var linkedSample in linkedSamples)
             {
-                var libraryTrack = this.Library
+                var libraryTrack = Library
                     .GetTracksByDescription(linkedSample.TrackDescription)
                     .Where(t => t.IsShufflerTrack)
                     .FirstOrDefault();
@@ -124,7 +124,7 @@ namespace Halloumi.Shuffler.Engine
             var importFiles = FileSystemHelper.SearchFiles(importFolder, "*.LinkedSamples.txt", false);
             foreach (var importFile in importFiles)
             {
-                var existingFile = Path.Combine(this.Library.ShufflerFolder, Path.GetFileName(importFile));
+                var existingFile = Path.Combine(Library.ShufflerFolder, Path.GetFileName(importFile));
                 if (!File.Exists(existingFile))
                 {
                     FileSystemHelper.Copy(importFile, existingFile);
@@ -150,7 +150,7 @@ namespace Halloumi.Shuffler.Engine
 
             if (!deleteAfterImport)
             {
-                var existingFiles = FileSystemHelper.SearchFiles(this.Library.ShufflerFolder, "*.LinkedSamples.txt", false);
+                var existingFiles = FileSystemHelper.SearchFiles(Library.ShufflerFolder, "*.LinkedSamples.txt", false);
                 foreach (var existingFile in existingFiles)
                 {
                     var importFile = Path.Combine(importFolder, Path.GetFileName(existingFile));
@@ -230,7 +230,7 @@ namespace Halloumi.Shuffler.Engine
         {
             var filename = string.Format("{0}.LinkedSamples.txt", trackDescription);
             filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            filename = Path.Combine(this.Library.ShufflerFolder, filename);
+            filename = Path.Combine(Library.ShufflerFolder, filename);
             return filename;
         }
     }
@@ -243,7 +243,7 @@ namespace Halloumi.Shuffler.Engine
 
         public override string ToString()
         {
-            return this.TrackDescription + ", " + SampleKey.ToString();
+            return TrackDescription + ", " + SampleKey.ToString();
         }
 
         public static LinkedSample FromString(string value)

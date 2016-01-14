@@ -19,7 +19,7 @@ namespace Halloumi.BassEngine.Channels
         public MixerChannel(IBmpProvider bpmProvider, MixerChannelOutputType outputType)
             : base(bpmProvider)
         {
-            this.InternalChannel = BassHelper.IntialiseMixerChannel();
+            InternalChannel = BassHelper.IntialiseMixerChannel();
             OutputType = outputType;
             SetVolume(100);
         }
@@ -42,7 +42,7 @@ namespace Halloumi.BassEngine.Channels
 
         private void InitialiseMixerEq()
         {
-            _eqChannel = Bass.BASS_ChannelSetFX(this.InternalChannel, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
+            _eqChannel = Bass.BASS_ChannelSetFX(InternalChannel, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
         }
 
         private bool IsMixerEqIntialised()

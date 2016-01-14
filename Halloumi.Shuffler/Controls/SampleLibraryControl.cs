@@ -49,13 +49,13 @@ namespace Halloumi.Shuffler.Controls
 
             public SampleModel(Sample sample)
             {
-                this.Description = sample.TrackArtist + " - " + sample.TrackTitle + " - " + sample.Description;
-                this.Tags = string.Join(", ", sample.Tags.ToArray());
-                this.LengthFormatted = BE.BassHelper.GetFormattedLength(Convert.ToDecimal(sample.Length));
-                this.Length = Convert.ToDecimal(sample.Length);
-                this.Bpm = sample.Bpm;
-                this.Sample = sample;
-                this.Key = sample.IsAtonal
+                Description = sample.TrackArtist + " - " + sample.TrackTitle + " - " + sample.Description;
+                Tags = string.Join(", ", sample.Tags.ToArray());
+                LengthFormatted = BE.BassHelper.GetFormattedLength(Convert.ToDecimal(sample.Length));
+                Length = Convert.ToDecimal(sample.Length);
+                Bpm = sample.Bpm;
+                Sample = sample;
+                Key = sample.IsAtonal
                     ? "Atonal"
                     : BE.KeyHelper.GetDisplayKey(sample.Key);
             }
@@ -79,8 +79,8 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            this.MinBpm = 0;
-            this.MaxBpm = 1000;
+            MinBpm = 0;
+            MaxBpm = 1000;
             grdSamples.VirtualMode = true;
 
             txtMinBPM.TextChanged += new EventHandler(txtMinBPM_TextChanged);
@@ -94,7 +94,7 @@ namespace Halloumi.Shuffler.Controls
             grdSamples.CellValueNeeded += grdSamples_CellValueNeeded;
             grdSamples.SortColumnIndex = -1;
 
-            this.SearchFilter = "";
+            SearchFilter = "";
 
             grdSamples.DefaultCellStyle.Font = _font;
 
@@ -113,8 +113,8 @@ namespace Halloumi.Shuffler.Controls
             cmbLoopType.Items.Add("Partial Loop (End)");
             cmbLoopType.Items.Add("Partial Loop (Start)");
 
-            this.LoopFilter = "";
-            this.KeyFilter = "";
+            LoopFilter = "";
+            KeyFilter = "";
         }
 
         public void Initialize()
@@ -129,15 +129,15 @@ namespace Halloumi.Shuffler.Controls
 
         private void StopCurrentSample()
         {
-            this.BassPlayer.StopRawLoop();
-            this.BassPlayer.UnloadRawLoopTrack();
+            BassPlayer.StopRawLoop();
+            BassPlayer.UnloadRawLoopTrack();
         }
 
         public List<Sample> GetDisplayedSamples()
         {
             var criteria = new SampleLibrary.SampleCriteria();
 
-            var loopTypeText = this.LoopFilter;
+            var loopTypeText = LoopFilter;
             if (loopTypeText.Contains("Primary"))
             {
                 criteria.Primary = true;
@@ -154,7 +154,7 @@ namespace Halloumi.Shuffler.Controls
                     criteria.LoopMode = LoopMode.FullLoop;
             }
 
-            var keyText = this.KeyFilter;
+            var keyText = KeyFilter;
             if (keyText == "Atonal")
             {
                 criteria.Atonal = true;
@@ -163,14 +163,14 @@ namespace Halloumi.Shuffler.Controls
             else
             {
                 criteria.Atonal = false;
-                criteria.Key = BE.KeyHelper.GetKeyFromDisplayKey(this.KeyFilter);
+                criteria.Key = BE.KeyHelper.GetKeyFromDisplayKey(KeyFilter);
             }
 
-            criteria.MaxBpm = this.MaxBpm;
-            criteria.MinBpm = this.MinBpm;
+            criteria.MaxBpm = MaxBpm;
+            criteria.MinBpm = MinBpm;
 
-            criteria.SearchText = this.SearchFilter;
-            var samples = this.SampleLibrary.GetSamples(criteria);
+            criteria.SearchText = SearchFilter;
+            var samples = SampleLibrary.GetSamples(criteria);
 
             return samples;
         }
@@ -188,7 +188,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (_binding) return;
 
-            var selectedSamples = this.GetSelectedSamples();
+            var selectedSamples = GetSelectedSamples();
 
             BindSamples(selectedSamples);
         }
@@ -221,7 +221,7 @@ namespace Halloumi.Shuffler.Controls
 
                 if (grdSamples.SortOrder == SortOrder.Descending) sampleModels.Reverse();
             }
-            this.SampleModels = sampleModels;
+            SampleModels = sampleModels;
 
             if (sampleModels.Count != grdSamples.RowCount)
             {
@@ -259,7 +259,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The selected sample</returns>
         public Sample GetSelectedSample()
         {
-            var samples = this.GetSelectedSamples();
+            var samples = GetSelectedSamples();
             if (samples.Count == 0) return null;
             return samples[0];
         }
@@ -287,9 +287,9 @@ namespace Halloumi.Shuffler.Controls
         /// <returns></returns>
         private SampleModel GetSampleModelByIndex(int index)
         {
-            if (this.SampleModels == null) return null;
-            if (index < 0 || index >= this.SampleModels.Count) return null;
-            return this.SampleModels[index];
+            if (SampleModels == null) return null;
+            if (index < 0 || index >= SampleModels.Count) return null;
+            return SampleModels[index];
         }
 
         /// <summary>
@@ -309,10 +309,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void Search()
         {
-            if (this.SearchFilter == txtSearch.Text.Trim()) return;
+            if (SearchFilter == txtSearch.Text.Trim()) return;
             //if (txtSearch.Text.Trim().Length > 2 || txtSearch.Text.Trim().Length == 0)
             {
-                this.SearchFilter = txtSearch.Text.Trim();
+                SearchFilter = txtSearch.Text.Trim();
                 var bindData = new BindDataHandler(BindData);
                 txtSearch.BeginInvoke(bindData);
             }
@@ -323,11 +323,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetLoopFilter()
         {
-            if (this.LoopFilter != cmbLoopType.GetTextThreadSafe())
+            if (LoopFilter != cmbLoopType.GetTextThreadSafe())
             {
-                this.LoopFilter = cmbLoopType.GetTextThreadSafe();
+                LoopFilter = cmbLoopType.GetTextThreadSafe();
                 var bindData = new BindDataHandler(BindData);
-                this.BeginInvoke(bindData);
+                BeginInvoke(bindData);
             }
         }
 
@@ -336,11 +336,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetKeyFilter()
         {
-            if (this.KeyFilter != cmbKey.GetTextThreadSafe())
+            if (KeyFilter != cmbKey.GetTextThreadSafe())
             {
-                this.KeyFilter = cmbKey.GetTextThreadSafe();
+                KeyFilter = cmbKey.GetTextThreadSafe();
                 var bindData = new BindDataHandler(BindData);
-                this.BeginInvoke(bindData);
+                BeginInvoke(bindData);
             }
         }
 
@@ -352,27 +352,27 @@ namespace Halloumi.Shuffler.Controls
             var max = 1000;
             if (txtMaxBPM.Text != "") max = Convert.ToInt32(txtMaxBPM.Text);
 
-            if (min != this.MinBpm || max != this.MaxBpm)
+            if (min != MinBpm || max != MaxBpm)
             {
-                this.MinBpm = min;
-                this.MaxBpm = max;
+                MinBpm = min;
+                MaxBpm = max;
                 var bindData = new BindDataHandler(BindData);
-                this.BeginInvoke(bindData);
+                BeginInvoke(bindData);
             }
         }
 
         private void PlayCurrentSample()
         {
-            this.BassPlayer.StopRawLoop();
-            this.BassPlayer.UnloadRawLoopTrack();
+            BassPlayer.StopRawLoop();
+            BassPlayer.UnloadRawLoopTrack();
 
             var sample = GetSelectedSample();
             if (sample == null) return;
 
-            var filename = this.SampleLibrary.GetSampleFileName(sample);
+            var filename = SampleLibrary.GetSampleFileName(sample);
             
-            this.BassPlayer.LoadRawLoopTrack(filename);
-            this.BassPlayer.PlayRawLoop();
+            BassPlayer.LoadRawLoopTrack(filename);
+            BassPlayer.PlayRawLoop();
         }
 
         /// <summary>
@@ -397,7 +397,7 @@ namespace Halloumi.Shuffler.Controls
         private void grdSamples_SortOrderChanged(object sender, EventArgs e)
         {
             var bindData = new BindDataHandler(BindData);
-            this.BeginInvoke(bindData);
+            BeginInvoke(bindData);
         }
 
         /// <summary>
@@ -444,16 +444,16 @@ namespace Halloumi.Shuffler.Controls
             var sample = GetSelectedSample();
             if (sample == null) return;
 
-            var track = this.SampleLibrary.GetTrackFromSample(sample);
+            var track = SampleLibrary.GetTrackFromSample(sample);
             if (track == null) return;
 
             StopCurrentSample();
 
             var form = new FrmEditTrackSamples();
-            form.BassPlayer = this.BassPlayer;
+            form.BassPlayer = BassPlayer;
             form.Filename = track.Filename;
-            form.SampleLibrary = this.SampleLibrary;
-            form.Library = this.SampleLibrary.TrackLibrary;
+            form.SampleLibrary = SampleLibrary;
+            form.Library = SampleLibrary.TrackLibrary;
 
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
@@ -476,10 +476,10 @@ namespace Halloumi.Shuffler.Controls
             foreach (var sample in GetSelectedSamples())
             {
                 if(sample.Key == "")
-                    this.SampleLibrary.CalculateSampleKey(sample);            
+                    SampleLibrary.CalculateSampleKey(sample);            
             }
 
-            this.SampleLibrary.SaveCache();
+            SampleLibrary.SaveCache();
 
             BindData();
 
@@ -503,7 +503,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 foreach (var sample in samples)
                 {
-                    var source = this.SampleLibrary.GetSampleFileName(sample);
+                    var source = SampleLibrary.GetSampleFileName(sample);
                     var destination = Path.Combine(folder, Path.GetFileName(source));
                     FileSystemHelper.Copy(source, destination);
                 }

@@ -55,7 +55,7 @@ namespace Halloumi.Shuffler.Forms
         {
             btnCancel.Enabled = false;
             btnOK.Enabled = false;
-            this.Cursor = Cursors.WaitCursor;
+            Cursor = Cursors.WaitCursor;
             Application.DoEvents();
             backgroundWorker.RunWorkerAsync();
         }
@@ -63,9 +63,9 @@ namespace Halloumi.Shuffler.Forms
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var folder = txtOutputFolder.Text;
-            this.MixLibrary.ImportFromFolder(folder, chkDeleteAfterImport.Checked);
-            this.Library.ImportShufflerDetails(folder, chkDeleteAfterImport.Checked);
-            this.Library.LinkedSampleLibrary.ImportDetails(folder, chkDeleteAfterImport.Checked);
+            MixLibrary.ImportFromFolder(folder, chkDeleteAfterImport.Checked);
+            Library.ImportShufflerDetails(folder, chkDeleteAfterImport.Checked);
+            Library.LinkedSampleLibrary.ImportDetails(folder, chkDeleteAfterImport.Checked);
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -74,12 +74,12 @@ namespace Halloumi.Shuffler.Forms
             settings.ImportShufflerFilesFolder = txtOutputFolder.Text;
             settings.Save();
 
-            this.Close();
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

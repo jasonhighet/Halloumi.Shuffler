@@ -11,8 +11,8 @@ namespace Halloumi.BassEngine.Channels
         public SpeakerOutputChannel()
             : base(null)
         {
-            this.InternalChannel = BassHelper.IntialiseOutputChannel();
-            Bass.BASS_ChannelPlay(this.InternalChannel, false);
+            InternalChannel = BassHelper.IntialiseOutputChannel();
+            Bass.BASS_ChannelPlay(InternalChannel, false);
         }
     }
 }

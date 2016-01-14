@@ -19,18 +19,18 @@ namespace Halloumi.BassEngine.Channels
                 BassHelper.InitialiseMonitorDevice(_monitorDeviceId);
 
                 // create monitor mixer channel
-                this.InternalChannel = BassHelper.IntialiseOutputChannel();
+                InternalChannel = BassHelper.IntialiseOutputChannel();
 
                 // set to use monitor sound card
-                Bass.BASS_ChannelSetDevice(this.InternalChannel, _monitorDeviceId);
+                Bass.BASS_ChannelSetDevice(InternalChannel, _monitorDeviceId);
 
-                Bass.BASS_ChannelPlay(this.InternalChannel, false);
+                Bass.BASS_ChannelPlay(InternalChannel, false);
             }
             else
             {
                 // create monitor channel on main speaker output
-                this.InternalChannel = BassHelper.IntialiseOutputChannel();
-                Bass.BASS_ChannelPlay(this.InternalChannel, false);
+                InternalChannel = BassHelper.IntialiseOutputChannel();
+                Bass.BASS_ChannelPlay(InternalChannel, false);
             }
         }
     }

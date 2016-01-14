@@ -20,7 +20,7 @@ namespace Halloumi.Shuffler.Forms
             txtPlaylistName.IsRequired = true;
             txtPlaylistName.ErrorMessage = "Please enter a playlist name";
 
-            this.Tracks = null;
+            Tracks = null;
         }
 
         public Library Library { get; set; }
@@ -48,15 +48,15 @@ namespace Halloumi.Shuffler.Forms
             var playlistName = txtPlaylistName.Text.Trim();
             if (playlistName == "") return;
 
-            this.Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            var playlist = this.Library.CreateNewPlaylist(playlistName);
+            var playlist = Library.CreateNewPlaylist(playlistName);
 
-            this.Library.AddTracksToPlaylist(playlist, this.Tracks);
+            Library.AddTracksToPlaylist(playlist, Tracks);
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

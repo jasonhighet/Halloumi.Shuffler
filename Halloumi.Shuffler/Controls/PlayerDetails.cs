@@ -30,23 +30,23 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            this.Timer = new BASSTimer(100);
+            Timer = new BASSTimer(100);
             //this.Timer = new System.Windows.Forms.Timer();
-            this.Timer.Interval = 100;
+            Timer.Interval = 100;
 
-            this.Load += new EventHandler(TrackDetails_Load);
+            Load += new EventHandler(TrackDetails_Load);
             KryptonManager.GlobalPaletteChanged += new EventHandler(KryptonManager_GlobalPaletteChanged);
 
             slider.Slid += new EventHandler(Slider_Slid);
             btnPlay.Click += new EventHandler(btnPlay_Click);
-            btnPause.Click += new EventHandler(btnPlay_Click); this.Timer.Tick += new EventHandler(Timer_Tick);
+            btnPause.Click += new EventHandler(btnPlay_Click); Timer.Tick += new EventHandler(Timer_Tick);
 
             btnPrevious.Click += new EventHandler(btnPrevious_Click);
             btnSkipToEnd.Click += new EventHandler(btnSkipToEnd_Click);
             btnNext.Click += new EventHandler(btnNext_Click);
             sldVolume.Scrolled += new MediaSlider.MediaSlider.ScrollDelegate(sldVolume_Slid);
-            this.VisualsShown = false;
-            this.AlbumArtShown = true;
+            VisualsShown = false;
+            AlbumArtShown = true;
 
             slider.Minimum = 0;
             slider.Maximum = 0;
@@ -60,23 +60,23 @@ namespace Halloumi.Shuffler.Controls
         public void Initialize()
         {
             var settings = Settings.Default;
-            this.BassPlayer.SetMixerVolume(settings.Volume);
+            BassPlayer.SetMixerVolume(settings.Volume);
             sldVolume.Value = (int)settings.Volume;
             lblVolume.Text = settings.Volume.ToString();
         }
 
         private Track GetCurrentTrack()
         {
-            if (this.BassPlayer.CurrentTrack != null)
+            if (BassPlayer.CurrentTrack != null)
             {
-                return this.Library.GetTrackByFilename(this.BassPlayer.CurrentTrack.Filename);
+                return Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             }
             return null;
         }
 
         private Track GetPreviousTrack()
         {
-            return this.PlaylistControl.GetPreviousTrack();
+            return PlaylistControl.GetPreviousTrack();
         }
 
         /// <summary>
@@ -84,24 +84,24 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void TrackDetails_Load(object sender, EventArgs e)
         {
-            if (this.DesignMode) return;
+            if (DesignMode) return;
             if (_loaded) return;
 
             DisplayCurrentTrackDetails();
 
-            this.slider.Dock = DockStyle.None;
-            this.slider.Width = pnlSlider.Width;
-            this.slider.Dock = DockStyle.Fill;
+            slider.Dock = DockStyle.None;
+            slider.Width = pnlSlider.Width;
+            slider.Dock = DockStyle.Fill;
 
-            if (!this.Timer.Enabled)
+            if (!Timer.Enabled)
             {
-                this.Timer.Start();
-                this.BassPlayer.OnTrackChange += new EventHandler(BassPlayer_OnTrackChange);
+                Timer.Start();
+                BassPlayer.OnTrackChange += new EventHandler(BassPlayer_OnTrackChange);
             }
 
             sldVolume.Minimum = 0;
             sldVolume.Maximum = 100;
-            var volume = Convert.ToInt32(this.BassPlayer.GetMixerVolume());
+            var volume = Convert.ToInt32(BassPlayer.GetMixerVolume());
             lblVolume.Text = volume.ToString();
             sldVolume.Value = volume;
 
@@ -124,7 +124,7 @@ namespace Halloumi.Shuffler.Controls
             var palette = KryptonHelper.GetCurrentPalette();
             var color = KryptonManager.GetPaletteForMode(palette).GetBackColor2(PaletteBackStyle.PanelAlternate, PaletteState.Normal);
 
-            this.BackColor = color;
+            BackColor = color;
             pnlSlider.BackColor = color;
             pnlVolume.BackColor = color;
             slider.BackColor = color;
@@ -143,18 +143,18 @@ namespace Halloumi.Shuffler.Controls
         public void DisplayCurrentTrackDetails()
         {
             Track track = null;
-            if (this.BassPlayer.CurrentTrack != null)
+            if (BassPlayer.CurrentTrack != null)
             {
-                track = this.Library.GetTrackByFilename(this.BassPlayer.CurrentTrack.Filename);
+                track = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             }
 
-            if (this.BassPlayer.PlayState == BE.PlayState.Playing)
+            if (BassPlayer.PlayState == BE.PlayState.Playing)
             {
                 if (!btnPause.Visible) btnPause.Visible = true;
                 if (btnPlay.Visible) btnPlay.Visible = false;
             }
 
-            if (this.BassPlayer.PlayState != BE.PlayState.Playing)
+            if (BassPlayer.PlayState != BE.PlayState.Playing)
             {
                 if (btnPause.Visible) btnPause.Visible = false;
                 if (!btnPlay.Visible) btnPlay.Visible = true;
@@ -171,7 +171,7 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                picCover.Image = this.Library.GetAlbumCover(new Album(track.Album));
+                picCover.Image = Library.GetAlbumCover(new Album(track.Album));
                 CurrentTrackDescription = track.Description;
             }
             else
@@ -185,34 +185,34 @@ namespace Halloumi.Shuffler.Controls
 
         public int GetCurrentMixRank()
         {
-            if (this.BassPlayer.CurrentTrack == null) return 1;
+            if (BassPlayer.CurrentTrack == null) return 1;
 
             Track currentTrack = null;
-            if (this.BassPlayer.CurrentTrack != null)
+            if (BassPlayer.CurrentTrack != null)
             {
-                currentTrack = this.Library.GetTrackByFilename(this.BassPlayer.CurrentTrack.Filename);
+                currentTrack = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             }
 
-            var prevTrack = this.PlaylistControl.GetPreviousTrack();
+            var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return 1;
 
-            return this.MixLibrary.GetMixLevel(prevTrack, currentTrack);
+            return MixLibrary.GetMixLevel(prevTrack, currentTrack);
         }
 
         public void SetCurrentMixRank(int mixRank)
         {
-            if (this.BassPlayer.CurrentTrack == null) return;
+            if (BassPlayer.CurrentTrack == null) return;
 
             Track currentTrack = null;
-            if (this.BassPlayer.CurrentTrack != null)
+            if (BassPlayer.CurrentTrack != null)
             {
-                currentTrack = this.Library.GetTrackByFilename(this.BassPlayer.CurrentTrack.Filename);
+                currentTrack = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             }
 
-            var prevTrack = this.PlaylistControl.GetPreviousTrack();
+            var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return;
 
-            this.MixLibrary.SetMixLevel(prevTrack, currentTrack, mixRank);
+            MixLibrary.SetMixLevel(prevTrack, currentTrack, mixRank);
         }
 
         #endregion
@@ -226,11 +226,11 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void Slider_Slid(object sender, EventArgs e)
         {
-            this.Timer.Stop();
+            Timer.Stop();
             var position = slider.Value;
-            this.BassPlayer.SetAdjustedTrackPosition(position);
+            BassPlayer.SetAdjustedTrackPosition(position);
             Thread.Sleep(200);
-            this.Timer.Start();
+            Timer.Start();
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                this.BeginInvoke(new MethodInvoker(delegate() { Timer_Tick(); }));
+                BeginInvoke(new MethodInvoker(delegate() { Timer_Tick(); }));
             }
             catch
             { }
@@ -262,12 +262,12 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void Timer_Tick()
         {
-            if (this.FindForm() != null && this.FindForm().WindowState == FormWindowState.Minimized) return;
+            if (FindForm() != null && FindForm().WindowState == FormWindowState.Minimized) return;
 
             if (_timerTick) return;
             _timerTick = true;
 
-            var position = this.BassPlayer.GetTrackPosition();
+            var position = BassPlayer.GetTrackPosition();
 
             if (slider.Maximum != position.Length) slider.Maximum = (int)position.Length;
             if (slider.Value != position.Positition) slider.Value = (int)position.Positition;
@@ -275,8 +275,8 @@ namespace Halloumi.Shuffler.Controls
             if (lblTimeElapsed.Text != position.ElapsedFormatted) lblTimeElapsed.Text = position.ElapsedFormatted;
             if (lblTimeRemaining.Text != position.RemainingFormatted) lblTimeRemaining.Text = position.RemainingFormatted;
 
-            this.btnPause.Visible = (this.BassPlayer.PlayState == BE.PlayState.Playing);
-            this.btnPlay.Visible = (this.BassPlayer.PlayState != BE.PlayState.Playing);
+            btnPause.Visible = (BassPlayer.PlayState == BE.PlayState.Playing);
+            btnPlay.Visible = (BassPlayer.PlayState != BE.PlayState.Playing);
 
             ShowVisuals();
 
@@ -288,9 +288,9 @@ namespace Halloumi.Shuffler.Controls
 
         private void ShowVisuals()
         {
-            picVisuals.Visible = (this.VisualsShown && this.BassPlayer.PlayState == BE.PlayState.Playing);
-            if (!this.VisualsShown) return;
-            if (this.BassPlayer.PlayState == BE.PlayState.Playing)
+            picVisuals.Visible = (VisualsShown && BassPlayer.PlayState == BE.PlayState.Playing);
+            if (!VisualsShown) return;
+            if (BassPlayer.PlayState == BE.PlayState.Playing)
             {
                 if (!_firstVisualShown)
                 {
@@ -301,9 +301,9 @@ namespace Halloumi.Shuffler.Controls
                     }
                 }
 
-                lock (this.BassPlayer.MixerLock)
+                lock (BassPlayer.MixerLock)
                 {
-                    picVisuals.Image = _bassVisuals.CreateSpectrumLine(this.BassPlayer.MixerChanel,
+                    picVisuals.Image = _bassVisuals.CreateSpectrumLine(BassPlayer.MixerChanel,
                         picVisuals.Width,
                         picVisuals.Height,
                         _volumeColor1,
@@ -328,13 +328,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            if (this.BassPlayer.PlayState == BE.PlayState.Playing)
-                this.BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.Pause(); }));
+            if (BassPlayer.PlayState == BE.PlayState.Playing)
+                BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.Pause(); }));
             else
-                this.BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.Play(); }));
+                BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.Play(); }));
 
-            this.btnPause.Visible = (this.BassPlayer.PlayState == BE.PlayState.Playing);
-            this.btnPlay.Visible = (this.BassPlayer.PlayState != BE.PlayState.Playing);
+            btnPause.Visible = (BassPlayer.PlayState == BE.PlayState.Playing);
+            btnPlay.Visible = (BassPlayer.PlayState != BE.PlayState.Playing);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnPrevious_Click(object sender, EventArgs e)
         {
-            this.BeginInvoke(new MethodInvoker(delegate() { this.PlaylistControl.PlayPreviousTrack(); }));
+            BeginInvoke(new MethodInvoker(delegate() { this.PlaylistControl.PlayPreviousTrack(); }));
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnSkipToEnd_Click(object sender, EventArgs e)
         {
-            this.BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.SkipToEnd(); }));
+            BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.SkipToEnd(); }));
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnNext_Click(object sender, EventArgs e)
         {
-            this.BeginInvoke(new MethodInvoker(delegate() { this.PlaylistControl.PlayNextTrack(); }));
+            BeginInvoke(new MethodInvoker(delegate() { this.PlaylistControl.PlayNextTrack(); }));
         }
 
         /// <summary>
@@ -375,9 +375,9 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnTrackChange(object sender, EventArgs e)
         {
             //if (!this.IsHandleCreated) return;
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new MethodInvoker(delegate()
+                BeginInvoke(new MethodInvoker(delegate()
                 {
                     BassPlayer_OnTrackChange();
                 }));
@@ -423,7 +423,7 @@ namespace Halloumi.Shuffler.Controls
         private void sldVolume_Slid(object sender, EventArgs e)
         {
             var volume = Convert.ToDecimal(sldVolume.ScrollValue);
-            this.BassPlayer.SetMixerVolume(volume);
+            BassPlayer.SetMixerVolume(volume);
             lblVolume.Text = volume.ToString();
         }
 
@@ -487,7 +487,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void btnReplayMix_Click(object sender, EventArgs e)
         {
-            this.BeginInvoke(new MethodInvoker(delegate() { this.PlaylistControl.ReplayMix(); }));
+            BeginInvoke(new MethodInvoker(delegate() { this.PlaylistControl.ReplayMix(); }));
         }
 
         public event EventHandler SelectedViewChanged;

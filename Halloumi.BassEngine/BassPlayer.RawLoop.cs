@@ -36,7 +36,7 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("InitialiseRawLoopMixer");
 
             _rawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
-            _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, this._speakerOutput, this._monitorOutput);
+            _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, _speakerOutput, _monitorOutput);
 
             DebugHelper.WriteLine("END InitialiseRawLoopMixer");
         }
@@ -49,7 +49,7 @@ namespace Halloumi.BassEngine
         {
             if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
 
-            if (this.RawLoopTrack != null) UnloadRawLoopTrack();
+            if (RawLoopTrack != null) UnloadRawLoopTrack();
 
             var track = new Track();
             track.Id = _nextTrackId++;
@@ -73,11 +73,11 @@ namespace Halloumi.BassEngine
 
             BassHelper.AddTrackToMixer(track, _rawLoopMixer.InternalChannel);
             //BassHelper.SetTrackVolume(track, 100M);
-            this.RawLoopTrack = track;
+            RawLoopTrack = track;
 
             SetRawLoopPositions(0, track.Length, 0);
 
-            return this.RawLoopTrack;
+            return RawLoopTrack;
         }
 
         /// <summary>
@@ -85,10 +85,10 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void UnloadRawLoopTrack()
         {
-            if (this.RawLoopTrack == null) return;
-            ClearTrackSyncPositions(this.RawLoopTrack);
-            UnloadTrack(this.RawLoopTrack);
-            this.RawLoopTrack = null;
+            if (RawLoopTrack == null) return;
+            ClearTrackSyncPositions(RawLoopTrack);
+            UnloadTrack(RawLoopTrack);
+            RawLoopTrack = null;
         }
 
         /// <summary>
@@ -98,17 +98,17 @@ namespace Halloumi.BassEngine
         /// <param name="length">The length.</param>
         public void SetRawLoopPositions(long start, long end, long offset)
         {
-            if (this.RawLoopTrack == null) return;
-            if (start < 0 || end > this.RawLoopTrack.Length) return;
+            if (RawLoopTrack == null) return;
+            if (start < 0 || end > RawLoopTrack.Length) return;
             if (end <= 0 || end <= start) return;
 
-            var maxEnd = this.RawLoopTrack.Length - 500;
+            var maxEnd = RawLoopTrack.Length - 500;
             if (end > maxEnd) end = maxEnd;
 
             if (offset < start || offset > end)
                 offset = start;
 
-            var track = this.RawLoopTrack;
+            var track = RawLoopTrack;
 
             track.RawLoopStart = start;
             track.RawLoopEnd = end;
@@ -128,13 +128,13 @@ namespace Halloumi.BassEngine
         /// </summary>
         private void OnEndRawLoop()
         {
-            if (this.RawLoopTrack == null) return;
+            if (RawLoopTrack == null) return;
 
             DebugHelper.WriteLine("Looping in raw-loop mode");
 
-            BassHelper.TrackPause(this.RawLoopTrack);
-            BassHelper.SetTrackPosition(this.RawLoopTrack, this.RawLoopTrack.RawLoopStart);
-            BassHelper.TrackPlay(this.RawLoopTrack);
+            BassHelper.TrackPause(RawLoopTrack);
+            BassHelper.SetTrackPosition(RawLoopTrack, RawLoopTrack.RawLoopStart);
+            BassHelper.TrackPlay(RawLoopTrack);
         }
 
         /// <summary>
@@ -142,13 +142,13 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void PlayRawLoop()
         {
-            if (this.RawLoopTrack == null) return;
+            if (RawLoopTrack == null) return;
 
             DebugHelper.WriteLine("Playing in raw-loop mode");
 
-            BassHelper.TrackPause(this.RawLoopTrack);
-            BassHelper.SetTrackPosition(this.RawLoopTrack, this.RawLoopTrack.RawLoopOffset);
-            BassHelper.TrackPlay(this.RawLoopTrack);
+            BassHelper.TrackPause(RawLoopTrack);
+            BassHelper.SetTrackPosition(RawLoopTrack, RawLoopTrack.RawLoopOffset);
+            BassHelper.TrackPlay(RawLoopTrack);
         }
 
         /// <summary>
@@ -156,9 +156,9 @@ namespace Halloumi.BassEngine
         /// </summary>
         public void StopRawLoop()
         {
-            if (this.RawLoopTrack == null) return;
+            if (RawLoopTrack == null) return;
             DebugHelper.WriteLine("Pausing raw-loop");
-            BassHelper.TrackPause(this.RawLoopTrack);
+            BassHelper.TrackPause(RawLoopTrack);
         }
 
         /// <summary>

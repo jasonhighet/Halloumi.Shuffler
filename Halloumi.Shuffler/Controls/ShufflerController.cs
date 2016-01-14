@@ -43,8 +43,8 @@ namespace Halloumi.Shuffler.Controls
 
             InitializeComponent();
 
-            this.TracksRemainingThreshold = 2;
-            this.AutoGenerateEnabled = false;
+            TracksRemainingThreshold = 2;
+            AutoGenerateEnabled = false;
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void Initalize()
         {
-            this.TrackSelector = new TrackSelector();
-            this.BassPlayer.OnSkipToEnd += new EventHandler(BassPlayer_OnFadeEnded);
-            this.BassPlayer.OnEndFadeIn += new EventHandler(BassPlayer_OnFadeEnded);
+            TrackSelector = new TrackSelector();
+            BassPlayer.OnSkipToEnd += new EventHandler(BassPlayer_OnFadeEnded);
+            BassPlayer.OnEndFadeIn += new EventHandler(BassPlayer_OnFadeEnded);
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnFadeEnded(object sender, EventArgs e)
         {
-            if (this.PlaylistControl.InvokeRequired)
+            if (PlaylistControl.InvokeRequired)
             {
-                this.PlaylistControl.BeginInvoke(new MethodInvoker(delegate()
+                PlaylistControl.BeginInvoke(new MethodInvoker(delegate()
                 {
                     BassPlayer_OnFadeEnded();
                 }));
@@ -77,8 +77,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BassPlayer_OnFadeEnded()
         {
-            if (!this.AutoGenerateEnabled) return;
-            var tracksRemaining = this.PlaylistControl.GetNumberOfTracksRemaining();
+            if (!AutoGenerateEnabled) return;
+            var tracksRemaining = PlaylistControl.GetNumberOfTracksRemaining();
             if (tracksRemaining < TracksRemainingThreshold)
             {
                 AutoGeneratePlaylist();
@@ -89,8 +89,8 @@ namespace Halloumi.Shuffler.Controls
         {
             using (var generatePlaylist = new FrmGeneratePlaylist())
             {
-                generatePlaylist.LibraryControl = this.LibraryControl;
-                generatePlaylist.PlaylistControl = this.PlaylistControl;
+                generatePlaylist.LibraryControl = LibraryControl;
+                generatePlaylist.PlaylistControl = PlaylistControl;
                 generatePlaylist.SetScreenMode(FrmGeneratePlaylist.ScreenMode.AutoGeneratePlaylist);
                 generatePlaylist.ShowDialog();
             }

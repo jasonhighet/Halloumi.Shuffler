@@ -93,9 +93,9 @@ namespace Halloumi.BassEngine
 
             public PlaylistEntry()
             {
-                this.Path = "";
-                this.Artist = "";
-                this.Title = "";
+                Path = "";
+                Artist = "";
+                Title = "";
             }
         }
 
