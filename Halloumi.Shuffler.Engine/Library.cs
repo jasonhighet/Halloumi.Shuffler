@@ -8,7 +8,6 @@ using Halloumi.BassEngine;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using IdSharp.Tagging.ID3v2;
-using System.Threading.Tasks;
 
 
 namespace Halloumi.Shuffler.Engine

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Shuffler.Forms;
 using Halloumi.Common.Windows.Helpers;

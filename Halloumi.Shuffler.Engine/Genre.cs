@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Halloumi.Shuffler.Engine
+﻿namespace Halloumi.Shuffler.Engine
 {
     public class Genre
     {

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Engine;
 using BE = Halloumi.BassEngine;
-using Halloumi.Shuffler.Controls;
 
 namespace Halloumi.Shuffler.Forms
 {

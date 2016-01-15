@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
@@ -14,7 +13,6 @@ using Halloumi.Common.Windows.Controls;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Forms;
-using Un4seen.Bass;
 using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Controls

@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Halloumi.BassEngine;
 using Halloumi.Common.Helpers;
-using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
 

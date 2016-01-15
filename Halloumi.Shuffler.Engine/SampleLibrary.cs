@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Halloumi.Common.Helpers;
-
-using IdSharp.Tagging.ID3v2;
 using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Engine
@@ -175,14 +170,6 @@ namespace Halloumi.Shuffler.Engine
 
             BE.BassHelper.SavePartialAsWave(bassTrack, sampleFile, start, length, offset, sample.Gain);
         }
-
-        //public void EnsureSampleFileExists(Sample sample)
-        //{
-        //    var sampleFilename = GetSampleFilename(sample);
-
-        //    if (!File.Exists(sampleFilename))
-        //        SaveSampleFile(sample);
-        //}
 
         private void CreateSampleFolder(Sample sample)
         {

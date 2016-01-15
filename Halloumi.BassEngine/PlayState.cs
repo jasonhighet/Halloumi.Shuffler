@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Halloumi.BassEngine
+﻿namespace Halloumi.BassEngine
 {
     /// <summary>
     /// The current playback state of the bassplayer

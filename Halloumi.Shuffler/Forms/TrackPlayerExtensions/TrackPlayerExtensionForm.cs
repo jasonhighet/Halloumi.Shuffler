@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;

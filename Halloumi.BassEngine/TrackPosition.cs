@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Halloumi.BassEngine
+﻿namespace Halloumi.BassEngine
 {
     /// <summary>
     /// Represents the position of the active track1, including elapsed/remaining times

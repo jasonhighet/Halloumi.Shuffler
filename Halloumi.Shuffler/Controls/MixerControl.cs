@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Halloumi.Common.Helpers;
-using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
 using BE = Halloumi.BassEngine;
 
