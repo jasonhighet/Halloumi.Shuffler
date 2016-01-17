@@ -44,7 +44,7 @@
             this.btnZoomSample = new Halloumi.Common.Windows.Controls.Button();
             this.txtSampleStartPosition = new Halloumi.Common.Windows.Controls.SecondsTextBox();
             this.label7 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbSampleLength = new Halloumi.Common.Windows.Controls.SecondsComboBox();
+            this.cmbSampleLength = new Halloumi.Shuffler.Controls.SecondsComboBox();
             this.label4 = new Halloumi.Common.Windows.Controls.Label();
             this.txtSampleOffsetPosition = new Halloumi.Common.Windows.Controls.SecondsTextBox();
             this.label14 = new Halloumi.Common.Windows.Controls.Label();
@@ -1001,7 +1001,7 @@
         private Halloumi.Common.Windows.Controls.Label label5;
         private Halloumi.Common.Windows.Controls.Label label3;
         private Halloumi.Common.Windows.Controls.Label label4;
-        private Halloumi.Common.Windows.Controls.SecondsComboBox cmbSampleLength;
+        private Halloumi.Shuffler.Controls.SecondsComboBox cmbSampleLength;
         private Halloumi.Common.Windows.Controls.SecondsTextBox txtSampleStartPosition;
         private Halloumi.Common.Windows.Controls.Button btnSampleUpdate;
         private Halloumi.Common.Windows.Controls.Label lblSampleBPM;
