@@ -9,37 +9,19 @@ using Halloumi.Common.Helpers;
 namespace Halloumi.Shuffler.Engine
 {
     /// <summary>
-    /// A library of preferred/compulsory/forbidden track segues.
+    ///     A library of preferred/compulsory/forbidden track segues.
     /// </summary>
     public class MixLibrary
     {
-        #region Fields
+        private readonly Dictionary<string, List<MixRanking>> _fromMixes = new Dictionary<string, List<MixRanking>>();
 
-        private Dictionary<string, List<MixRanking>> _toMixes = new Dictionary<string, List<MixRanking>>();
-        private Dictionary<string, List<MixRanking>> _fromMixes = new Dictionary<string, List<MixRanking>>();
+        private readonly List<string> _loadedTracks = new List<string>();
 
-        private List<string> _loadedTracks = new List<string>();
+        private readonly Dictionary<string, List<MixRanking>> _toMixes = new Dictionary<string, List<MixRanking>>();
 
-        /// <summary>
-        /// The tracks available for mixing
-        /// </summary>
-        public List<Track> AvailableTracks { get; set; }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
-        /// Gets or sets the folder where mix detail files are stored
-        /// </summary>
-        public string MixDetailsFolder { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the MixLibrary class.
+        ///     Initializes a new instance of the MixLibrary class.
         /// </summary>
         /// <param name="mixDetailsFolder">The mix details folder.</param>
         public MixLibrary(string mixDetailsFolder)
@@ -48,54 +30,80 @@ namespace Halloumi.Shuffler.Engine
             AvailableTracks = new List<Track>();
         }
 
-        #endregion
+        /// <summary>
+        ///     The tracks available for mixing
+        /// </summary>
+        public List<Track> AvailableTracks { get; set; }
 
-        #region Public Methods
 
         /// <summary>
-        /// Loads all mix details.
+        ///     Gets or sets the folder where mix detail files are stored
+        /// </summary>
+        public string MixDetailsFolder { get; set; }
+
+
+        /// <summary>
+        ///     Loads all mix details.
         /// </summary>
         public void LoadAllMixDetails()
         {
             var availableTracks = AvailableTracks.Where(t => t.IsShufflerTrack).ToList();
-            foreach (var track in availableTracks)
+            ParallelHelper.ForEach(availableTracks, track =>
             {
                 LoadMixRankings(track.Description);
-            }
+            });
         }
 
         /// <summary>
-        /// Gets the description of a mix ranking
+        ///     Gets the description of a mix ranking
         /// </summary>
         /// <param name="ranking">The ranking.</param>
         /// <returns>The description of the mix ranking</returns>
         public string GetRankDescription(int ranking)
         {
-            if (ranking == 0) return "Forbidden";
-            if (ranking == 2) return "Bearable";
-            if (ranking == 3) return "Good";
-            if (ranking == 4) return "Very Good";
-            if (ranking == 5) return "Excellent";
-            return "Unranked";
+            switch (ranking)
+            {
+                case 0:
+                    return "Forbidden";
+                case 2:
+                    return "Bearable";
+                case 3:
+                    return "Good";
+                case 4:
+                    return "Very Good";
+                case 5:
+                    return "Excellent";
+                default:
+                    return "Unranked";
+            }
         }
 
         /// <summary>
-        /// Gets the mix ranking from a description.
+        ///     Gets the mix ranking from a description.
         /// </summary>
         /// <param name="description">The description.</param>
         /// <returns>The mix ranking</returns>
         public int GetRankFromDescription(string description)
         {
-            if (description == "Forbidden") return 0;
-            if (description == "Bearable") return 2;
-            if (description == "Good") return 3;
-            if (description == "Very Good") return 4;
-            if (description == "Excellent") return 5;
-            return 1;
+            switch (description)
+            {
+                case "Forbidden":
+                    return 0;
+                case "Bearable":
+                    return 2;
+                case "Good":
+                    return 3;
+                case "Very Good":
+                    return 4;
+                case "Excellent":
+                    return 5;
+                default:
+                    return 1;
+            }
         }
 
         /// <summary>
-        /// Clears all loaded mix details
+        ///     Clears all loaded mix details
         /// </summary>
         public void Clear()
         {
@@ -108,14 +116,13 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets all preferred tracks for the specified track
+        ///     Gets all preferred tracks for the specified track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>A list of tracks that specified track should prefer to mix with</returns>
-        private List<Track> GetToTracksInRange(Track track)
+        private IEnumerable<Track> GetToTracksInRange(Track track)
         {
-            var tracks = new List<Track>();
-            if (track == null) return tracks;
+            if (track == null) return new List<Track>();
 
             var tracksInRange = GetTracksInStartBpmRange(track.EndBpm, 5M, AvailableTracks);
             return tracksInRange
@@ -124,14 +131,13 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets all preferred tracks for the specified track
+        ///     Gets all preferred tracks for the specified track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>A list of tracks that specified track should prefer to mix from</returns>
-        private List<Track> GetFromTracksInRange(Track track)
+        private IEnumerable<Track> GetFromTracksInRange(Track track)
         {
-            var tracks = new List<Track>();
-            if (track == null) return tracks;
+            if (track == null) return new List<Track>();
 
             var tracksInRange = GetTracksInEndBpmRange(track.StartBpm, 5M, AvailableTracks);
             return tracksInRange
@@ -140,7 +146,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets the tracks in BPM range.
+        ///     Gets the tracks in BPM range.
         /// </summary>
         /// <param name="bpm">The BPM.</param>
         /// <param name="percentVariance">The percent variance.</param>
@@ -154,7 +160,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets the tracks in BPM range.
+        ///     Gets the tracks in BPM range.
         /// </summary>
         /// <param name="bpm">The BPM.</param>
         /// <param name="percentVariance">The percent variance.</param>
@@ -168,52 +174,52 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets the preferred tracks to mix with the supplied track
+        ///     Gets the preferred tracks to mix with the supplied track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The preferred tracks to mix with the supplied track</returns>
         public List<Track> GetPreferredTracks(Track track)
         {
-            var ranks = new int[] { 5, 4, 3, 2 }.ToList();
+            var ranks = new[] {5, 4, 3, 2}.ToList();
             return GetMixableToTracks(track, ranks);
         }
 
         /// <summary>
-        /// Gets the preferred tracks to mix with the supplied track
+        ///     Gets the preferred tracks to mix with the supplied track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The preferred tracks to mix with the supplied track</returns>
         public List<Track> GetGoodTracks(Track track)
         {
-            var ranks = new int[] { 5, 4, 3 }.ToList();
+            var ranks = new[] {5, 4, 3}.ToList();
             return GetMixableToTracks(track, ranks);
         }
 
         /// <summary>
-        /// Gets the preferred tracks to mix with the supplied track
+        ///     Gets the preferred tracks to mix with the supplied track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The preferred tracks to mix with the supplied track</returns>
         public List<Track> GetBearableTracks(Track track)
         {
-            var ranks = new int[] { 2 }.ToList();
+            var ranks = new[] {2}.ToList();
             return GetMixableToTracks(track, ranks);
         }
 
         /// <summary>
-        /// Gets the forbidden tracks for a particular track
+        ///     Gets the forbidden tracks for a particular track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The tracks forbidden to mix with the supplied track</returns>
         public List<Track> GetForbiddenTracks(Track track)
         {
-            var ranks = new int[] { 0 }.ToList();
+            var ranks = new[] {0}.ToList();
             return GetMixableToTracks(track, ranks);
         }
 
         public List<Track> GetUnrankedToTracks(Track track)
         {
-            // excluded all rankinged tracks and current track
+            // excluded all ranked tracks and current track
             var toMixes = GetToMixes(track.Description);
             var excludeTracks = GetToTracksFromMixes(toMixes).Select(t => t.Description).ToList();
             excludeTracks.Add(track.Description);
@@ -221,7 +227,7 @@ namespace Halloumi.Shuffler.Engine
             // find tracks in range
             var tracksInRange = GetToTracksInRange(track);
 
-            // return tracks in range, except rankinged tracks and current track
+            // return tracks in range, except ranked tracks and current track
             return tracksInRange
                 .Where(t => !excludeTracks.Contains(t.Description))
                 .ToList();
@@ -229,7 +235,7 @@ namespace Halloumi.Shuffler.Engine
 
         public List<Track> GetUnrankedFromTracks(Track track)
         {
-            // excluded all rankinged tracks and current track
+            // excluded all ranked tracks and current track
             var fromMixes = GetFromMixes(track.Description);
             var excludeTracks = GetFromTracksFromMixes(fromMixes).Select(t => t.Description).ToList();
             excludeTracks.Add(track.Description);
@@ -237,7 +243,7 @@ namespace Halloumi.Shuffler.Engine
             // find tracks in range
             var tracksInRange = GetFromTracksInRange(track);
 
-            // return tracks in range, except rankinged tracks and current track
+            // return tracks in range, except ranked tracks and current track
             return tracksInRange
                 .Where(t => !excludeTracks.Contains(t.Description))
                 .ToList();
@@ -250,12 +256,12 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets all preferred tracks for the specified track
+        ///     Gets all preferred tracks for the specified track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="mixLevels">The mix levels.</param>
         /// <returns>
-        /// A list of tracks from the available tracks the specified track should prefer to mix with
+        ///     A list of tracks from the available tracks the specified track should prefer to mix with
         /// </returns>
         public List<Track> GetMixableToTracks(Track track, List<int> mixLevels)
         {
@@ -265,25 +271,24 @@ namespace Halloumi.Shuffler.Engine
 
             if (mixLevels.Contains(1)) tracks.AddRange(GetUnrankedToTracks(track));
 
-            if (!(mixLevels.Count == 1 && mixLevels[0] == 1))
-            {
-                var mixes = GetToMixes(track.Description)
-                    .Where(t => mixLevels.Contains(t.MixLevel))
-                    .ToList();
+            if (mixLevels.Count == 1 && mixLevels[0] == 1) return tracks;
 
-                tracks.AddRange(GetDistinctToTracksFromMixes(mixes));
-            }
+            var mixes = GetToMixes(track.Description)
+                .Where(t => mixLevels.Contains(t.MixLevel))
+                .ToList();
+
+            tracks.AddRange(GetDistinctToTracksFromMixes(mixes));
 
             return tracks;
         }
 
         /// <summary>
-        /// Gets all preferred tracks for the specified track
+        ///     Gets all preferred tracks for the specified track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="mixLevels">The mix levels.</param>
         /// <returns>
-        /// A list of tracks from the available tracks the specified track should prefer to mix with
+        ///     A list of tracks from the available tracks the specified track should prefer to mix with
         /// </returns>
         public List<Track> GetMixableFromTracks(Track track, List<int> mixLevels)
         {
@@ -293,19 +298,18 @@ namespace Halloumi.Shuffler.Engine
 
             if (mixLevels.Contains(1)) tracks.AddRange(GetUnrankedFromTracks(track));
 
-            if (!(mixLevels.Count == 1 && mixLevels[0] == 1))
-            {
-                var mixes = GetFromMixes(track.Description)
-                    .Where(t => mixLevels.Contains(t.MixLevel))
-                    .ToList();
+            if (mixLevels.Count == 1 && mixLevels[0] == 1) return tracks;
 
-                tracks.AddRange(GetDistinctFromTracksFromMixes(mixes));
-            }
+            var mixes = GetFromMixes(track.Description)
+                .Where(t => mixLevels.Contains(t.MixLevel))
+                .ToList();
+
+            tracks.AddRange(GetDistinctFromTracksFromMixes(mixes));
 
             return tracks;
         }
 
-        private List<Track> GetToTracksFromMixes(List<MixRanking> mixRankings)
+        private List<Track> GetToTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
             var toTracks = mixRankings.Select(r => r.ToTrack).ToList();
             return AvailableTracks.Where(t => toTracks.Contains(t.Description)).ToList();
@@ -315,43 +319,36 @@ namespace Halloumi.Shuffler.Engine
         {
             var tracks = GetToTracksFromMixes(mixRankings);
             var trackNames = tracks.Select(t => t.Description).Distinct().ToList();
-            var distinctTracks = new List<Track>();
 
-            foreach (var trackName in trackNames)
-            {
-                var distinctTrack = tracks.Where(t => t.Description == trackName).FirstOrDefault();
-                if (distinctTrack != null) distinctTracks.Add(distinctTrack);
-            }
-
-            return distinctTracks;
+            return trackNames
+                .Select(trackName => tracks.FirstOrDefault(t => t.Description == trackName))
+                .Where(distinctTrack => distinctTrack != null)
+                .ToList();
         }
 
-        private List<Track> GetFromTracksFromMixes(List<MixRanking> mixRankings)
+        private List<Track> GetFromTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
             var fromTracks = mixRankings.Select(r => r.FromTrack).ToList();
             return AvailableTracks.Where(t => fromTracks.Contains(t.Description)).ToList();
         }
 
-        private List<Track> GetDistinctFromTracksFromMixes(List<MixRanking> mixRankings)
+        private IEnumerable<Track> GetDistinctFromTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
             var tracks = GetFromTracksFromMixes(mixRankings);
             var trackNames = tracks.Select(t => t.Description).Distinct().ToList();
-            var distinctTracks = new List<Track>();
 
-            foreach (var trackName in trackNames)
-            {
-                var distinctTrack = tracks.Where(t => t.Description == trackName).FirstOrDefault();
-                if (distinctTrack != null) distinctTracks.Add(distinctTrack);
-            }
-
-            return distinctTracks;
+            return trackNames
+                .Select(trackName => tracks.FirstOrDefault(t => t.Description == trackName))
+                .Where(distinctTrack => distinctTrack != null)
+                .ToList();
         }
 
         /// <summary>
-        /// Flags track 2 as a mix track for track 1
+        ///     Flags track 2 as a mix track for track 1
         /// </summary>
-        /// <param name="track1">Track1.</param>
-        /// <param name="track2">Track2.</param>
+        /// <param name="fromTrack">From track.</param>
+        /// <param name="toTrack">To track.</param>
+        /// <param name="mixLevel">The mix level.</param>
         public void SetMixLevel(Track fromTrack, Track toTrack, int mixLevel)
         {
             if (fromTrack == null || toTrack == null) return;
@@ -360,10 +357,10 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Sets the mix level.
+        ///     Sets the mix level.
         /// </summary>
-        /// <param name="fromTrack">From track.</param>
-        /// <param name="toTrack">To track.</param>
+        /// <param name="fromTrackDescription">From track description.</param>
+        /// <param name="toTrackDescription">To track description.</param>
         /// <param name="mixLevel">The mix level.</param>
         private void SetMixLevel(string fromTrackDescription, string toTrackDescription, int mixLevel)
         {
@@ -372,22 +369,23 @@ namespace Halloumi.Shuffler.Engine
                 var mixRank = GetMixRank(fromTrackDescription, toTrackDescription);
                 if (mixLevel == 1)
                 {
-                    if (mixRank != null)
-                    {
-                        var toMixes = GetToMixes(fromTrackDescription);
-                        toMixes.Remove(mixRank);
+                    if (mixRank == null) return;
 
-                        var fromMixes = GetFromMixes(toTrackDescription);
-                        fromMixes.Remove(mixRank);
-                    }
+                    var toMixes = GetToMixes(fromTrackDescription);
+                    toMixes.Remove(mixRank);
+
+                    var fromMixes = GetFromMixes(toTrackDescription);
+                    fromMixes.Remove(mixRank);
                 }
                 else
                 {
                     if (mixRank == null)
                     {
-                        mixRank = new MixRanking();
-                        mixRank.FromTrack = fromTrackDescription;
-                        mixRank.ToTrack = toTrackDescription;
+                        mixRank = new MixRanking
+                        {
+                            FromTrack = fromTrackDescription,
+                            ToTrack = toTrackDescription
+                        };
 
                         var toMixes = GetToMixes(fromTrackDescription);
                         toMixes.Add(mixRank);
@@ -401,7 +399,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets a mix track.
+        ///     Gets a mix track.
         /// </summary>
         /// <param name="fromDescription">From description.</param>
         /// <param name="toDescription">To description.</param>
@@ -409,12 +407,11 @@ namespace Halloumi.Shuffler.Engine
         private MixRanking GetMixRank(string fromDescription, string toDescription)
         {
             return GetToMixes(fromDescription)
-                .Where(mt => mt.ToTrack == toDescription)
-                .FirstOrDefault();
+                .FirstOrDefault(mt => mt.ToTrack == toDescription);
         }
 
         /// <summary>
-        /// Gets the mix level for mixing track 1 into track 1
+        ///     Gets the mix level for mixing track 1 into track 1
         /// </summary>
         /// <param name="track1">The track 1.</param>
         /// <param name="track2">The track 2.</param>
@@ -428,25 +425,25 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets the extended mix attributes.
+        ///     Gets the extended mix attributes.
         /// </summary>
         /// <param name="fadeOutTrackDescription">The fade out track description.</param>
         /// <param name="fadeInTrackDescription">The fade in track description.</param>
         /// <returns>The extended mix attributes.</returns>
-        private ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription, string fadeInTrackDescription)
+        private ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription,
+            string fadeInTrackDescription)
         {
             var attributes = AutomationAttributes.GetAutomationAttributes(fadeOutTrackDescription, MixDetailsFolder);
-            if (attributes == null) return null;
-            return attributes.GetExtendedMixAttributes(fadeInTrackDescription);
+            return attributes?.GetExtendedMixAttributes(fadeInTrackDescription);
         }
 
         /// <summary>
-        /// Determines whether track 1 has extended mix details with track 2
+        ///     Determines whether track 1 has extended mix details with track 2
         /// </summary>
         /// <param name="track1">The track1.</param>
         /// <param name="track2">The track2.</param>
         /// <returns>
-        /// True if track 1 has extended mix details with track 2; otherwise, false.
+        ///     True if track 1 has extended mix details with track 2; otherwise, false.
         /// </returns>
         public bool HasExtendedMix(Track track1, Track track2)
         {
@@ -457,7 +454,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Converts a list of tracks into a dictionary of mixes. Assumes each track is mixed into the next one.
+        ///     Converts a list of tracks into a dictionary of mixes. Assumes each track is mixed into the next one.
         /// </summary>
         /// <param name="tracks">The tracks.</param>
         /// <returns></returns>
@@ -484,7 +481,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets the mix level for mixing track 1 into track 1
+        ///     Gets the mix level for mixing track 1 into track 1
         /// </summary>
         /// <param name="track1">The track 1.</param>
         /// <param name="track2">The track 2.</param>
@@ -496,20 +493,18 @@ namespace Halloumi.Shuffler.Engine
             var mixRank = GetMixRank(track1.Description, track2.Description);
             if (mixRank != null) return mixRank.MixLevel;
 
-            if (BassHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, 5M)) return 1;
-
-            return 0;
+            return BassHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, 5M) ? 1 : 0;
         }
 
         public int GetKeyMixedOutCount(Track track)
         {
-            var outTracks = GetMixableToTracks(track, new List<int> { 5, 4, 3 });
+            var outTracks = GetMixableToTracks(track, new List<int> {5, 4, 3});
             return outTracks.Count(t => KeyHelper.GetKeyMixRank(track.Key, t.Key) >= 3);
         }
 
         public int GetKeyMixedInCount(Track track)
         {
-            var inTracks = GetMixableFromTracks(track, new List<int> { 5, 4, 3 });
+            var inTracks = GetMixableFromTracks(track, new List<int> {5, 4, 3});
             return inTracks.Count(t => KeyHelper.GetKeyMixRank(t.Key, track.Key) >= 3);
         }
 
@@ -564,7 +559,10 @@ namespace Halloumi.Shuffler.Engine
             var sourceFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
             foreach (var source in sourceFiles)
             {
-                var destinationFile = Path.Combine(folder, Path.GetFileName(source));
+                var fileName = Path.GetFileName(source);
+                if (fileName == null) continue;
+
+                var destinationFile = Path.Combine(folder, fileName);
                 var dateModified = File.GetLastWriteTime(source);
                 var difference = DateTime.Now - dateModified;
                 if (days <= 0 || difference.Days < days) FileSystemHelper.Copy(source, destinationFile);
@@ -603,51 +601,59 @@ namespace Halloumi.Shuffler.Engine
                 FuzzyUncacheMixRanking(trackDescription);
             }
 
-            if (!deleteAfterImport)
+            if (deleteAfterImport) return;
+
+            var existingFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
+            foreach (var existingFile in existingFiles)
             {
-                var existingFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
-                foreach (var existingFile in existingFiles)
-                {
-                    var importFile = Path.Combine(folder, Path.GetFileName(existingFile));
-                    if (!File.Exists(importFile))
-                    {
-                        var existingFileDate = File.GetLastWriteTime(existingFile);
-                        FileSystemHelper.Copy(existingFile, importFile);
-                        File.SetLastWriteTime(importFile, existingFileDate);
-                    }
-                }
+                var fileName = Path.GetFileName(existingFile);
+                if (fileName == null) continue;
+
+
+                var importFile = Path.Combine(folder, fileName);
+                if (File.Exists(importFile)) continue;
+
+                var existingFileDate = File.GetLastWriteTime(existingFile);
+                FileSystemHelper.Copy(existingFile, importFile);
+                File.SetLastWriteTime(importFile, existingFileDate);
             }
         }
 
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
-        /// Gets the 'mix-from tracks' for a track.
+        ///     Gets the 'mix-from tracks' for a track.
         /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        /// <returns>The mix-from tracks</returns>
+        /// <param name="toTrackDescription">To track description.</param>
+        /// <returns>
+        ///     The mix-from tracks
+        /// </returns>
         private List<MixRanking> GetFromMixes(string toTrackDescription)
         {
-            if (!_fromMixes.ContainsKey(toTrackDescription))
+            lock (_toMixes)
             {
+                if (_fromMixes.ContainsKey(toTrackDescription))
+                    return _fromMixes[toTrackDescription];
+
                 _fromMixes.Add(toTrackDescription, new List<MixRanking>());
+
+                return _fromMixes[toTrackDescription];
             }
-            return _fromMixes[toTrackDescription];
         }
 
         /// <summary>
-        /// Gets the 'mix-to tracks' for a track.
+        ///     Gets the 'mix-to tracks' for a track.
         /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        /// <returns>The mix-to tracks</returns>
+        /// <param name="fromTrackDescription">From track description.</param>
+        /// <returns>
+        ///     The mix-to tracks
+        /// </returns>
         private List<MixRanking> GetToMixes(string fromTrackDescription)
         {
             if (!_loadedTracks.Contains(fromTrackDescription))
             {
                 LoadMixRankings(fromTrackDescription);
             }
+
             if (!_toMixes.ContainsKey(fromTrackDescription))
             {
                 _toMixes.Add(fromTrackDescription, new List<MixRanking>());
@@ -655,33 +661,6 @@ namespace Halloumi.Shuffler.Engine
             return _toMixes[fromTrackDescription];
         }
 
-        ///// <summary>
-        ///// Gets the 'mix-to tracks' for a track.
-        ///// </summary>
-        ///// <param name="trackDescription">The track description.</param>
-        ///// <returns>The mix-to tracks</returns>
-        //private List<MixRanking> GetAvailableToMixes(string fromTrackDescription)
-        //{
-        //    if (!this.AvailableTracks.Exists(at => at.Description == fromTrackDescription)) return new List<MixRanking>();
-
-        //    return GetToMixes(fromTrackDescription)
-        //        .Where(mt => this.AvailableTracks.Exists(at => at.Description == mt.ToTrack))
-        //        .ToList();
-        //}
-
-        ///// <summary>
-        ///// Gets the 'mix-from tracks' for a track.
-        ///// </summary>
-        ///// <param name="trackDescription">The track description.</param>
-        ///// <returns>The mix-from tracks</returns>
-        //private List<MixRanking> GetAvailableFromMixes(string toTrackDescription)
-        //{
-        //    if (!this.AvailableTracks.Exists(at => at.Description == toTrackDescription)) return new List<MixRanking>();
-
-        //    return GetFromMixes(toTrackDescription)
-        //        .Where(mt => this.AvailableTracks.Exists(at => at.Description == mt.FromTrack))
-        //        .ToList();
-        //}
 
         private void SaveMixRankings(string trackDescription)
         {
@@ -690,7 +669,7 @@ namespace Halloumi.Shuffler.Engine
             SaveMixRankings(filename, toTracks);
         }
 
-        private void SaveMixRankings(string filename, List<MixRanking> toTracks)
+        private static void SaveMixRankings(string filename, IEnumerable<MixRanking> toTracks)
         {
             var content = new StringBuilder();
             foreach (var toTrack in toTracks)
@@ -710,7 +689,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Loads the mix tracks.
+        ///     Loads the mix tracks.
         /// </summary>
         /// <param name="trackDescription">The track description.</param>
         private void LoadMixRankings(string trackDescription)
@@ -726,31 +705,32 @@ namespace Halloumi.Shuffler.Engine
             if (!File.Exists(filename)) return;
 
             var content = File.ReadAllLines(filename).ToList();
-            foreach (var line in content)
+            var mixRankings = content
+                .Select(line => MixRanking.FromString(line, trackDescription))
+                .Where(mixRank => mixRank != null);
+
+            foreach (var mixRank in mixRankings)
             {
-                var mixRank = MixRanking.FromString(line, trackDescription);
-                if (mixRank != null) SetMixLevel(mixRank.FromTrack, mixRank.ToTrack, mixRank.MixLevel);
+                SetMixLevel(mixRank.FromTrack, mixRank.ToTrack, mixRank.MixLevel);
             }
         }
 
         private void FuzzyUncacheMixRanking(string trackDescription)
         {
             trackDescription = StringHelper.GetAlphaNumericCharactersOnly(trackDescription).ToLower();
-            var trackDescriptions = new List<string>();
-            foreach (var loadedTrack in _loadedTracks)
-            {
-                if (StringHelper.GetAlphaNumericCharactersOnly(loadedTrack).ToLower() == trackDescription)
-                {
-                    trackDescriptions.Add(loadedTrack);
-                }
-            }
+            var trackDescriptions = _loadedTracks
+                .Where(
+                    loadedTrack => StringHelper.GetAlphaNumericCharactersOnly(loadedTrack).ToLower() == trackDescription)
+                .ToList();
+
             foreach (var description in trackDescriptions)
             {
                 UncacheMixRanking(description);
             }
         }
 
-        private bool MergeMixFile(string existingFile, string importFile, DateTime existingFileDate, DateTime importFileDate)
+        private static bool MergeMixFile(string existingFile, string importFile, DateTime existingFileDate,
+            DateTime importFileDate)
         {
             if (!File.Exists(existingFile) || !File.Exists(importFile)) return false;
 
@@ -771,8 +751,7 @@ namespace Halloumi.Shuffler.Engine
             foreach (var importRanking in importRankings)
             {
                 var existingRanking = existingRankings
-                    .Where(r => r.ToTrack == importRanking.ToTrack)
-                    .FirstOrDefault();
+                    .FirstOrDefault(r => r.ToTrack == importRanking.ToTrack);
 
                 if (existingRanking == null)
                 {
@@ -792,48 +771,43 @@ namespace Halloumi.Shuffler.Engine
             return changed;
         }
 
-        private string GetFuzzyTrackDescriptionFromMixFile(string filename)
+        private static string GetFuzzyTrackDescriptionFromMixFile(string filename)
         {
-            return Path.GetFileName(filename).Replace(".Mixes.txt", "");
+            var fileName = Path.GetFileName(filename);
+            return fileName?.Replace(".Mixes.txt", "") ?? "";
         }
 
         /// <summary>
-        /// Gets the preferred tracks object for the specifed track.
-        /// Loads from file if not in collection.
+        ///     Gets the preferred tracks object for the specified track.
+        ///     Loads from file if not in collection.
         /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>The associated preferred mix tracks object</returns>
+        /// <param name="trackDescription">The track description.</param>
         private void UncacheMixRanking(string trackDescription)
         {
-            if (_loadedTracks.Contains(trackDescription))
+            if (!_loadedTracks.Contains(trackDescription)) return;
+            lock (_loadedTracks)
             {
-                lock (_loadedTracks)
-                {
-                    _loadedTracks.Remove(trackDescription);
-                }
+                _loadedTracks.Remove(trackDescription);
             }
         }
 
         /// <summary>
-        /// Gets the name of the file used to store the details of a mix rankinging object for a specific track
+        ///     Gets the name of the file used to store the details of a mix ranking object for a specific track
         /// </summary>
         /// <param name="trackDescription">The track description.</param>
         /// <returns>
-        /// A filename, including the full path
+        ///     A filename, including the full path
         /// </returns>
         private string GetMixRankingFileName(string trackDescription)
         {
             var filename = trackDescription
-                + ".Mixes.txt";
+                           + ".Mixes.txt";
 
             filename = FileSystemHelper.StripInvalidFileNameChars(filename);
 
             return Path.Combine(MixDetailsFolder, filename);
         }
 
-        #endregion
-
-        #region Private Classes
 
         private class MixRanking
         {
@@ -845,22 +819,21 @@ namespace Halloumi.Shuffler.Engine
 
             public override string ToString()
             {
-                return ToTrack + ", " + MixLevel.ToString();
+                return ToTrack + ", " + MixLevel;
             }
 
             public static MixRanking FromString(string value, string fromTrack)
             {
                 if (value == "") return null;
-                var mixRank = new MixRanking();
-                mixRank.FromTrack = fromTrack;
+                var mixRank = new MixRanking {FromTrack = fromTrack};
 
                 if (value.Contains(","))
                 {
-                    var commaIndex = value.LastIndexOf(",");
+                    var commaIndex = value.LastIndexOf(",", StringComparison.Ordinal);
                     mixRank.ToTrack = value.Substring(0, commaIndex).Trim();
 
                     var ranking = value.Substring(commaIndex + 1).Trim();
-                    var mixLevel = 1;
+                    int mixLevel;
                     int.TryParse(ranking, out mixLevel);
                     mixRank.MixLevel = mixLevel;
                 }
@@ -873,7 +846,5 @@ namespace Halloumi.Shuffler.Engine
                 return mixRank;
             }
         }
-
-        #endregion
     }
 }

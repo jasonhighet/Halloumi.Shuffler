@@ -767,17 +767,13 @@ namespace Halloumi.Shuffler.Engine
                 }
             }
 
-            //Parallel.ForEach(files, (file) =>
-            //{
-            //    if (!_cancelImport)
-            //        ImportTrack(file);
-            //});
+            ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), ImportTrack);
 
-            // update or add tracks from file system
-            foreach (var file in files.TakeWhile(file => !_cancelImport))
-            {
-                ImportTrack(file);
-            }
+            //// update or add tracks from file system
+            //foreach (var file in files.TakeWhile(file => !_cancelImport))
+            //{
+            //    ImportTrack(file);
+            //}
 
             SaveCache();
         }
