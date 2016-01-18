@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler
 #else
                 try
                 {
-                    Application.Run(new frmMain());
+                    Application.Run(new FrmMain());
                 }
                 catch (Exception exception)
                 {
