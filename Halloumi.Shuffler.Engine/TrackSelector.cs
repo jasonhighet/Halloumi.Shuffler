@@ -142,9 +142,7 @@ namespace Halloumi.Shuffler.Engine
             GeneratePlayListStatus = "";
             MixLibrary = mixLibrary;
 
-            AvailableTracks =
-                availableTracks.Where(track => !AvailableTracks.Exists(t => t.Description == track.Description))
-                    .ToList();
+            AvailableTracks = availableTracks;
 
             if (strategy == MixStrategy.Working) AvailableTracks.RemoveAll(t => MixLibrary.GetMixOutCount(t) == 0);
 
