@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Halloumi.BassEngine.Models;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.BassEngine.Helpers
 {
     public static class PlaylistHelper
     {

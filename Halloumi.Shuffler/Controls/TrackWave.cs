@@ -6,11 +6,15 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Windows.Controls;
 using Halloumi.Shuffler.Engine;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using BE = Halloumi.BassEngine;
+using Sample = Halloumi.Shuffler.Engine.Models.Sample;
+using Track = Halloumi.BassEngine.Models.Track;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -46,7 +50,7 @@ namespace Halloumi.Shuffler.Controls
         /// Loads a track.
         /// </summary>
         /// <param name="fileName">Name of the file.</param>
-        public BE.Track LoadTrack(string fileName)
+        public Track LoadTrack(string fileName)
         {
             Filename = fileName;
             BassTrack = BassPlayer.LoadRawLoopTrack(Filename);
@@ -231,10 +235,10 @@ namespace Halloumi.Shuffler.Controls
         private void UpdateViewText()
         {
             lblViewDetails.Text = String.Format("View: {0} to {1} ({2})     Cursor: {3}",
-                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomStart)),
-                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomEnd)),
-                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomLength)),
-                BE.BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(CurrentPosition)));
+                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomStart)),
+                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomEnd)),
+                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomLength)),
+                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(CurrentPosition)));
         }
 
         /// <summary>
@@ -403,7 +407,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void DrawCurrentPosition()
         {
-            var position = BE.BassHelper.GetTrackPosition(BassPlayer.RawLoopTrack);
+            var position = BassHelper.GetTrackPosition(BassPlayer.RawLoopTrack);
 
             BeginInvoke((MethodInvoker)delegate
             {
@@ -501,7 +505,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         /// Gets or sets the bass track.
         /// </summary>
-        public BE.Track BassTrack { get; private set; }
+        public Track BassTrack { get; private set; }
 
         /// <summary>
         /// Gets or sets the current position.
@@ -520,7 +524,7 @@ namespace Halloumi.Shuffler.Controls
 
         private bool _showTrackFx = false;
 
-        public List<BE.TrackSample> TrackSamples { get; set; }
+        public List<TrackSample> TrackSamples { get; set; }
 
         public List<Sample> Samples { get; set; }
 
@@ -757,7 +761,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (!File.Exists(editPath)) return;
 
-            BE.BassHelper.SaveAsWave(BassTrack.Filename, output);
+            BassHelper.SaveAsWave(BassTrack.Filename, output);
 
             if (!File.Exists(output)) return;
             output = string.Format("\"{0}\"", output);

@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine
+﻿namespace Halloumi.BassEngine.Channels
 {
     /// <summary>
     /// Represents the current left and right volume levels

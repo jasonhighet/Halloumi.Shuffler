@@ -1,4 +1,5 @@
-﻿using Un4seen.Bass;
+﻿using Halloumi.BassEngine.Helpers;
+using Un4seen.Bass;
 
 namespace Halloumi.BassEngine.Channels
 {

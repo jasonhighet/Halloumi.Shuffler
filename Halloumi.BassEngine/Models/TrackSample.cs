@@ -1,4 +1,6 @@
-﻿namespace Halloumi.BassEngine
+﻿using Halloumi.BassEngine.Helpers;
+
+namespace Halloumi.BassEngine.Models
 {
     public class TrackSample
     {

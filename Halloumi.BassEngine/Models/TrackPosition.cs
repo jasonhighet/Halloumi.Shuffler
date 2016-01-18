@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine
+﻿namespace Halloumi.BassEngine.Models
 {
     /// <summary>
     /// Represents the position of the active track1, including elapsed/remaining times

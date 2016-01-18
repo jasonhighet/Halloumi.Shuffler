@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine
+﻿namespace Halloumi.BassEngine.Models
 {
     /// <summary>
     /// The current playback state of the bassplayer

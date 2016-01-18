@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Shuffler.Engine;
 using BE = Halloumi.BassEngine;
 
@@ -20,7 +22,7 @@ namespace Halloumi.Shuffler.Controls
         /// Sets the sample.
         /// </summary>
         /// <param name="sample">The sample.</param>
-        public void SetSample(BE.Sample sample)
+        public void SetSample(Sample sample)
         {
             Sample = sample;
             BindData();
@@ -76,7 +78,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         /// Gets the current track.
         /// </summary>
-        private BE.Track CurrentTrack
+        private Track CurrentTrack
         {
             get { return BassPlayer.CurrentTrack; }
         }
@@ -84,7 +86,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         /// Gets or sets the this.Sample.
         /// </summary>
-        private BE.Sample Sample { get; set; }
+        private Sample Sample { get; set; }
 
         /// <summary>
         /// Handles the MouseDown event of the btnPlay control.
@@ -127,9 +129,9 @@ namespace Halloumi.Shuffler.Controls
         private void btnScratch_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
-                BE.AnalogXScratchHelper.LaunchShort(Sample);
+                AnalogXScratchHelper.LaunchShort(Sample);
             else
-                BE.AnalogXScratchHelper.Launch(Sample);
+                AnalogXScratchHelper.Launch(Sample);
         }
 
         /// <summary>

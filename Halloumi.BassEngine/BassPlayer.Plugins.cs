@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.BassEngine.Plugins;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass.AddOn.Vst;

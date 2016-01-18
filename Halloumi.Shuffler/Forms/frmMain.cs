@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
@@ -11,6 +13,7 @@ using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
 using BE = Halloumi.BassEngine;
+using Track = Halloumi.Shuffler.Engine.Models.Track;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -343,7 +346,7 @@ namespace Halloumi.Shuffler.Forms
             formStateController.FormStateSettings = settings.FormStateSettings;
             BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
             BassPlayer.SampleAutomationEnabled = settings.EnableSampleAutomation;
-            BE.KeyHelper.SetApplicationFolder(settings.KeyFinderFolder);
+            KeyHelper.SetApplicationFolder(settings.KeyFinderFolder);
         }
 
         /// <summary>
@@ -1069,7 +1072,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void notificationContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            if (BassPlayer.PlayState == BE.PlayState.Playing)
+            if (BassPlayer.PlayState == PlayState.Playing)
             {
                 mnuPlayPause.Visible = false;
                 mnuPause.Visible = true;

@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Controls
@@ -38,7 +40,7 @@ namespace Halloumi.Shuffler.Controls
                 var details = track.Album + " - " + track.Genre + " ";
                 details += " - " + track.LengthFormatted;
                 if (track.Bpm != 0) details += " - " + track.Bpm.ToString("0.00") + " BPM";
-                if (track.Key != "") details += " - " + BE.KeyHelper.GetDisplayKey(track.Key);
+                if (track.Key != "") details += " - " + KeyHelper.GetDisplayKey(track.Key);
 
                 lblCurrentTrackDetails.Text = details;
 

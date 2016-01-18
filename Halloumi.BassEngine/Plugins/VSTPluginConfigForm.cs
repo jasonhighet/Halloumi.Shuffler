@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Plugins;
-using Un4seen.Bass.AddOn.Vst;
 using Halloumi.Common.Helpers;
+using Un4seen.Bass.AddOn.Vst;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.BassEngine.Plugins
 {
     public class VstPluginConfigForm : Form
     {

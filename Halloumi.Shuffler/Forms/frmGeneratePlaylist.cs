@@ -5,10 +5,12 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Forms
@@ -399,7 +401,7 @@ namespace Halloumi.Shuffler.Forms
 
             if (txtExcludeTracks.Text != "" && File.Exists(txtExcludeTracks.Text))
             {
-                var excludeTracks = BE.PlaylistHelper.GetFilesInPlaylist(txtExcludeTracks.Text)
+                var excludeTracks = PlaylistHelper.GetFilesInPlaylist(txtExcludeTracks.Text)
                                       .Select(f => LibraryControl.Library.GetTrackByFilename(f))
                                       .Where(t => t != null)
                                       .ToList();

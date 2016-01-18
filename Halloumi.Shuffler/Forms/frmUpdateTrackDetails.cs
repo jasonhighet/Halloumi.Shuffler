@@ -5,6 +5,7 @@ using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 
 namespace Halloumi.Shuffler.Forms
 {

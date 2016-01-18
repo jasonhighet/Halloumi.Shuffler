@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Controls
@@ -120,13 +122,13 @@ namespace Halloumi.Shuffler.Controls
             if (minimumKeyRank == 0)
             {
                 tracks = tracks
-                    .Where(t => BE.KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) <= 1)
+                    .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) <= 1)
                     .ToList();
             }
             else if (minimumKeyRank != -1)
             {
                 tracks = tracks
-                    .Where(t => BE.KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) >= minimumKeyRank)
+                    .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) >= minimumKeyRank)
                     .ToList();
             }
 
@@ -141,16 +143,16 @@ namespace Halloumi.Shuffler.Controls
                     Track = track,
                     Description = track.Description,
                     Bpm = track.Bpm,
-                    Diff = BE.BassHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
+                    Diff = BassHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
                     MixRank = (view == View.FromTracks)
                         ? MixLibrary.GetExtendedMixLevel(track, _parentTrack)
                         : MixLibrary.GetExtendedMixLevel(_parentTrack, track),
 
                     Rank = track.Rank,
                     RankDescription = MixLibrary.GetRankDescription(track.Rank),
-                    Key = BE.KeyHelper.GetDisplayKey(track.Key),
-                    KeyDiff = BE.KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
-                    KeyRankDescription = BE.KeyHelper.GetKeyMixRankDescription(_parentTrack.Key, track.Key)
+                    Key = KeyHelper.GetDisplayKey(track.Key),
+                    KeyDiff = KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
+                    KeyRankDescription = KeyHelper.GetKeyMixRankDescription(_parentTrack.Key, track.Key)
                 };
 
                 mixableTrack.MixRankDescription = MixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));

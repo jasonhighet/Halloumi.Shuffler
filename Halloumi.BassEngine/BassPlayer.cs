@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Halloumi.BassEngine.Channels;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Fx;

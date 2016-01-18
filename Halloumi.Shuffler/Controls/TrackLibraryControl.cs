@@ -6,9 +6,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using Halloumi.Shuffler.Forms;
 using BE = Halloumi.BassEngine;
 
@@ -519,7 +521,7 @@ namespace Halloumi.Shuffler.Controls
             else if (e.ColumnIndex == 8) e.Value = trackModel.OutCount;
             else if (e.ColumnIndex == 9) e.Value = trackModel.UnrankedCount;
             else if (e.ColumnIndex == 10) e.Value = trackModel.RankDescription;
-            else if (e.ColumnIndex == 11) e.Value = BE.KeyHelper.GetDisplayKey(trackModel.Key);
+            else if (e.ColumnIndex == 11) e.Value = KeyHelper.GetDisplayKey(trackModel.Key);
         }
 
         /// <summary>
@@ -1780,7 +1782,7 @@ namespace Halloumi.Shuffler.Controls
                 if (track.Key != "") continue;
                 try
                 {
-                    BE.KeyHelper.CalculateKey(track.Filename);
+                    KeyHelper.CalculateKey(track.Filename);
                     Library.ImportTrack(track.Filename);
                 }
                 catch

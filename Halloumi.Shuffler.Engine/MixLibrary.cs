@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Halloumi.BassEngine;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
+using Track = Halloumi.Shuffler.Engine.Models.Track;
 
 namespace Halloumi.Shuffler.Engine
 {
@@ -48,10 +50,7 @@ namespace Halloumi.Shuffler.Engine
         public void LoadAllMixDetails()
         {
             var availableTracks = AvailableTracks.Where(t => t.IsShufflerTrack).ToList();
-            ParallelHelper.ForEach(availableTracks, track =>
-            {
-                LoadMixRankings(track.Description);
-            });
+            ParallelHelper.ForEach(availableTracks, track => { LoadMixRankings(track.Description); });
         }
 
         /// <summary>

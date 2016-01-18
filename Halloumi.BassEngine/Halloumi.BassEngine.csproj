@@ -97,20 +97,20 @@
     <Compile Include="BassPlayer.Plugins.cs" />
     <Compile Include="Helpers\BassHelper.cs" />
     <Compile Include="Helpers\PlaylistHelper.cs" />
-    <Compile Include="PlayState.cs" />
+    <Compile Include="Models\PlayState.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Sample.cs" />
+    <Compile Include="Models\Sample.cs" />
     <Compile Include="Plugins\VSTPluginConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Plugins\WAPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Track.cs" />
-    <Compile Include="TrackPosition.cs" />
+    <Compile Include="Models\Track.cs" />
+    <Compile Include="Models\TrackPosition.cs" />
     <Compile Include="Channels\VolumeLevels.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -155,9 +155,9 @@
     <Compile Include="Helpers\AnalogXScratchHelper.cs" />
     <Compile Include="BassPlayer.RawLoop.cs" />
     <Compile Include="BassPlayer.Sampler.cs" />
-    <Compile Include="SampleTrigger.cs" />
-    <Compile Include="TrackFXTrigger.cs" />
-    <Compile Include="AutomationAttributes.cs" />
+    <Compile Include="Models\SampleTrigger.cs" />
+    <Compile Include="Models\TrackFXTrigger.cs" />
+    <Compile Include="Models\AutomationAttributes.cs" />
     <Compile Include="Plugins\VSTPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +174,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Channels\MixerChannel.cs" />
-    <Compile Include="ExtendedFadeType.cs" />
-    <Compile Include="ExtendedMixAttributes.cs" />
-    <Compile Include="TrackSample.cs" />
+    <Compile Include="Models\ExtendedFadeType.cs" />
+    <Compile Include="Models\ExtendedMixAttributes.cs" />
+    <Compile Include="Models\TrackSample.cs" />
     <None Include="Resources\Music-001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

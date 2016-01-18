@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using Halloumi.BassEngine;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
@@ -46,11 +48,11 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl { get; set; }
 
-        private BE.Track PreviousTrack { get; set; }
+        private Track PreviousTrack { get; set; }
 
-        private BE.Track CurrentTrack { get; set; }
+        private Track CurrentTrack { get; set; }
 
-        private BE.Track NextTrack { get; set; }
+        private Track NextTrack { get; set; }
 
         private Un4seen.Bass.BASSTimer _timer = new Un4seen.Bass.BASSTimer();
 
@@ -156,7 +158,7 @@ namespace Halloumi.Shuffler.Controls
             _binding = false;
         }
 
-        private string FadeInDescription(BE.Track previousTrack, BE.Track track)
+        private string FadeInDescription(Track previousTrack, Track track)
         {
             if (track == null) return "";
 
@@ -190,7 +192,7 @@ namespace Halloumi.Shuffler.Controls
             return description;
         }
 
-        private string FadeOutDescription(BE.Track track, BE.Track nextTrack)
+        private string FadeOutDescription(Track track, Track nextTrack)
         {
             if (track == null) return "";
 
@@ -232,7 +234,7 @@ namespace Halloumi.Shuffler.Controls
 
         private bool _binding = false;
 
-        private string GetMixRankDescription(BE.Track currentTrack, BE.Track nextTrack)
+        private string GetMixRankDescription(Track currentTrack, Track nextTrack)
         {
             if (currentTrack == null || nextTrack == null) return "";
 
@@ -355,7 +357,7 @@ namespace Halloumi.Shuffler.Controls
         /// Makes the power off noise on a track
         /// </summary>
         /// <param name="track">The track.</param>
-        private void PowerOff(BE.Track track)
+        private void PowerOff(Track track)
         {
             if (track == null) return;
             if (BassPlayer.PlayState != PlayState.Playing) return;
@@ -385,7 +387,7 @@ namespace Halloumi.Shuffler.Controls
         /// Pauses the track.
         /// </summary>
         /// <param name="track">The track.</param>
-        private void PauseTrack(BE.Track track)
+        private void PauseTrack(Track track)
         {
             if (track == null) return;
             if (!BassPlayer.IsTrackInUse(track)) return;
@@ -419,7 +421,7 @@ namespace Halloumi.Shuffler.Controls
         /// Gets the previous track.
         /// </summary>
         /// <returns>The previous track</returns>
-        private BE.Track GetPreviousTrack()
+        private Track GetPreviousTrack()
         {
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return null;

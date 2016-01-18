@@ -4,12 +4,16 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using Halloumi.Shuffler.Forms;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using BE = Halloumi.BassEngine;
+using Track = Halloumi.Shuffler.Engine.Models.Track;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -144,13 +148,13 @@ namespace Halloumi.Shuffler.Controls
                 track = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             }
 
-            if (BassPlayer.PlayState == BE.PlayState.Playing)
+            if (BassPlayer.PlayState == PlayState.Playing)
             {
                 if (!btnPause.Visible) btnPause.Visible = true;
                 if (btnPlay.Visible) btnPlay.Visible = false;
             }
 
-            if (BassPlayer.PlayState != BE.PlayState.Playing)
+            if (BassPlayer.PlayState != PlayState.Playing)
             {
                 if (btnPause.Visible) btnPause.Visible = false;
                 if (!btnPlay.Visible) btnPlay.Visible = true;
@@ -163,7 +167,7 @@ namespace Halloumi.Shuffler.Controls
                 var details = track.Album + " - " + track.Genre + " ";
                 details += " - " + track.LengthFormatted;
                 if (track.Bpm != 0) details += " - " + track.Bpm.ToString("0.00") + " BPM";
-                if (track.Key != "") details += " - " + BE.KeyHelper.GetDisplayKey(track.Key);
+                if (track.Key != "") details += " - " + KeyHelper.GetDisplayKey(track.Key);
 
                 lblCurrentTrackDetails.Text = details;
 
@@ -271,8 +275,8 @@ namespace Halloumi.Shuffler.Controls
             if (lblTimeElapsed.Text != position.ElapsedFormatted) lblTimeElapsed.Text = position.ElapsedFormatted;
             if (lblTimeRemaining.Text != position.RemainingFormatted) lblTimeRemaining.Text = position.RemainingFormatted;
 
-            btnPause.Visible = (BassPlayer.PlayState == BE.PlayState.Playing);
-            btnPlay.Visible = (BassPlayer.PlayState != BE.PlayState.Playing);
+            btnPause.Visible = (BassPlayer.PlayState == PlayState.Playing);
+            btnPlay.Visible = (BassPlayer.PlayState != PlayState.Playing);
 
             ShowVisuals();
 
@@ -284,9 +288,9 @@ namespace Halloumi.Shuffler.Controls
 
         private void ShowVisuals()
         {
-            picVisuals.Visible = (VisualsShown && BassPlayer.PlayState == BE.PlayState.Playing);
+            picVisuals.Visible = (VisualsShown && BassPlayer.PlayState == PlayState.Playing);
             if (!VisualsShown) return;
-            if (BassPlayer.PlayState == BE.PlayState.Playing)
+            if (BassPlayer.PlayState == PlayState.Playing)
             {
                 if (!_firstVisualShown)
                 {
@@ -324,13 +328,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.PlayState == BE.PlayState.Playing)
+            if (BassPlayer.PlayState == PlayState.Playing)
                 BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.Pause(); }));
             else
                 BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.Play(); }));
 
-            btnPause.Visible = (BassPlayer.PlayState == BE.PlayState.Playing);
-            btnPlay.Visible = (BassPlayer.PlayState != BE.PlayState.Playing);
+            btnPause.Visible = (BassPlayer.PlayState == PlayState.Playing);
+            btnPlay.Visible = (BassPlayer.PlayState != PlayState.Playing);
         }
 
         /// <summary>

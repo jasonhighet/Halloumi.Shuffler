@@ -5,9 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Halloumi.BassEngine;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
+using Halloumi.Shuffler.Engine.Models;
 using IdSharp.Tagging.ID3v2;
+using Track = Halloumi.Shuffler.Engine.Models.Track;
 
 
 namespace Halloumi.Shuffler.Engine

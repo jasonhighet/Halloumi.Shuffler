@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine
+﻿namespace Halloumi.BassEngine.Models
 {
     public enum ExtendedFadeType
     {

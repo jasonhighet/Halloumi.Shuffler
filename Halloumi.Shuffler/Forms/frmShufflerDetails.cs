@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
 using Halloumi.BassEngine.Channels;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using BE = Halloumi.BassEngine;
@@ -40,18 +42,18 @@ namespace Halloumi.Shuffler.Forms
 
         }
 
-        public BE.Track Track { get; private set; }
+        public Track Track { get; private set; }
 
 
         public BE.BassPlayer BassPlayer { get; set; }
 
         public string Filename { get; set; }
 
-        private BE.AutomationAttributes AutomationAttributes => BassPlayer.GetAutomationAttributes(Track);
+        private AutomationAttributes AutomationAttributes => BassPlayer.GetAutomationAttributes(Track);
 
-        private BE.TrackSample CurrentSample { get; set; }
+        private TrackSample CurrentSample { get; set; }
 
-        private List<BE.TrackSample> CurrentSamples { get; set; }
+        private List<TrackSample> CurrentSamples { get; set; }
 
         private void btnDeleteTrackFX_Click(object sender, EventArgs e)
         {
@@ -83,7 +85,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnAddTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFx = new BE.TrackFxTrigger();
+            var trackFx = new TrackFxTrigger();
 
             if (rdbDelay1.Checked) trackFx.DelayNotes = 0.5M;
             if (rdbDelay2.Checked) trackFx.DelayNotes = 0.25M;
@@ -203,7 +205,7 @@ namespace Halloumi.Shuffler.Forms
             Track = trackWave.LoadTrack(Filename);
             cmbOutput.SelectedIndex = 0;
 
-            CurrentSamples = new List<BE.TrackSample>();
+            CurrentSamples = new List<TrackSample>();
             foreach (var trackSample in AutomationAttributes.TrackSamples)
             {
                 CurrentSamples.Add(trackSample.Clone());
@@ -243,10 +245,10 @@ namespace Halloumi.Shuffler.Forms
         {
             _bindingData = true;
 
-            var loopLengths = BE.BassHelper.GetLoopLengths(Track.StartBpm);
+            var loopLengths = BassHelper.GetLoopLengths(Track.StartBpm);
             cmbCustomFadeInLength.PopulateItemsFromSecondsList(loopLengths);
 
-            loopLengths = BE.BassHelper.GetLoopLengths(Track.EndBpm);
+            loopLengths = BassHelper.GetLoopLengths(Track.EndBpm);
             cmbCustomFadeOutLength.PopulateItemsFromSecondsList(loopLengths);
 
             lblStartBPM.Text = Track.StartBpm.ToString("0.00");
@@ -327,20 +329,20 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_bindingData) return;
 
-            var fadeInLength = BE.BassHelper.GetDefaultLoopLength(Track.TagBpm);
+            var fadeInLength = BassHelper.GetDefaultLoopLength(Track.TagBpm);
             if (cmbCustomFadeInLength.Seconds != 0D)
             {
                 fadeInLength = cmbCustomFadeInLength.Seconds;
             }
-            var startBpm = BE.BassHelper.GetBpmFromLoopLength(fadeInLength);
+            var startBpm = BassHelper.GetBpmFromLoopLength(fadeInLength);
             lblStartBPM.Text = startBpm.ToString("0.00");
 
-            var fadeOutLength = BE.BassHelper.GetDefaultLoopLength(Track.TagBpm);
+            var fadeOutLength = BassHelper.GetDefaultLoopLength(Track.TagBpm);
             if (cmbCustomFadeOutLength.Seconds != 0D)
             {
                 fadeOutLength = cmbCustomFadeOutLength.Seconds;
             }
-            var endBpm = BE.BassHelper.GetBpmFromLoopLength(fadeOutLength);
+            var endBpm = BassHelper.GetBpmFromLoopLength(fadeOutLength);
             lblEndBPM.Text = endBpm.ToString("0.00");
 
             PopulateVolumeDropDown(cmbPreFadeInStartVolume);
@@ -426,7 +428,7 @@ namespace Halloumi.Shuffler.Forms
 
             foreach (var trigger in AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
             {
-                cmbTrackFX.Items.Add(BE.BassHelper.GetFormattedSecondsNoHours(trigger.Start));
+                cmbTrackFX.Items.Add(BassHelper.GetFormattedSecondsNoHours(trigger.Start));
             }
 
             if (cmbTrackFX.Items.Count > 0) cmbTrackFX.SelectedIndex = 0;
@@ -436,7 +438,7 @@ namespace Halloumi.Shuffler.Forms
         ///     Gets the selected track FX.
         /// </summary>
         /// <returns>The selected track FX.</returns>
-        private BE.TrackFxTrigger GetSelectedTrackFx()
+        private TrackFxTrigger GetSelectedTrackFx()
         {
             if (cmbTrackFX.Items.Count == 0 || cmbTrackFX.SelectedIndex < 0) return null;
 
@@ -445,7 +447,7 @@ namespace Halloumi.Shuffler.Forms
             return AutomationAttributes
                 .TrackFxTriggers
                 .OrderBy(t => t.Start)
-                .FirstOrDefault(trackFx => selectedText == BE.BassHelper.GetFormattedSecondsNoHours(trackFx.Start));
+                .FirstOrDefault(trackFx => selectedText == BassHelper.GetFormattedSecondsNoHours(trackFx.Start));
         }
 
         private void BindSamples()
@@ -468,14 +470,14 @@ namespace Halloumi.Shuffler.Forms
             if (CurrentSample == null)
             {
                 txtSampleStartPosition.Seconds = 0;
-                loopLengths = BE.BassHelper.GetLoopLengths(Track.Bpm);
+                loopLengths = BassHelper.GetLoopLengths(Track.Bpm);
                 cmbSampleLength.Seconds = 0;
                 chkLoopSample.Checked = false;
             }
             else
             {
                 txtSampleStartPosition.Seconds = CurrentSample.Start;
-                loopLengths = BE.BassHelper.GetLoopLengths(CurrentSample.CalculateBpm(Track));
+                loopLengths = BassHelper.GetLoopLengths(CurrentSample.CalculateBpm(Track));
                 cmbSampleLength.Seconds = CurrentSample.Length;
                 chkLoopSample.Checked = CurrentSample.IsLooped;
             }
@@ -497,7 +499,7 @@ namespace Halloumi.Shuffler.Forms
                 }
             }
 
-            var trackSample = new BE.TrackSample
+            var trackSample = new TrackSample
             {
                 Description = sampleName,
                 Key = sampleKey

@@ -8,10 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Controls;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using Halloumi.Shuffler.Forms;
 using BE = Halloumi.BassEngine;
 
@@ -58,7 +60,7 @@ namespace Halloumi.Shuffler.Controls
                 Length = track.Length;
                 TrackRank = track.Rank;
                 TrackRankDescription = mixLibrary.GetRankDescription(track.Rank);
-                Key = BE.KeyHelper.GetDisplayKey(track.Key);
+                Key = KeyHelper.GetDisplayKey(track.Key);
             }
 
             public static List<TrackModel> ToList(List<Track> tracks, MixLibrary mixLibrary)
@@ -1047,7 +1049,7 @@ namespace Halloumi.Shuffler.Controls
 
             var text = string.Format("{0} playlist tracks. Length: {1}",
                 TrackModels.Count,
-                BE.BassHelper.GetFormattedLength(TrackModels.Sum(t => t.Length)));
+                BassHelper.GetFormattedLength(TrackModels.Sum(t => t.Length)));
 
             ToolStripLabel.Text = text;
         }
@@ -1078,7 +1080,7 @@ namespace Halloumi.Shuffler.Controls
             TrackModels[rowIndex].MixRankDescription = MixLibrary.GetRankDescription(mixRank);
             if (hasExtendedMix) TrackModels[rowIndex].MixRankDescription += "*";
 
-            TrackModels[rowIndex].KeyRankDescription = BE.KeyHelper.GetKeyMixRankDescription(track1.Key, track2.Key);
+            TrackModels[rowIndex].KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track1.Key, track2.Key);
         }
 
         private void mnuTrackRank_Click(object sender, EventArgs e)

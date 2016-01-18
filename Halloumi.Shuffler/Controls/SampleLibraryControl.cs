@@ -11,6 +11,8 @@ using BE = Halloumi.BassEngine;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Common.Helpers;
 using System.IO;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.Engine.Models;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -50,13 +52,13 @@ namespace Halloumi.Shuffler.Controls
             {
                 Description = sample.TrackArtist + " - " + sample.TrackTitle + " - " + sample.Description;
                 Tags = string.Join(", ", sample.Tags.ToArray());
-                LengthFormatted = BE.BassHelper.GetFormattedLength(Convert.ToDecimal(sample.Length));
+                LengthFormatted = BassHelper.GetFormattedLength(Convert.ToDecimal(sample.Length));
                 Length = Convert.ToDecimal(sample.Length);
                 Bpm = sample.Bpm;
                 Sample = sample;
                 Key = sample.IsAtonal
                     ? "Atonal"
-                    : BE.KeyHelper.GetDisplayKey(sample.Key);
+                    : KeyHelper.GetDisplayKey(sample.Key);
             }
         }
 
@@ -100,7 +102,7 @@ namespace Halloumi.Shuffler.Controls
             cmbKey.Items.Clear();
             cmbKey.Items.Add("");
             cmbKey.Items.Add("Atonal");
-            foreach (var key in BE.KeyHelper.GetDisplayKeys())
+            foreach (var key in KeyHelper.GetDisplayKeys())
             {
                 cmbKey.Items.Add(key);
             }
@@ -162,7 +164,7 @@ namespace Halloumi.Shuffler.Controls
             else
             {
                 criteria.Atonal = false;
-                criteria.Key = BE.KeyHelper.GetKeyFromDisplayKey(KeyFilter);
+                criteria.Key = KeyHelper.GetKeyFromDisplayKey(KeyFilter);
             }
 
             criteria.MaxBpm = MaxBpm;

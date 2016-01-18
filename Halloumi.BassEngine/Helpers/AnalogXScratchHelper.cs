@@ -1,9 +1,10 @@
-﻿using System.Linq;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.BassEngine.Helpers
 {
     public static class AnalogXScratchHelper
     {

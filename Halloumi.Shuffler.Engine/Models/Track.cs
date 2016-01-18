@@ -1,7 +1,7 @@
 ﻿using System;
-using Halloumi.BassEngine;
+using Halloumi.BassEngine.Helpers;
 
-namespace Halloumi.Shuffler.Engine
+namespace Halloumi.Shuffler.Engine.Models
 {
     /// <summary>
     /// Represents a track in the library

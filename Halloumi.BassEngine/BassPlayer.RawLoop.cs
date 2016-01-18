@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using Halloumi.BassEngine.Channels;
+using Halloumi.BassEngine.Helpers;
+using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 

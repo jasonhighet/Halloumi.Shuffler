@@ -3,36 +3,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Halloumi.BassEngine;
 using Halloumi.Common.Helpers;
-using BE = Halloumi.BassEngine;
+using BE = Halloumi.BassEngine.Models;
 
 namespace Halloumi.Shuffler.Engine
 {
     public class LinkedSampleLibrary
     {
-        private Library Library { get; set; }
-
         private Dictionary<string, List<LinkedSample>> _cachedLinkedSamples = new Dictionary<string, List<LinkedSample>>();
 
         /// <summary>
-        /// Initializes a new instance of the LinkedSampleLibrary class.
+        ///     Initializes a new instance of the LinkedSampleLibrary class.
         /// </summary>
-        /// <param name="bassPlayer">The bass player.</param>
         /// <param name="library">The library.</param>
         public LinkedSampleLibrary(Library library)
         {
             Library = library;
         }
 
+        private Library Library { get; }
+
         /// <summary>
-        /// Loads the linked samples for a track.
+        ///     Loads the linked samples for a track.
         /// </summary>
         /// <param name="bassPlayer">The bass player.</param>
         /// <param name="track">The track.</param>
         /// <returns>
-        /// A list of samples linked to the trakc
+        ///     A list of samples linked to the track
         /// </returns>
-        public List<BE.Sample> LoadLinkedSamples(BE.BassPlayer bassPlayer, BE.Track track)
+        public List<BE.Sample> LoadLinkedSamples(BassPlayer bassPlayer, BE.Track track)
         {
             var samples = new List<BE.Sample>();
             if (track == null) return samples;
@@ -43,37 +43,38 @@ namespace Halloumi.Shuffler.Engine
             {
                 var libraryTrack = Library
                     .GetTracksByDescription(linkedSample.TrackDescription)
-                    .Where(t => t.IsShufflerTrack)
-                    .FirstOrDefault();
+                    .FirstOrDefault(t => t.IsShufflerTrack);
 
-                if (libraryTrack != null
-                    && File.Exists(libraryTrack.Filename))
-                {
-                    var sampleTrack = bassPlayer.LoadTrack(libraryTrack.Filename);
-                    bassPlayer.LoadTrackAudioData(sampleTrack);
+                if (libraryTrack == null || !File.Exists(libraryTrack.Filename)) continue;
 
-                    var sample = bassPlayer.LoadSample(sampleTrack, linkedSample.SampleKey);
-                    if (sample != null) samples.Add(sample);
-                }
+                var sampleTrack = bassPlayer.LoadTrack(libraryTrack.Filename);
+                bassPlayer.LoadTrackAudioData(sampleTrack);
+
+                var sample = bassPlayer.LoadSample(sampleTrack, linkedSample.SampleKey);
+                if (sample != null) samples.Add(sample);
             }
 
             return samples;
         }
 
         /// <summary>
-        /// Links a sample to a track.
+        ///     Links a sample to a track.
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="sample">The sample.</param>
         public void LinkSampleToTrack(BE.Track track, BE.Sample sample)
         {
             var linkedSamples = LoadLinkedSamples(track.Description);
-            linkedSamples.Add(new LinkedSample() { SampleKey = sample.SampleKey, TrackDescription = sample.LinkedTrackDescription });
+            linkedSamples.Add(new LinkedSample
+            {
+                SampleKey = sample.SampleKey,
+                TrackDescription = sample.LinkedTrackDescription
+            });
             SaveLinkedSamples(track.Description, linkedSamples);
         }
 
         /// <summary>
-        /// Unlinks a sample to from a track.
+        ///     Unlinks a sample to from a track.
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="sample">The sample.</param>
@@ -82,24 +83,22 @@ namespace Halloumi.Shuffler.Engine
             var linkedSamples = LoadLinkedSamples(track.Description);
 
             var linkedSample = linkedSamples
-                .Where(ls => ls.SampleKey == sample.SampleKey
-                    && ls.TrackDescription == sample.LinkedTrackDescription)
-                .FirstOrDefault();
+                .FirstOrDefault(ls => ls.SampleKey == sample.SampleKey
+                             && ls.TrackDescription == sample.LinkedTrackDescription);
 
-            if (linkedSample != null)
-            {
-                linkedSamples.Remove(linkedSample);
-                SaveLinkedSamples(track.Description, linkedSamples);
-            }
+            if (linkedSample == null) return;
+
+            linkedSamples.Remove(linkedSample);
+            SaveLinkedSamples(track.Description, linkedSamples);
         }
 
         /// <summary>
-        /// Determines whether a sample is a linked to a track
+        ///     Determines whether a sample is a linked to a track
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="sample">The sample.</param>
         /// <returns>
-        /// True if the sample is linked to the track; otherwise, false.
+        ///     True if the sample is linked to the track; otherwise, false.
         /// </returns>
         public bool IsSampleLinkedToTrack(BE.Track track, BE.Sample sample)
         {
@@ -108,13 +107,14 @@ namespace Halloumi.Shuffler.Engine
 
             return linkedSamples
                 .Exists(ls => ls.TrackDescription == sample.LinkedTrackDescription
-                    && ls.SampleKey == sample.SampleKey);
+                              && ls.SampleKey == sample.SampleKey);
         }
 
         /// <summary>
         /// Imports the shuffler details.
         /// </summary>
         /// <param name="importFolder">The import folder.</param>
+        /// <param name="deleteAfterImport">If set to true, delete after import.</param>
         public void ImportDetails(string importFolder, bool deleteAfterImport)
         {
             if (!Directory.Exists(importFolder)) return;
@@ -124,7 +124,10 @@ namespace Halloumi.Shuffler.Engine
             var importFiles = FileSystemHelper.SearchFiles(importFolder, "*.LinkedSamples.txt", false);
             foreach (var importFile in importFiles)
             {
-                var existingFile = Path.Combine(Library.ShufflerFolder, Path.GetFileName(importFile));
+                var fileName = Path.GetFileName(importFile);
+                if (fileName == null) continue;
+
+                var existingFile = Path.Combine(Library.ShufflerFolder, fileName);
                 if (!File.Exists(existingFile))
                 {
                     FileSystemHelper.Copy(importFile, existingFile);
@@ -148,24 +151,25 @@ namespace Halloumi.Shuffler.Engine
                 if (deleteAfterImport) File.Delete(importFile);
             }
 
-            if (!deleteAfterImport)
+            if (deleteAfterImport) return;
+
+            var existingFiles = FileSystemHelper.SearchFiles(Library.ShufflerFolder, "*.LinkedSamples.txt", false);
+            foreach (var existingFile in existingFiles)
             {
-                var existingFiles = FileSystemHelper.SearchFiles(Library.ShufflerFolder, "*.LinkedSamples.txt", false);
-                foreach (var existingFile in existingFiles)
-                {
-                    var importFile = Path.Combine(importFolder, Path.GetFileName(existingFile));
-                    if (!File.Exists(importFile))
-                    {
-                        var existingFileDate = File.GetLastWriteTime(existingFile);
-                        FileSystemHelper.Copy(existingFile, importFile);
-                        File.SetLastWriteTime(importFile, existingFileDate);
-                    }
-                }
+                var fileName = Path.GetFileName(existingFile);
+                if (fileName == null) continue;
+
+                var importFile = Path.Combine(importFolder, fileName);
+                if (File.Exists(importFile)) continue;
+
+                var existingFileDate = File.GetLastWriteTime(existingFile);
+                FileSystemHelper.Copy(existingFile, importFile);
+                File.SetLastWriteTime(importFile, existingFileDate);
             }
         }
 
         /// <summary>
-        /// Loads the linked samples for the supplier track.
+        ///     Loads the linked samples for the supplier track.
         /// </summary>
         /// <param name="trackDescription">The track title.</param>
         /// <returns>A list of linked samples</returns>
@@ -175,12 +179,12 @@ namespace Halloumi.Shuffler.Engine
 
             var attributeFile = GetAttributeFile(trackDescription);
 
-            List<LinkedSample> linkedSamples = null;
+            List<LinkedSample> linkedSamples;
             if (File.Exists(attributeFile))
             {
                 linkedSamples = File.ReadAllLines(attributeFile)
                     .Distinct()
-                    .Select(s => LinkedSample.FromString(s))
+                    .Select(LinkedSample.FromString)
                     .OrderBy(s => s.TrackDescription)
                     .ThenBy(s => s.SampleKey)
                     .ToList();
@@ -196,7 +200,7 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Saves the linked samples.
+        ///     Saves the linked samples.
         /// </summary>
         /// <param name="trackDescription">The track description.</param>
         /// <param name="linkedSamples">The linked samples.</param>
@@ -222,13 +226,13 @@ namespace Halloumi.Shuffler.Engine
         }
 
         /// <summary>
-        /// Gets the linked samples attribute file for a track
+        ///     Gets the linked samples attribute file for a track
         /// </summary>
         /// <param name="trackDescription">The track description.</param>
         /// <returns>The linked samples attribute file</returns>
         private string GetAttributeFile(string trackDescription)
         {
-            var filename = string.Format("{0}.LinkedSamples.txt", trackDescription);
+            var filename = $"{trackDescription}.LinkedSamples.txt";
             filename = FileSystemHelper.StripInvalidFileNameChars(filename);
             filename = Path.Combine(Library.ShufflerFolder, filename);
             return filename;
@@ -243,18 +247,17 @@ namespace Halloumi.Shuffler.Engine
 
         public override string ToString()
         {
-            return TrackDescription + ", " + SampleKey.ToString();
+            return TrackDescription + ", " + SampleKey;
         }
 
         public static LinkedSample FromString(string value)
         {
             if (value == "") return null;
-            var linkedSample = new LinkedSample();
-            linkedSample.SampleKey = "Sample1";
+            var linkedSample = new LinkedSample {SampleKey = "Sample1"};
 
             if (value.Contains(","))
             {
-                var commaIndex = value.LastIndexOf(",");
+                var commaIndex = value.LastIndexOf(",", StringComparison.Ordinal);
                 linkedSample.TrackDescription = value.Substring(0, commaIndex).Trim();
 
                 var sampleKey = value.Substring(commaIndex + 1).Trim();
@@ -263,7 +266,9 @@ namespace Halloumi.Shuffler.Engine
                     linkedSample.SampleKey = sampleKey;
                 }
                 catch
-                { }
+                {
+                    // ignored
+                }
             }
             else
             {

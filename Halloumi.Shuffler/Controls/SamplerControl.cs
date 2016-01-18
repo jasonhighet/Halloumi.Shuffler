@@ -4,19 +4,21 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Halloumi.BassEngine.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.Engine.Models;
 using BE = Halloumi.BassEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
     public partial class SamplerControl : UserControl
     {
-        private BE.Track _currentTrack = null;
-        private BE.Track _nextTrack = null;
+        private BassEngine.Models.Track _currentTrack = null;
+        private BassEngine.Models.Track _nextTrack = null;
 
         //private BE.Track _previousTrack = null;
-        private BE.Track _additionalTrack = null;
+        private BassEngine.Models.Track _additionalTrack = null;
 
         private List<SamplePlayer> SamplePlayers { get; set; }
 
@@ -27,7 +29,7 @@ namespace Halloumi.Shuffler.Controls
             SamplePlayers = new List<SamplePlayer>();
 
             var settings = Forms.Settings.Default;
-            BE.AnalogXScratchHelper.SetApplicationFolder(settings.AnalogXScratchFolder);
+            AnalogXScratchHelper.SetApplicationFolder(settings.AnalogXScratchFolder);
         }
 
         public void LoadAdditionalTrack(Track track)
@@ -161,7 +163,7 @@ namespace Halloumi.Shuffler.Controls
         /// Gets the previous track.
         /// </summary>
         /// <returns>The previous track</returns>
-        private BE.Track GetPreviousTrack()
+        private BassEngine.Models.Track GetPreviousTrack()
         {
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return null;

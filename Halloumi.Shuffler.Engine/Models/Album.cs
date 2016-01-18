@@ -1,4 +1,4 @@
-﻿namespace Halloumi.Shuffler.Engine
+﻿namespace Halloumi.Shuffler.Engine.Models
 {
     public class Album
     {

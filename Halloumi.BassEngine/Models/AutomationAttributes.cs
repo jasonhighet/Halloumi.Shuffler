@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using Halloumi.Common.Helpers;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.BassEngine.Models
 {
     public class AutomationAttributes
     {
@@ -30,8 +30,7 @@ namespace Halloumi.BassEngine
         {
             if (trackDescription == "") return null;
             return ExtendedMixes
-                .Where(em => em.TrackDescription == trackDescription)
-                .FirstOrDefault();
+                .FirstOrDefault(em => em.TrackDescription == trackDescription);
         }
 
         public void RemoveExtendedMixAttributes(string trackDescription)
@@ -51,7 +50,7 @@ namespace Halloumi.BassEngine
         {
             if (trackDescription == "" || folder == "") return null;
 
-            AutomationAttributes attributes = null;
+            AutomationAttributes attributes;
             if (_cachedAttributes.ContainsKey(trackDescription))
             {
                 attributes = _cachedAttributes[trackDescription];
