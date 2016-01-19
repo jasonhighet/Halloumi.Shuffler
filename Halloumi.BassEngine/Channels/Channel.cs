@@ -185,7 +185,15 @@ namespace Halloumi.BassEngine.Channels
             if (plugin.EditorHeight == 0) plugin.EditorHeight = 600;
 
             plugin.Location = location;
+            LoadPluginParameters(plugin);
 
+            SetPluginBpm(plugin);
+
+            return plugin;
+        }
+
+        private static void LoadPluginParameters(VstPlugin plugin)
+        {
             plugin.Parameters = new List<VstPlugin.VstPluginParameter>();
 
             var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
@@ -194,19 +202,34 @@ namespace Halloumi.BassEngine.Channels
                 var parameterInfo = BassVst.BASS_VST_GetParamInfo(plugin.Id, i);
 
                 var name = parameterInfo.name.Trim();
-                if (string.IsNullOrWhiteSpace(name) || name.ToLower().StartsWith("unused")) 
+                if (string.IsNullOrWhiteSpace(name) || name.ToLower().StartsWith("unused"))
                     continue;
 
-                plugin.Parameters.Add(new VstPlugin.VstPluginParameter
+                var parameter = new VstPlugin.VstPluginParameter
                 {
                     Id = i,
-                    Name = parameterInfo.name
-                });
+                    Name = parameterInfo.name,
+                };
+
+                if (plugin.Name.ToLower().Contains("tape delay") && parameterInfo.name.ToLower() == "time")
+                {
+                    parameter.SyncToBpm = true;
+                    parameter.MinSyncMilliSeconds = 60;
+                    parameter.MaxSyncMilliSeconds = 1500;
+                }
+
+                if (plugin.Name.ToLower().Contains("classic delay") && parameterInfo.name.ToLower() == "time")
+                {
+                    parameter.SyncToBpm = true;
+                    parameter.MinSyncMilliSeconds = 50;
+                    parameter.MaxSyncMilliSeconds = 5000;
+                }
+
+
+
+                plugin.Parameters.Add(parameter);
+                
             }
-
-            SetPluginBpm(plugin);
-
-            return plugin;
         }
 
         /// <summary>
@@ -228,42 +251,42 @@ namespace Halloumi.BassEngine.Channels
             if (BpmProvider == null)
                 return;
 
-            if (!plugin.Name.ToLower().Contains("delay"))
-                return;
-
-            var timeParameter = plugin.Parameters.FirstOrDefault(x => x.Name.ToLower() == "time");
-            if (timeParameter == null)
+            if (!plugin.Parameters.Any(x => x.SyncToBpm))
                 return;
 
             var bpm = BpmProvider.GetCurrentBpm();
             var quarterNoteDelayLength = BassHelper.GetDefaultDelayLength(bpm);
+            var delayLength = quarterNoteDelayLength*((double) _delayNotes/0.25);
 
-            if (_delayNotes == 0)
+            BassVst.BASS_VST_SetBypass(plugin.Id, _delayNotes == 0);
+
+            foreach (var parameter in plugin.Parameters.Where(x => x.SyncToBpm))
             {
-                BassVst.BASS_VST_SetBypass(plugin.Id, true);
-            }
-            else
-            {
-                BassVst.BASS_VST_SetBypass(plugin.Id, false);
-                var tapeDelayValue = GetTapeDelayValue(quarterNoteDelayLength*((double) _delayNotes/0.25));
-                BassVst.BASS_VST_SetParam(plugin.Id, timeParameter.Id, tapeDelayValue);
+                var vstDelayValue = GetVstDelayValue(delayLength, parameter);
+                BassVst.BASS_VST_SetParam(plugin.Id, parameter.Id, vstDelayValue);
             }
         }
 
         /// <summary>
-        ///     Gets the delay value as a percentage (0% is 60ms, 100% is 1500ms)
-        ///     This specific to the TapeDelay VST plug-in.
+        /// Gets the delay value as a percentage (0% is 60ms, 100% is 1500ms)
+        /// This specific to the TapeDelay VST plug-in.
         /// </summary>
         /// <param name="delayLength">Length of the delay in milliseconds.</param>
-        /// <returns>The tape delay value</returns>
-        private static float GetTapeDelayValue(double delayLength)
+        /// <param name="parameter">The parameter.</param>
+        /// <returns>
+        /// The tape delay value
+        /// </returns>
+        private static float GetVstDelayValue(double delayLength, VstPlugin.VstPluginParameter parameter)
         {
-            const int minMs = 60;
-            const int maxMs = 1500;
+            var minMs = parameter.MinSyncMilliSeconds;
+            var maxMs = parameter.MaxSyncMilliSeconds;
+
             if (delayLength < minMs) delayLength = minMs;
             if (delayLength > maxMs) delayLength = maxMs;
 
-            return (float) ((delayLength - minMs)/(maxMs - minMs));
+            var vstDelayValue = (float) ((delayLength - minMs)/(maxMs - minMs));
+
+            return vstDelayValue;
         }
 
         /// <summary>

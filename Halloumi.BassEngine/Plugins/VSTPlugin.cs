@@ -19,6 +19,19 @@ namespace Halloumi.BassEngine.Plugins
         {
             public int Id;
             public string Name;
+            public bool SyncToBpm;
+
+            /// <summary>
+            /// The delay length in milliseconds when the VST knob is set to 0.
+            /// Used to convert the current BPM -> milliseconds -> the VST knob value (1-100)
+            /// </summary>
+            public int MinSyncMilliSeconds;
+
+            /// <summary>
+            /// The delay length in milliseconds when the VST knob is set to 100
+            /// Used to convert the current BPM -> milliseconds -> the VST knob value (1-100)
+            /// </summary>
+            public int MaxSyncMilliSeconds;
         }
     }
 }
