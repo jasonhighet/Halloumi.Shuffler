@@ -223,6 +223,7 @@ namespace Halloumi.BassEngine.Channels
                     parameter.SyncToBpm = true;
                     parameter.MinSyncMilliSeconds = 50;
                     parameter.MaxSyncMilliSeconds = 5000;
+                    parameter.SyncUsingLogScale = true;
                 }
 
 
@@ -278,16 +279,18 @@ namespace Halloumi.BassEngine.Channels
         /// </returns>
         private static float GetVstDelayValue(double delayLength, VstPlugin.VstPluginParameter parameter)
         {
-            var minMs = parameter.MinSyncMilliSeconds;
-            var maxMs = parameter.MaxSyncMilliSeconds;
+            var minMs = (double)parameter.MinSyncMilliSeconds;
+            var maxMs = (double)parameter.MaxSyncMilliSeconds;
 
             if (delayLength < minMs) delayLength = minMs;
             if (delayLength > maxMs) delayLength = maxMs;
 
-            var vstDelayValue = (float) ((delayLength - minMs)/(maxMs - minMs));
-
-            return vstDelayValue;
+            return parameter.SyncUsingLogScale
+                ? (float)(Math.Log10(delayLength / minMs) / Math.Log10(maxMs / minMs))
+                : (float) ((delayLength - minMs)/(maxMs - minMs));
         }
+
+        
 
         /// <summary>
         ///     Loads a WinAmp DSP plug-in and applies it to the mixer

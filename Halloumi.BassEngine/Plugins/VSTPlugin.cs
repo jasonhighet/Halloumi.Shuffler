@@ -32,6 +32,8 @@ namespace Halloumi.BassEngine.Plugins
             /// Used to convert the current BPM -> milliseconds -> the VST knob value (1-100)
             /// </summary>
             public int MaxSyncMilliSeconds;
+
+            public bool SyncUsingLogScale = false;
         }
     }
 }
