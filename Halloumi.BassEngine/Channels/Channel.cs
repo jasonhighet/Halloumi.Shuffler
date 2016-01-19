@@ -192,6 +192,11 @@ namespace Halloumi.BassEngine.Channels
             for (var i = 0; i < parameterCount; i++)
             {
                 var parameterInfo = BassVst.BASS_VST_GetParamInfo(plugin.Id, i);
+
+                var name = parameterInfo.name.Trim();
+                if (string.IsNullOrWhiteSpace(name) || name.ToLower().StartsWith("unused")) 
+                    continue;
+
                 plugin.Parameters.Add(new VstPlugin.VstPluginParameter
                 {
                     Id = i,

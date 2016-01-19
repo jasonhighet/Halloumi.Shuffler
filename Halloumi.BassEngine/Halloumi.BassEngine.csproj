@@ -79,6 +79,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\Halloumi.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Halloumi.Common.Windows">
+      <HintPath>..\Components\Halloumi.Common.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="IdSharp, Version=0.0.0.2, Culture=neutral, PublicKeyToken=afbb2fbe078d3406, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\IdSharp.dll</HintPath>
