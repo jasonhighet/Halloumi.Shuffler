@@ -245,7 +245,7 @@ namespace Halloumi.BassEngine.Channels
                     MaxSyncMilliSeconds = 1500M,
                     SyncUsingLogScale = false,
                     VariableSyncNotes = true,
-                    DefaultSyncNotes = 0.25M
+                    DefaultSyncNotes = (1M/4M)
                 },
                 new
                 {
@@ -256,7 +256,7 @@ namespace Halloumi.BassEngine.Channels
                     MaxSyncMilliSeconds = 5000M,
                     SyncUsingLogScale = true,
                     VariableSyncNotes = true,
-                    DefaultSyncNotes = 0.25M
+                    DefaultSyncNotes = (1M/4M)
                 },
                 new
                 {
@@ -267,7 +267,7 @@ namespace Halloumi.BassEngine.Channels
                     MaxSyncMilliSeconds = 10M,
                     SyncUsingLogScale = true,
                     VariableSyncNotes = false,
-                    DefaultSyncNotes = 0.001953125M
+                    DefaultSyncNotes = (1M/512M)
                 },
             }.ToList();
 
