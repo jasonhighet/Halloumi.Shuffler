@@ -42,11 +42,26 @@ namespace Halloumi.BassEngine.Channels
                 if (value < 0 || value > 1) return;
 
                 _delayNotes = value;
+
+                SetPluginSyncNotes(VstPlugin1, _delayNotes);
+                SetPluginSyncNotes(VstPlugin2, _delayNotes);
+
                 SetPluginBpm();
             }
         }
 
         public WaPlugin WaPlugin { get; private set; }
+
+        private static void SetPluginSyncNotes(VstPlugin plugin, decimal delayNotes)
+        {
+            if (plugin == null)
+                return;
+
+            foreach (var parameter in plugin.Parameters.Where(x => x.SyncToBpm && x.VariableSyncNotes))
+            {
+                parameter.SyncNotes = delayNotes;
+            }
+        }
 
         public void AddInputChannel(MixerChannel inputChannel)
         {
@@ -208,29 +223,69 @@ namespace Halloumi.BassEngine.Channels
                 var parameter = new VstPlugin.VstPluginParameter
                 {
                     Id = i,
-                    Name = parameterInfo.name,
+                    Name = parameterInfo.name
                 };
 
-                if (plugin.Name.ToLower().Contains("tape delay") && parameterInfo.name.ToLower() == "time")
-                {
-                    parameter.SyncToBpm = true;
-                    parameter.MinSyncMilliSeconds = 60;
-                    parameter.MaxSyncMilliSeconds = 1500;
-                }
-
-                if (plugin.Name.ToLower().Contains("classic delay") && parameterInfo.name.ToLower() == "time")
-                {
-                    parameter.SyncToBpm = true;
-                    parameter.MinSyncMilliSeconds = 50;
-                    parameter.MaxSyncMilliSeconds = 5000;
-                    parameter.SyncUsingLogScale = true;
-                }
-
-
+                LoadPresetParameterValues(plugin, parameter);
 
                 plugin.Parameters.Add(parameter);
-                
             }
+        }
+
+        private static void LoadPresetParameterValues(VstPlugin plugin, VstPlugin.VstPluginParameter parameter)
+        {
+            var presetParameters = new[]
+            {
+                new
+                {
+                    PluginName = "Tape Delay",
+                    ParameterName = "Time",
+                    SyncToBpm = true,
+                    MinSyncMilliSeconds = 60M,
+                    MaxSyncMilliSeconds = 1500M,
+                    SyncUsingLogScale = false,
+                    VariableSyncNotes = true,
+                    DefaultSyncNotes = 0.25M
+                },
+                new
+                {
+                    PluginName = "Classic Delay",
+                    ParameterName = "Time",
+                    SyncToBpm = true,
+                    MinSyncMilliSeconds = 50M,
+                    MaxSyncMilliSeconds = 5000M,
+                    SyncUsingLogScale = true,
+                    VariableSyncNotes = true,
+                    DefaultSyncNotes = 0.25M
+                },
+                new
+                {
+                    PluginName = "Classic Flanger",
+                    ParameterName = "Delay",
+                    SyncToBpm = true,
+                    MinSyncMilliSeconds = 0.1M,
+                    MaxSyncMilliSeconds = 10M,
+                    SyncUsingLogScale = true,
+                    VariableSyncNotes = false,
+                    DefaultSyncNotes = 0.001953125M
+                },
+            }.ToList();
+
+
+            var presetParameter = presetParameters
+                .FirstOrDefault(p => string.Equals(plugin.Name, p.PluginName, StringComparison.CurrentCultureIgnoreCase)
+                                     &&
+                                     string.Equals(parameter.Name, p.ParameterName,
+                                         StringComparison.CurrentCultureIgnoreCase));
+
+            if (presetParameter == null) return;
+
+            parameter.SyncToBpm = presetParameter.SyncToBpm;
+            parameter.MinSyncMilliSeconds = presetParameter.MinSyncMilliSeconds;
+            parameter.MaxSyncMilliSeconds = presetParameter.MaxSyncMilliSeconds;
+            parameter.SyncUsingLogScale = presetParameter.SyncUsingLogScale;
+            parameter.VariableSyncNotes = presetParameter.VariableSyncNotes;
+            parameter.SyncNotes = presetParameter.DefaultSyncNotes;
         }
 
         /// <summary>
@@ -256,41 +311,46 @@ namespace Halloumi.BassEngine.Channels
                 return;
 
             var bpm = BpmProvider.GetCurrentBpm();
-            var quarterNoteDelayLength = BassHelper.GetDefaultDelayLength(bpm);
-            var delayLength = quarterNoteDelayLength*((double) _delayNotes/0.25);
+            var quarterNoteLength = BassHelper.GetDefaultDelayLength(bpm);
+            var fullNoteLength = quarterNoteLength*4;
 
-            BassVst.BASS_VST_SetBypass(plugin.Id, _delayNotes == 0);
+            var syncParameters = plugin.Parameters.Where(p => p.SyncToBpm).ToList();
 
-            foreach (var parameter in plugin.Parameters.Where(x => x.SyncToBpm))
+            var mutePlugin = syncParameters.Any(p => p.SyncNotes == 0);
+            BassVst.BASS_VST_SetBypass(plugin.Id, mutePlugin);
+
+            if (mutePlugin)
+                return;
+
+            foreach (var parameter in syncParameters)
             {
-                var vstDelayValue = GetVstDelayValue(delayLength, parameter);
+                var syncLength = fullNoteLength*(double) parameter.SyncNotes;
+                var vstDelayValue = GetVstSyncValue(syncLength, parameter);
                 BassVst.BASS_VST_SetParam(plugin.Id, parameter.Id, vstDelayValue);
             }
         }
 
         /// <summary>
-        /// Gets the delay value as a percentage (0% is 60ms, 100% is 1500ms)
-        /// This specific to the TapeDelay VST plug-in.
+        ///     Converts a sync length value to a VST specific percentage (based on the parameter max/min milliseconds)
         /// </summary>
-        /// <param name="delayLength">Length of the delay in milliseconds.</param>
+        /// <param name="syncLength">Length of the delay in milliseconds.</param>
         /// <param name="parameter">The parameter.</param>
         /// <returns>
-        /// The tape delay value
+        ///     The VST specific percentage
         /// </returns>
-        private static float GetVstDelayValue(double delayLength, VstPlugin.VstPluginParameter parameter)
+        private static float GetVstSyncValue(double syncLength, VstPlugin.VstPluginParameter parameter)
         {
-            var minMs = (double)parameter.MinSyncMilliSeconds;
-            var maxMs = (double)parameter.MaxSyncMilliSeconds;
+            var minMs = (double) parameter.MinSyncMilliSeconds;
+            var maxMs = (double) parameter.MaxSyncMilliSeconds;
 
-            if (delayLength < minMs) delayLength = minMs;
-            if (delayLength > maxMs) delayLength = maxMs;
+            if (syncLength < minMs) syncLength = minMs;
+            if (syncLength > maxMs) syncLength = maxMs;
 
             return parameter.SyncUsingLogScale
-                ? (float)(Math.Log10(delayLength / minMs) / Math.Log10(maxMs / minMs))
-                : (float) ((delayLength - minMs)/(maxMs - minMs));
+                ? (float) (Math.Log10(syncLength/minMs)/Math.Log10(maxMs/minMs))
+                : (float) ((syncLength - minMs)/(maxMs - minMs));
         }
 
-        
 
         /// <summary>
         ///     Loads a WinAmp DSP plug-in and applies it to the mixer
@@ -337,23 +397,7 @@ namespace Halloumi.BassEngine.Channels
             try
             {
                 BassWaDsp.BASS_WADSP_Stop(WaPlugin.Id);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            try
-            {
                 BassWaDsp.BASS_WADSP_ChannelRemoveDSP(WaPlugin.Id);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            try
-            {
                 BassWaDsp.BASS_WADSP_FreeDSP(WaPlugin.Id);
             }
             catch
