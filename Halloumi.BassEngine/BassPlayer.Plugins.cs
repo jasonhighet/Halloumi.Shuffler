@@ -228,7 +228,7 @@ namespace Halloumi.BassEngine
             LastTrackFxTriggerTrack = CurrentTrack;
 
             var position = BassHelper.GetTrackPosition(LastTrackFxTriggerTrack);
-            LastTrackFxTrigger = new TrackFxTrigger();
+            LastTrackFxTrigger = new TrackFXTrigger();
             LastTrackFxTrigger.Start = LastTrackFxTriggerTrack.SamplesToSeconds(position);
             LastTrackFxTrigger.DelayNotes = TrackSendFxDelayNotes;
 

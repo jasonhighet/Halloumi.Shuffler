@@ -1,6 +1,8 @@
-﻿namespace Halloumi.BassEngine.Models
+﻿using System.Xml.Serialization;
+
+namespace Halloumi.BassEngine.Models
 {
-    public class TrackFxTrigger
+    public class TrackFXTrigger
     {
         /// <summary>
         /// Gets or sets the start.
@@ -40,7 +42,7 @@
         /// <summary>
         /// Initializes a new instance of the AutomatedTrackFX class.
         /// </summary>
-        public TrackFxTrigger()
+        public TrackFXTrigger()
         {
             StartSyncId = int.MinValue;
             EndSyncId = int.MinValue;

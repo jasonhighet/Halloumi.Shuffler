@@ -373,20 +373,22 @@ namespace Halloumi.BassEngine
 
             AddTrackToMixer(track);
 
+            StopSamples();
+
             if (CurrentTrack == null)
             {
                 CurrentTrack = track;
-                StopSamples();
+                SetTrackSyncPositions();
                 RaiseOnTrackChange();
             }
             else
             {
                 var oldNextTrack = NextTrack;
                 NextTrack = track;
-                SetTrackSyncPositions();
                 if (!IsTrackInUse(oldNextTrack)) RemoveTrackFromMixer(oldNextTrack);
+                SetTrackSyncPositions();
             }
-
+            
             RaiseOnTrackQueued();
         }
 

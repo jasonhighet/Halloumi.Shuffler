@@ -60,7 +60,7 @@ namespace Halloumi.Shuffler.Forms
             var trackFx = GetSelectedTrackFx();
             if (trackFx == null) return;
 
-            AutomationAttributes.TrackFxTriggers.Remove(trackFx);
+            AutomationAttributes.TrackFXTriggers.Remove(trackFx);
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -85,7 +85,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnAddTrackFX_Click(object sender, EventArgs e)
         {
-            var trackFx = new TrackFxTrigger();
+            var trackFx = new TrackFXTrigger();
 
             if (rdbDelay1.Checked) trackFx.DelayNotes = 0.5M;
             if (rdbDelay2.Checked) trackFx.DelayNotes = 0.25M;
@@ -95,7 +95,7 @@ namespace Halloumi.Shuffler.Forms
             trackFx.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
             trackFx.Length = Track.SamplesToSeconds(trackWave.ZoomLength);
 
-            AutomationAttributes.TrackFxTriggers.Add(trackFx);
+            AutomationAttributes.TrackFXTriggers.Add(trackFx);
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -106,7 +106,7 @@ namespace Halloumi.Shuffler.Forms
             var message = "Are you sure you wish to clear all Track FX triggers for " + Track.Description + "?";
             if (!MessageBoxHelper.Confirm(message)) return;
 
-            AutomationAttributes.TrackFxTriggers.Clear();
+            AutomationAttributes.TrackFXTriggers.Clear();
 
             PopulateTrackFxComboBox();
             trackWave.RefreshPositions();
@@ -426,7 +426,7 @@ namespace Halloumi.Shuffler.Forms
         {
             cmbTrackFX.Items.Clear();
 
-            foreach (var trigger in AutomationAttributes.TrackFxTriggers.OrderBy(t => t.Start).ToList())
+            foreach (var trigger in AutomationAttributes.TrackFXTriggers.OrderBy(t => t.Start).ToList())
             {
                 cmbTrackFX.Items.Add(BassHelper.GetFormattedSecondsNoHours(trigger.Start));
             }
@@ -438,14 +438,14 @@ namespace Halloumi.Shuffler.Forms
         ///     Gets the selected track FX.
         /// </summary>
         /// <returns>The selected track FX.</returns>
-        private TrackFxTrigger GetSelectedTrackFx()
+        private TrackFXTrigger GetSelectedTrackFx()
         {
             if (cmbTrackFX.Items.Count == 0 || cmbTrackFX.SelectedIndex < 0) return null;
 
             var selectedText = cmbTrackFX.SelectedItem.ToString();
 
             return AutomationAttributes
-                .TrackFxTriggers
+                .TrackFXTriggers
                 .OrderBy(t => t.Start)
                 .FirstOrDefault(trackFx => selectedText == BassHelper.GetFormattedSecondsNoHours(trackFx.Start));
         }

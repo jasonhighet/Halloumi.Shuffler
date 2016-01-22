@@ -306,10 +306,10 @@ namespace Halloumi.Shuffler.Controls
             Wave.RemoveMarker("SKE");
 
             var attributes = BassPlayer.GetAutomationAttributes(BassTrack);
-            foreach (var trigger in attributes.TrackFxTriggers)
+            foreach (var trigger in attributes.TrackFXTriggers)
             {
-                Wave.RemoveMarker("TS" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
-                Wave.RemoveMarker("TE" + attributes.TrackFxTriggers.IndexOf(trigger).ToString());
+                Wave.RemoveMarker("TS" + attributes.TrackFXTriggers.IndexOf(trigger).ToString());
+                Wave.RemoveMarker("TE" + attributes.TrackFXTriggers.IndexOf(trigger).ToString());
             }
 
             for (var i = 1; i <= 2000; i++)
@@ -345,10 +345,10 @@ namespace Halloumi.Shuffler.Controls
 
             if (ShowTrackFx)
             {
-                foreach (var trackFx in attributes.TrackFxTriggers)
+                foreach (var trackFx in attributes.TrackFXTriggers)
                 {
-                    Wave.AddMarker("TS" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start);
-                    Wave.AddMarker("TE" + attributes.TrackFxTriggers.IndexOf(trackFx).ToString(), trackFx.Start + trackFx.Length);
+                    Wave.AddMarker("TS" + attributes.TrackFXTriggers.IndexOf(trackFx).ToString(), trackFx.Start);
+                    Wave.AddMarker("TE" + attributes.TrackFXTriggers.IndexOf(trackFx).ToString(), trackFx.Start + trackFx.Length);
                 }
             }
         }

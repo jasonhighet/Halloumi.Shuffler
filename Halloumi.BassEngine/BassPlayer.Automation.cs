@@ -12,7 +12,7 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Gets the last track FX attributes.
         /// </summary>
-        public TrackFxTrigger LastTrackFxTrigger
+        public TrackFXTrigger LastTrackFxTrigger
         {
             get;
             private set;
@@ -42,7 +42,7 @@ namespace Halloumi.BassEngine
             if (LastTrackFxTriggerTrack == null || LastTrackFxTrigger == null) return;
 
             var attributes = GetAutomationAttributes(LastTrackFxTriggerTrack);
-            attributes.TrackFxTriggers.Add(LastTrackFxTrigger);
+            attributes.TrackFXTriggers.Add(LastTrackFxTrigger);
 
             SaveAutomationAttributes(LastTrackFxTriggerTrack);
 
@@ -60,10 +60,10 @@ namespace Halloumi.BassEngine
             if (track == null) return;
             var attributes = GetAutomationAttributes(track);
 
-            if (attributes.TrackFxTriggers.Count == 0) return;
+            if (attributes.TrackFXTriggers.Count == 0) return;
 
             if (IsTrackInUse(track)) ClearTrackSyncPositions(track);
-            attributes.TrackFxTriggers.Clear();
+            attributes.TrackFXTriggers.Clear();
             SaveAutomationAttributes(track);
             if (IsTrackInUse(track)) ResetTrackSyncPositions();
         }
@@ -75,13 +75,13 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null) return;
             var attributes = GetAutomationAttributes(CurrentTrack);
-            if (attributes.TrackFxTriggers.Count == 0) return;
+            if (attributes.TrackFXTriggers.Count == 0) return;
 
             var automation = GetPrevTrackFxTrigger();
             if (automation == null) return;
 
             ClearTrackSyncPositions(CurrentTrack);
-            attributes.TrackFxTriggers.Remove(automation);
+            attributes.TrackFXTriggers.Remove(automation);
             SaveAutomationAttributes(CurrentTrack);
 
             ResetTrackSyncPositions();
@@ -248,13 +248,13 @@ namespace Halloumi.BassEngine
         /// Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private TrackFxTrigger GetCurrentTrackFxTrigger()
+        private TrackFXTrigger GetCurrentTrackFxTrigger()
         {
             if (CurrentTrack == null) return null;
 
             var position = BassHelper.GetTrackPosition(CurrentTrack);
             return GetAutomationAttributes(CurrentTrack)
-                .TrackFxTriggers
+                .TrackFXTriggers
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
                 .FirstOrDefault();
         }
@@ -263,13 +263,13 @@ namespace Halloumi.BassEngine
         /// Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private TrackFxTrigger GetPrevTrackFxTrigger()
+        private TrackFXTrigger GetPrevTrackFxTrigger()
         {
             if (CurrentTrack == null) return null;
 
             var position = BassHelper.GetTrackPosition(CurrentTrack);
             return GetAutomationAttributes(CurrentTrack)
-                .TrackFxTriggers
+                .TrackFXTriggers
                 .Where(ta => ta.StartSample <= position)
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
                 .FirstOrDefault();
@@ -423,7 +423,7 @@ namespace Halloumi.BassEngine
         {
             if (track != CurrentTrack) return;
 
-            foreach (var trigger in GetAutomationAttributes(track).TrackFxTriggers)
+            foreach (var trigger in GetAutomationAttributes(track).TrackFXTriggers)
             {
                 trigger.StartSample = track.SecondsToSamples(trigger.Start);
                 trigger.EndSample = track.SecondsToSamples(trigger.Start + trigger.Length);
@@ -446,7 +446,7 @@ namespace Halloumi.BassEngine
         /// <param name="track">The track.</param>
         private void ClearAutomationSyncPositions(Track track)
         {
-            foreach (var trigger in GetAutomationAttributes(track).TrackFxTriggers)
+            foreach (var trigger in GetAutomationAttributes(track).TrackFXTriggers)
             {
                 if (trigger.StartSyncId != int.MinValue)
                 {

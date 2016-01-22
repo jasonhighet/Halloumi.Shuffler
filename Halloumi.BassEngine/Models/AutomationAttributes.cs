@@ -2,19 +2,21 @@
 using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
+using System.Xml.Serialization;
 
 namespace Halloumi.BassEngine.Models
 {
     public class AutomationAttributes
     {
-        public List<TrackFxTrigger> TrackFxTriggers { get; set; }
+        public List<TrackFXTrigger> TrackFXTriggers { get; set; }
+
         public List<SampleTrigger> SampleTriggers { get; set; }
         public List<ExtendedMixAttributes> ExtendedMixes { get; set; }
         public List<TrackSample> TrackSamples { get; set; }
 
         public AutomationAttributes()
         {
-            TrackFxTriggers = new List<TrackFxTrigger>();
+            TrackFXTriggers = new List<TrackFXTrigger>();
             SampleTriggers = new List<SampleTrigger>();
             ExtendedMixes = new List<ExtendedMixAttributes>();
             TrackSamples = new List<TrackSample>();
@@ -96,7 +98,7 @@ namespace Halloumi.BassEngine.Models
             var filepath = GetAttributesFilePath(track.Description, folder);
             var attributes = GetAutomationAttributes(track, folder);
 
-            if (attributes.TrackFxTriggers.Count > 0
+            if (attributes.TrackFXTriggers.Count > 0
                 || attributes.SampleTriggers.Count > 0
                 || attributes.ExtendedMixes.Count > 0
                 || attributes.TrackSamples.Count > 0)
