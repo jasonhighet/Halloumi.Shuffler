@@ -577,6 +577,8 @@ namespace Halloumi.Shuffler.Forms
             //this.shufflerControl.CurrentShufflerMode = settings.ShufflerMode;
 
             mnuUpdateLibraryOnStartup.Checked = settings.UpdateLibraryOnStartup;
+
+            fileMenuController.RecentFiles = settings.RecentFiles;
         }
 
         /// <summary>
@@ -709,6 +711,8 @@ namespace Halloumi.Shuffler.Forms
             settings.ShowMixableTracks = mnuShowMixableTracks.Checked;
 
             settings.UpdateLibraryOnStartup = mnuUpdateLibraryOnStartup.Checked;
+
+            settings.RecentFiles = fileMenuController.RecentFiles;
 
             settings.Save();
 
