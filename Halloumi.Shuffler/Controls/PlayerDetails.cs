@@ -301,7 +301,7 @@ namespace Halloumi.Shuffler.Controls
                     }
                 }
 
-                lock (BassPlayer.MixerLock)
+                lock (BassPlayer.ExternalMixerLock)
                 {
                     picVisuals.Image = _bassVisuals.CreateSpectrumLine(BassPlayer.MixerChanel,
                         picVisuals.Width,

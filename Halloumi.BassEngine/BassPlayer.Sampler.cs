@@ -15,38 +15,49 @@ namespace Halloumi.BassEngine
 {
     public partial class BassPlayer
     {
-        #region Properties
+        /// <summary>
+        ///     The next available sample Id
+        /// </summary>
+        private static int _nextSampleId;
 
         /// <summary>
-        /// A collection of all loaded samples
+        ///     A collection of all loaded samples
         /// </summary>
-        private List<Sample> _cachedSamples = new List<Sample>();
+        private readonly List<Sample> _cachedSamples = new List<Sample>();
 
-        /// <summary>
-        /// The next available sample Id
-        /// </summary>
-        private static int _nextSampleId = 0;
+        private readonly object _samplePlayLock = new object();
 
         private MixerChannel _samplerMixer;
 
         private OutputSplitter _samplerOutputSplitter;
 
         /// <summary>
-        /// The path of the temporary sampler folder
+        ///     The path of the temporary sampler folder
         /// </summary>
         private string _tempSamplerFolder = "";
 
         /// <summary>
-        /// The sampler mixer bass EQ effect handle
+        ///     Gets or sets the sampler output.
         /// </summary>
-        //private int _samplerMixerBassEQ = int.MinValue;
-
-        #endregion
-
-        #region Public Methods
+        public SoundOutput SamplerOutput
+        {
+            get { return _samplerOutputSplitter.SoundOutput; }
+            set { _samplerOutputSplitter.SoundOutput = value; }
+        }
 
         /// <summary>
-        /// Unloads the samples.
+        ///     Gets or sets the track output.
+        /// </summary>
+        public SoundOutput TrackOutput
+        {
+            get { return _trackOutputSplitter.SoundOutput; }
+            set { _trackOutputSplitter.SoundOutput = value; }
+        }
+
+        public List<Sample> Samples => _cachedSamples.ToList();
+
+        /// <summary>
+        ///     Unloads the samples.
         /// </summary>
         public void UnloadSamples()
         {
@@ -59,7 +70,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Unloads the sample audio data.
+        ///     Unloads the sample audio data.
         /// </summary>
         /// <param name="sample">The sample.</param>
         public void UnloadSample(Sample sample)
@@ -76,7 +87,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Loads the sample.
+        ///     Loads the sample.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <returns>The loaded sample</returns>
@@ -86,24 +97,29 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Loads the sample.
+        ///     Loads the sample.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="description">The description.</param>
-        /// <returns>The loaded sample</returns>
+        /// <param name="gain">The gain.</param>
+        /// <returns>
+        ///     The loaded sample
+        /// </returns>
         public Sample LoadSample(string filename, string description, float gain)
         {
             DebugHelper.WriteLine("Loading sample " + filename);
 
             if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
 
-            var sample = new Sample();
-            sample.Id = _nextSampleId++;
-            sample.Filename = filename;
-            sample.Gain = gain;
-
-            if (description == "") description = StringHelper.TitleCase(Path.GetFileNameWithoutExtension(sample.Filename).Replace("_", " ").Replace("-", " "));
-            sample.Description = description;
+            var sample = new Sample
+            {
+                Id = _nextSampleId++,
+                Filename = filename,
+                Gain = gain,
+                Description = string.IsNullOrWhiteSpace(description)
+                    ? GetSampleDescriptionFromFilename(filename)
+                    : description
+            };
 
             LoadSampleAudioData(sample);
             AddSampleToSampler(sample);
@@ -112,17 +128,21 @@ namespace Halloumi.BassEngine
             return sample;
         }
 
+        private static string GetSampleDescriptionFromFilename(string filename)
+        {
+            return
+                StringHelper.TitleCase((Path.GetFileNameWithoutExtension(filename) + "").Replace("_", " ")
+                    .Replace("-", " "));
+        }
+
         public Sample LoadSample(Track track, string sampleKey)
         {
             if (track == null) return null;
 
             var trackSample = GetAllTrackSamples(track)
-                .Where(ts => ts.Key == sampleKey)
-                .FirstOrDefault();
+                .FirstOrDefault(ts => ts.Key == sampleKey);
 
-            if (trackSample == null) return null;
-
-            return LoadSample(track, trackSample);
+            return trackSample == null ? null : LoadSample(track, trackSample);
         }
 
         public Sample LoadSample(Track track, TrackSample trackSample)
@@ -134,10 +154,11 @@ namespace Halloumi.BassEngine
 
             if (!File.Exists(filename))
             {
-                BassHelper.SavePartialAsWave(track, filename, track.SecondsToSamples(trackSample.Start), track.SecondsToSamples(trackSample.Length));
+                BassHelper.SavePartialAsWave(track, filename, track.SecondsToSamples(trackSample.Start),
+                    track.SecondsToSamples(trackSample.Length));
             }
 
-            Sample sample = null;
+            Sample sample;
             try
             {
                 sample = LoadSample(filename, trackSample.Description, track.Gain);
@@ -158,7 +179,7 @@ namespace Halloumi.BassEngine
         private string GetSampleFilename(TrackSample trackSample, string trackDescription, Track track)
         {
             var dateModified = GetTrackLastModified(track).ToString("yyyyMMddhhmmss");
-            var filename = String.Format("{0}_{1}_{2}_.wav", trackDescription, trackSample.Key, dateModified);
+            var filename = $"{trackDescription}_{trackSample.Key}_{dateModified}_.wav";
 
             filename = FileSystemHelper.StripInvalidFileNameChars(filename).ToLower().Replace(" ", "_");
             filename = Path.Combine(_tempSamplerFolder, filename);
@@ -178,60 +199,58 @@ namespace Halloumi.BassEngine
 
             var dateModified = File.GetLastWriteTime(track.Filename);
 
-            if (shufflerDate > dateModified)
-                return shufflerDate;
-            else
-                return dateModified;
+            return shufflerDate > dateModified ? shufflerDate : dateModified;
         }
 
         public List<Sample> LoadSamples(Track track)
         {
-            var samples = new List<Sample>();
-            if (track == null) return samples;
+            if (track == null) return new List<Sample>();
 
             DebugHelper.WriteLine("Loading samples for " + track.Description);
 
-            var trackSamples = GetAllTrackSamples(track);
-            foreach (var trackSample in trackSamples)
-            {
-                var sample = LoadSample(track, trackSample);
-                if (sample != null) samples.Add(sample);
-            }
-            return samples;
+            return GetAllTrackSamples(track)
+                .Select(trackSample => LoadSample(track, trackSample))
+                .Where(sample => sample != null)
+                .ToList();
         }
 
-        private List<TrackSample> GetAllTrackSamples(Track track)
+        private IEnumerable<TrackSample> GetAllTrackSamples(Track track)
         {
             DebugHelper.WriteLine("GetAllTrackSamples for " + track.Description);
 
             var trackSamples = GetTrackSamples(track);
 
-            var fadeOutTrackSample = new TrackSample();
-            fadeOutTrackSample.IsLooped = track.IsLoopedAtEnd;
-            fadeOutTrackSample.Start = track.SamplesToSeconds(track.FadeOutStart);
-            fadeOutTrackSample.Length = track.FadeOutLengthSeconds;
-            fadeOutTrackSample.Description = "Fade Out";
-            fadeOutTrackSample.Key = "FadeOut";
+            var fadeOutTrackSample = new TrackSample
+            {
+                IsLooped = track.IsLoopedAtEnd,
+                Start = track.SamplesToSeconds(track.FadeOutStart),
+                Length = track.FadeOutLengthSeconds,
+                Description = "Fade Out",
+                Key = "FadeOut"
+            };
             trackSamples.Insert(0, fadeOutTrackSample);
 
-            var fadeInTrackSample = new TrackSample();
-            fadeInTrackSample.IsLooped = track.IsLoopedAtStart;
-            fadeInTrackSample.Start = track.SamplesToSeconds(track.FadeInStart);
-            fadeInTrackSample.Length = track.FadeInLengthSeconds;
-            fadeInTrackSample.Description = "Fade In";
-            fadeInTrackSample.Key = "FadeIn";
+            var fadeInTrackSample = new TrackSample
+            {
+                IsLooped = track.IsLoopedAtStart,
+                Start = track.SamplesToSeconds(track.FadeInStart),
+                Length = track.FadeInLengthSeconds,
+                Description = "Fade In",
+                Key = "FadeIn"
+            };
             trackSamples.Insert(0, fadeInTrackSample);
 
-            if (track.UsePreFadeIn)
+            if (!track.UsePreFadeIn) return trackSamples;
+
+            var preFadeInTrackSample = new TrackSample
             {
-                var preFadeInTrackSample = new TrackSample();
-                preFadeInTrackSample.IsLooped = false;
-                preFadeInTrackSample.Start = track.SamplesToSeconds(track.PreFadeInStart);
-                preFadeInTrackSample.Length = track.PreFadeInLengthSeconds;
-                preFadeInTrackSample.Description = "Pre Fade In";
-                preFadeInTrackSample.Key = "PreFadeIn";
-                trackSamples.Insert(0, preFadeInTrackSample);
-            }
+                IsLooped = false,
+                Start = track.SamplesToSeconds(track.PreFadeInStart),
+                Length = track.PreFadeInLengthSeconds,
+                Description = "Pre Fade In",
+                Key = "PreFadeIn"
+            };
+            trackSamples.Insert(0, preFadeInTrackSample);
 
             return trackSamples;
         }
@@ -245,26 +264,29 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Unloads the samples.
+        ///     Unloads the samples.
         /// </summary>
         /// <param name="track">The track.</param>
         public void UnloadSamples(Track track)
         {
             if (track == null) return;
-            foreach (var trackSample in GetAllTrackSamples(track))
+            var filenames =
+                GetAllTrackSamples(track)
+                    .Select(trackSample => GetSampleFilename(trackSample, track.Description, track));
+
+            foreach (var filename in filenames)
             {
-                var filename = GetSampleFilename(trackSample, track.Description, track);
                 UnloadSample(filename);
             }
         }
 
         /// <summary>
-        /// Unloads and deletes a sample.
+        ///     Unloads and deletes a sample.
         /// </summary>
         /// <param name="filename">The filename of the sample.</param>
         private void UnloadSample(string filename)
         {
-            var sample = Samples.Where(s => s.Filename == filename).FirstOrDefault();
+            var sample = Samples.FirstOrDefault(s => s.Filename == filename);
             if (sample != null)
             {
                 UnloadSample(sample);
@@ -272,17 +294,19 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets a loaded sample by its description.
+        ///     Gets a loaded sample by its description.
         /// </summary>
-        /// <param name="description">The description.</param>
-        /// <returns>The loaded sample</returns>
+        /// <param name="sampleId">The sample identifier.</param>
+        /// <returns>
+        ///     The loaded sample
+        /// </returns>
         public Sample GetSampleBySampleId(string sampleId)
         {
-            return Samples.Where(s => s.SampleId == sampleId).FirstOrDefault();
+            return Samples.FirstOrDefault(s => s.SampleId == sampleId);
         }
 
         /// <summary>
-        /// Plays a sample.
+        ///     Plays a sample.
         /// </summary>
         /// <param name="sample">The sample.</param>
         public void PlaySample(Sample sample)
@@ -317,10 +341,8 @@ namespace Halloumi.BassEngine
             StartRecordingSampleTrigger(sample);
         }
 
-        private object _samplePlayLock = new object();
-
         /// <summary>
-        /// Stops the sample.
+        ///     Stops the sample.
         /// </summary>
         /// <param name="sample">The sample.</param>
         public void StopSample(Sample sample)
@@ -334,7 +356,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Stops the samples.
+        ///     Stops the samples.
         /// </summary>
         public void StopSamples()
         {
@@ -345,7 +367,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Mutes the sample.
+        ///     Mutes the sample.
         /// </summary>
         /// <param name="sample">The sample.</param>
         public void MuteSample(Sample sample)
@@ -360,7 +382,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the sample mixer volume.
+        ///     Gets the sample mixer volume.
         /// </summary>
         public decimal GetSamplerMixerVolume()
         {
@@ -368,7 +390,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Sets the sample mixer volume.
+        ///     Sets the sample mixer volume.
         /// </summary>
         /// <param name="volume">The volume as a value between 0 and 100.</param>
         public void SetSamplerMixerVolume(decimal volume)
@@ -376,50 +398,13 @@ namespace Halloumi.BassEngine
             _samplerMixer.SetVolume(volume);
         }
 
-        /// <summary>
-        /// Gets or sets the sampler output.
-        /// </summary>
-        public SoundOutput SamplerOutput
-        {
-            get { return _samplerOutputSplitter.SoundOutput; }
-            set { _samplerOutputSplitter.SoundOutput = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the track output.
-        /// </summary>
-        public SoundOutput TrackOutput
-        {
-            get { return _trackOutputSplitter.SoundOutput; }
-            set { _trackOutputSplitter.SoundOutput = value; }
-        }
-
-        #endregion
-
-        #region Internal Classes
-
-        /// <summary>
-        /// Enum style representing different types of sample sync events.
-        /// </summary>
-        private enum SampleSyncType
-        {
-            /// <summary>
-            /// sample end sync event type
-            /// </summary>
-            SampleEnd = 0
-        }
-
-        #endregion
-
-        #region Private Methods
-
         private void InitialiseSampler()
         {
             DebugHelper.WriteLine("InitialiseSampler");
 
             // create mixer channel
             _samplerMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
-            _samplerMixer.SetVolume((decimal)DefaultFadeOutStartVolume);
+            _samplerMixer.SetVolume((decimal) DefaultFadeOutStartVolume);
             _samplerMixer.CutBass();
 
             _samplerOutputSplitter = new OutputSplitter(_samplerMixer, _speakerOutput, _monitorOutput);
@@ -433,27 +418,28 @@ namespace Halloumi.BassEngine
             {
                 FileSystemHelper.DeleteFiles(_tempSamplerFolder);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
 
             DebugHelper.WriteLine("END InitialiseSampler");
         }
 
-        private Sample LoadSampleAudioData(Sample sample)
-        {
-            return LoadSampleAudioData(sample, AudioDataMode.LoadIntoMemory);
-        }
-
         /// <summary>
-        /// Loads the sample audio data.
+        ///     Loads the sample audio data.
         /// </summary>
         /// <param name="sample">The sample to load.</param>
-        /// <returns>The loaded sample</returns>
-        private Sample LoadSampleAudioData(Sample sample, AudioDataMode mode)
+        /// <param name="mode">The mode.</param>
+        /// <returns>
+        ///     The loaded sample
+        /// </returns>
+        private static void LoadSampleAudioData(Sample sample, AudioDataMode mode = AudioDataMode.LoadIntoMemory)
         {
             lock (sample)
             {
                 // abort if audio data already loaded
-                if (sample.Channel != int.MinValue) return sample;
+                if (sample.Channel != int.MinValue) return;
 
                 DebugHelper.WriteLine("Loading sample Audio Data " + sample.Description);
 
@@ -473,14 +459,16 @@ namespace Halloumi.BassEngine
                 if (sample.Channel == 0)
                 {
                     var errorCode = Bass.BASS_ErrorGetCode();
-                    throw new Exception("Cannot load sample " + sample.Filename + ". Error code: " + errorCode.ToString());
+                    throw new Exception("Cannot load sample " + sample.Filename + ". Error code: " + errorCode);
                 }
 
                 sample.AddChannel(BassFx.BASS_FX_ReverseCreate(sample.Channel, 1, BASSFlag.BASS_STREAM_DECODE));
                 if (sample.Channel == 0) throw new Exception("Cannot load sample " + sample.Filename);
-                Bass.BASS_ChannelSetAttribute(sample.Channel, BASSAttribute.BASS_ATTRIB_REVERSE_DIR, (float)BASSFXReverse.BASS_FX_RVS_FORWARD);
+                Bass.BASS_ChannelSetAttribute(sample.Channel, BASSAttribute.BASS_ATTRIB_REVERSE_DIR,
+                    (float) BASSFXReverse.BASS_FX_RVS_FORWARD);
 
-                sample.AddChannel(BassFx.BASS_FX_TempoCreate(sample.Channel, BASSFlag.BASS_FX_FREESOURCE | BASSFlag.BASS_STREAM_DECODE));
+                sample.AddChannel(BassFx.BASS_FX_TempoCreate(sample.Channel,
+                    BASSFlag.BASS_FX_FREESOURCE | BASSFlag.BASS_STREAM_DECODE));
                 if (sample.Channel == 0) throw new Exception("Cannot load sample " + sample.Filename);
 
                 sample.Length = Bass.BASS_ChannelGetLength(sample.Channel);
@@ -488,12 +476,10 @@ namespace Halloumi.BassEngine
 
                 Bass.BASS_ChannelSetPosition(sample.Channel, 0);
             }
-
-            return sample;
         }
 
         /// <summary>
-        /// Adds to the mixer channel, and sets the sync points.
+        ///     Adds to the mixer channel, and sets the sync points.
         /// </summary>
         /// <param name="sample">The sample to sync.</param>
         private void AddSampleToSampler(Sample sample)
@@ -508,19 +494,19 @@ namespace Halloumi.BassEngine
                 LoadSampleAudioData(sample);
             }
 
-            lock (_mixerLock)
+            lock (MixerLock)
             {
                 BassHelper.AddSampleToSampler(sample, _samplerMixer.InternalChannel);
             }
 
             // set sample sync event
-            sample.SampleSync = new SYNCPROC(OnSampleSync);
+            sample.SampleSync = OnSampleSync;
 
             SetSampleSyncPositions(sample);
         }
 
         /// <summary>
-        /// Sets the sample sync positions.
+        ///     Sets the sample sync positions.
         /// </summary>
         /// <param name="sample">The sample.</param>
         private void SetSampleSyncPositions(Sample sample)
@@ -529,42 +515,41 @@ namespace Halloumi.BassEngine
 
             ClearSampleSyncPositions(sample);
 
-            DebugHelper.WriteLine("Set sample sync postions " + sample.Description);
+            DebugHelper.WriteLine("Set sample sync positions " + sample.Description);
 
             // set end sample sync
             SetSampleSync(sample, sample.Length - 2000, SampleSyncType.SampleEnd);
         }
 
         /// <summary>
-        /// Sets a sample sync.
+        ///     Sets a sample sync.
         /// </summary>
         /// <param name="sample">The sample.</param>
         /// <param name="position">The position.</param>
         /// <param name="syncType">Type of the sync.</param>
-        private void SetSampleSync(Sample sample, long position, SampleSyncType syncType)
+        private static void SetSampleSync(Sample sample, long position, SampleSyncType syncType)
         {
             if (sample == null || sample.Channel == int.MinValue) return;
 
-            var flags = BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME;
-
             var syncId = BassMix.BASS_Mixer_ChannelSetSync(sample.Channel,
-                flags,
+                BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME,
                 position,
                 sample.SampleSync,
-                new IntPtr((int)syncType));
+                new IntPtr((int) syncType));
 
-            if (syncType == SampleSyncType.SampleEnd) sample.SampleEndSyncId = syncId;
+            if (syncType == SampleSyncType.SampleEnd)
+                sample.SampleEndSyncId = syncId;
         }
 
         /// <summary>
-        /// Clears the sample sync positions.
+        ///     Clears the sample sync positions.
         /// </summary>
         /// <param name="sample">The sample.</param>
-        private void ClearSampleSyncPositions(Sample sample)
+        private static void ClearSampleSyncPositions(Sample sample)
         {
-            DebugHelper.WriteLine("Clear sample sync postions " + sample.Description);
+            DebugHelper.WriteLine("Clear sample sync positions " + sample.Description);
 
-            if (sample == null || sample.Channel == int.MinValue || sample.SampleEndSyncId == int.MinValue) return;
+            if (sample.Channel == int.MinValue || sample.SampleEndSyncId == int.MinValue) return;
 
             BassMix.BASS_Mixer_ChannelRemoveSync(sample.Channel, sample.SampleEndSyncId);
             sample.SampleEndSyncId = int.MinValue;
@@ -581,38 +566,33 @@ namespace Halloumi.BassEngine
             }
         }
 
-        #endregion
-
-        #region Properties
-
-        public List<Sample> Samples
-        {
-            get { return _cachedSamples.ToList(); }
-        }
-
-        #endregion
-
-        #region Event Handlers
-
         /// <summary>
-        /// Called when when the track sync event is fired
+        ///     Called when the track sync event is fired
         /// </summary>
         private void OnSampleSync(int handle, int channel, int data, IntPtr pointer)
         {
-            var syncType = (SampleSyncType)(pointer.ToInt32());
-            DebugHelper.WriteLine("Sample Sync Fired: " + syncType.ToString());
+            var syncType = (SampleSyncType) (pointer.ToInt32());
+            DebugHelper.WriteLine("Sample Sync Fired: " + syncType);
 
-            if (syncType == SampleSyncType.SampleEnd)
-            {
-                var sample = Samples.Where(s => s.Channel == channel).FirstOrDefault();
-                if (sample != null && sample.Channel != int.MinValue)
-                {
-                    if (!sample.IsLooped) BassHelper.SetSampleVolume(sample, 0M);
-                    LoopSample(sample);
-                }
-            }
+            if (syncType != SampleSyncType.SampleEnd) return;
+
+            var sample = Samples.FirstOrDefault(s => s.Channel == channel);
+
+            if (sample == null || sample.Channel == int.MinValue) return;
+
+            if (!sample.IsLooped) BassHelper.SetSampleVolume(sample, 0M);
+            LoopSample(sample);
         }
 
-        #endregion
+        /// <summary>
+        ///     Enumeration style representing different types of sample sync events.
+        /// </summary>
+        private enum SampleSyncType
+        {
+            /// <summary>
+            ///     sample end sync event type
+            /// </summary>
+            SampleEnd = 0
+        }
     }
 }
