@@ -10,7 +10,7 @@ namespace Halloumi.BassEngine.Channels
         public MonitorOutputChannel()
             : base(null)
         {
-            if (BassHelper.GetWaveOutDevices().Count >= 2)
+            if (WaveOutHelper.GetWaveOutDevices().Count >= 2)
             {
                 _monitorDeviceId = 2;
                 BassHelper.InitialiseMonitorDevice(_monitorDeviceId);

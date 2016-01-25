@@ -52,7 +52,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 Description = sample.TrackArtist + " - " + sample.TrackTitle + " - " + sample.Description;
                 Tags = string.Join(", ", sample.Tags.ToArray());
-                LengthFormatted = BassHelper.GetFormattedLength(Convert.ToDecimal(sample.Length));
+                LengthFormatted = FormatHelper.GetFormattedHours(Convert.ToDecimal(sample.Length));
                 Length = Convert.ToDecimal(sample.Length);
                 Bpm = sample.Bpm;
                 Sample = sample;

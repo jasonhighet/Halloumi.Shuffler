@@ -235,10 +235,10 @@ namespace Halloumi.Shuffler.Controls
         private void UpdateViewText()
         {
             lblViewDetails.Text = String.Format("View: {0} to {1} ({2})     Cursor: {3}",
-                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomStart)),
-                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomEnd)),
-                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(ZoomLength)),
-                BassHelper.GetFormattedSecondsNoHours(BassTrack.SamplesToSeconds(CurrentPosition)));
+                FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomStart)),
+                FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomEnd)),
+                FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomLength)),
+                FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(CurrentPosition)));
         }
 
         /// <summary>

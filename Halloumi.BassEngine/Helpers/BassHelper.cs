@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Halloumi.BassEngine.Models;
@@ -17,7 +15,6 @@ namespace Halloumi.BassEngine.Helpers
     {
         private const int DefaultSampleRate = 44100;
 
-        private static readonly Random Random = new Random(DateTime.Now.Millisecond);
 
         private static readonly object Lock = new object();
 
@@ -27,65 +24,11 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        ///     Gets a seconds value formatted as mm:ss.ttt
-        /// </summary>
-        /// <returns>The formatted text</returns>
-        public static string GetFormattedSecondsNoHours(double seconds)
-        {
-            if (double.IsNaN(seconds)) return "";
-
-            var timeSpan = TimeSpan.FromSeconds(seconds);
-
-            return $"{(timeSpan.Hours*60) + timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}.{timeSpan.Milliseconds:D3}";
-        }
-
-        /// <summary>
-        ///     Gets a seconds value formatted as hh:mm:ss.ttt text or mm:ss.ttt (if it's less than an hours)
-        /// </summary>
-        /// <param name="seconds">The seconds.</param>
-        /// <returns>The formatted text</returns>
-        public static string GetShortFormattedSeconds(decimal seconds)
-        {
-            var timeSpan = TimeSpan.FromSeconds((Convert.ToDouble(seconds)));
-
-            return timeSpan.Hours < 1
-                ? $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}"
-                : $"{timeSpan.Hours}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
-        }
-
-        /// <summary>
-        ///     Gets the formatted length
-        /// </summary>
-        /// <param name="length">The length.</param>
-        /// <returns>The formatted length</returns>
-        public static string GetFormattedLength(double length)
-        {
-            var timespan = TimeSpan.FromSeconds(length);
-            var lengthFormatted = $"{timespan.Minutes}:{timespan.Seconds:D2}";
-            if (length > 60*60)
-            {
-                lengthFormatted = $"{timespan.Hours}:{timespan.Minutes:D2}:{timespan.Seconds:D2}";
-            }
-            return lengthFormatted;
-        }
-
-        /// <summary>
-        ///     Gets the formatted length
-        /// </summary>
-        /// <param name="length">The length.</param>
-        /// <returns>The formatted length</returns>
-        public static string GetFormattedLength(decimal length)
-        {
-            return GetFormattedLength((double) length);
-        }
-
-
-        /// <summary>
         ///     Converts a decibel value to a percent value.
         /// </summary>
         /// <param name="decibel">The decibel.</param>
         /// <returns>The percent value</returns>
-        public static float DecibelToPercent(float decibel)
+        private static float DecibelToPercent(float decibel)
         {
             return (float) (Math.Pow(10, 0.05*decibel));
         }
@@ -324,7 +267,7 @@ namespace Halloumi.BassEngine.Helpers
         {
             if (track1 == null || track2 == null) return DefaultSampleRate;
 
-            return track1.DefaultSampleRate * BpmHelper.GetTrackTempoChangeAsRatio(track1, track2);
+            return track1.DefaultSampleRate*BpmHelper.GetTrackTempoChangeAsRatio(track1, track2);
         }
 
         /// <summary>
@@ -474,8 +417,6 @@ namespace Halloumi.BassEngine.Helpers
             return (position1 != position2);
         }
 
-      
-
 
         /// <summary>
         ///     Initialises the Bass audio engine.
@@ -496,7 +437,7 @@ namespace Halloumi.BassEngine.Helpers
         /// <param name="monitorDeviceId">The monitor device Id.</param>
         public static void InitialiseMonitorDevice(int monitorDeviceId)
         {
-            if (GetWaveOutDevices().Count < 3) return;
+            if (WaveOutHelper.GetWaveOutDevices().Count < 3) return;
 
             if (!Bass.BASS_Init(monitorDeviceId, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
@@ -547,17 +488,6 @@ namespace Halloumi.BassEngine.Helpers
                 BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
             if (mixerChannel == 0) throw new Exception("Cannot create Bass Mixer.");
             return mixerChannel;
-        }
-
-        /// <summary>
-        ///     Picks a random track from a list of tracks
-        /// </summary>
-        /// <param name="tracks">The track list.</param>
-        /// <returns>A randomly selected track</returns>
-        public static Track GetRandomTrack(List<Track> tracks)
-        {
-            if (tracks == null) return null;
-            return tracks.Count == 0 ? null : tracks[Random.Next(0, tracks.Count)];
         }
 
         /// <summary>
@@ -710,47 +640,6 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        ///     Gets the wave out devices.
-        /// </summary>
-        /// <returns>A list of wave out devices</returns>
-        public static List<string> GetWaveOutDevices()
-        {
-            var devices = new List<string>();
-            var deviceCount = waveOutGetNumDevs();
-
-            for (var i = -1; i < deviceCount; i++)
-            {
-                var waveOutCaps = new WaveOutCaps();
-                waveOutGetDevCaps(i, ref waveOutCaps, Marshal.SizeOf(typeof (WaveOutCaps)));
-                var deviceName = new string(waveOutCaps.szPname);
-
-                if (deviceName.Contains('\0'))
-                    deviceName = deviceName.Substring(0, deviceName.IndexOf('\0'));
-
-                devices.Add(deviceName);
-            }
-
-            return devices;
-        }
-
-        /// <summary>
-        ///     The waveOutGetNumDevs function retrieves the number of waveform-audio output devices present in the system.
-        /// </summary>
-        /// <returns>
-        ///     Returns the number of devices. A return value of zero means that no devices are present or that an error occurred.
-        /// </returns>
-        [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Unicode,
-            CallingConvention = CallingConvention.Winapi)]
-        private static extern int waveOutGetNumDevs();
-
-        /// <summary>
-        ///     The waveOutGetDevCaps function retrieves the capabilities of a given waveform-audio output device.
-        /// </summary>
-        [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Auto,
-            CallingConvention = CallingConvention.Winapi)]
-        private static extern int waveOutGetDevCaps(int uDeviceId, ref WaveOutCaps lpCaps, int uSize);
-
-        /// <summary>
         ///     Adds a track to mixer
         /// </summary>
         /// <param name="track">The track.</param>
@@ -900,29 +789,6 @@ namespace Halloumi.BassEngine.Helpers
             DebugHelper.WriteLine("done");
 
             SetSampleReplayGain(sample);
-        }
-
-        public static bool IsSameTrack(Track track1, Track track2)
-        {
-            if (track1 == null || track2 == null) return false;
-            return (track1.Description == track2.Description);
-        }
-
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
-        private struct WaveOutCaps
-        {
-            public readonly short wMid;
-            public readonly short wPid;
-            public readonly int vDriverVersion;
-
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)] public readonly char[] szPname;
-
-            public readonly uint dwFormats;
-            public readonly short wChannels;
-            public readonly short wReserved1;
-            public readonly uint dwSupport;
         }
     }
 }

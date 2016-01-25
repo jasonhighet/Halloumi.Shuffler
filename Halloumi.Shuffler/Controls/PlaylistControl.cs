@@ -1049,7 +1049,7 @@ namespace Halloumi.Shuffler.Controls
 
             var text = string.Format("{0} playlist tracks. Length: {1}",
                 TrackModels.Count,
-                BassHelper.GetFormattedLength(TrackModels.Sum(t => t.Length)));
+                FormatHelper.GetFormattedHours(TrackModels.Sum(t => t.Length)));
 
             ToolStripLabel.Text = text;
         }

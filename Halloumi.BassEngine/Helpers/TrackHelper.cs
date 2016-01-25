@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,8 +12,22 @@ using IdSharp.Tagging.ID3v2;
 
 namespace Halloumi.BassEngine.Helpers
 {
-    public static class TrackDetailsHelper
+    public static class TrackHelper
     {
+        private static readonly Random Random = new Random(DateTime.Now.Millisecond);
+
+
+        /// <summary>
+        ///     Picks a random track from a list of tracks
+        /// </summary>
+        /// <param name="tracks">The track list.</param>
+        /// <returns>A randomly selected track</returns>
+        public static Track GetRandomTrack(List<Track> tracks)
+        {
+            if (tracks == null) return null;
+            return tracks.Count == 0 ? null : tracks[Random.Next(0, tracks.Count)];
+        }
+
         /// <summary>
         ///     Guesses the artist and title of a track from its filename.
         /// </summary>
@@ -150,6 +166,12 @@ namespace Halloumi.BassEngine.Helpers
             var tags = ID3v2Helper.CreateID3v2(track.Filename);
             tags.BPM = track.TagBpm.ToString(CultureInfo.InvariantCulture);
             tags.Save(track.Filename);
+        }
+
+        public static bool IsSameTrack(Track track1, Track track2)
+        {
+            if (track1 == null || track2 == null) return false;
+            return (track1.Description == track2.Description);
         }
 
         /// <summary>

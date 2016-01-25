@@ -428,7 +428,7 @@ namespace Halloumi.Shuffler.Forms
 
             foreach (var trigger in AutomationAttributes.TrackFXTriggers.OrderBy(t => t.Start).ToList())
             {
-                cmbTrackFX.Items.Add(BassHelper.GetFormattedSecondsNoHours(trigger.Start));
+                cmbTrackFX.Items.Add(FormatHelper.GetFormattedSeconds(trigger.Start));
             }
 
             if (cmbTrackFX.Items.Count > 0) cmbTrackFX.SelectedIndex = 0;
@@ -447,7 +447,7 @@ namespace Halloumi.Shuffler.Forms
             return AutomationAttributes
                 .TrackFXTriggers
                 .OrderBy(t => t.Start)
-                .FirstOrDefault(trackFx => selectedText == BassHelper.GetFormattedSecondsNoHours(trackFx.Start));
+                .FirstOrDefault(trackFx => selectedText == FormatHelper.GetFormattedSeconds(trackFx.Start));
         }
 
         private void BindSamples()

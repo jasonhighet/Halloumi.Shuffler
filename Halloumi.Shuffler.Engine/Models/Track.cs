@@ -101,7 +101,7 @@ namespace Halloumi.Shuffler.Engine.Models
         {
             get
             {
-                return BassHelper.GetFormattedLength(Length);
+                return FormatHelper.GetFormattedHours(Length);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Halloumi.Shuffler.Engine.Models
         {
             get
             {
-                return BassHelper.GetFormattedLength(FullLength);
+                return FormatHelper.GetFormattedHours(FullLength);
             }
         }
 

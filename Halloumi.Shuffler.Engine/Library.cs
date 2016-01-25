@@ -716,7 +716,7 @@ namespace Halloumi.Shuffler.Engine
 
         private DateTime GetTrackLastModified(string filename)
         {
-            var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(filename);
+            var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(filename);
             var shufflerFile = GetShufflerAttributeFile(trackDetails.Artist + " - " + trackDetails.Title);
             var shufflerDate = DateTime.MinValue;
             if (File.Exists(shufflerFile))
@@ -1503,7 +1503,7 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="track">The track.</param>
         private static void GuessTrackDetailsFromFileName(Track track)
         {
-            var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(track.Filename);
+            var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(track.Filename);
             track.Title = trackDetails.Title;
             track.Artist = trackDetails.Artist;
             track.AlbumArtist = trackDetails.AlbumArtist;

@@ -313,7 +313,7 @@ namespace Halloumi.BassEngine
             var track = LoadTrack(filename);
 
             if (track == null) return;
-            if (BassHelper.IsSameTrack(track, PreloadedTrack)) return;
+            if (TrackHelper.IsSameTrack(track, PreloadedTrack)) return;
             if (track.IsAudioLoaded()) return;
 
             // load audio data if not loaded
@@ -488,7 +488,7 @@ namespace Halloumi.BassEngine
         /// <param name="track">The track.</param>
         private static void GuessArtistAndTitleFromFilename(Track track)
         {
-            var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(track.Filename);
+            var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(track.Filename);
             track.Title = trackDetails.Title;
             track.Artist = trackDetails.Artist;
         }
@@ -1769,7 +1769,7 @@ namespace Halloumi.BassEngine
         public bool IsTrackInUse(Track track)
         {
             // no track, so not in use
-            return track != null && GetInUseTracks().Any(t => BassHelper.IsSameTrack(track, t));
+            return track != null && GetInUseTracks().Any(t => TrackHelper.IsSameTrack(track, t));
         }
 
         private IEnumerable<Track> GetInUseTracks()
@@ -2333,7 +2333,7 @@ namespace Halloumi.BassEngine
                     // Start-Fade-Out also calls start fade in.
                     // Old track fade out & new track fade-in
                     // always start at same time.
-                    if (BassHelper.IsSameTrack(track, CurrentTrack))
+                    if (TrackHelper.IsSameTrack(track, CurrentTrack))
                         StartFadeOut();
                     break;
                 case SyncType.EndFadeOut:
