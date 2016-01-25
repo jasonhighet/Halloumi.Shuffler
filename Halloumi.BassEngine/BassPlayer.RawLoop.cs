@@ -4,26 +4,30 @@ using Halloumi.BassEngine.Channels;
 using Halloumi.BassEngine.Helpers;
 using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
-using Un4seen.Bass;
 
 namespace Halloumi.BassEngine
 {
     public partial class BassPlayer
     {
+        private MixerChannel _rawLoopMixer;
+        private OutputSplitter _rawLoopOutputSplitter;
+
         /// <summary>
-        /// Gets the raw loop track.
+        ///     Gets the raw loop track.
         /// </summary>
-        public Track RawLoopTrack
+        public Track RawLoopTrack { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the raw loop output.
+        /// </summary>
+        public SoundOutput RawLoopOutput
         {
-            get;
-            private set;
+            get { return _rawLoopOutputSplitter.SoundOutput; }
+            set { _rawLoopOutputSplitter.SoundOutput = value; }
         }
 
-        private MixerChannel _rawLoopMixer = null;
-        private OutputSplitter _rawLoopOutputSplitter = null;
-
         /// <summary>
-        /// Initialises the raw loop mixer.
+        ///     Initialises the raw loop mixer.
         /// </summary>
         private void InitialiseRawLoopMixer()
         {
@@ -36,7 +40,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Loads a track for playing as the raw loop track.
+        ///     Loads a track for playing as the raw loop track.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <returns></returns>
@@ -78,7 +82,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Unloads the raw loop track.
+        ///     Unloads the raw loop track.
         /// </summary>
         public void UnloadRawLoopTrack()
         {
@@ -89,7 +93,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Sets the raw loop positions.
+        ///     Sets the raw loop positions.
         /// </summary>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
@@ -122,7 +126,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Starts playing the raw loop track at the offset of the raw-loop section.
+        ///     Starts playing the raw loop track at the offset of the raw-loop section.
         /// </summary>
         public void PlayRawLoop()
         {
@@ -136,22 +140,13 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Plays the raw loop track at the start of the raw-loop section.
+        ///     Plays the raw loop track at the start of the raw-loop section.
         /// </summary>
         public void StopRawLoop()
         {
             if (RawLoopTrack == null) return;
             DebugHelper.WriteLine("Pausing raw-loop");
             BassHelper.TrackPause(RawLoopTrack);
-        }
-
-        /// <summary>
-        /// Gets or sets the raw loop output.
-        /// </summary>
-        public SoundOutput RawLoopOutput
-        {
-            get { return _rawLoopOutputSplitter.SoundOutput; }
-            set { _rawLoopOutputSplitter.SoundOutput = value; }
         }
     }
 }
