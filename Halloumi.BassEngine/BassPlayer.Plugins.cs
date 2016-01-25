@@ -100,7 +100,7 @@ namespace Halloumi.BassEngine
                 }
             }
 
-            bpm = BassHelper.NormaliseBpm(bpm);
+            bpm = BpmHelper.NormaliseBpm(bpm);
             return bpm;
         }
 

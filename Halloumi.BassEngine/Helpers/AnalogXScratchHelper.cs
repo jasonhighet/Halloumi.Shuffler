@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Halloumi.BassEngine.Models;
+using Halloumi.BassEngine.Properties;
 using Halloumi.Common.Helpers;
 
 namespace Halloumi.BassEngine.Helpers
@@ -9,13 +10,13 @@ namespace Halloumi.BassEngine.Helpers
     public static class AnalogXScratchHelper
     {
         private static string _applicationFolder = @"C:\Program Files\AnalogX\Scratch\";
-        private static string _scratchFile = "vdarkm8.wav";
-        private static string _loopFile = "break1wa.wav";
-        private static string _scratchExe = "scratch.exe";
-        private static bool _silenceSaved = false;
+        private const string ScratchFile = "vdarkm8.wav";
+        private const string LoopFile = "break1wa.wav";
+        private const string ScratchExe = "scratch.exe";
+        private static bool _silenceSaved;
 
         /// <summary>
-        /// Sets the application folder.
+        ///     Sets the application folder.
         /// </summary>
         /// <param name="applicationFolder">The application folder.</param>
         public static void SetApplicationFolder(string applicationFolder)
@@ -24,7 +25,7 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        /// Saves the specied sample as a mono wave in the Scratch folder and launches Scratch
+        ///     Saves the specified sample as a mono wave in the Scratch folder and launches Scratch
         /// </summary>
         /// <param name="sample">The sample.</param>
         public static void Launch(Sample sample)
@@ -34,19 +35,19 @@ namespace Halloumi.BassEngine.Helpers
             if (!_silenceSaved) SaveSilenceLoop();
             if (!File.Exists(sample.Filename))
             {
-                BassHelper.SaveAsWave(sample.AudioData, sample.Filename);
+                ExportHelper.SaveAsWave(sample.AudioData, sample.Filename);
             }
 
-            var scratchFilePath = Path.Combine(_applicationFolder, _scratchFile);
-            BassHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, sample.Gain);
+            var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);
+            ExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, sample.Gain);
             NormalizeWave(scratchFilePath);
 
-            var scratchExePath = Path.Combine(_applicationFolder, _scratchExe);
+            var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
             Process.Start(scratchExePath);
         }
 
         /// <summary>
-        /// Saves a shortened version the specied sample as a mono wave in the Scratch folder and launches Scratch
+        ///     Saves a shortened version the specified sample as a mono wave in the Scratch folder and launches Scratch
         /// </summary>
         /// <param name="sample">The sample.</param>
         public static void LaunchShort(Sample sample)
@@ -54,28 +55,28 @@ namespace Halloumi.BassEngine.Helpers
             if (_applicationFolder == "") return;
             if (!_silenceSaved) SaveSilenceLoop();
 
-            var bpm = BassHelper.GetBpmFromLoopLength(sample.LengthSeconds);
-            var loopLength = BassHelper.GetDefaultLoopLength(bpm);
-            var shortLength = loopLength / 8;
+            var bpm = BpmHelper.GetBpmFromLoopLength(sample.LengthSeconds);
+            var loopLength = BpmHelper.GetDefaultLoopLength(bpm);
+            var shortLength = loopLength/8;
             if (shortLength > sample.LengthSeconds) shortLength = sample.LengthSeconds;
 
-            var scratchFilePath = Path.Combine(_applicationFolder, _scratchFile);
-            BassHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, shortLength, sample.Gain);
+            var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);
+            ExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, shortLength, sample.Gain);
             NormalizeWave(scratchFilePath);
 
-            var scratchExePath = Path.Combine(_applicationFolder, _scratchExe);
+            var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
             Process.Start(scratchExePath);
         }
 
         /// <summary>
-        /// Saves few seconds of silence as the Scratch loop wave.
+        ///     Saves few seconds of silence as the Scratch loop wave.
         /// </summary>
         private static void SaveSilenceLoop()
         {
-            var audioData = Properties.Resources.silence_mp3.ToArray();
-            var loopFilePath = Path.Combine(_applicationFolder, _loopFile);
+            var audioData = Resources.silence_mp3.ToArray();
+            var loopFilePath = Path.Combine(_applicationFolder, LoopFile);
 
-            BassHelper.SaveAsMonoWave(audioData, loopFilePath);
+            ExportHelper.SaveAsMonoWave(audioData, loopFilePath);
             _silenceSaved = true;
         }
 
@@ -85,9 +86,9 @@ namespace Halloumi.BassEngine.Helpers
 
             var normalizeExe = "normalize.exe";
             normalizeExe = Path.Combine(ApplicationHelper.GetExecutableFolder(), normalizeExe);
-            if(!File.Exists(normalizeExe)) return;
+            if (!File.Exists(normalizeExe)) return;
 
-            var arguments = string.Format("-q \"{0}\"", waveFile);
+            var arguments = $"-q \"{waveFile}\"";
 
             Process.Start(normalizeExe, arguments);
         }

@@ -99,7 +99,10 @@
     <Compile Include="BassPlayer.cs" />
     <Compile Include="BassPlayer.Plugins.cs" />
     <Compile Include="Helpers\BassHelper.cs" />
+    <Compile Include="Helpers\BpmHelper.cs" />
     <Compile Include="Helpers\PlaylistHelper.cs" />
+    <Compile Include="Helpers\ExportHelper.cs" />
+    <Compile Include="Helpers\TrackDetailsHelper.cs" />
     <Compile Include="Models\PlayState.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

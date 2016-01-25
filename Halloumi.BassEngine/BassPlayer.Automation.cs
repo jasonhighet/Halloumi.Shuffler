@@ -609,10 +609,10 @@ namespace Halloumi.BassEngine
             var fadeOutLength = fromTrack.FullEndLoopLengthSeconds;
 
             if (fadeOutLength == 0)
-                fadeOutLength = BassHelper.GetDefaultLoopLength(fromTrack.EndBpm);
+                fadeOutLength = BpmHelper.GetDefaultLoopLength(fromTrack.EndBpm);
 
             if (toTrack != null)
-                fadeOutLength = BassHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
+                fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
 
             return fadeOutLength;
         }

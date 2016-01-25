@@ -60,7 +60,7 @@ namespace Halloumi.BassEngine.Helpers
                             path = Path.Combine(Path.GetDirectoryName(playlistFile), currentLine);
                         }
 
-                        var trackDetails = BassHelper.GuessTrackDetailsFromFilename(path.Trim());
+                        var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(path.Trim());
                         if (playlistEntry.Title == "") playlistEntry.Title = trackDetails.Title;
                         if (playlistEntry.Artist == "") playlistEntry.Artist = trackDetails.Artist;
                         playlistEntry.Description = trackDetails.Description;

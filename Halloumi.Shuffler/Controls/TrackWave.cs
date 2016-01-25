@@ -761,7 +761,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (!File.Exists(editPath)) return;
 
-            BassHelper.SaveAsWave(BassTrack.Filename, output);
+            ExportHelper.SaveAsWave(BassTrack.Filename, output);
 
             if (!File.Exists(output)) return;
             output = string.Format("\"{0}\"", output);

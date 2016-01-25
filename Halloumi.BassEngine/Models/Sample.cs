@@ -93,7 +93,7 @@ namespace Halloumi.BassEngine.Models
             get
             {
                 if (_bpm != -1) return _bpm;
-                else return BassHelper.GetBpmFromLoopLength(LengthSeconds);
+                return BpmHelper.GetBpmFromLoopLength(LengthSeconds);
             }
             set
             {

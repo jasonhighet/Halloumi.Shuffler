@@ -311,7 +311,7 @@ namespace Halloumi.BassEngine.Channels
                 return;
 
             var bpm = BpmProvider.GetCurrentBpm();
-            var quarterNoteLength = BassHelper.GetDefaultDelayLength(bpm);
+            var quarterNoteLength = BpmHelper.GetDefaultDelayLength(bpm);
             var fullNoteLength = quarterNoteLength*4;
 
             var syncParameters = plugin.Parameters.Where(p => p.SyncToBpm).ToList();

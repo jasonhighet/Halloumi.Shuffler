@@ -124,7 +124,7 @@ namespace Halloumi.BassEngine.Models
             get
             {
                 if (FadeInLengthSeconds != 0)
-                    return BassHelper.GetBpmFromLoopLength(FadeInLengthSeconds);
+                    return BpmHelper.GetBpmFromLoopLength(FadeInLengthSeconds);
 
                 if (!TagDataLoaded)
                     return _startBmp;
@@ -143,7 +143,7 @@ namespace Halloumi.BassEngine.Models
             {
                 //if (this.Channel == int.MinValue) return _endBMP;
                 if (FadeOutLengthSeconds != 0)
-                    return BassHelper.GetBpmFromLoopLength(FadeOutLengthSeconds);
+                    return BpmHelper.GetBpmFromLoopLength(FadeOutLengthSeconds);
 
                 if (!TagDataLoaded)
                     return _endBmp;
@@ -153,7 +153,7 @@ namespace Halloumi.BassEngine.Models
             internal set { _endBmp = value; }
         }
 
-        public decimal Bpm => BassHelper.GetAdjustedBpmAverage(StartBpm, EndBpm);
+        public decimal Bpm => BpmHelper.GetAdjustedBpmAverage(StartBpm, EndBpm);
 
         /// <summary>
         ///     Gets or sets the default volume level of the track.

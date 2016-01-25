@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Threading;
 using Halloumi.BassEngine.Models;
-using Halloumi.BassEngine.Properties;
 using Halloumi.Common.Helpers;
-using IdSharp.Tagging.ID3v2;
 using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Fx;
 using Un4seen.Bass.AddOn.Mix;
-using Un4seen.Bass.Misc;
 
 namespace Halloumi.BassEngine.Helpers
 {
@@ -35,236 +27,58 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        ///     Gets a seconds value as formatted hh:mm:ss.ttt text
+        ///     Gets a seconds value formatted as mm:ss.ttt
         /// </summary>
-        /// <returns></returns>
-        public static string GetFormattedSeconds(double seconds)
-        {
-            if (double.IsNaN(seconds)) return "";
-
-            var timeSpan = TimeSpan.FromSeconds(seconds);
-            return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}.{timeSpan.Milliseconds:D3}";
-        }
-
-        /// <summary>
-        ///     Gets a seconds value as formatted hh:mm:ss.ttt text
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>The formatted text</returns>
         public static string GetFormattedSecondsNoHours(double seconds)
         {
             if (double.IsNaN(seconds)) return "";
 
             var timeSpan = TimeSpan.FromSeconds(seconds);
+
             return $"{(timeSpan.Hours*60) + timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}.{timeSpan.Milliseconds:D3}";
         }
 
         /// <summary>
-        ///     Gets a seconds value as formatted hh:mm:ss.ttt text
+        ///     Gets a seconds value formatted as hh:mm:ss.ttt text or mm:ss.ttt (if it's less than an hours)
         /// </summary>
-        /// <returns></returns>
+        /// <param name="seconds">The seconds.</param>
+        /// <returns>The formatted text</returns>
         public static string GetShortFormattedSeconds(decimal seconds)
         {
-            return GetShortFormattedSeconds(Convert.ToDouble(seconds));
+            var timeSpan = TimeSpan.FromSeconds((Convert.ToDouble(seconds)));
+
+            return timeSpan.Hours < 1
+                ? $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}"
+                : $"{timeSpan.Hours}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
         }
 
         /// <summary>
-        ///     Gets a seconds value as formatted hh:mm:ss.ttt text
+        ///     Gets the formatted length
         /// </summary>
-        /// <returns></returns>
-        public static string GetShortFormattedSeconds(double seconds)
+        /// <param name="length">The length.</param>
+        /// <returns>The formatted length</returns>
+        public static string GetFormattedLength(double length)
         {
-            var timeSpan = TimeSpan.FromSeconds(seconds);
-            return timeSpan.Hours < 1 ? $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}" : $"{timeSpan.Hours}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
-        }
-
-        /// <summary>
-        ///     Determines whether BPM value is in a percentage range of another BPM value
-        /// </summary>
-        /// <param name="bpm1">The initial BPM.</param>
-        /// <param name="bpm2">The BPM being matched.</param>
-        /// <param name="percentVariance">The percent variance.</param>
-        /// <returns>True if BPM2 is in range of BMP1</returns>
-        public static bool IsBpmInRange(decimal bpm1, decimal bpm2, decimal percentVariance)
-        {
-            percentVariance = Math.Abs(percentVariance);
-            return (GetAbsoluteBpmPercentChange(bpm1, bpm2) <= percentVariance);
-        }
-
-        /// <summary>
-        ///     Gets the average of two BPMs. If one of the BPMs is close to double the other it is halved for averaging purposes.
-        /// </summary>
-        /// <param name="bpm1">The first BPM.</param>
-        /// <param name="bpm2">The second BPM2.</param>
-        /// <returns>The average BPM</returns>
-        public static decimal GetAdjustedBpmAverage(decimal bpm1, decimal bpm2)
-        {
-            var bpms = new List<decimal>
+            var timespan = TimeSpan.FromSeconds(length);
+            var lengthFormatted = $"{timespan.Minutes}:{timespan.Seconds:D2}";
+            if (length > 60*60)
             {
-                bpm1,
-                bpm2
+                lengthFormatted = $"{timespan.Hours}:{timespan.Minutes:D2}:{timespan.Seconds:D2}";
             }
-                .OrderBy(bpm => bpm)
-                .ToList();
-
-            var diff = GetAdjustedBpmPercentChange(bpms[0], bpms[1]);
-            var multiplier = 1M + (diff/100);
-            bpms[1] = bpms[0]*multiplier;
-            return bpms.Average();
+            return lengthFormatted;
         }
 
         /// <summary>
-        ///     Gets the BPM change between two values as percent (-100 to 100).
+        ///     Gets the formatted length
         /// </summary>
-        /// <param name="bpm1">The first BPM.</param>
-        /// <param name="bpm2">The second BPM2.</param>
-        /// <returns>The BPM change as a percent (-100 - 100)</returns>
-        public static decimal GetAdjustedBpmPercentChange(decimal bpm1, decimal bpm2)
+        /// <param name="length">The length.</param>
+        /// <returns>The formatted length</returns>
+        public static string GetFormattedLength(decimal length)
         {
-            if (bpm1 == 0M || bpm2 == 0M) return 100M;
-
-            var percentChanges = new List<decimal>
-            {
-                GetBpmPercentChange(bpm1, bpm2),
-                GetBpmPercentChange(bpm1, bpm2/2),
-                GetBpmPercentChange(bpm1, bpm2*2)
-            };
-
-            var minPercentChange = percentChanges
-                .OrderBy(Math.Abs)
-                .ToList()[0];
-
-            return minPercentChange;
+            return GetFormattedLength((double) length);
         }
 
-        /// <summary>
-        ///     Gets the BPM change between two values as percent (-100 to 100).
-        /// </summary>
-        /// <param name="bpm1">The first BPM.</param>
-        /// <param name="bpm2">The second BPM2.</param>
-        /// <returns>The BPM change as a percent (-100 - 100)</returns>
-        public static decimal GetBpmPercentChange(decimal bpm1, decimal bpm2)
-        {
-            if (bpm1 == 0M || bpm2 == 0M) return 100M;
-            var bpmDiff = bpm2 - bpm1;
-            var percentChange = (bpmDiff/bpm2)*100;
-
-            return percentChange;
-        }
-
-        /// <summary>
-        ///     Gets the absolute BPM change between two values as percent (0 - 100).
-        /// </summary>
-        /// <param name="bpm1">The first BPM.</param>
-        /// <param name="bpm2">The second BPM2.</param>
-        /// <returns>The BPM change as a percent (0 - 100)</returns>
-        public static decimal GetAbsoluteBpmPercentChange(decimal bpm1, decimal bpm2)
-        {
-            return Math.Abs(GetAdjustedBpmPercentChange(bpm1, bpm2));
-        }
-
-        public static List<double> GetLoopLengths(decimal bpm)
-        {
-            if (bpm == 0) return new List<double>();
-
-            var loopLengths = new List<double>();
-
-            // scale BPM to be between 70 and 140
-            bpm = NormaliseBpm(bpm);
-
-            var bps = ((double) bpm)/60;
-            var spb = 1/bps;
-
-            loopLengths.Add(spb*4);
-            loopLengths.Add(spb*8);
-            loopLengths.Add(spb*16);
-            loopLengths.Add(spb*32);
-            loopLengths.Add(spb*64);
-
-            return loopLengths;
-        }
-
-        /// <summary>
-        ///     Gets the default length of the loop.
-        /// </summary>
-        /// <param name="bpm">The BPM.</param>
-        /// <returns></returns>
-        public static double GetDefaultLoopLength(decimal bpm)
-        {
-            return bpm == 0 ? 10 : GetLoopLengths(bpm)[2];
-        }
-
-        /// <summary>
-        ///     Gets the default delay time. (1/4 note delay)
-        /// </summary>
-        /// <param name="bpm">The BPM.</param>
-        /// <returns>The default delay time from the BPM (1/4 note delay)</returns>
-        public static double GetDefaultDelayLength(decimal bpm)
-        {
-            bpm = NormaliseBpm(bpm);
-            return (1D/((double) bpm/60D))*1000D;
-        }
-
-        /// <summary>
-        ///     Gets the loop length for the specified BPM that is closest to the preferred length
-        /// </summary>
-        /// <param name="bpm">The BPM.</param>
-        /// <param name="preferredLength">Preferred loop length.</param>
-        /// <returns>A BPM loop length</returns>
-        public static double GetBestFitLoopLength(decimal bpm, double preferredLength)
-        {
-            if (bpm == 0M) return preferredLength;
-
-            var loopLengths = GetLoopLengths(bpm);
-            var selectedLoopLengthIndex = 2;
-
-            for (var i = 0; i < loopLengths.Count; i++)
-            {
-                var difference = Math.Abs(preferredLength - loopLengths[i]);
-                var selectedIndexDifference = Math.Abs(preferredLength - loopLengths[selectedLoopLengthIndex]);
-                if (difference < selectedIndexDifference)
-                {
-                    selectedLoopLengthIndex = i;
-                }
-            }
-            return loopLengths[selectedLoopLengthIndex];
-        }
-
-        /// <summary>
-        ///     Gets the BPM of loop.
-        /// </summary>
-        /// <param name="loopLength">Length of the loop in seconds.</param>
-        /// <returns>The BPM of the loop</returns>
-        public static decimal GetBpmFromLoopLength(double loopLength)
-        {
-            if (loopLength == 0) return 0;
-            var spb = loopLength/16;
-            var bps = 1/spb;
-            var bpm = bps*60;
-
-            return NormaliseBpm((decimal) bpm);
-        }
-
-        /// <summary>
-        ///     Normalizes a BPM value by scaling it to be between 70 and 140
-        /// </summary>
-        /// <param name="bpm">The BPM.</param>
-        /// <returns>The scaled BPM</returns>
-        public static decimal NormaliseBpm(decimal bpm)
-        {
-            if (bpm == 0) bpm = 100;
-            bpm = Math.Abs(bpm);
-
-            const decimal upper = 136.5M;
-            const decimal lower = upper/2;
-
-            while (bpm < lower || bpm > upper)
-            {
-                if (bpm > upper) bpm = bpm/2;
-                if (bpm < lower) bpm = bpm*2;
-            }
-
-            return bpm;
-        }
 
         /// <summary>
         ///     Converts a decibel value to a percent value.
@@ -499,6 +313,20 @@ namespace Halloumi.BassEngine.Helpers
             Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
         }
 
+
+        /// <summary>
+        ///     Gets the track tempo change as a sample rate
+        /// </summary>
+        /// <param name="track1">The track being fading out</param>
+        /// <param name="track2">The track being faded into.</param>
+        /// <returns>The sample rate the first track needs to be changed to in order to match the second track</returns>
+        private static float GetTrackTempoChangeAsSampleRate(Track track1, Track track2)
+        {
+            if (track1 == null || track2 == null) return DefaultSampleRate;
+
+            return track1.DefaultSampleRate * BpmHelper.GetTrackTempoChangeAsRatio(track1, track2);
+        }
+
         /// <summary>
         ///     Sets the track tempo to match another track's tempo
         /// </summary>
@@ -510,7 +338,7 @@ namespace Halloumi.BassEngine.Helpers
             if (!changeTrack.IsAudioLoaded()) return;
             if (!matchTrack.IsAudioLoaded()) return;
 
-            var percentChange = (float) (GetAdjustedBpmPercentChange(changeTrack.EndBpm, matchTrack.StartBpm));
+            var percentChange = (float) (BpmHelper.GetAdjustedBpmPercentChange(changeTrack.EndBpm, matchTrack.StartBpm));
             Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -526,7 +354,7 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        /// Sets a sample tempo to match another BPM
+        ///     Sets a sample tempo to match another BPM
         /// </summary>
         /// <param name="sample">The sample to change the temp of.</param>
         /// <param name="matchBpm">The match BPM.</param>
@@ -534,7 +362,7 @@ namespace Halloumi.BassEngine.Helpers
         {
             if (sample == null || sample.Channel == int.MinValue) return;
 
-            var percentChange = (float) (GetAdjustedBpmPercentChange(sample.Bpm, matchBpm));
+            var percentChange = (float) (BpmHelper.GetAdjustedBpmPercentChange(sample.Bpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(sample.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -646,49 +474,8 @@ namespace Halloumi.BassEngine.Helpers
             return (position1 != position2);
         }
 
-        public static double GetFullEndLoopLengthAdjustedToMatchAnotherTrack(Track track1, Track track2)
-        {
-            if (track1 == null && track2 == null) return 10d;
-            if (track2 == null) return track1.FullEndLoopLengthSeconds;
-            return track1 == null 
-                ? track2.FullEndLoopLengthSeconds 
-                : GetLengthAdjustedToMatchAnotherTrack(track1, track2, track1.FullEndLoopLengthSeconds);
-        }
+      
 
-        public static double GetLengthAdjustedToMatchAnotherTrack(Track track1, Track track2, double length)
-        {
-            if (track1 == null || track2 == null) return length;
-            var ratio = GetTrackTempoChangeAsRatio(track2, track1);
-            return length*ratio;
-        }
-
-        /// <summary>
-        ///     Gets the track tempo change as a ratio (i.e. 1.02, .97 etc)
-        /// </summary>
-        /// <param name="track1">The track being fading out</param>
-        /// <param name="track2">The track being faded into.</param>
-        /// <returns>The ratio the first track needs to be multiplied by to in order to match the second track</returns>
-        private static float GetTrackTempoChangeAsRatio(Track track1, Track track2)
-        {
-            if (track1 == null || track2 == null) return 1f;
-
-            var percentChange = (float) (GetAdjustedBpmPercentChange(track1.EndBpm, track2.StartBpm));
-
-            return (1 + percentChange/100f);
-        }
-
-        /// <summary>
-        ///     Gets the track tempo change as a sample rate
-        /// </summary>
-        /// <param name="track1">The track being fading out</param>
-        /// <param name="track2">The track being faded into.</param>
-        /// <returns>The sample rate the first track needs to be changed to in order to match the second track</returns>
-        private static float GetTrackTempoChangeAsSampleRate(Track track1, Track track2)
-        {
-            if (track1 == null || track2 == null) return DefaultSampleRate;
-
-            return track1.DefaultSampleRate*GetTrackTempoChangeAsRatio(track1, track2);
-        }
 
         /// <summary>
         ///     Initialises the Bass audio engine.
@@ -792,7 +579,7 @@ namespace Halloumi.BassEngine.Helpers
             if (track == null || !track.IsAudioLoaded()) return;
 
             var freq = track.DefaultSampleRate;
-            var interval = (int) (GetDefaultLoopLength(track.EndBpm)*1000)/128;
+            var interval = (int) (BpmHelper.GetDefaultLoopLength(track.EndBpm)*1000)/128;
 
             // set the volume slide
             Bass.BASS_ChannelSlideAttribute(track.Channel, BASSAttribute.BASS_ATTRIB_VOL, 0F, interval*8);
@@ -847,7 +634,7 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        /// Sets the replay gain for a channel.
+        ///     Sets the replay gain for a channel.
         /// </summary>
         /// <param name="channel">The channel.</param>
         /// <param name="gain">The gain.</param>
@@ -864,42 +651,6 @@ namespace Halloumi.BassEngine.Helpers
             Bass.BASS_FXSetParameters(fxChannel, volumeParameters);
         }
 
-        /// <summary>
-        ///     Loads the track image.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public static void LoadTrackImage(Track track)
-        {
-            if (track.Image != null) return;
-
-            track.Image = Resources.DefaultMusicImage;
-            var tags = ID3v2Helper.CreateID3v2(track.Filename);
-            if (tags.PictureList.Count <= 0) return;
-
-            try
-            {
-                var picture = tags.PictureList[0];
-                using (var stream = new MemoryStream(picture.PictureData))
-                {
-                    track.Image = Image.FromStream(stream);
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        /// <summary>
-        ///     Saves the track BPM tag.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public static void SaveTrackBpmTag(Track track)
-        {
-            var tags = ID3v2Helper.CreateID3v2(track.Filename);
-            tags.BPM = track.TagBpm.ToString(CultureInfo.InvariantCulture);
-            tags.Save(track.Filename);
-        }
 
         /// <summary>
         ///     Sets the length of the track.
@@ -911,417 +662,6 @@ namespace Halloumi.BassEngine.Helpers
             track.Length = Bass.BASS_ChannelGetLength(track.Channel);
         }
 
-        /// <summary>
-        ///     Saves a portion of a track as a wave file
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="start">The start position in samples.</param>
-        /// <param name="length">The length in samples.</param>
-        public static void SavePartialAsWave(Track track, string outFilename, long start, long length)
-        {
-            SavePartialAsWave(track, outFilename, start, length, 0M);
-        }
-
-        /// <summary>
-        ///     Saves a portion of an audio file as a wave file
-        /// </summary>
-        /// <param name="inFilename">The input filename.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="start">The start position in samples.</param>
-        /// <param name="length">The length in samples.</param>
-        public static void SavePartialAsWave(string inFilename, string outFilename, long start, long length)
-        {
-            var encoder = new EncoderWAV(0) {WAV_BitsPerSample = 16};
-            BaseEncoder.EncodeFile(inFilename, outFilename, encoder, null, true, false, false, start, start + length);
-        }
-
-        /// <summary>
-        ///     Saves a portion of a track as a wave file
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="start">The start position in samples.</param>
-        /// <param name="length">The length in samples.</param>
-        /// <param name="bmpAdjustPercent">The BMP adjustment percent.</param>
-        private static void SavePartialAsWave(Track track, string outFilename, long start, long length,
-            decimal bmpAdjustPercent)
-        {
-            DebugHelper.WriteLine("Saving portion of track as wave - " + track.Description);
-
-            var channel = Bass.BASS_StreamCreateFile(track.Filename, 0L, 0L,
-                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load track " + track.Filename);
-
-            if (bmpAdjustPercent != 0)
-            {
-                Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO, (float) bmpAdjustPercent);
-            }
-
-            const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
-
-            var startByte = start;
-            var endByte = start + length;
-
-            TransferBytes(channel, startByte, endByte);
-            BassEnc.BASS_Encode_Stop(channel);
-
-            Bass.BASS_StreamFree(channel);
-        }
-
-        private static void TransferBytes(int channel, long startByte, long endByte)
-        {
-            var totalTransferLength = endByte - startByte;
-
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
-            while (totalTransferLength > 0)
-            {
-                var buffer = new byte[65536];
-
-                var transferLength = totalTransferLength;
-                if (transferLength > buffer.Length) transferLength = buffer.Length;
-
-                // get the decoded sample data
-                var transferred = Bass.BASS_ChannelGetData(channel, buffer, (int) transferLength);
-
-                if (transferred < 1) break; // error or the end
-                totalTransferLength -= transferred;
-            }
-        }
-
-        public static void SavePartialAsWave(Track track, string outFilename, long start, long length, long offset,
-            float gain)
-        {
-            DebugHelper.WriteLine("Saving portion of track as wave with offset - " + track.Description);
-
-            var channel = Bass.BASS_StreamCreateFile(track.Filename, 0L, 0L,
-                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load track " + track.Filename);
-
-            if (gain > 0)
-                SetReplayGain(channel, gain);
-
-            const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
-
-            var startByte = start;
-            var endByte = start + length;
-            if (offset == 0 || offset == start)
-            {
-                TransferBytes(channel, startByte, endByte);
-            }
-            else
-            {
-                startByte = offset;
-                TransferBytes(channel, startByte, endByte);
-
-                startByte = start;
-                endByte = offset;
-                TransferBytes(channel, startByte, endByte);
-            }
-
-            BassEnc.BASS_Encode_Stop(channel);
-
-            Bass.BASS_StreamFree(channel);
-        }
-
-        /// <summary>
-        ///     Saves as wave.
-        /// </summary>
-        /// <param name="audioData">The audio data.</param>
-        /// <param name="outFilename">The out filename.</param>
-        public static void SaveAsWave(byte[] audioData, string outFilename)
-        {
-            var audioDataHandle = GCHandle.Alloc(audioData, GCHandleType.Pinned);
-            var audioDataPointer = audioDataHandle.AddrOfPinnedObject();
-
-            var channel = Bass.BASS_StreamCreateFile(audioDataPointer, 0, audioData.Length,
-                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load audio data");
-
-            const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
-
-            const int startByte = 0;
-            var endByte = Bass.BASS_ChannelBytes2Seconds(channel, Bass.BASS_ChannelGetLength(channel));
-
-            var totalTransferLength = endByte - startByte;
-
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
-            while (totalTransferLength > 0)
-            {
-                var buffer = new byte[65536];
-
-                var transferLength = totalTransferLength;
-                if (transferLength > buffer.Length) transferLength = buffer.Length;
-
-                // get the decoded sample data
-                var transferred = Bass.BASS_ChannelGetData(channel, buffer, (int) transferLength);
-
-                if (transferred <= 1) break; // error or the end
-                totalTransferLength -= transferred;
-            }
-            BassEnc.BASS_Encode_Stop(channel);
-
-            Bass.BASS_StreamFree(channel);
-            audioDataHandle.Free();
-        }
-
-        /// <summary>
-        ///     Saves an audio file as a mono wave.
-        /// </summary>
-        /// <param name="inFilename">The input filename.</param>
-        /// <param name="outFilename">The output filename.</param>
-        public static void SaveAsMonoWave(string inFilename, string outFilename)
-        {
-            SaveAsMonoWave(inFilename, outFilename, 0, 0);
-        }
-
-        /// <summary>
-        /// Saves an audio file as a mono wave.
-        /// </summary>
-        /// <param name="inFilename">The input filename.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="gain">The gain.</param>
-        public static void SaveAsMonoWave(string inFilename, string outFilename, float gain)
-        {
-            SaveAsMonoWave(inFilename, outFilename, 0, gain);
-        }
-
-        /// <summary>
-        /// Saves an audio file as a mono wave.
-        /// </summary>
-        /// <param name="inFilename">The input filename.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="length">The maximum length in seconds, or 0 for no limit.</param>
-        /// <param name="gain">The gain.</param>
-        public static void SaveAsMonoWave(string inFilename, string outFilename, double length, float gain)
-        {
-            var audioData = File.ReadAllBytes(inFilename);
-            SaveAsMonoWave(audioData, outFilename, length, gain);
-        }
-
-        /// <summary>
-        /// Saves audio data as a mono wave.
-        /// </summary>
-        /// <param name="audioData">The audio data.</param>
-        /// <param name="outFilename">The output filename.</param>
-        public static void SaveAsMonoWave(byte[] audioData, string outFilename)
-        {
-            SaveAsMonoWave(audioData, outFilename, 0, 0);
-        }
-
-        /// <summary>
-        /// Saves audio data as a mono wave.
-        /// </summary>
-        /// <param name="audioData">The audio data.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="length">The maximum length in seconds, or 0 for no limit.</param>
-        /// <param name="gain">The gain.</param>
-        /// <exception cref="System.Exception">Cannot load audio data</exception>
-        public static void SaveAsMonoWave(byte[] audioData, string outFilename, double length, float gain)
-        {
-            DebugHelper.WriteLine("SaveAsMonoWave");
-
-            var audioDataHandle = GCHandle.Alloc(audioData, GCHandleType.Pinned);
-            var audioDataPointer = audioDataHandle.AddrOfPinnedObject();
-
-            var channel = Bass.BASS_StreamCreateFile(audioDataPointer, 0, audioData.Length,
-                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load audio data");
-
-            // create a mono 44100Hz mixer
-            var mixer = BassMix.BASS_Mixer_StreamCreate(44100, 1, BASSFlag.BASS_MIXER_END | BASSFlag.BASS_STREAM_DECODE);
-
-            // plug in the source
-            BassMix.BASS_Mixer_StreamAddChannel(mixer, channel,
-                BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN);
-
-            SetReplayGain(mixer, gain);
-
-            const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(mixer, outFilename, flags, null, IntPtr.Zero);
-
-            const int startByte = 0;
-
-            if (length == 0) length = Bass.BASS_ChannelBytes2Seconds(channel, Bass.BASS_ChannelGetLength(channel));
-
-            var totalTransferLength = Bass.BASS_ChannelSeconds2Bytes(mixer, length);
-
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
-            while (totalTransferLength > 0)
-            {
-                var buffer = new byte[65536];
-
-                var transferLength = totalTransferLength;
-                if (transferLength > buffer.Length) transferLength = buffer.Length;
-
-                // get the decoded sample data
-                var transferred = Bass.BASS_ChannelGetData(mixer, buffer, (int) transferLength);
-
-                if (transferred <= 1) break; // error or the end
-                totalTransferLength -= transferred;
-            }
-            BassEnc.BASS_Encode_Stop(mixer);
-
-            BassMix.BASS_Mixer_ChannelRemove(channel);
-            Bass.BASS_StreamFree(channel);
-            Bass.BASS_StreamFree(mixer);
-
-            audioDataHandle.Free();
-
-            DebugHelper.WriteLine("END SaveAsMonoWave");
-        }
-
-        /// <summary>
-        ///     Saves an audio file as a wave.
-        /// </summary>
-        /// <param name="inFilename">The input filename.</param>
-        /// <param name="outFilename">The output filename.</param>
-        public static void SaveAsWave(string inFilename, string outFilename)
-        {
-            var encoder = new EncoderWAV(0) {WAV_BitsPerSample = 16};
-            BaseEncoder.EncodeFile(inFilename, outFilename, encoder, null, true, false);
-        }
-
-        /// <summary>
-        ///     Saves a track as wave file.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="outFilename">The output filename.</param>
-        public static void SaveAsWave(Track track, string outFilename)
-        {
-            SaveAsWave(track.Filename, outFilename);
-        }
-
-        /// <summary>
-        ///     Guesses the artist and title of a track from its filename.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns>A guess at the artist and filename</returns>
-        public static TrackDetails GuessTrackDetailsFromFilename(string filename)
-        {
-            filename = (Path.GetFileNameWithoutExtension(filename) + "").Replace("_", " ").Trim();
-            var elements = filename.Split('-').ToList();
-
-            var trackDetails = new TrackDetails
-            {
-                AlbumArtist = "",
-                Artist = "",
-                Title = "",
-                Description = ""
-            };
-
-            if (elements.Count > 3) for (var i = 3; i < elements.Count; i++) elements[2] += "-" + elements[i];
-
-            switch (elements.Count)
-            {
-                case 1:
-                    trackDetails.Title = elements[0].Trim();
-                    break;
-                case 2:
-                    trackDetails.Artist = elements[0].Trim();
-                    trackDetails.Title = elements[1].Trim();
-                    break;
-                case 3:
-                    int trackNumber;
-                    if (int.TryParse(elements[0], out trackNumber))
-                    {
-                        trackDetails.Artist = elements[1].Trim();
-                        trackDetails.Title = elements[2].Trim();
-                        trackDetails.TrackNumber = trackNumber.ToString();
-                    }
-                    else
-                    {
-                        trackDetails.Artist = elements[0].Trim();
-                        trackDetails.Title = (elements[1] + "-" + elements[2]).Trim();
-                    }
-                    break;
-            }
-
-            trackDetails.AlbumArtist = trackDetails.Artist;
-            if (trackDetails.Artist.ToLower().StartsWith("various") || trackDetails.Title.Contains("  "))
-            {
-                trackDetails.Title = trackDetails.Title.Replace("  ", "/");
-                elements = trackDetails.Title.Split('/').ToList();
-                if (elements.Count == 2)
-                {
-                    trackDetails.Artist = elements[0].Trim();
-                    trackDetails.Title = elements[1].Trim();
-                }
-            }
-
-            trackDetails.Description = GuessTrackDescription(filename, trackDetails.Artist, trackDetails.Title);
-
-            return trackDetails;
-        }
-
-        /// <summary>
-        ///     Guesses the track description.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <param name="artist">The artist.</param>
-        /// <param name="title">The title.</param>
-        /// <returns>The track description</returns>
-        public static string GuessTrackDescription(string filename, string artist, string title)
-        {
-            string description;
-
-            if (artist != "" && title != "")
-            {
-                description = $"{artist} - {title}";
-            }
-            else
-            {
-                description = filename.Trim();
-
-                var regex = new Regex("various artists", RegexOptions.IgnoreCase);
-                description = regex.Replace(description, "");
-
-                regex = new Regex("various artist", RegexOptions.IgnoreCase);
-                description = regex.Replace(description, "");
-
-                regex = new Regex("various", RegexOptions.IgnoreCase);
-                description = regex.Replace(description, "");
-
-                regex = new Regex("[0-9]+", RegexOptions.IgnoreCase);
-                description = regex.Replace(description, "");
-
-                description = description.Replace("_", " ");
-                description = description.Replace(".", " ");
-
-                description = StringHelper.TitleCase(description.Trim());
-            }
-
-            return description;
-        }
-
-        /// <summary>
-        ///     Gets the formatted length
-        /// </summary>
-        /// <param name="length">The length.</param>
-        /// <returns>The formatted length</returns>
-        public static string GetFormattedLength(double length)
-        {
-            var timespan = TimeSpan.FromSeconds(length);
-            var lengthFormatted = $"{timespan.Minutes}:{timespan.Seconds:D2}";
-            if (length > 60*60)
-            {
-                lengthFormatted = $"{timespan.Hours}:{timespan.Minutes:D2}:{timespan.Seconds:D2}";
-            }
-            return lengthFormatted;
-        }
-
-        /// <summary>
-        ///     Gets the formatted length
-        /// </summary>
-        /// <param name="length">The length.</param>
-        /// <returns>The formatted length</returns>
-        public static string GetFormattedLength(decimal length)
-        {
-            return GetFormattedLength((double) length);
-        }
 
         /// <summary>
         ///     Gets the volume of a channel as a value between 0 and 100.
@@ -1568,28 +908,6 @@ namespace Halloumi.BassEngine.Helpers
             return (track1.Description == track2.Description);
         }
 
-        /// <summary>
-        ///     Track details
-        /// </summary>
-        public class TrackDetails
-        {
-            public TrackDetails()
-            {
-                Artist = "";
-                Title = "";
-                TrackNumber = "";
-            }
-
-            public string Title { get; set; }
-
-            public string Artist { get; set; }
-
-            public string Description { get; set; }
-
-            public string AlbumArtist { get; set; }
-
-            public string TrackNumber { get; set; }
-        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]

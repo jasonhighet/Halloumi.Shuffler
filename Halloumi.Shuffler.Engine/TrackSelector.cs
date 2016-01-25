@@ -847,7 +847,7 @@ namespace Halloumi.Shuffler.Engine
             mixTracks =
                 mixTracks.OrderByDescending(t => KeyHelper.GetKeyMixRank(currentTrack.Key, t.Key))
                     .ThenBy(t => t.Rank)
-                    .ThenBy(t => BassHelper.GetAdjustedBpmPercentChange(currentTrack.EndBpm, t.StartBpm))
+                    .ThenBy(t => BpmHelper.GetAdjustedBpmPercentChange(currentTrack.EndBpm, t.StartBpm))
                     .ToList();
 
             return mixTracks;

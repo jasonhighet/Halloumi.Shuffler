@@ -143,7 +143,7 @@ namespace Halloumi.Shuffler.Controls
                     Track = track,
                     Description = track.Description,
                     Bpm = track.Bpm,
-                    Diff = BassHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
+                    Diff = BpmHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
                     MixRank = (view == View.FromTracks)
                         ? MixLibrary.GetExtendedMixLevel(track, _parentTrack)
                         : MixLibrary.GetExtendedMixLevel(_parentTrack, track),

@@ -172,7 +172,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (powerDown)
             {
-                var powerDownFadeIn = BassHelper.GetDefaultLoopLength(track.StartBpm) / 4D;
+                var powerDownFadeIn = BpmHelper.GetDefaultLoopLength(track.StartBpm) / 4D;
                 description += " (" + GetFormattedSeconds(powerDownFadeIn) + ")";
             }
             else
@@ -196,7 +196,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (track == null) return "";
 
-            var standardEndLength = BassHelper.GetFullEndLoopLengthAdjustedToMatchAnotherTrack(track, nextTrack);
+            var standardEndLength = BpmHelper.GetFullEndLoopLengthAdjustedToMatchAnotherTrack(track, nextTrack);
             var looped = track.EndLoopCount > 1;
             var powerDown = track.PowerDownOnEnd;
             var description = "Fade Out: ";

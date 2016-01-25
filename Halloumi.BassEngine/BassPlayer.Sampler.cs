@@ -154,7 +154,7 @@ namespace Halloumi.BassEngine
 
             if (!File.Exists(filename))
             {
-                BassHelper.SavePartialAsWave(track, filename, track.SecondsToSamples(trackSample.Start),
+                ExportHelper.SavePartialAsWave(track, filename, track.SecondsToSamples(trackSample.Start),
                     track.SecondsToSamples(trackSample.Length));
             }
 

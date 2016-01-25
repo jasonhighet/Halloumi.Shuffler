@@ -195,7 +195,7 @@ namespace Halloumi.Shuffler.Engine
             var offset = bassTrack.SecondsToSamples(sample.Offset);
             var length = bassTrack.SecondsToSamples(sample.Length);
 
-            BassHelper.SavePartialAsWave(bassTrack, sampleFile, start, length, offset, sample.Gain);
+            ExportHelper.SavePartialAsWave(bassTrack, sampleFile, start, length, offset, sample.Gain);
         }
 
         private void CreateSampleFolder(Sample sample)

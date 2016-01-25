@@ -25,7 +25,7 @@ namespace Halloumi.BassEngine.Models
             }
             else if (Length != 0 && IsLooped)
             {
-                return BassHelper.GetBpmFromLoopLength(Length);
+                return BpmHelper.GetBpmFromLoopLength(Length);
             }
 
             return track.Bpm;

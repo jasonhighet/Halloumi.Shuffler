@@ -154,7 +154,7 @@ namespace Halloumi.Shuffler.Engine
         public List<Track> GetTracksInEndBpmRange(decimal bpm, decimal percentVariance, List<Track> tracks)
         {
             return tracks
-                .Where(t => BassHelper.IsBpmInRange(bpm, t.EndBpm, percentVariance))
+                .Where(t => BpmHelper.IsBpmInRange(bpm, t.EndBpm, percentVariance))
                 .ToList();
         }
 
@@ -168,7 +168,7 @@ namespace Halloumi.Shuffler.Engine
         public List<Track> GetTracksInStartBpmRange(decimal bpm, decimal percentVariance, List<Track> tracks)
         {
             return tracks
-                .Where(t => BassHelper.IsBpmInRange(bpm, t.StartBpm, percentVariance))
+                .Where(t => BpmHelper.IsBpmInRange(bpm, t.StartBpm, percentVariance))
                 .ToList();
         }
 
@@ -492,7 +492,7 @@ namespace Halloumi.Shuffler.Engine
             var mixRank = GetMixRank(track1.Description, track2.Description);
             if (mixRank != null) return mixRank.MixLevel;
 
-            return BassHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, 5M) ? 1 : 0;
+            return BpmHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, 5M) ? 1 : 0;
         }
 
         public int GetKeyMixedOutCount(Track track)

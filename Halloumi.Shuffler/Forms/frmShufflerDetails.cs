@@ -245,10 +245,10 @@ namespace Halloumi.Shuffler.Forms
         {
             _bindingData = true;
 
-            var loopLengths = BassHelper.GetLoopLengths(Track.StartBpm);
+            var loopLengths = BpmHelper.GetLoopLengths(Track.StartBpm);
             cmbCustomFadeInLength.PopulateItemsFromSecondsList(loopLengths);
 
-            loopLengths = BassHelper.GetLoopLengths(Track.EndBpm);
+            loopLengths = BpmHelper.GetLoopLengths(Track.EndBpm);
             cmbCustomFadeOutLength.PopulateItemsFromSecondsList(loopLengths);
 
             lblStartBPM.Text = Track.StartBpm.ToString("0.00");
@@ -329,20 +329,20 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_bindingData) return;
 
-            var fadeInLength = BassHelper.GetDefaultLoopLength(Track.TagBpm);
+            var fadeInLength = BpmHelper.GetDefaultLoopLength(Track.TagBpm);
             if (cmbCustomFadeInLength.Seconds != 0D)
             {
                 fadeInLength = cmbCustomFadeInLength.Seconds;
             }
-            var startBpm = BassHelper.GetBpmFromLoopLength(fadeInLength);
+            var startBpm = BpmHelper.GetBpmFromLoopLength(fadeInLength);
             lblStartBPM.Text = startBpm.ToString("0.00");
 
-            var fadeOutLength = BassHelper.GetDefaultLoopLength(Track.TagBpm);
+            var fadeOutLength = BpmHelper.GetDefaultLoopLength(Track.TagBpm);
             if (cmbCustomFadeOutLength.Seconds != 0D)
             {
                 fadeOutLength = cmbCustomFadeOutLength.Seconds;
             }
-            var endBpm = BassHelper.GetBpmFromLoopLength(fadeOutLength);
+            var endBpm = BpmHelper.GetBpmFromLoopLength(fadeOutLength);
             lblEndBPM.Text = endBpm.ToString("0.00");
 
             PopulateVolumeDropDown(cmbPreFadeInStartVolume);
@@ -470,14 +470,14 @@ namespace Halloumi.Shuffler.Forms
             if (CurrentSample == null)
             {
                 txtSampleStartPosition.Seconds = 0;
-                loopLengths = BassHelper.GetLoopLengths(Track.Bpm);
+                loopLengths = BpmHelper.GetLoopLengths(Track.Bpm);
                 cmbSampleLength.Seconds = 0;
                 chkLoopSample.Checked = false;
             }
             else
             {
                 txtSampleStartPosition.Seconds = CurrentSample.Start;
-                loopLengths = BassHelper.GetLoopLengths(CurrentSample.CalculateBpm(Track));
+                loopLengths = BpmHelper.GetLoopLengths(CurrentSample.CalculateBpm(Track));
                 cmbSampleLength.Seconds = CurrentSample.Length;
                 chkLoopSample.Checked = CurrentSample.IsLooped;
             }

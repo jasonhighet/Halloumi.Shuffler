@@ -13,7 +13,6 @@ using Halloumi.Shuffler.Engine.Models;
 using IdSharp.Tagging.ID3v2;
 using Track = Halloumi.Shuffler.Engine.Models.Track;
 
-
 namespace Halloumi.Shuffler.Engine
 {
     /// <summary>
@@ -452,7 +451,8 @@ namespace Halloumi.Shuffler.Engine
             if (shufflerFilter != ShufflerFilter.ShuflerTracks) return tracks;
 
             var distinctTracks = new List<Track>();
-            foreach (var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
+            foreach (
+                var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
             {
                 distinctTracks.Add(track);
             }
@@ -569,14 +569,17 @@ namespace Halloumi.Shuffler.Engine
 
             if (shufflerFilter != ShufflerFilter.None)
             {
-                tracks = shufflerFilter == ShufflerFilter.ShuflerTracks ? tracks.Where(t => t.IsShufflerTrack).ToList() : tracks.Where(t => !t.IsShufflerTrack).ToList();
+                tracks = shufflerFilter == ShufflerFilter.ShuflerTracks
+                    ? tracks.Where(t => t.IsShufflerTrack).ToList()
+                    : tracks.Where(t => !t.IsShufflerTrack).ToList();
             }
 
             if (shufflerFilter != ShufflerFilter.ShuflerTracks)
                 return tracks;
 
             var distinctTracks = new List<Track>();
-            foreach (var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
+            foreach (
+                var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
             {
                 distinctTracks.Add(track);
             }
@@ -713,7 +716,7 @@ namespace Halloumi.Shuffler.Engine
 
         private DateTime GetTrackLastModified(string filename)
         {
-            var trackDetails = BassHelper.GuessTrackDetailsFromFilename(filename);
+            var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(filename);
             var shufflerFile = GetShufflerAttributeFile(trackDetails.Artist + " - " + trackDetails.Title);
             var shufflerDate = DateTime.MinValue;
             if (File.Exists(shufflerFile))
@@ -759,7 +762,10 @@ namespace Halloumi.Shuffler.Engine
 
             // remove tracks that don't exist in file system
             var currentTracks = Tracks.Where(t => t.Filename.StartsWith(folder)).ToList();
-            var missingTracks = currentTracks.TakeWhile(track => !_cancelImport).Where(track => !files.Contains(track.Filename)).ToList();
+            var missingTracks =
+                currentTracks.TakeWhile(track => !_cancelImport)
+                    .Where(track => !files.Contains(track.Filename))
+                    .ToList();
             lock (Tracks)
             {
                 foreach (var track in missingTracks.TakeWhile(track => !_cancelImport))
@@ -1020,7 +1026,8 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="trackNumber">The title.</param>
         /// <param name="updateAxillaryFiles">If set to true, will update axillary files.</param>
         /// <returns></returns>
-        public bool UpdateTrackDetails(Track track, string artist, string title, string album, string albumArtist, string genre, int trackNumber, bool updateAxillaryFiles)
+        public bool UpdateTrackDetails(Track track, string artist, string title, string album, string albumArtist,
+            string genre, int trackNumber, bool updateAxillaryFiles)
         {
             var oldTitle = track.Title;
             var oldAlbum = track.Album;
@@ -1109,7 +1116,10 @@ namespace Halloumi.Shuffler.Engine
             var shufflerAlbumPath = Path.Combine(LibraryFolder, "#Shuffler");
             var shufflerAlbumTracks = Tracks.Where(t => t.Filename.StartsWith(shufflerAlbumPath)).ToList();
             var otherTracks = Tracks.Except(shufflerAlbumTracks).ToList();
-            var duplicatedTracks = shufflerAlbumTracks.Where(t => otherTracks.Count(ot => StringHelper.FuzzyCompare(t.Description, ot.Description)) != 0).ToList();
+            var duplicatedTracks =
+                shufflerAlbumTracks.Where(
+                    t => otherTracks.Count(ot => StringHelper.FuzzyCompare(t.Description, ot.Description)) != 0)
+                    .ToList();
 
             foreach (var track in duplicatedTracks)
             {
@@ -1302,7 +1312,8 @@ namespace Halloumi.Shuffler.Engine
         {
             var playlist = new Playlist
             {
-                Filename = playlistFile, Name = Path.GetFileNameWithoutExtension(playlistFile)
+                Filename = playlistFile,
+                Name = Path.GetFileNameWithoutExtension(playlistFile)
             };
             playlist.Name = StringHelper.TitleCase(playlist.Name);
 
@@ -1327,10 +1338,14 @@ namespace Halloumi.Shuffler.Engine
                         track = Tracks.FirstOrDefault(t => Path.GetFileName(t.Filename) == entryFile);
 
                     if (track == null)
-                        track = Tracks.FirstOrDefault(t => t.Artist.ToLower() == entryArtist && t.Title.ToLower() == entryTitle);
+                        track =
+                            Tracks.FirstOrDefault(
+                                t => t.Artist.ToLower() == entryArtist && t.Title.ToLower() == entryTitle);
 
                     if (track == null)
-                        track = Tracks.FirstOrDefault(t => t.AlbumArtist.ToLower() == entryArtist && t.Title.ToLower() == entryTitle);
+                        track =
+                            Tracks.FirstOrDefault(
+                                t => t.AlbumArtist.ToLower() == entryArtist && t.Title.ToLower() == entryTitle);
 
                     modified = true;
                 }
@@ -1367,7 +1382,8 @@ namespace Halloumi.Shuffler.Engine
             content.AppendLine("#EXTM3U");
             foreach (var track in playlist.Tracks)
             {
-                content.AppendLine("#EXTINF:" + track.FullLength.ToString("0") + "," + track.Artist + " - " + track.Title);
+                content.AppendLine("#EXTINF:" + track.FullLength.ToString("0") + "," + track.Artist + " - " +
+                                   track.Title);
 
                 content.AppendLine(track.Filename);
             }
@@ -1383,7 +1399,8 @@ namespace Halloumi.Shuffler.Engine
         public void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
         {
             if (!Directory.Exists(importFolder)) return;
-            var importFiles = FileSystemHelper.SearchFiles(importFolder, "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
+            var importFiles = FileSystemHelper.SearchFiles(importFolder,
+                "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
             foreach (var importFile in importFiles)
             {
                 var fileName = Path.GetFileName(importFile);
@@ -1415,7 +1432,8 @@ namespace Halloumi.Shuffler.Engine
 
             if (!deleteAfterImport)
             {
-                var existingFiles = FileSystemHelper.SearchFiles(ShufflerFolder, "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
+                var existingFiles = FileSystemHelper.SearchFiles(ShufflerFolder,
+                    "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
                 foreach (var existingFile in existingFiles)
                 {
                     var fileName = Path.GetFileName(existingFile);
@@ -1485,7 +1503,7 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="track">The track.</param>
         private static void GuessTrackDetailsFromFileName(Track track)
         {
-            var trackDetails = BassHelper.GuessTrackDetailsFromFilename(track.Filename);
+            var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(track.Filename);
             track.Title = trackDetails.Title;
             track.Artist = trackDetails.Artist;
             track.AlbumArtist = trackDetails.AlbumArtist;
@@ -1503,7 +1521,8 @@ namespace Halloumi.Shuffler.Engine
             if (!File.Exists(filename)) return null;
             var track = new Track
             {
-                Filename = filename, LastModified = File.GetLastAccessTime(filename)
+                Filename = filename,
+                LastModified = File.GetLastAccessTime(filename)
             };
             LoadTrackDetails(track, track.LastModified);
             return track;
@@ -1543,10 +1562,10 @@ namespace Halloumi.Shuffler.Engine
                 decimal bpm;
                 if (decimal.TryParse(tags.BPM, out bpm)) track.Bpm = bpm;
 
-                track.Bpm = BassHelper.NormaliseBpm(track.Bpm);
+                track.Bpm = BpmHelper.NormaliseBpm(track.Bpm);
                 track.EndBpm = track.Bpm;
                 track.StartBpm = track.Bpm;
-                track.Bpm = BassHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
+                track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
                 int trackNumber;
                 var trackNumberTag = (tags.TrackNumber + "/").Split('/')[0].Trim();
@@ -1570,7 +1589,7 @@ namespace Halloumi.Shuffler.Engine
 
             if (attributes == null) return;
 
-            track.Bpm = BassHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
+            track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
         }
 
         private void UpdateKey(Track track, Dictionary<string, string> attributes, string tagKey)
@@ -1627,7 +1646,12 @@ namespace Halloumi.Shuffler.Engine
         {
             var tags = new ID3v2Tag(track.Filename)
             {
-                Genre = track.Genre.Replace(NoValue, ""), Album = track.Album.Replace(NoValue, ""), TrackNumber = track.TrackNumber.ToString(), LengthMilliseconds = Convert.ToInt32(track.FullLength*1000M), BPM = track.Bpm.ToString("0.00"), InitialKey = track.Key
+                Genre = track.Genre.Replace(NoValue, ""),
+                Album = track.Album.Replace(NoValue, ""),
+                TrackNumber = track.TrackNumber.ToString(),
+                LengthMilliseconds = Convert.ToInt32(track.FullLength*1000M),
+                BPM = track.Bpm.ToString("0.00"),
+                InitialKey = track.Key
             };
 
             if (track.Artist == track.AlbumArtist)
@@ -1712,7 +1736,8 @@ namespace Halloumi.Shuffler.Engine
                 track.ShufflerAttribuesFile = newAttributesFile;
                 track.ShufflerMixesFile = newMixesFile;
 
-                var replacer = new TextReplacer(track.OriginalDescription + ",", track.Description + ",", false, false, false, false);
+                var replacer = new TextReplacer(track.OriginalDescription + ",", track.Description + ",", false, false,
+                    false, false);
 
                 replacer.Replace(ShufflerFolder, "*.Mixes.txt", false);
             }
@@ -1848,9 +1873,9 @@ namespace Halloumi.Shuffler.Engine
             var attributes = PlaylistHelper.GetShufflerAttributes(track.ShufflerAttribuesFile);
 
             if (attributes.ContainsKey("StartBPM"))
-                track.StartBpm = BassHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
+                track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
             if (attributes.ContainsKey("EndBPM"))
-                track.EndBpm = BassHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
+                track.EndBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
 
             if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
 
@@ -1867,7 +1892,7 @@ namespace Halloumi.Shuffler.Engine
             decimal inLoopLength = 0;
             if (attributes.ContainsKey("FadeInLengthInSeconds"))
                 inLoopLength = ConversionHelper.ToDecimal(attributes["FadeInLengthInSeconds"]);
-            if (inLoopLength > 0) track.StartBpm = BassHelper.GetBpmFromLoopLength(Convert.ToDouble(inLoopLength));
+            if (inLoopLength > 0) track.StartBpm = BpmHelper.GetBpmFromLoopLength(Convert.ToDouble(inLoopLength));
 
             inLoopCount = inLoopCount - 1;
             if (inLoopCount > 0) length = length + (inLoopCount*inLoopLength);
@@ -1886,7 +1911,7 @@ namespace Halloumi.Shuffler.Engine
             decimal outLoopLength = 0;
             if (attributes.ContainsKey("FadeOutLengthInSeconds"))
                 outLoopLength = ConversionHelper.ToDecimal(attributes["FadeOutLengthInSeconds"], 0);
-            if (outLoopLength > 0) track.EndBpm = BassHelper.GetBpmFromLoopLength(Convert.ToDouble(outLoopLength));
+            if (outLoopLength > 0) track.EndBpm = BpmHelper.GetBpmFromLoopLength(Convert.ToDouble(outLoopLength));
 
             track.Length = length;
 

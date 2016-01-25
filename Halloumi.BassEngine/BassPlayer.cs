@@ -488,7 +488,7 @@ namespace Halloumi.BassEngine
         /// <param name="track">The track.</param>
         private static void GuessArtistAndTitleFromFilename(Track track)
         {
-            var trackDetails = BassHelper.GuessTrackDetailsFromFilename(track.Filename);
+            var trackDetails = TrackDetailsHelper.GuessTrackDetailsFromFilename(track.Filename);
             track.Title = trackDetails.Title;
             track.Artist = trackDetails.Artist;
         }
@@ -532,7 +532,7 @@ namespace Halloumi.BassEngine
 
                 decimal bpm;
                 decimal.TryParse(tags.bpm, out bpm);
-                track.TagBpm = BassHelper.NormaliseBpm(bpm);
+                track.TagBpm = BpmHelper.NormaliseBpm(bpm);
 
                 var duration = TimeSpan.FromSeconds(tags.duration);
                 track.Length = (long) duration.TotalMilliseconds;
@@ -648,14 +648,14 @@ namespace Halloumi.BassEngine
                 if (track.FadeInEnd == track.FadeInStart || track.FadeInEnd == 0)
                 {
                     track.FadeInEnd = track.FadeInStart +
-                                      track.SecondsToSamples(BassHelper.GetBestFitLoopLength(track.StartBpm,
+                                      track.SecondsToSamples(BpmHelper.GetBestFitLoopLength(track.StartBpm,
                                           DefaultFadeLength));
                 }
 
                 if (track.FadeOutEnd == track.FadeInStart || track.FadeOutEnd == 0)
                 {
                     track.FadeOutEnd = track.FadeOutStart +
-                                       track.SecondsToSamples(BassHelper.GetBestFitLoopLength(track.EndBpm,
+                                       track.SecondsToSamples(BpmHelper.GetBestFitLoopLength(track.EndBpm,
                                            DefaultFadeLength));
                 }
 
@@ -737,11 +737,11 @@ namespace Halloumi.BassEngine
             }
             if (attributes.ContainsKey("StartBPM"))
             {
-                track.StartBpm = BassHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"]));
+                track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"]));
             }
             if (attributes.ContainsKey("EndBPM"))
             {
-                track.EndBpm = BassHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"]));
+                track.EndBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"]));
             }
             if (attributes.ContainsKey("Duration"))
             {
@@ -1395,7 +1395,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null || NextTrack == null) return;
 
-            if (!BassHelper.IsBpmInRange(CurrentTrack.EndBpm, NextTrack.StartBpm, 10))
+            if (!BpmHelper.IsBpmInRange(CurrentTrack.EndBpm, NextTrack.StartBpm, 10))
             {
                 CurrentTrack.PowerDownOnEnd = true;
             }
@@ -2060,19 +2060,19 @@ namespace Halloumi.BassEngine
         private static double GetCutFadeLength(Track track)
         {
             if (track == null) return 0D;
-            return BassHelper.GetDefaultLoopLength(track.StartBpm)/16D;
+            return BpmHelper.GetDefaultLoopLength(track.StartBpm)/16D;
         }
 
         private static double GetQuickFadeLength(Track track)
         {
             if (track == null) return 0D;
-            return (BassHelper.GetDefaultLoopLength(track.EndBpm)/2D);
+            return (BpmHelper.GetDefaultLoopLength(track.EndBpm)/2D);
         }
 
         private double GetPowerDownFadeLength(Track track)
         {
             if (track == null) return 0D;
-            return BassHelper.GetDefaultLoopLength(track.EndBpm)/4D;
+            return BpmHelper.GetDefaultLoopLength(track.EndBpm)/4D;
         }
 
         private double GetFadeLength()
@@ -2085,11 +2085,11 @@ namespace Halloumi.BassEngine
             if (fromTrack == null && toTrack == null) return 0F;
 
             if (toTrack == null) return fromTrack.SamplesToSeconds(fromTrack.FullEndLoopLength);
-            if (fromTrack == null) return BassHelper.GetDefaultLoopLength(toTrack.StartBpm)/4D;
+            if (fromTrack == null) return BpmHelper.GetDefaultLoopLength(toTrack.StartBpm)/4D;
 
             var fadeInLength = toTrack.FullStartLoopLengthSeconds;
             if (fadeInLength == 0)
-                fadeInLength = BassHelper.GetDefaultLoopLength(toTrack.StartBpm);
+                fadeInLength = BpmHelper.GetDefaultLoopLength(toTrack.StartBpm);
 
             var fadeOutLength = GetExtendedFadeOutLength(fromTrack, toTrack);
 
@@ -2098,7 +2098,7 @@ namespace Halloumi.BassEngine
                 if (fromTrack.PowerDownOnEnd)
                 {
                     fadeOutLength = GetPowerDownFadeLength(fromTrack);
-                    fadeOutLength = BassHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
+                    fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
                 }
             }
 
@@ -2273,7 +2273,7 @@ namespace Halloumi.BassEngine
                 BassHelper.ResetTrackTempo(NextTrack);
             }
 
-            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - (BassHelper.GetDefaultLoopLength(CurrentTrack.EndBpm)/2));
+            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - (BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm)/2));
 
             RaiseOnSkipToEnd();
         }
