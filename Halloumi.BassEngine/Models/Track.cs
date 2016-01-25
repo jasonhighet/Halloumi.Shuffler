@@ -259,26 +259,12 @@ namespace Halloumi.BassEngine.Models
         /// <summary>
         ///     Gets the combined start loop length excluding the first loop.
         /// </summary>
-        internal long AdditionalStartLoopLength
-        {
-            get
-            {
-                if (!IsLoopedAtStart) return 0;
-                return (StartLoopCount - 1)*FadeInLength;
-            }
-        }
+        internal long AdditionalStartLoopLength => !IsLoopedAtStart ? 0 : (StartLoopCount - 1)*FadeInLength;
 
         /// <summary>
         ///     Gets the combined start loop length including the first loop.
         /// </summary>
-        public long FullStartLoopLength
-        {
-            get
-            {
-                if (!IsLoopedAtStart) return FadeInLength;
-                return StartLoopCount*FadeInLength;
-            }
-        }
+        public long FullStartLoopLength => !IsLoopedAtStart ? FadeInLength : StartLoopCount*FadeInLength;
 
         /// <summary>
         ///     Gets the combined start loop length including the first loop in seconds.
@@ -293,26 +279,12 @@ namespace Halloumi.BassEngine.Models
         /// <summary>
         ///     Gets the combined end loop length excluding the first loop.
         /// </summary>
-        internal long AdditionalEndLoopLength
-        {
-            get
-            {
-                if (!IsLoopedAtEnd) return 0;
-                return (EndLoopCount - 1)*FadeOutLength;
-            }
-        }
+        internal long AdditionalEndLoopLength => !IsLoopedAtEnd ? 0 : (EndLoopCount - 1)*FadeOutLength;
 
         /// <summary>
         ///     Gets the combined end loop length including the first loop.
         /// </summary>
-        public long FullEndLoopLength
-        {
-            get
-            {
-                if (!IsLoopedAtEnd) return FadeOutLength;
-                return EndLoopCount*FadeOutLength;
-            }
-        }
+        public long FullEndLoopLength => !IsLoopedAtEnd ? FadeOutLength : EndLoopCount*FadeOutLength;
 
         /// <summary>
         ///     Gets the combined start loop length including the first loop in seconds.

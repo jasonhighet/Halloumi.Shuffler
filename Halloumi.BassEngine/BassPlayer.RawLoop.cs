@@ -38,16 +38,20 @@ namespace Halloumi.BassEngine
         /// <summary>
         /// Loads a track for playing as the raw loop track.
         /// </summary>
-        /// <param name="track">The track to queue.</param>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception">Cannot find file  + filename</exception>
         public Track LoadRawLoopTrack(string filename)
         {
             if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
 
             if (RawLoopTrack != null) UnloadRawLoopTrack();
 
-            var track = new Track();
-            track.Id = _nextTrackId++;
-            track.Filename = filename;
+            var track = new Track
+            {
+                Id = _nextTrackId++,
+                Filename = filename
+            };
 
             SetArtistAndTitle(track, "", "");
             LoadTagData(track);
@@ -57,7 +61,7 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("Loaded raw loop track " + track.Description);
 
             // set track sync event
-            track.TrackSync = new SYNCPROC(OnTrackSync);
+            track.TrackSync = OnTrackSync;
             track.CurrentStartLoop = 0;
             track.CurrentEndLoop = 0;
             track.RawLoopStart = 0;
@@ -66,7 +70,6 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("Loading raw loop track " + track.Description);
 
             BassHelper.AddTrackToMixer(track, _rawLoopMixer.InternalChannel);
-            //BassHelper.SetTrackVolume(track, 100M);
             RawLoopTrack = track;
 
             SetRawLoopPositions(0, track.Length, 0);
@@ -89,7 +92,8 @@ namespace Halloumi.BassEngine
         /// Sets the raw loop positions.
         /// </summary>
         /// <param name="start">The start.</param>
-        /// <param name="length">The length.</param>
+        /// <param name="end">The end.</param>
+        /// <param name="offset">The offset.</param>
         public void SetRawLoopPositions(long start, long end, long offset)
         {
             if (RawLoopTrack == null) return;
@@ -115,20 +119,6 @@ namespace Halloumi.BassEngine
             // set track syncs
             SetTrackSync(track, track.Length, SyncType.TrackEnd);
             SetTrackSync(track, track.RawLoopEnd, SyncType.EndRawLoop);
-        }
-
-        /// <summary>
-        /// Continues playing the raw loop track at the start of the raw-loop section.
-        /// </summary>
-        private void OnEndRawLoop()
-        {
-            if (RawLoopTrack == null) return;
-
-            DebugHelper.WriteLine("Looping in raw-loop mode");
-
-            BassHelper.TrackPause(RawLoopTrack);
-            BassHelper.SetTrackPosition(RawLoopTrack, RawLoopTrack.RawLoopStart);
-            BassHelper.TrackPlay(RawLoopTrack);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Halloumi.BassEngine.Helpers;
 using Halloumi.BassEngine.Models;
@@ -7,25 +8,44 @@ using Un4seen.Bass.AddOn.Mix;
 
 namespace Halloumi.BassEngine
 {
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public partial class BassPlayer
     {
         /// <summary>
-        /// Gets the last track FX attributes.
+        ///     Gets the last track FX attributes.
         /// </summary>
-        public TrackFXTrigger LastTrackFxTrigger
-        {
-            get;
-            private set;
-        }
+        public TrackFXTrigger LastTrackFxTrigger { get; private set; }
 
         /// <summary>
-        /// Gets the last track FX track.
+        ///     Gets the last track FX track.
         /// </summary>
-        public Track LastTrackFxTriggerTrack
-        {
-            get;
-            private set;
-        }
+        public Track LastTrackFxTriggerTrack { get; private set; }
+
+        /// <summary>
+        ///     Gets the last track FX attributes.
+        /// </summary>
+        public SampleTrigger LastSampleTrigger { get; private set; }
+
+        /// <summary>
+        ///     Gets the last track FX track.
+        /// </summary>
+        public Track LastSampleTriggerTrack { get; private set; }
+
+        public string LastSampleTriggerPrevTrackDescription { get; private set; }
+
+        public string LastSampleTriggerNextTrackDescription { get; private set; }
+
+        private ExtendedMixAttributes LastExtendedMixAttributes { get; set; }
+
+        private Track LastExtendedMixTrack { get; set; }
+
+        public ExtendedFadeType PreviousManaulExtendedFadeType { get; set; }
+
+        public ExtendedFadeType CurrentManualExtendedFadeType { get; set; }
+
+        public ForceFadeType CurrentForceFadeType { get; set; }
+
+        public bool IsForceFadeNowMode { get; set; }
 
         private void InitialiseManualMixer()
         {
@@ -35,7 +55,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Saves the last track FX.
+        ///     Saves the last track FX.
         /// </summary>
         public void SaveLastTrackFxTrigger()
         {
@@ -53,7 +73,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Clears the track FX triggers for the specifed track.
+        ///     Clears the track FX triggers for the specified track.
         /// </summary>
         public void ClearTrackFxTriggers(Track track)
         {
@@ -69,7 +89,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Removes the previous track FX automation.
+        ///     Removes the previous track FX automation.
         /// </summary>
         public void RemovePreviousTrackFxTrigger()
         {
@@ -88,37 +108,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the last track FX attributes.
-        /// </summary>
-        public SampleTrigger LastSampleTrigger
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the last track FX track.
-        /// </summary>
-        public Track LastSampleTriggerTrack
-        {
-            get;
-            private set;
-        }
-
-        public String LastSampleTriggerPrevTrackDescription
-        {
-            get;
-            private set;
-        }
-
-        public String LastSampleTriggerNextTrackDescription
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Saves the last track FX.
+        ///     Saves the last track FX.
         /// </summary>
         public void SaveLastSampleTrigger()
         {
@@ -139,7 +129,10 @@ namespace Halloumi.BassEngine
                     var mixDetails = attributes.GetExtendedMixAttributes(LastSampleTriggerNextTrackDescription);
                     if (mixDetails == null)
                     {
-                        mixDetails = new ExtendedMixAttributes() { TrackDescription = LastSampleTriggerNextTrackDescription };
+                        mixDetails = new ExtendedMixAttributes
+                        {
+                            TrackDescription = LastSampleTriggerNextTrackDescription
+                        };
                         attributes.ExtendedMixes.Add(mixDetails);
                     }
                     mixDetails.SampleTriggers.Add(LastSampleTrigger);
@@ -156,7 +149,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Clears the track FX triggers for the specifed track.
+        ///     Clears the track FX triggers for the specified track.
         /// </summary>
         public void ClearSampleTriggers(Track track)
         {
@@ -172,7 +165,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Clears the track FX triggers for the specifed track.
+        ///     Clears the track FX triggers for the specified track.
         /// </summary>
         public void ClearSampleTriggers()
         {
@@ -190,7 +183,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Removes the previous track FX automation.
+        ///     Removes the previous track FX automation.
         /// </summary>
         public void RemovePreviousSampleTrigger()
         {
@@ -219,7 +212,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Stops the automated track FX.
+        ///     Stops the automated track FX.
         /// </summary>
         private void StopTrackFxTrigger()
         {
@@ -229,7 +222,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Starts the automated track FX.
+        ///     Starts the automated track FX.
         /// </summary>
         private void StartTrackFxTrigger()
         {
@@ -245,7 +238,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the current automated track FX.
+        ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
         private TrackFXTrigger GetCurrentTrackFxTrigger()
@@ -260,7 +253,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the current automated track FX.
+        ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
         private TrackFXTrigger GetPrevTrackFxTrigger()
@@ -276,7 +269,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Stops the automated track FX.
+        ///     Stops the automated track FX.
         /// </summary>
         private void StopSampleTrigger()
         {
@@ -292,7 +285,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Starts the automated track FX.
+        ///     Starts the automated track FX.
         /// </summary>
         private void StartSampleTrigger()
         {
@@ -310,7 +303,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the current automated track FX.
+        ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
         private SampleTrigger GetCurrentSampleTrigger()
@@ -324,7 +317,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the current automated track FX.
+        ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
         private SampleTrigger GetPrevSampleTrigger()
@@ -340,10 +333,10 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the sample triggers for the current track, including ones specific to the next track
+        ///     Gets the sample triggers for the current track, including ones specific to the next track
         /// </summary>
         /// <returns>A list of sample triggers, or an empty list if there are none</returns>
-        private List<SampleTrigger> GetCurrentSampleTriggers()
+        private IEnumerable<SampleTrigger> GetCurrentSampleTriggers()
         {
             if (CurrentTrack == null) return new List<SampleTrigger>();
 
@@ -358,7 +351,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Gets the sample triggers from the next track for the current track.
+        ///     Gets the sample triggers from the next track for the current track.
         /// </summary>
         /// <returns>A list of the sample triggers</returns>
         private List<SampleTrigger> GetNextTrackSampleTriggers()
@@ -369,24 +362,21 @@ namespace Halloumi.BassEngine
             if (attributes == null) return new List<SampleTrigger>();
 
             var mixDetails = attributes.GetExtendedMixAttributes(NextTrack.Description);
-            if (mixDetails == null) return new List<SampleTrigger>();
-
-            return mixDetails.SampleTriggers;
+            return mixDetails == null ? new List<SampleTrigger>() : mixDetails.SampleTriggers;
         }
 
         /// <summary>
-        /// Gets the automation attributes for a track.
+        ///     Gets the automation attributes for a track.
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The automation attributes</returns>
         public AutomationAttributes GetAutomationAttributes(Track track)
         {
-            if (track == null) return null;
-            return GetAutomationAttributes(track.Description);
+            return track == null ? null : GetAutomationAttributes(track.Description);
         }
 
         /// <summary>
-        /// Gets the automation attributes for a track.
+        ///     Gets the automation attributes for a track.
         /// </summary>
         /// <param name="trackDescription">The track description.</param>
         /// <returns>The automation attributes</returns>
@@ -396,7 +386,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Saves the automation attributes.
+        ///     Saves the automation attributes.
         /// </summary>
         /// <param name="track">The track.</param>
         public void SaveAutomationAttributes(Track track)
@@ -406,7 +396,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Reloads the automation attributes.
+        ///     Reloads the automation attributes.
         /// </summary>
         /// <param name="track">The track.</param>
         public void ReloadAutomationAttributes(Track track)
@@ -416,7 +406,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Sets the automation sync positions.
+        ///     Sets the automation sync positions.
         /// </summary>
         /// <param name="track">The track.</param>
         private void SetAutomationSyncPositions(Track track)
@@ -441,7 +431,7 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        /// Clears the automation sync positions.
+        ///     Clears the automation sync positions.
         /// </summary>
         /// <param name="track">The track.</param>
         private void ClearAutomationSyncPositions(Track track)
@@ -453,11 +443,10 @@ namespace Halloumi.BassEngine
                     BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncId);
                     trigger.StartSyncId = int.MinValue;
                 }
-                if (trigger.EndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
-                    trigger.EndSyncId = int.MinValue;
-                }
+                if (trigger.EndSyncId == int.MinValue) continue;
+
+                BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
+                trigger.EndSyncId = int.MinValue;
             }
 
             foreach (var trigger in GetCurrentSampleTriggers())
@@ -467,11 +456,11 @@ namespace Halloumi.BassEngine
                     BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncId);
                     trigger.StartSyncId = int.MinValue;
                 }
-                if (trigger.EndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
-                    trigger.EndSyncId = int.MinValue;
-                }
+
+                if (trigger.EndSyncId == int.MinValue) continue;
+
+                BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
+                trigger.EndSyncId = int.MinValue;
             }
         }
 
@@ -486,10 +475,12 @@ namespace Halloumi.BassEngine
 
             var position = BassHelper.GetTrackPosition(LastSampleTriggerTrack);
 
-            LastSampleTrigger = new SampleTrigger();
-            LastSampleTrigger.Start = LastSampleTriggerTrack.SamplesToSeconds(position);
-            LastSampleTrigger.DelayNotes = SamplerDelayNotes;
-            LastSampleTrigger.SampleId = sample.SampleId;
+            LastSampleTrigger = new SampleTrigger
+            {
+                Start = LastSampleTriggerTrack.SamplesToSeconds(position),
+                DelayNotes = SamplerDelayNotes,
+                SampleId = sample.SampleId
+            };
         }
 
         private void StopRecordingSampleTrigger()
@@ -502,7 +493,8 @@ namespace Halloumi.BassEngine
 
             if (length <= 0 || position >= LastSampleTriggerTrack.FadeOutStart)
             {
-                length = LastSampleTriggerTrack.SamplesToSeconds(LastSampleTriggerTrack.FadeOutStart) - LastSampleTrigger.Start;
+                length = LastSampleTriggerTrack.SamplesToSeconds(LastSampleTriggerTrack.FadeOutStart) -
+                         LastSampleTrigger.Start;
             }
 
             LastSampleTrigger.Length = length;
@@ -526,7 +518,7 @@ namespace Halloumi.BassEngine
             attributes.FadeEnd = BassHelper.GetTrackPosition(PreviousTrack);
             attributes.FadeLength = GetAdjustedPositionSeconds(CurrentTrack);
             attributes.FadeEndLoop = PreviousTrack.CurrentEndLoop;
-            attributes.FadeEndVolume = Convert.ToSingle(BassHelper.GetTrackVolume(PreviousTrack) / 100);
+            attributes.FadeEndVolume = Convert.ToSingle(BassHelper.GetTrackVolume(PreviousTrack)/100);
             attributes.PowerDownAfterFade = powerDownAfterFade;
 
             if (ManualFadeOut)
@@ -549,24 +541,17 @@ namespace Halloumi.BassEngine
             attributes.FadeEndLoop = PreviousTrack.EndLoopCount;
             attributes.FadeEndVolume = PreviousTrack.FadeInEndVolume;
             attributes.PowerDownAfterFade = false;
-
-            //if (this.ManualFadeOut)
-            //    RaiseOnEndFadeIn();
         }
 
         private void CreateLastExtendedMixAttributes()
         {
             LastExtendedMixTrack = PreviousTrack;
-            LastExtendedMixAttributes = new ExtendedMixAttributes()
+            LastExtendedMixAttributes = new ExtendedMixAttributes
             {
                 TrackDescription = CurrentTrack.Description,
                 ExtendedFadeType = PreviousManaulExtendedFadeType
             };
         }
-
-        private ExtendedMixAttributes LastExtendedMixAttributes { get; set; }
-
-        private Track LastExtendedMixTrack { get; set; }
 
         public void SaveExtendedMix()
         {
@@ -608,13 +593,10 @@ namespace Halloumi.BassEngine
             if (fromTrack == null || toTrack == null) return ExtendedFadeType.Default;
 
             var hasExtendedMix = HasExtendedMixAttributes(fromTrack, toTrack);
-            if (hasExtendedMix)
-            {
-                var mixAttributes = GetExtendedMixAttributes(fromTrack, toTrack);
-                return mixAttributes.ExtendedFadeType;
-            }
+            if (!hasExtendedMix) return ExtendedFadeType.Default;
 
-            return ExtendedFadeType.Default;
+            var mixAttributes = GetExtendedMixAttributes(fromTrack, toTrack);
+            return mixAttributes.ExtendedFadeType;
         }
 
         public double GetExtendedFadeOutLength(Track fromTrack, Track toTrack)
@@ -622,34 +604,25 @@ namespace Halloumi.BassEngine
             if (fromTrack == null) return 0;
 
             var attributes = GetExtendedMixAttributes(fromTrack, toTrack);
-            if (attributes == null)
-            {
-                var fadeOutLength = fromTrack.FullEndLoopLengthSeconds;
-                if (fadeOutLength == 0)
-                    fadeOutLength = BassHelper.GetDefaultLoopLength(fromTrack.EndBpm);
 
-                if (toTrack != null)
-                    fadeOutLength = BassHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
+            if (attributes != null) return attributes.FadeLength;
+            var fadeOutLength = fromTrack.FullEndLoopLengthSeconds;
 
-                return fadeOutLength;
-            }
+            if (fadeOutLength == 0)
+                fadeOutLength = BassHelper.GetDefaultLoopLength(fromTrack.EndBpm);
 
-            return attributes.FadeLength;
+            if (toTrack != null)
+                fadeOutLength = BassHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
+
+            return fadeOutLength;
         }
-
-        public ExtendedFadeType PreviousManaulExtendedFadeType { get; set; }
-
-        public ExtendedFadeType CurrentManualExtendedFadeType { get; set; }
 
         private ExtendedFadeType GetCurrentExtendedFadeType()
         {
-            if (HasExtendedMixAttributes())
-            {
-                var mixAttributes = GetExtendedMixAttributes();
-                return mixAttributes.ExtendedFadeType;
-            }
+            if (!HasExtendedMixAttributes()) return ExtendedFadeType.Default;
 
-            return ExtendedFadeType.Default;
+            var mixAttributes = GetExtendedMixAttributes();
+            return mixAttributes.ExtendedFadeType;
         }
 
         public void ForceFadeNow(ForceFadeType fadeType)
@@ -662,7 +635,8 @@ namespace Halloumi.BassEngine
 
             if (fadeType == ForceFadeType.SkipToEnd)
             {
-                BassHelper.SetTrackPosition(CurrentTrack, CurrentTrack.FadeOutStart - CurrentTrack.SecondsToSamples(0.05M));
+                BassHelper.SetTrackPosition(CurrentTrack,
+                    CurrentTrack.FadeOutStart - CurrentTrack.SecondsToSamples(0.05M));
             }
             else
             {
@@ -670,18 +644,22 @@ namespace Halloumi.BassEngine
                 IsForceFadeNowMode = true;
 
                 var length = 0D;
-                if (fadeType == ForceFadeType.Cut)
+                switch (fadeType)
                 {
-                    length = GetCutFadeLength(CurrentTrack);
-                }
-                else if (fadeType == ForceFadeType.PowerDown)
-                {
-                    length = GetPowerDownFadeLength(CurrentTrack);
-                    CurrentTrack.PowerDownOnEnd = true;
-                }
-                else if (fadeType == ForceFadeType.QuickFade)
-                {
-                    length = GetCutFadeLength(CurrentTrack);
+                    case ForceFadeType.Cut:
+                        length = GetCutFadeLength(CurrentTrack);
+                        break;
+                    case ForceFadeType.PowerDown:
+                        length = GetPowerDownFadeLength(CurrentTrack);
+                        CurrentTrack.PowerDownOnEnd = true;
+                        break;
+                    case ForceFadeType.QuickFade:
+                        length = GetCutFadeLength(CurrentTrack);
+                        break;
+                    case ForceFadeType.SkipToEnd:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(fadeType), fadeType, null);
                 }
 
                 if (CurrentTrack.FadeOutLengthSeconds < length)
@@ -701,18 +679,6 @@ namespace Halloumi.BassEngine
                 CurrentTrack.FadeOutEnd = CurrentTrack.FadeOutStart + CurrentTrack.SecondsToSamples(length);
                 SetTrackSync(CurrentTrack, CurrentTrack.FadeOutEnd, SyncType.EndFadeOut);
             }
-        }
-
-        public ForceFadeType CurrentForceFadeType
-        {
-            get;
-            set;
-        }
-
-        public bool IsForceFadeNowMode
-        {
-            get;
-            set;
         }
     }
 
