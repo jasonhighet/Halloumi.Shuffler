@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Halloumi.BassEngine.Helpers;
-using Un4seen.Bass;
 
 namespace Halloumi.BassEngine.Models
 {
@@ -13,15 +8,8 @@ namespace Halloumi.BassEngine.Models
     ///     Represents a playable mp3 file
     /// </summary>
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class Track
+    public class Track : AudioStream
     {
-        private readonly List<SecondSampleConversion> _cachedConversions = new List<SecondSampleConversion>();
-
-        /// <summary>
-        ///     The ratio used to convert samples to seconds for this track
-        /// </summary>
-        private const double SamplesToSecondsRatio = 0.001D;
-
         /// <summary>
         ///     The BPM at the end of the song
         /// </summary>
@@ -32,17 +20,12 @@ namespace Halloumi.BassEngine.Models
         /// </summary>
         private decimal _startBmp = 100;
 
-        /// <summary>
-        ///     Delegate for the method called when the sync events are fired
-        /// </summary>
-        internal SYNCPROC TrackSync = null;
 
         /// <summary>
         ///     Initializes a new instance of the track class.
         /// </summary>
         public Track()
         {
-            Channels = new List<int>();
             FadeInStartSyncId = int.MinValue;
             FadeInEndSyncId = int.MinValue;
             FadeOutStartSyncId = int.MinValue;
@@ -50,8 +33,6 @@ namespace Halloumi.BassEngine.Models
             PreFadeInStartSyncId = int.MinValue;
             TrackEndSyncId = int.MinValue;
             ExtendedMixEndSyncId = int.MinValue;
-            ChangeTempoOnFadeOut = true;
-            Gain = 0;
             UsePreFadeIn = false;
             PreFadeInStart = 0;
             PreFadeInStartVolume = 0;
@@ -67,7 +48,6 @@ namespace Halloumi.BassEngine.Models
             FadeOutStart = 0;
             PowerDownOnEnd = false;
             PowerDownOnEndOriginal = false;
-            Image = null;
             RawLoopStart = 0;
             RawLoopEnd = 0;
             RawLoopEndSyncId = int.MinValue;
@@ -79,22 +59,6 @@ namespace Halloumi.BassEngine.Models
             Rank = 1;
         }
 
-        /// <summary>
-        ///     Gets or sets the Id for the track.
-        /// </summary>
-        public int Id { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the bass channel Id for the track (set once the track is loaded by the bass engine)
-        /// </summary>
-        public int Channel => Channels.Count == 0 ? int.MinValue : Channels[0];
-
-        public List<int> Channels { get; }
-
-        /// <summary>
-        ///     Gets or sets the name of the mp3 file associated with the track.
-        /// </summary>
-        public string Filename { get; set; }
 
         /// <summary>
         ///     Gets or sets the track title.
@@ -109,12 +73,11 @@ namespace Halloumi.BassEngine.Models
         /// <summary>
         ///     Gets a description of the track
         /// </summary>
-        public string Description => Artist + " - " + Title;
-
-        /// <summary>
-        ///     Gets or sets the track comment
-        /// </summary>
-        public string Comment { get; set; }
+        public override string Description
+        {
+            get { return Artist + " - " + Title; }
+            set { }
+        }
 
         /// <summary>
         ///     Gets the BPM at the start of the track
@@ -141,7 +104,6 @@ namespace Halloumi.BassEngine.Models
         {
             get
             {
-                //if (this.Channel == int.MinValue) return _endBMP;
                 if (FadeOutLengthSeconds != 0)
                     return BpmHelper.GetBpmFromLoopLength(FadeOutLengthSeconds);
 
@@ -153,27 +115,11 @@ namespace Halloumi.BassEngine.Models
             internal set { _endBmp = value; }
         }
 
-        public decimal Bpm => BpmHelper.GetAdjustedBpmAverage(StartBpm, EndBpm);
-
-        /// <summary>
-        ///     Gets or sets the default volume level of the track.
-        /// </summary>
-        public decimal Volume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the length of the track in samples.
-        /// </summary>
-        public long Length { get; set; }
-
-        /// <summary>
-        ///     Gets the length of the track in seconds.
-        /// </summary>
-        public double LengthSeconds => SamplesToSeconds(Length);
-
-        /// <summary>
-        ///     Gets the length of the track in seconds formatted as a string.
-        /// </summary>
-        public string LengthFormatted => FormatSeconds(LengthSeconds);
+        public override decimal Bpm
+        {
+            get { return BpmHelper.GetAdjustedBpmAverage(StartBpm, EndBpm); }
+            set { }
+        }
 
         /// <summary>
         ///     Gets or sets the start of the fade-in section as a sample position
@@ -234,16 +180,6 @@ namespace Halloumi.BassEngine.Models
         ///     Gets or sets the final volume level at the end of the fade-out section as a percentage (0 - 1)
         /// </summary>
         public float FadeOutEndVolume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the gain (volume adjustment) for the track
-        /// </summary>
-        public float Gain { get; set; }
-
-        /// <summary>
-        ///     If true, the tempo will be changed to that of the next track when fading out
-        /// </summary>
-        public bool ChangeTempoOnFadeOut { get; set; }
 
         /// <summary>
         ///     Gets the length of the active section in samples
@@ -332,10 +268,6 @@ namespace Halloumi.BassEngine.Models
         ///     Gets or sets the skip sync handle
         /// </summary>
         internal int SkipSyncId { get; set; }
-
-        public Image Image { get; set; }
-
-        public int DefaultSampleRate { get; set; }
 
         /// <summary>
         ///     Gets or sets the fade-in-start sync handle
@@ -472,164 +404,9 @@ namespace Halloumi.BassEngine.Models
 
         public int Rank { get; set; }
 
-        public string Key { get; set; }
-
-        internal GCHandle AudioDataHandle { get; set; }
-
-        internal byte[] AudioData { get; set; }
-
-        internal IntPtr AudioDataPointer => AudioDataHandle.AddrOfPinnedObject();
-
-
         internal void ResetPowerDownOnEnd()
         {
             PowerDownOnEnd = PowerDownOnEndOriginal;
-        }
-
-        public bool IsAudioLoaded()
-        {
-            return Channel != int.MinValue;
-        }
-
-        public void AddChannel(int channel)
-        {
-            Channels.Insert(0, channel);
-        }
-
-
-        /// <summary>
-        ///     Converts a sample count into a duration in seconds.
-        /// </summary>
-        /// <param name="samples">The sample count.</param>
-        /// <returns>The number of seconds</returns>
-        public double SamplesToSeconds(long samples)
-        {
-            if (samples < 0) return 0D;
-
-            lock (_cachedConversions)
-            {
-                if (_cachedConversions.Exists(c => c.Samples == samples))
-                {
-                    var firstOrDefault = _cachedConversions.FirstOrDefault(c => c.Samples == samples);
-                    if (firstOrDefault != null)
-                        return firstOrDefault.Seconds;
-                }
-            }
-
-            if (Channel == int.MinValue) return samples*SamplesToSecondsRatio;
-            var value = Bass.BASS_ChannelBytes2Seconds(Channel, samples);
-            if (value == -1)
-            {
-                value = GuessSecondsFromSamples(samples);
-            }
-            else if (_cachedConversions.Count < 512)
-            {
-                lock (_cachedConversions)
-                {
-                    _cachedConversions.Add(new SecondSampleConversion {Seconds = value, Samples = samples});
-                }
-            }
-
-            return value;
-        }
-
-        /// <summary>
-        ///     Converts a duration in seconds into a sample count.
-        /// </summary>
-        /// <param name="seconds">The seconds.</param>
-        /// <returns>
-        ///     The number of seconds
-        /// </returns>
-        public long SecondsToSamples(decimal seconds)
-        {
-            return SecondsToSamples(Convert.ToDouble(seconds));
-        }
-
-        /// <summary>
-        ///     Converts a duration in seconds into a sample count.
-        /// </summary>
-        /// <param name="seconds">The seconds.</param>
-        /// <returns>
-        ///     The number of seconds
-        /// </returns>
-        public long SecondsToSamples(double seconds)
-        {
-            if (seconds < 0) return 0;
-
-            lock (_cachedConversions)
-            {
-                if (_cachedConversions.Exists(c => c.Seconds == seconds))
-                {
-                    var secondSampleConversion = _cachedConversions.FirstOrDefault(c => c.Seconds == seconds);
-                    if (secondSampleConversion != null)
-                        return secondSampleConversion.Samples;
-                }
-            }
-
-            if (Channel == int.MinValue) return (long) (seconds/SamplesToSecondsRatio);
-            var value = Bass.BASS_ChannelSeconds2Bytes(Channel, seconds);
-            if (value == -1)
-            {
-                value = GuessSamplesFromSeconds(seconds);
-            }
-            else if (_cachedConversions.Count < 512)
-            {
-                lock (_cachedConversions)
-                {
-                    _cachedConversions.Add(new SecondSampleConversion {Seconds = seconds, Samples = value});
-                }
-            }
-
-            return value;
-        }
-
-        private long GuessSamplesFromSeconds(double seconds)
-        {
-            if (_cachedConversions.Count == 0) return 0;
-
-            lock (_cachedConversions)
-            {
-                var conversion = _cachedConversions.Last();
-                var samplesPerSecond = Convert.ToDouble(conversion.Samples)/conversion.Seconds;
-                return Convert.ToInt64(seconds*samplesPerSecond);
-            }
-        }
-
-        private double GuessSecondsFromSamples(long samples)
-        {
-            if (_cachedConversions.Count == 0) return 0;
-            lock (_cachedConversions)
-            {
-                var conversion = _cachedConversions.Last();
-                var secondsPerSample = conversion.Seconds/Convert.ToDouble(conversion.Samples);
-                return Convert.ToDouble(samples*secondsPerSample);
-            }
-        }
-
-        /// <summary>
-        ///     Formats the seconds as a string in a HH:MM:SS format.
-        /// </summary>
-        /// <param name="seconds">The seconds.</param>
-        /// <returns>A formatted string</returns>
-        public string FormatSeconds(double seconds)
-        {
-            return Utils.FixTimespan(seconds, "HHMMSS");
-        }
-
-        /// <summary>
-        ///     Returns a string that represents this instance.
-        /// </summary>
-        /// <returns> A string that represents this instance.</returns>
-        public override string ToString()
-        {
-            return Filename;
-        }
-
-        private class SecondSampleConversion
-        {
-            public double Seconds { get; set; }
-
-            public long Samples { get; set; }
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Halloumi.BassEngine.Channels
         {
             if (_engineStarted) return;
 
-            BassHelper.InitialiseBassEngine(WindowHandle);
+            ChannelHelper.InitialiseBassEngine(WindowHandle);
 
             _engineStarted = true;
         }

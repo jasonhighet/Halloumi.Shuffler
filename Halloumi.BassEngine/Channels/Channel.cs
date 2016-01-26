@@ -68,11 +68,11 @@ namespace Halloumi.BassEngine.Channels
             switch (inputChannel.OutputType)
             {
                 case MixerChannelOutputType.SingleOutput:
-                    BassHelper.AddChannelToDecoderMixer(InternalChannel, inputChannel.InternalChannel);
+                    ChannelHelper.AddChannelToDecoderMixer(InternalChannel, inputChannel.InternalChannel);
                     break;
                 case MixerChannelOutputType.MultipleOutputs:
-                    var splitOutputChannel = BassHelper.SplitDecoderMixer(inputChannel.InternalChannel);
-                    BassHelper.AddChannelToDecoderMixer(InternalChannel, splitOutputChannel);
+                    var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.InternalChannel);
+                    ChannelHelper.AddChannelToDecoderMixer(InternalChannel, splitOutputChannel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -85,7 +85,7 @@ namespace Halloumi.BassEngine.Channels
         /// <param name="volume">A value between 0 and 100</param>
         public void SetVolume(decimal volume)
         {
-            BassHelper.SetVolume(InternalChannel, volume);
+            AudioStreamHelper.SetVolume(InternalChannel, volume);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Halloumi.BassEngine.Channels
         /// <returns>A value between 0 and 100</returns>
         public decimal GetVolume()
         {
-            return BassHelper.GetVolume(InternalChannel);
+            return AudioStreamHelper.GetVolume(InternalChannel);
         }
 
         /// <summary>

@@ -103,7 +103,7 @@ namespace Halloumi.BassEngine.Helpers
             if (channel == 0) throw new Exception("Cannot load track " + track.Filename);
 
             if (gain > 0)
-                BassHelper.SetReplayGain(channel, gain);
+                AudioStreamHelper.SetReplayGain(channel, gain);
 
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
             BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
@@ -232,7 +232,7 @@ namespace Halloumi.BassEngine.Helpers
             BassMix.BASS_Mixer_StreamAddChannel(mixer, channel,
                 BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN);
 
-            BassHelper.SetReplayGain(mixer, gain);
+            AudioStreamHelper.SetReplayGain(mixer, gain);
 
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
             BassEnc.BASS_Encode_Start(mixer, outFilename, flags, null, IntPtr.Zero);

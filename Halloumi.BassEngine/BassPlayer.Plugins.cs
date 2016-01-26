@@ -198,7 +198,7 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Calculate TrackFXSend Length");
 
-            var position = BassHelper.GetTrackPosition(LastTrackFxTriggerTrack);
+            var position = AudioStreamHelper.GetPosition(LastTrackFxTriggerTrack);
             var positionSeconds = LastTrackFxTriggerTrack.SamplesToSeconds(position);
             var length = positionSeconds - LastTrackFxTrigger.Start;
 
@@ -223,7 +223,7 @@ namespace Halloumi.BassEngine
 
             LastTrackFxTriggerTrack = CurrentTrack;
 
-            var position = BassHelper.GetTrackPosition(LastTrackFxTriggerTrack);
+            var position = AudioStreamHelper.GetPosition(LastTrackFxTriggerTrack);
             LastTrackFxTrigger = new TrackFXTrigger
             {
                 Start = LastTrackFxTriggerTrack.SamplesToSeconds(position),

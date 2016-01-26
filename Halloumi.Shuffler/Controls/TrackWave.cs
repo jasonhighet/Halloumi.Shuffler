@@ -407,7 +407,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void DrawCurrentPosition()
         {
-            var position = BassHelper.GetTrackPosition(BassPlayer.RawLoopTrack);
+            var position = AudioStreamHelper.GetPosition(BassPlayer.RawLoopTrack);
 
             BeginInvoke((MethodInvoker)delegate
             {

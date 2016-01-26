@@ -65,7 +65,7 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("Loaded raw loop track " + track.Description);
 
             // set track sync event
-            track.TrackSync = OnTrackSync;
+            track.SyncProc = OnTrackSync;
             track.CurrentStartLoop = 0;
             track.CurrentEndLoop = 0;
             track.RawLoopStart = 0;
@@ -73,7 +73,7 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Loading raw loop track " + track.Description);
 
-            BassHelper.AddTrackToMixer(track, _rawLoopMixer.InternalChannel);
+            AudioStreamHelper.AddToMixer(track, _rawLoopMixer.InternalChannel);
             RawLoopTrack = track;
 
             SetRawLoopPositions(0, track.Length, 0);
@@ -116,7 +116,7 @@ namespace Halloumi.BassEngine
             track.RawLoopEnd = end;
             track.RawLoopOffset = offset;
 
-            BassHelper.SetTrackPosition(track, track.RawLoopOffset);
+            AudioStreamHelper.SetPosition(track, track.RawLoopOffset);
 
             ClearTrackSyncPositions(track);
 
@@ -134,9 +134,9 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Playing in raw-loop mode");
 
-            BassHelper.TrackPause(RawLoopTrack);
-            BassHelper.SetTrackPosition(RawLoopTrack, RawLoopTrack.RawLoopOffset);
-            BassHelper.TrackPlay(RawLoopTrack);
+            AudioStreamHelper.Pause(RawLoopTrack);
+            AudioStreamHelper.SetPosition(RawLoopTrack, RawLoopTrack.RawLoopOffset);
+            AudioStreamHelper.Play(RawLoopTrack);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Halloumi.BassEngine
         {
             if (RawLoopTrack == null) return;
             DebugHelper.WriteLine("Pausing raw-loop");
-            BassHelper.TrackPause(RawLoopTrack);
+            AudioStreamHelper.Pause(RawLoopTrack);
         }
     }
 }

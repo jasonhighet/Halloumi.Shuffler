@@ -525,7 +525,6 @@ namespace Halloumi.BassEngine
                 }
 
                 track.Gain = tags.replaygain_track_peak;
-                track.Comment = tags.comment;
 
                 var key = tags.NativeTag("InitialKey");
                 if (key != "") track.Key = key;
@@ -551,7 +550,7 @@ namespace Halloumi.BassEngine
             if (track == null) return;
             DebugHelper.WriteLine("Unloading track " + track.Description);
 
-            BassHelper.TrackPause(track);
+            AudioStreamHelper.Pause(track);
             if (IsTrackInUse(track))
             {
                 RemoveTrackFromMixer(track);
@@ -665,9 +664,9 @@ namespace Halloumi.BassEngine
                     track.PreFadeInStartVolume = 0;
                 }
 
-                track.DefaultSampleRate = BassHelper.GetTrackSampleRate(track);
+                track.DefaultSampleRate = AudioStreamHelper.GetSampleRate(track);
 
-                BassHelper.SetTrackPosition(track, 0);
+                AudioStreamHelper.SetPosition(track, 0);
             }
 
             AddToRecentTracks(track);
@@ -730,10 +729,6 @@ namespace Halloumi.BassEngine
             {
                 track.PreFadeInStart = track.SecondsToSamples(ConversionHelper.ToDouble(attributes["PreFadeInStart"]));
                 track.UsePreFadeIn = true;
-            }
-            if (attributes.ContainsKey("ChangeTempoToMatchNextTrack"))
-            {
-                track.ChangeTempoOnFadeOut = ConversionHelper.ToBoolean(attributes["ChangeTempoToMatchNextTrack"]);
             }
             if (attributes.ContainsKey("StartBPM"))
             {
@@ -1010,10 +1005,10 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Unloading track Audio Data " + track.Description);
 
-            BassHelper.RemoveTrackFromMixer(track, _trackMixer.InternalChannel);
+            AudioStreamHelper.RemoveFromMixer(track, _trackMixer.InternalChannel);
 
-            BassHelper.UnloadTrackAudio(track);
-            track.TrackSync = null;
+            AudioStreamHelper.UnloadAudio(track);
+            track.SyncProc = null;
         }
 
         /// <summary>
@@ -1074,9 +1069,9 @@ namespace Halloumi.BassEngine
 
                 if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
 
-                BassHelper.SetTrackPitch(CurrentTrack, 100F);
-                BassHelper.SetTrackVolume(CurrentTrack, 1F);
-                BassHelper.TrackPlay(CurrentTrack);
+                AudioStreamHelper.SetPitch(CurrentTrack, 100F);
+                AudioStreamHelper.SetVolume(CurrentTrack, 1F);
+                AudioStreamHelper.Play(CurrentTrack);
 
                 PlayState = PlayState.Playing;
             }
@@ -1163,7 +1158,7 @@ namespace Halloumi.BassEngine
             Pause();
             if (CurrentTrack != null)
             {
-                BassHelper.SetTrackPosition(CurrentTrack, 0);
+                AudioStreamHelper.SetPosition(CurrentTrack, 0);
             }
             PlayState = PlayState.Stopped;
         }
@@ -1177,17 +1172,17 @@ namespace Halloumi.BassEngine
 
             if (CurrentTrack != null)
             {
-                BassHelper.TrackSmoothPause(CurrentTrack);
+                AudioStreamHelper.SmoothPause(CurrentTrack);
             }
 
             if (NextTrack != null)
             {
-                BassHelper.TrackSmoothPause(NextTrack);
+                AudioStreamHelper.SmoothPause(NextTrack);
             }
 
             if (PreviousTrack != null)
             {
-                BassHelper.TrackSmoothPause(PreviousTrack);
+                AudioStreamHelper.SmoothPause(PreviousTrack);
             }
 
             StopTrackFxSend();
@@ -1267,7 +1262,7 @@ namespace Halloumi.BassEngine
 
             position.Track = track;
 
-            position.ChannelPosition = BassHelper.GetTrackPosition(track);
+            position.ChannelPosition = AudioStreamHelper.GetPosition(track);
             position.Positition = GetAdjustedPosition(position.ChannelPosition, track);
 
             if (NextTrack != null)
@@ -1314,7 +1309,7 @@ namespace Halloumi.BassEngine
         private static long GetAdjustedPosition(Track track)
         {
             if (track == null) return 0;
-            var channelPosition = BassHelper.GetTrackPosition(track);
+            var channelPosition = AudioStreamHelper.GetPosition(track);
             return GetAdjustedPosition(channelPosition, track);
         }
 
@@ -1367,9 +1362,9 @@ namespace Halloumi.BassEngine
                 return;
 
             track.CurrentStartLoop = newCurrentStartLoop;
-            BassHelper.SetTrackPosition(track, actualPosition);
+            AudioStreamHelper.SetPosition(track, actualPosition);
 
-            if (PreviousTrack != null) BassHelper.TrackPause(PreviousTrack);
+            if (PreviousTrack != null) AudioStreamHelper.Pause(PreviousTrack);
         }
 
         /// <summary>
@@ -1423,7 +1418,7 @@ namespace Halloumi.BassEngine
         {
             if (_engineStarted) return;
             DebugHelper.WriteLine("Start Engine");
-            BassHelper.InitialiseBassEngine(windowHandle);
+            ChannelHelper.InitialiseBassEngine(windowHandle);
             _engineStarted = true;
         }
 
@@ -1464,29 +1459,27 @@ namespace Halloumi.BassEngine
                 lock (MixerLock)
                 {
                     // add the new track to the mixer (in paused mode)
-                    BassHelper.AddTrackToMixer(track, _trackMixer.InternalChannel);
-
-                    BassHelper.SetTrackReplayGain(track);
+                    AudioStreamHelper.AddToMixer(track, _trackMixer.InternalChannel);
 
                     // set track sync event
-                    track.TrackSync = OnTrackSync;
+                    track.SyncProc = OnTrackSync;
                     track.CurrentStartLoop = 0;
                     track.CurrentEndLoop = 0;
 
                     if (PreviousTrack == null)
                     {
-                        BassHelper.SetTrackPosition(track, 0);
-                        BassHelper.SetTrackVolume(track, 1F);
+                        AudioStreamHelper.SetPosition(track, 0);
+                        AudioStreamHelper.SetVolume(track, 1F);
                     }
                     else if (track.UsePreFadeIn)
                     {
-                        BassHelper.SetTrackPosition(track, track.PreFadeInStart);
-                        BassHelper.SetTrackVolume(track, track.PreFadeInStartVolume);
+                        AudioStreamHelper.SetPosition(track, track.PreFadeInStart);
+                        AudioStreamHelper.SetVolume(track, track.PreFadeInStartVolume);
                     }
                     else
                     {
-                        BassHelper.SetTrackPosition(track, track.FadeInStart);
-                        BassHelper.SetTrackVolume(track, track.FadeInStartVolume);
+                        AudioStreamHelper.SetPosition(track, track.FadeInStart);
+                        AudioStreamHelper.SetVolume(track, track.FadeInStartVolume);
                     }
                 }
             }
@@ -1634,7 +1627,7 @@ namespace Halloumi.BassEngine
                 var syncId = BassMix.BASS_Mixer_ChannelSetSync(track.Channel,
                     flags,
                     position,
-                    track.TrackSync,
+                    track.SyncProc,
                     new IntPtr((int) syncType));
 
                 switch (syncType)
@@ -1750,7 +1743,7 @@ namespace Halloumi.BassEngine
             if (track == null) return;
             if (!track.IsAudioLoaded()) return;
 
-            BassHelper.TrackPause(track);
+            AudioStreamHelper.Pause(track);
 
             DebugHelper.WriteLine("Remove track from mixer " + track.Description);
 
@@ -1758,7 +1751,7 @@ namespace Halloumi.BassEngine
 
             UnloadTrackAudioData(track);
 
-            track.TrackSync = null;
+            track.SyncProc = null;
         }
 
         /// <summary>
@@ -1803,7 +1796,7 @@ namespace Halloumi.BassEngine
             CurrentTrack.CurrentStartLoop = 0;
 
             // set position
-            BassHelper.SetTrackPosition(CurrentTrack, CurrentTrack.FadeInStart);
+            AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.FadeInStart);
 
             var startVolume = CurrentTrack.FadeInStartVolume;
             var endVolume = CurrentTrack.FadeInEndVolume;
@@ -1815,14 +1808,14 @@ namespace Halloumi.BassEngine
             }
 
             // set the volume slide
-            BassHelper.SetTrackVolumeSlide(CurrentTrack, startVolume, endVolume,
+            AudioStreamHelper.SetVolumeSlide(CurrentTrack, startVolume, endVolume,
                 GetFadeLength(PreviousTrack, CurrentTrack));
 
             // set to standard pitch
-            BassHelper.SetTrackPitch(CurrentTrack, 100);
+            AudioStreamHelper.SetPitch(CurrentTrack, 100);
 
             // start playing the track
-            BassHelper.TrackPlay(CurrentTrack);
+            AudioStreamHelper.Play(CurrentTrack);
 
             SetDelayByBpm();
 
@@ -1855,13 +1848,13 @@ namespace Halloumi.BassEngine
                 if (loopForever && CurrentTrack.CurrentStartLoop == maxLoops) CurrentTrack.CurrentStartLoop = 0;
 
                 // set position (add one to void StartFadeIn firing)
-                BassHelper.SetTrackPosition(CurrentTrack, CurrentTrack.FadeInStart + 1);
+                AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.FadeInStart + 1);
                 Unlock();
             }
             else
             {
                 // set volume to full
-                BassHelper.SetTrackVolume(CurrentTrack, 1F);
+                AudioStreamHelper.SetVolume(CurrentTrack, 1F);
                 Unlock();
 
                 if ((!ManualFadeOut) || (ManualFadeOut && PreviousManaulExtendedFadeType == ExtendedFadeType.PowerDown))
@@ -1922,11 +1915,8 @@ namespace Halloumi.BassEngine
                 // set loop count
                 PreviousTrack.CurrentEndLoop = 0;
 
-                if (PreviousTrack.ChangeTempoOnFadeOut)
-                {
-                    // change tempo if required
-                    BassHelper.SetTrackTempoToMatchAnotherTrack(PreviousTrack, CurrentTrack);
-                }
+                // change tempo if required
+                AudioStreamHelper.SetTrackTempoToMatchAnotherTrack(PreviousTrack, CurrentTrack);
 
                 if (ManualFadeOut)
                 {
@@ -1934,13 +1924,13 @@ namespace Halloumi.BassEngine
                     {
                         case ExtendedFadeType.Cut:
                             // set the volume slide
-                            BassHelper.SetTrackVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
+                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
                                 GetCutFadeLength(CurrentTrack));
 
                             StopRecordingAutoExtendedMix();
                             break;
                         case ExtendedFadeType.PowerDown:
-                            BassHelper.TrackPowerDown(PreviousTrack);
+                            AudioStreamHelper.PowerDown(PreviousTrack);
                             StopRecordingAutoExtendedMix();
                             break;
                         case ExtendedFadeType.Default:
@@ -1953,11 +1943,11 @@ namespace Halloumi.BassEngine
                 {
                     if (PreviousTrack.PowerDownOnEnd)
                     {
-                        BassHelper.TrackPowerDown(PreviousTrack);
+                        AudioStreamHelper.PowerDown(PreviousTrack);
                     }
                     else if (IsForceFadeNowMode)
                     {
-                        BassHelper.SetTrackVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
+                        AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
                             PreviousTrack.FadeOutEndVolume, PreviousTrack.FadeOutLengthSeconds);
                     }
                     else if (HasExtendedMixAttributes())
@@ -1967,15 +1957,15 @@ namespace Halloumi.BassEngine
                         {
                             case ExtendedFadeType.Default:
                                 // set the volume slide
-                                BassHelper.SetTrackVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
+                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
                                     mixAttributes.FadeEndVolume, mixAttributes.FadeLength);
                                 break;
                             case ExtendedFadeType.PowerDown:
-                                BassHelper.TrackPowerDown(PreviousTrack);
+                                AudioStreamHelper.PowerDown(PreviousTrack);
                                 break;
                             case ExtendedFadeType.Cut:
                                 // set the volume slide
-                                BassHelper.SetTrackVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
+                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
                                     GetCutFadeLength(CurrentTrack));
                                 break;
                             default:
@@ -1985,7 +1975,7 @@ namespace Halloumi.BassEngine
                     else
                     {
                         // set the volume slide
-                        BassHelper.SetTrackVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
+                        AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
                             PreviousTrack.FadeOutEndVolume, GetFadeLength());
                     }
                 }
@@ -2132,12 +2122,12 @@ namespace Halloumi.BassEngine
                 PreviousTrack.CurrentEndLoop++;
 
                 // set position (add one to void StartFadeIn firing)
-                BassHelper.SetTrackPosition(PreviousTrack, PreviousTrack.FadeOutStart + 1);
+                AudioStreamHelper.SetPosition(PreviousTrack, PreviousTrack.FadeOutStart + 1);
             }
             else if (!ManualFadeOut && !HasExtendedMixAttributes())
             {
                 // stop track
-                BassHelper.TrackPause(PreviousTrack);
+                AudioStreamHelper.Pause(PreviousTrack);
             }
         }
 
@@ -2155,11 +2145,11 @@ namespace Halloumi.BassEngine
             {
                 if (GetExtendedMixAttributes().PowerDownAfterFade)
                 {
-                    BassHelper.TrackPowerDown(PreviousTrack);
+                    AudioStreamHelper.PowerDown(PreviousTrack);
                 }
                 else
                 {
-                    BassHelper.TrackPause(PreviousTrack);
+                    AudioStreamHelper.Pause(PreviousTrack);
                 }
             }
         }
@@ -2181,17 +2171,17 @@ namespace Halloumi.BassEngine
             if (!NextTrack.IsAudioLoaded()) LoadTrackAudioData(NextTrack);
 
             // set position
-            BassHelper.SetTrackPosition(NextTrack, NextTrack.PreFadeInStart);
+            AudioStreamHelper.SetPosition(NextTrack, NextTrack.PreFadeInStart);
 
             // set the volume slide
-            BassHelper.SetTrackVolumeSlide(NextTrack, NextTrack.PreFadeInStartVolume*NextTrack.FadeInStartVolume,
+            AudioStreamHelper.SetVolumeSlide(NextTrack, NextTrack.PreFadeInStartVolume*NextTrack.FadeInStartVolume,
                 NextTrack.FadeInStartVolume, NextTrack.PreFadeInLength);
 
             // set to standard pitch
-            BassHelper.SetTrackPitch(NextTrack, 100);
+            AudioStreamHelper.SetPitch(NextTrack, 100);
 
             // start playing the track
-            BassHelper.TrackPlay(NextTrack);
+            AudioStreamHelper.Play(NextTrack);
 
             DebugHelper.WriteLine("End Start pre-fade-in");
         }
@@ -2244,15 +2234,15 @@ namespace Halloumi.BassEngine
             SetAdjustedTrackPosition(0);
             if (PreviousTrack != null)
             {
-                BassHelper.TrackPause(PreviousTrack);
-                BassHelper.ResetTrackTempo(PreviousTrack);
+                AudioStreamHelper.Pause(PreviousTrack);
+                AudioStreamHelper.ResetTempo(PreviousTrack);
             }
             if (NextTrack != null)
             {
-                BassHelper.TrackPause(NextTrack);
-                BassHelper.ResetTrackTempo(NextTrack);
+                AudioStreamHelper.Pause(NextTrack);
+                AudioStreamHelper.ResetTempo(NextTrack);
             }
-            BassHelper.ResetTrackTempo(CurrentTrack);
+            AudioStreamHelper.ResetTempo(CurrentTrack);
         }
 
         /// <summary>
@@ -2262,15 +2252,15 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null) return;
 
-            BassHelper.ResetTrackTempo(CurrentTrack);
+            AudioStreamHelper.ResetTempo(CurrentTrack);
             if (PreviousTrack != null)
             {
-                BassHelper.ResetTrackTempo(PreviousTrack);
-                BassHelper.TrackPause(PreviousTrack);
+                AudioStreamHelper.ResetTempo(PreviousTrack);
+                AudioStreamHelper.Pause(PreviousTrack);
             }
             if (NextTrack != null)
             {
-                BassHelper.ResetTrackTempo(NextTrack);
+                AudioStreamHelper.ResetTempo(NextTrack);
             }
 
             SetTrackPosition(CurrentTrack.ActiveLengthSeconds - (BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm)/2));
@@ -2285,15 +2275,15 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null) return;
 
-            BassHelper.ResetTrackTempo(CurrentTrack);
+            AudioStreamHelper.ResetTempo(CurrentTrack);
             if (PreviousTrack != null)
             {
-                BassHelper.ResetTrackTempo(PreviousTrack);
-                BassHelper.TrackPause(PreviousTrack);
+                AudioStreamHelper.ResetTempo(PreviousTrack);
+                AudioStreamHelper.Pause(PreviousTrack);
             }
             if (NextTrack != null)
             {
-                BassHelper.ResetTrackTempo(NextTrack);
+                AudioStreamHelper.ResetTempo(NextTrack);
             }
 
             SetTrackPosition(CurrentTrack.ActiveLengthSeconds - 0.05);
@@ -2309,7 +2299,7 @@ namespace Halloumi.BassEngine
             if (CurrentTrack == null || !CurrentTrack.HasSkipSection) return;
 
             // set position
-            BassHelper.SetTrackPosition(CurrentTrack, CurrentTrack.SkipEnd);
+            AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.SkipEnd);
         }
 
 

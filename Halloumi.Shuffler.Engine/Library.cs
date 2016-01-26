@@ -1466,7 +1466,7 @@ namespace Halloumi.Shuffler.Engine
         /// <param name="track">The track.</param>
         private void CalculateAndSaveTrackLength(Track track)
         {
-            var length = decimal.Round(Convert.ToDecimal(BassHelper.GetTrackLength(track.Filename)), 3);
+            var length = decimal.Round(Convert.ToDecimal(AudioStreamHelper.GetLength(track.Filename)), 3);
 
             if (length == decimal.Round(track.FullLength, 3)) return;
 

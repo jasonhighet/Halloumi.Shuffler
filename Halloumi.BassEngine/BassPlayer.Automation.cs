@@ -245,7 +245,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null) return null;
 
-            var position = BassHelper.GetTrackPosition(CurrentTrack);
+            var position = AudioStreamHelper.GetPosition(CurrentTrack);
             return GetAutomationAttributes(CurrentTrack)
                 .TrackFXTriggers
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
@@ -260,7 +260,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null) return null;
 
-            var position = BassHelper.GetTrackPosition(CurrentTrack);
+            var position = AudioStreamHelper.GetPosition(CurrentTrack);
             return GetAutomationAttributes(CurrentTrack)
                 .TrackFXTriggers
                 .Where(ta => ta.StartSample <= position)
@@ -309,7 +309,7 @@ namespace Halloumi.BassEngine
         private SampleTrigger GetCurrentSampleTrigger()
         {
             if (CurrentTrack == null) return null;
-            var position = BassHelper.GetTrackPosition(CurrentTrack);
+            var position = AudioStreamHelper.GetPosition(CurrentTrack);
 
             return GetCurrentSampleTriggers()
                 .OrderBy(t => Math.Abs(t.StartSample - position))
@@ -324,7 +324,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null) return null;
 
-            var position = BassHelper.GetTrackPosition(CurrentTrack);
+            var position = AudioStreamHelper.GetPosition(CurrentTrack);
 
             return GetCurrentSampleTriggers()
                 .Where(t => t.StartSample <= position)
@@ -473,7 +473,7 @@ namespace Halloumi.BassEngine
             LastSampleTriggerNextTrackDescription = NextTrack == null ? "" : NextTrack.Description;
             LastSampleTriggerPrevTrackDescription = PreviousTrack == null ? "" : PreviousTrack.Description;
 
-            var position = BassHelper.GetTrackPosition(LastSampleTriggerTrack);
+            var position = AudioStreamHelper.GetPosition(LastSampleTriggerTrack);
 
             LastSampleTrigger = new SampleTrigger
             {
@@ -487,7 +487,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack == null || LastSampleTrigger == null || LastSampleTriggerTrack == null) return;
 
-            var position = BassHelper.GetTrackPosition(LastSampleTriggerTrack);
+            var position = AudioStreamHelper.GetPosition(LastSampleTriggerTrack);
             var positionSeconds = LastSampleTriggerTrack.SamplesToSeconds(position);
             var length = positionSeconds - LastSampleTrigger.Start;
 
@@ -515,10 +515,10 @@ namespace Halloumi.BassEngine
             CreateLastExtendedMixAttributes();
 
             var attributes = LastExtendedMixAttributes;
-            attributes.FadeEnd = BassHelper.GetTrackPosition(PreviousTrack);
+            attributes.FadeEnd = AudioStreamHelper.GetPosition(PreviousTrack);
             attributes.FadeLength = GetAdjustedPositionSeconds(CurrentTrack);
             attributes.FadeEndLoop = PreviousTrack.CurrentEndLoop;
-            attributes.FadeEndVolume = Convert.ToSingle(BassHelper.GetTrackVolume(PreviousTrack)/100);
+            attributes.FadeEndVolume = Convert.ToSingle(AudioStreamHelper.GetVolume(PreviousTrack)/100);
             attributes.PowerDownAfterFade = powerDownAfterFade;
 
             if (ManualFadeOut)
@@ -635,7 +635,7 @@ namespace Halloumi.BassEngine
 
             if (fadeType == ForceFadeType.SkipToEnd)
             {
-                BassHelper.SetTrackPosition(CurrentTrack,
+                AudioStreamHelper.SetPosition(CurrentTrack,
                     CurrentTrack.FadeOutStart - CurrentTrack.SecondsToSamples(0.05M));
             }
             else
@@ -672,7 +672,7 @@ namespace Halloumi.BassEngine
                 BassMix.BASS_Mixer_ChannelRemoveSync(CurrentTrack.Channel, CurrentTrack.FadeOutEndSyncId);
                 CurrentTrack.FadeOutEndSyncId = int.MinValue;
 
-                var position = BassHelper.GetTrackPosition(CurrentTrack);
+                var position = AudioStreamHelper.GetPosition(CurrentTrack);
                 CurrentTrack.FadeOutStart = position + CurrentTrack.SecondsToSamples(0.05M);
                 SetTrackSync(CurrentTrack, CurrentTrack.FadeOutStart, SyncType.StartFadeOut);
 

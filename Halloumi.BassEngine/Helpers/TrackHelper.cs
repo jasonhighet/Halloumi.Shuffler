@@ -131,43 +131,6 @@ namespace Halloumi.BassEngine.Helpers
         }
 
 
-        /// <summary>
-        ///     Loads the track image.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public static void LoadTrackImage(Track track)
-        {
-            if (track.Image != null) return;
-
-            track.Image = Resources.DefaultMusicImage;
-            var tags = ID3v2Helper.CreateID3v2(track.Filename);
-            if (tags.PictureList.Count <= 0) return;
-
-            try
-            {
-                var picture = tags.PictureList[0];
-                using (var stream = new MemoryStream(picture.PictureData))
-                {
-                    track.Image = Image.FromStream(stream);
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        /// <summary>
-        ///     Saves the track BPM tag.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public static void SaveTrackBpmTag(Track track)
-        {
-            var tags = ID3v2Helper.CreateID3v2(track.Filename);
-            tags.BPM = track.TagBpm.ToString(CultureInfo.InvariantCulture);
-            tags.Save(track.Filename);
-        }
-
         public static bool IsSameTrack(Track track1, Track track2)
         {
             if (track1 == null || track2 == null) return false;

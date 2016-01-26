@@ -350,7 +350,7 @@ namespace Halloumi.Shuffler.Controls
 
             DebugHelper.WriteLine(volume);
 
-            BassHelper.SetTrackVolume(track, volume);
+            AudioStreamHelper.SetVolume(track, volume);
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 //if (MessageBoxHelper.Confirm("Are you sure you want to power down the current track?"))
                 //{
-                //    BE.BassHelper.TrackPowerDown(track);
+                //    BE.BassHelper.PowerDown(track);
                 //    for (int i = 0; i < 8; i++)
                 //    {
                 //        Application.DoEvents();
@@ -378,7 +378,7 @@ namespace Halloumi.Shuffler.Controls
             }
             else
             {
-                BassHelper.TrackPowerDown(track);
+                AudioStreamHelper.PowerDown(track);
                 BassPlayer.StopRecordingManualExtendedMix(true);
             }
         }
@@ -392,7 +392,7 @@ namespace Halloumi.Shuffler.Controls
             if (track == null) return;
             if (!BassPlayer.IsTrackInUse(track)) return;
 
-            if (BassHelper.IsTrackPlaying(track))
+            if (AudioStreamHelper.IsPlaying(track))
             {
                 if (track == BassPlayer.CurrentTrack)
                 {
@@ -401,11 +401,11 @@ namespace Halloumi.Shuffler.Controls
                 else if (track == BassPlayer.PreviousTrack)
                 {
                     BassPlayer.StopRecordingManualExtendedMix();
-                    BassHelper.TrackSmoothPause(track);
+                    AudioStreamHelper.SmoothPause(track);
                 }
                 else
                 {
-                    BassHelper.TrackSmoothPause(track);
+                    AudioStreamHelper.SmoothPause(track);
                 }
             }
             else

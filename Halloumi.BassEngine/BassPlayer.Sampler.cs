@@ -80,8 +80,8 @@ namespace Halloumi.BassEngine
 
             DebugHelper.WriteLine("Unloading sample " + sample.Description);
 
-            BassHelper.RemoveSampleFromMixer(sample, _samplerMixer.InternalChannel);
-            BassHelper.UnloadSampleAudio(sample);
+            AudioStreamHelper.RemoveFromMixer(sample, _samplerMixer.InternalChannel);
+            AudioStreamHelper.UnloadAudio(sample);
 
             _cachedSamples.Remove(sample);
         }
@@ -320,15 +320,15 @@ namespace Halloumi.BassEngine
                 BassMix.BASS_Mixer_ChannelPause(sample.Channel);
 
                 if (CurrentTrack == null)
-                    BassHelper.ResetSampleTempo(sample);
+                    AudioStreamHelper.ResetTempo(sample);
                 else if (sample.LinkedTrackDescription == CurrentTrack.Description)
-                    BassHelper.ResetSampleTempo(sample);
+                    AudioStreamHelper.ResetTempo(sample);
                 else
-                    BassHelper.SetSampleTempoToMatchBpm(sample, CurrentTrack.Bpm);
+                    AudioStreamHelper.SetTempoToMatchBpm(sample, CurrentTrack.Bpm);
 
                 if (sample.Channel == int.MinValue) return;
                 Bass.BASS_ChannelSetPosition(sample.Channel, 1);
-                BassHelper.SetSampleVolumeSlide(sample, 0F, 1F, 0.1D);
+                AudioStreamHelper.SetVolumeSlide(sample, 0F, 1F, 0.1D);
 
                 if (sample.Channel == int.MinValue) return;
                 BassMix.BASS_Mixer_ChannelPlay(sample.Channel);
@@ -372,10 +372,10 @@ namespace Halloumi.BassEngine
         /// <param name="sample">The sample.</param>
         public void MuteSample(Sample sample)
         {
-            var volume = BassHelper.GetSampleVolume(sample);
+            var volume = AudioStreamHelper.GetVolume(sample);
             if (volume != 0)
             {
-                BassHelper.SetSampleVolumeSlide(sample, 1F, 0F, 0.1D);
+                AudioStreamHelper.SetVolumeSlide(sample, 1F, 0F, 0.1D);
             }
 
             StopRecordingSampleTrigger();
@@ -472,7 +472,7 @@ namespace Halloumi.BassEngine
                 if (sample.Channel == 0) throw new Exception("Cannot load sample " + sample.Filename);
 
                 sample.Length = Bass.BASS_ChannelGetLength(sample.Channel);
-                sample.DefaultSampleRate = BassHelper.GetSampleRate(sample.Channel);
+                sample.DefaultSampleRate = AudioStreamHelper.GetSampleRate(sample.Channel);
 
                 Bass.BASS_ChannelSetPosition(sample.Channel, 0);
             }
@@ -496,11 +496,11 @@ namespace Halloumi.BassEngine
 
             lock (MixerLock)
             {
-                BassHelper.AddSampleToSampler(sample, _samplerMixer.InternalChannel);
+                AudioStreamHelper.AddToMixer(sample, _samplerMixer.InternalChannel);
             }
 
             // set sample sync event
-            sample.SampleSync = OnSampleSync;
+            sample.SyncProc = OnSampleSync;
 
             SetSampleSyncPositions(sample);
         }
@@ -534,7 +534,7 @@ namespace Halloumi.BassEngine
             var syncId = BassMix.BASS_Mixer_ChannelSetSync(sample.Channel,
                 BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME,
                 position,
-                sample.SampleSync,
+                sample.SyncProc,
                 new IntPtr((int) syncType));
 
             if (syncType == SampleSyncType.SampleEnd)
@@ -580,7 +580,7 @@ namespace Halloumi.BassEngine
 
             if (sample == null || sample.Channel == int.MinValue) return;
 
-            if (!sample.IsLooped) BassHelper.SetSampleVolume(sample, 0M);
+            if (!sample.IsLooped) AudioStreamHelper.SetVolume(sample, 0M);
             LoopSample(sample);
         }
 

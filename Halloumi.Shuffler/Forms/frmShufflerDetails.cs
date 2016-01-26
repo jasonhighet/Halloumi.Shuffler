@@ -379,8 +379,6 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_bindingData) return;
 
-            Track.ChangeTempoOnFadeOut = true;
-
             Track.FadeInStart = Track.SecondsToSamples(txtFadeInPosition.Seconds);
             Track.FadeInEnd = Track.FadeInStart + Track.SecondsToSamples(cmbCustomFadeInLength.Seconds);
 
