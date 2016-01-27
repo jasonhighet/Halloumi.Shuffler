@@ -45,17 +45,17 @@ namespace Halloumi.BassEngine.Models
         public int Channel => Channels.Count == 0 ? int.MinValue : Channels[0];
 
         /// <summary>
-        /// Gets the BPM.
+        ///     Gets the BPM.
         /// </summary>
         public abstract decimal Bpm { get; set; }
 
         /// <summary>
-        /// Gets the description.
+        ///     Gets the description.
         /// </summary>
         public abstract string Description { get; set; }
 
         /// <summary>
-        /// Gets the channels.
+        ///     Gets the channels.
         /// </summary>
         public List<int> Channels { get; }
 

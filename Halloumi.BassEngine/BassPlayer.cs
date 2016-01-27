@@ -583,44 +583,9 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("Loading track Audio Data " + track.Description);
             lock (track)
             {
-                // abort if audio data already loaded
-                if (track.IsAudioLoaded()) return track;
+                AudioStreamHelper.LoadAudio(track);
 
-                if (mode == AudioDataMode.LoadIntoMemory)
-                {
-                    track.AudioData = File.ReadAllBytes(track.Filename);
-                    track.AudioDataHandle = GCHandle.Alloc(track.AudioData, GCHandleType.Pinned);
-                    track.AddChannel(Bass.BASS_StreamCreateFile(track.AudioDataPointer, 0, track.AudioData.Length,
-                        BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN));
-                }
-                else
-                {
-                    track.AddChannel(Bass.BASS_StreamCreateFile(track.Filename, 0, 0,
-                        BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN));
-                }
 
-                if (track.Channel == 0)
-                {
-                    var errorCode = Bass.BASS_ErrorGetCode();
-                    throw new Exception("Cannot load track " + track.Filename + ". Error code: " + errorCode);
-                }
-
-                DebugHelper.WriteLine("Creating reverse FX stream " + track.Description + "...");
-                track.AddChannel(BassFx.BASS_FX_ReverseCreate(track.Channel, 1, BASSFlag.BASS_STREAM_DECODE));
-                if (track.Channel == 0) throw new Exception("Cannot load track " + track.Filename);
-                Bass.BASS_ChannelSetAttribute(track.Channel, BASSAttribute.BASS_ATTRIB_REVERSE_DIR,
-                    (float) BASSFXReverse.BASS_FX_RVS_FORWARD);
-                DebugHelper.WriteLine("done");
-
-                DebugHelper.WriteLine("Creating tempo FX stream " + track.Description + "...");
-                track.AddChannel(BassFx.BASS_FX_TempoCreate(track.Channel,
-                    BASSFlag.BASS_FX_FREESOURCE | BASSFlag.BASS_STREAM_DECODE));
-                if (track.Channel == 0) throw new Exception("Cannot load track " + track.Filename);
-                DebugHelper.WriteLine("done");
-
-                DebugHelper.WriteLine("Calculating track length " + track.Description + "...");
-                track.Length = Bass.BASS_ChannelGetLength(track.Channel);
-                DebugHelper.WriteLine("done");
 
                 track.FadeInStart = 0;
                 track.FadeInStartVolume = (float) (DefaultFadeInStartVolume/100);
@@ -663,18 +628,9 @@ namespace Halloumi.BassEngine
                     track.PreFadeInStart = track.FadeInStart;
                     track.PreFadeInStartVolume = 0;
                 }
-
-                track.DefaultSampleRate = AudioStreamHelper.GetSampleRate(track);
-
-                AudioStreamHelper.SetPosition(track, 0);
             }
 
             AddToRecentTracks(track);
-
-            var sleepLength = Convert.ToInt32(track.LengthSeconds*10);
-            if (sleepLength > 480) sleepLength = 480;
-            if (sleepLength < 120) sleepLength = 120;
-            Thread.Sleep(sleepLength);
 
             DebugHelper.WriteLine("Finished loading track Audio Data " + track.Description);
 

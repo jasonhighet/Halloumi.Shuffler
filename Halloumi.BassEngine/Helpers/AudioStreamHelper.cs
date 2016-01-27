@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Halloumi.BassEngine.Models;
@@ -417,13 +418,20 @@ namespace Halloumi.BassEngine.Helpers
         }
 
         /// <summary>
-        ///     Sets the audio stream replay gain.
+        /// Sets the replay gain for a channel.
         /// </summary>
         /// <param name="audioStream">The audio stream.</param>
-        public static void SetReplayGain(AudioStream audioStream)
+        private static void SetReplayGain(AudioStream audioStream)
         {
+            if (audioStream.Gain == 0) return;
+            if (!audioStream.IsAudioLoaded()) return;
+
+            var volume = DecibelToPercent(audioStream.Gain);
+            DebugHelper.WriteLine("SetReplayGain for " + audioStream + " to " + volume);
+
             SetReplayGain(audioStream.Channel, audioStream.Gain);
         }
+
 
         /// <summary>
         ///     Sets the replay gain for a channel.
@@ -467,8 +475,6 @@ namespace Halloumi.BassEngine.Helpers
 
             DebugHelper.WriteLine($"AddToMixer {audioStream.Description} {mixerChannel} {audioStream.Channel}...");
             AddChannelToMixer(audioStream.Channel, mixerChannel);
-
-            SetReplayGain(audioStream);
 
             DebugHelper.WriteLine("done");
         }
@@ -527,6 +533,58 @@ namespace Halloumi.BassEngine.Helpers
             }
         }
 
+        public static void LoadAudio(AudioStream audioStream)
+        {
+            // abort if audio data already loaded
+            if (audioStream.IsAudioLoaded()) return;
+
+            audioStream.AudioData = File.ReadAllBytes(audioStream.Filename);
+            audioStream.AudioDataHandle = GCHandle.Alloc(audioStream.AudioData, GCHandleType.Pinned);
+
+            var channel = Bass.BASS_StreamCreateFile(audioStream.AudioDataPointer,
+                0,
+                audioStream.AudioData.Length,
+                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
+
+            audioStream.AddChannel(channel);
+
+            if (audioStream.Channel == 0)
+                throw new Exception("Cannot load " + audioStream.Filename + ". Error code: " + Bass.BASS_ErrorGetCode());
+
+            DebugHelper.WriteLine("Creating reverse FX stream " + audioStream.Description + "...");
+            audioStream.AddChannel(BassFx.BASS_FX_ReverseCreate(audioStream.Channel, 1, BASSFlag.BASS_STREAM_DECODE));
+
+            if (audioStream.Channel == 0)
+                throw new Exception("Cannot load " + audioStream.Filename + ". Error code: " + Bass.BASS_ErrorGetCode());
+
+            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_REVERSE_DIR,
+                (float) BASSFXReverse.BASS_FX_RVS_FORWARD);
+
+
+            DebugHelper.WriteLine("Creating tempo FX stream " + audioStream.Description + "...");
+
+            audioStream.AddChannel(BassFx.BASS_FX_TempoCreate(audioStream.Channel,
+                BASSFlag.BASS_FX_FREESOURCE | BASSFlag.BASS_STREAM_DECODE));
+
+            if (audioStream.Channel == 0)
+                throw new Exception("Cannot load " + audioStream.Filename + ". Error code: " + Bass.BASS_ErrorGetCode());
+
+            DebugHelper.WriteLine("Calculating track length " + audioStream.Description + "...");
+
+            audioStream.Length = Bass.BASS_ChannelGetLength(audioStream.Channel);
+            audioStream.DefaultSampleRate = GetSampleRate(audioStream.Channel);
+
+            SetReplayGain(audioStream);
+
+            SetPosition(audioStream, 0);
+
+
+            //var sleepLength = Convert.ToInt32(track.LengthSeconds*10);
+            //if (sleepLength > 480) sleepLength = 480;
+            //if (sleepLength < 120) sleepLength = 120;
+            //Thread.Sleep(sleepLength);
+        }
+
         /// <summary>
         ///     Unloads the audio of an audio stream
         /// </summary>
@@ -537,8 +595,8 @@ namespace Halloumi.BassEngine.Helpers
                 throw new Exception("Audio file null or not audio not loaded");
             DebugHelper.WriteLine($"UnloadAudio {audioStream.Description}...");
 
-            lock (Lock)
-            {
+            //lock (Lock)
+            //{
                 foreach (var channel in audioStream.Channels)
                 {
                     Bass.BASS_StreamFree(channel);
@@ -550,7 +608,7 @@ namespace Halloumi.BassEngine.Helpers
                     audioStream.AudioDataHandle.Free();
                     audioStream.AudioData = null;
                 }
-            }
+            //}
 
             DebugHelper.WriteLine("done");
         }

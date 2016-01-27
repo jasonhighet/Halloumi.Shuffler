@@ -5,6 +5,8 @@ using Halloumi.BassEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.Engine.Models;
 using BE = Halloumi.BassEngine;
+using Sample = Halloumi.Shuffler.Engine.Models.Sample;
+using Track = Halloumi.Shuffler.Engine.Models.Track;
 
 namespace Halloumi.Shuffler.Engine
 {
@@ -182,7 +184,7 @@ namespace Halloumi.Shuffler.Engine
             BassPlayer.UnloadTrackAudioData(bassTrack);
         }
 
-        private void SaveSampleFile(BassEngine.Models.Track bassTrack, Sample sample)
+        private void SaveSampleFile(BE.Models.Track bassTrack, Sample sample)
         {
             var sampleFolder = GetSampleFolder(sample);
 

@@ -439,42 +439,11 @@ namespace Halloumi.BassEngine
             lock (sample)
             {
                 // abort if audio data already loaded
-                if (sample.Channel != int.MinValue) return;
+                if (sample.IsAudioLoaded()) return;
 
                 DebugHelper.WriteLine("Loading sample Audio Data " + sample.Description);
 
-                if (mode == AudioDataMode.LoadIntoMemory)
-                {
-                    sample.AudioData = File.ReadAllBytes(sample.Filename);
-                    sample.AudioDataHandle = GCHandle.Alloc(sample.AudioData, GCHandleType.Pinned);
-                    sample.AddChannel(Bass.BASS_StreamCreateFile(sample.AudioDataPointer, 0, sample.AudioData.Length,
-                        BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN));
-                }
-                else
-                {
-                    sample.AddChannel(Bass.BASS_StreamCreateFile(sample.Filename, 0, 0,
-                        BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN));
-                }
-
-                if (sample.Channel == 0)
-                {
-                    var errorCode = Bass.BASS_ErrorGetCode();
-                    throw new Exception("Cannot load sample " + sample.Filename + ". Error code: " + errorCode);
-                }
-
-                sample.AddChannel(BassFx.BASS_FX_ReverseCreate(sample.Channel, 1, BASSFlag.BASS_STREAM_DECODE));
-                if (sample.Channel == 0) throw new Exception("Cannot load sample " + sample.Filename);
-                Bass.BASS_ChannelSetAttribute(sample.Channel, BASSAttribute.BASS_ATTRIB_REVERSE_DIR,
-                    (float) BASSFXReverse.BASS_FX_RVS_FORWARD);
-
-                sample.AddChannel(BassFx.BASS_FX_TempoCreate(sample.Channel,
-                    BASSFlag.BASS_FX_FREESOURCE | BASSFlag.BASS_STREAM_DECODE));
-                if (sample.Channel == 0) throw new Exception("Cannot load sample " + sample.Filename);
-
-                sample.Length = Bass.BASS_ChannelGetLength(sample.Channel);
-                sample.DefaultSampleRate = AudioStreamHelper.GetSampleRate(sample.Channel);
-
-                Bass.BASS_ChannelSetPosition(sample.Channel, 0);
+                AudioStreamHelper.LoadAudio(sample);
             }
         }
 

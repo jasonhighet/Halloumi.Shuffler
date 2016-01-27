@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Halloumi.BassEngine.Models;
-using Halloumi.BassEngine.Properties;
 using Halloumi.Common.Helpers;
-using IdSharp.Tagging.ID3v2;
 
 namespace Halloumi.BassEngine.Helpers
 {
