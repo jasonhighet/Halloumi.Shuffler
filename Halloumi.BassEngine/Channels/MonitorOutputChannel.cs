@@ -5,21 +5,19 @@ namespace Halloumi.BassEngine.Channels
 {
     public class MonitorOutputChannel : Channel
     {
-        private int _monitorDeviceId = int.MinValue;
-
         public MonitorOutputChannel()
             : base(null)
         {
             if (ChannelHelper.GetWaveOutDevices().Count >= 2)
             {
-                _monitorDeviceId = 2;
-                ChannelHelper.InitialiseMonitorDevice(_monitorDeviceId);
+                const int monitorDeviceId = 2;
+                ChannelHelper.InitialiseMonitorDevice(monitorDeviceId);
 
                 // create monitor mixer channel
                 InternalChannel = ChannelHelper.IntialiseOutputChannel();
 
                 // set to use monitor sound card
-                Bass.BASS_ChannelSetDevice(InternalChannel, _monitorDeviceId);
+                Bass.BASS_ChannelSetDevice(InternalChannel, monitorDeviceId);
 
                 Bass.BASS_ChannelPlay(InternalChannel, false);
             }

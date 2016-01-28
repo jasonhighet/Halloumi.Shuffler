@@ -1,4 +1,6 @@
-﻿namespace Halloumi.BassEngine.Channels
+﻿using System;
+
+namespace Halloumi.BassEngine.Channels
 {
     public class OutputSplitter
     {
@@ -8,8 +10,6 @@
 
         public OutputSplitter(MixerChannel inputChannel, SpeakerOutputChannel speakerChannel, MonitorOutputChannel monitorChannel)
         {
-            //if (inputChannel.OutputType != MixerChannelOutputType.MultipleOutputs)
-            //    throw new Exception("Multiple outputs required");
 
             SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
             SpeakerMixerChannel.AddInputChannel(inputChannel);
@@ -30,20 +30,22 @@
             get { return _soundOutput; }
             set
             {
-                if (value == SoundOutput.Monitor)
+                switch (value)
                 {
-                    SpeakerMixerChannel.SetVolume(0);
-                    MonitorMixerChannel.SetVolume(100);
-                }
-                else if (value == SoundOutput.Speakers)
-                {
-                    SpeakerMixerChannel.SetVolume(100);
-                    MonitorMixerChannel.SetVolume(0);
-                }
-                else if (value == SoundOutput.Both)
-                {
-                    SpeakerMixerChannel.SetVolume(100);
-                    MonitorMixerChannel.SetVolume(100);
+                    case SoundOutput.Monitor:
+                        SpeakerMixerChannel.SetVolume(0);
+                        MonitorMixerChannel.SetVolume(100);
+                        break;
+                    case SoundOutput.Speakers:
+                        SpeakerMixerChannel.SetVolume(100);
+                        MonitorMixerChannel.SetVolume(0);
+                        break;
+                    case SoundOutput.Both:
+                        SpeakerMixerChannel.SetVolume(100);
+                        MonitorMixerChannel.SetVolume(100);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
                 _soundOutput = value;
             }

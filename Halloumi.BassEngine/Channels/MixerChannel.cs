@@ -46,10 +46,12 @@ namespace Halloumi.BassEngine.Channels
         private void SetBassEq(decimal gain)
         {
             // 3-band EQ
-            var eq = new BASS_DX8_PARAMEQ();
-            eq.fBandwidth = 18f;
-            eq.fCenter = 100f;
-            eq.fGain = (float)gain;
+            var eq = new BASS_DX8_PARAMEQ
+            {
+                fBandwidth = 18f,
+                fCenter = 100f,
+                fGain = (float) gain
+            };
             Bass.BASS_FXSetParameters(_eqChannel, eq);
         }
     }

@@ -65,14 +65,14 @@ namespace Halloumi.BassEngine
 
         public decimal TrackSendFxDelayNotes
         {
-            get { return _trackSendFxMixer.DelayNotes; }
-            set { _trackSendFxMixer.DelayNotes = value; }
+            get { return _trackSendFxMixer.SyncNotes; }
+            set { _trackSendFxMixer.SyncNotes = value; }
         }
 
         public decimal SamplerDelayNotes
         {
-            get { return _samplerMixer.DelayNotes; }
-            set { _samplerMixer.DelayNotes = value; }
+            get { return _samplerMixer.SyncNotes; }
+            set { _samplerMixer.SyncNotes = value; }
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace Halloumi.BassEngine.Channels
         /// </summary>
         private static bool _waDspLoaded;
 
-        private decimal _delayNotes = 0.25M;
+        private decimal _syncNotes = 0.25M;
 
         protected Channel(IBmpProvider bpmProvider)
         {
@@ -34,17 +34,17 @@ namespace Halloumi.BassEngine.Channels
 
         public VstPlugin VstPlugin2 { get; internal set; }
 
-        public decimal DelayNotes
+        public decimal SyncNotes
         {
-            get { return _delayNotes; }
+            get { return _syncNotes; }
             set
             {
                 if (value < 0 || value > 1) return;
 
-                _delayNotes = value;
+                _syncNotes = value;
 
-                SetPluginSyncNotes(VstPlugin1, _delayNotes);
-                SetPluginSyncNotes(VstPlugin2, _delayNotes);
+                SetPluginSyncNotes(VstPlugin1, _syncNotes);
+                SetPluginSyncNotes(VstPlugin2, _syncNotes);
 
                 SetPluginBpm();
             }
@@ -52,14 +52,14 @@ namespace Halloumi.BassEngine.Channels
 
         public WaPlugin WaPlugin { get; private set; }
 
-        private static void SetPluginSyncNotes(VstPlugin plugin, decimal delayNotes)
+        private static void SetPluginSyncNotes(VstPlugin plugin, decimal syncNotes)
         {
             if (plugin == null)
                 return;
 
             foreach (var parameter in plugin.Parameters.Where(x => x.SyncToBpm && x.VariableSyncNotes))
             {
-                parameter.SyncNotes = delayNotes;
+                parameter.SyncNotes = syncNotes;
             }
         }
 
@@ -258,17 +258,17 @@ namespace Halloumi.BassEngine.Channels
                     VariableSyncNotes = true,
                     DefaultSyncNotes = (1M/4M)
                 },
-                new
-                {
-                    PluginName = "Classic Flanger",
-                    ParameterName = "Delay",
-                    SyncToBpm = true,
-                    MinSyncMilliSeconds = 0.1M,
-                    MaxSyncMilliSeconds = 10M,
-                    SyncUsingLogScale = true,
-                    VariableSyncNotes = false,
-                    DefaultSyncNotes = (1M/512M)
-                },
+                //new
+                //{
+                //    PluginName = "Classic Flanger",
+                //    ParameterName = "Delay",
+                //    SyncToBpm = true,
+                //    MinSyncMilliSeconds = 0.1M,
+                //    MaxSyncMilliSeconds = 10M,
+                //    SyncUsingLogScale = true,
+                //    VariableSyncNotes = false,
+                //    DefaultSyncNotes = (1M/512M)
+                //},
             }.ToList();
 
 
