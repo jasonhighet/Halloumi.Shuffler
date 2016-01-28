@@ -35,7 +35,7 @@ namespace Halloumi.BassEngine.Helpers
             if (!_silenceSaved) SaveSilenceLoop();
             if (!File.Exists(sample.Filename))
             {
-                ExportHelper.SaveAsWave(sample.AudioData, sample.Filename);
+                ExportHelper.SaveAsWave(sample.AudioData.Data, sample.Filename);
             }
 
             var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);

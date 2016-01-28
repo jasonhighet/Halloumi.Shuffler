@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="BassPlayer.cs" />
     <Compile Include="BassPlayer.Plugins.cs" />
+    <Compile Include="Helpers\AudioDataHelper.cs" />
     <Compile Include="Helpers\AudioStreamHelper.cs" />
     <Compile Include="Helpers\BpmHelper.cs" />
     <Compile Include="Helpers\FormatHelper.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Helpers\ExportHelper.cs" />
     <Compile Include="Helpers\TrackHelper.cs" />
     <Compile Include="Helpers\ChannelHelper.cs" />
+    <Compile Include="Models\AudioData.cs" />
     <Compile Include="Models\AudioStream.cs" />
     <Compile Include="Models\PlayState.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
