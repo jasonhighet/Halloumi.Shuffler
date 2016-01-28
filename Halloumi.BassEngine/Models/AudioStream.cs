@@ -26,13 +26,10 @@ namespace Halloumi.BassEngine.Models
         {
             Channels = new List<int>();
             Gain = 0;
+            GainChannel = int.MinValue;
         }
 
-        internal GCHandle AudioDataHandle { get; set; }
-
-        internal byte[] AudioData { get; set; }
-
-        internal IntPtr AudioDataPointer => AudioDataHandle.AddrOfPinnedObject();
+        public AudioData AudioData { get; set; }
 
         /// <summary>
         ///     Gets or sets the Id for the track.
@@ -108,7 +105,7 @@ namespace Halloumi.BassEngine.Models
         /// <returns></returns>
         public bool IsAudioLoaded()
         {
-            return Channel != int.MinValue;
+            return AudioData != null &&  Channel != int.MinValue;
         }
 
         /// <summary>
@@ -120,6 +117,19 @@ namespace Halloumi.BassEngine.Models
             Channels.Insert(0, channel);
         }
 
+        /// <summary>
+        ///     Gets or sets the gain channel for the track
+        /// </summary>
+        internal int GainChannel { get; set; }
+
+        /// <summary>
+        /// Determines whether the gain channel has been initialized.
+        /// </summary>
+        /// <returns>True if the gain channel has been initialized</returns>
+        internal bool IsGainChannelInitialized()
+        {
+            return GainChannel == int.MinValue;
+        }
 
         /// <summary>
         ///     Converts a sample count into a duration in seconds.
