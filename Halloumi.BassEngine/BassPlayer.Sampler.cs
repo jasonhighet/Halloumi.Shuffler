@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Halloumi.BassEngine.Channels;
 using Halloumi.BassEngine.Helpers;
 using Halloumi.BassEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Fx;
 using Un4seen.Bass.AddOn.Mix;
 
 namespace Halloumi.BassEngine
@@ -73,12 +71,12 @@ namespace Halloumi.BassEngine
         ///     Unloads the sample audio data.
         /// </summary>
         /// <param name="sample">The sample.</param>
-        public void UnloadSample(Sample sample)
+        private void UnloadSample(Sample sample)
         {
             if (sample == null) return;
             if (sample.Channel == int.MinValue) return;
 
-            DebugHelper.WriteLine("Unloading sample " + sample.Description);
+            DebugHelper.WriteLine("Unloading audioStream " + sample.Description);
 
             AudioStreamHelper.RemoveFromMixer(sample, _samplerMixer.InternalChannel);
             AudioStreamHelper.UnloadAudio(sample);
@@ -86,15 +84,6 @@ namespace Halloumi.BassEngine
             _cachedSamples.Remove(sample);
         }
 
-        /// <summary>
-        ///     Loads the sample.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns>The loaded sample</returns>
-        public Sample LoadSample(string filename)
-        {
-            return LoadSample(filename, "", 0);
-        }
 
         /// <summary>
         ///     Loads the sample.
@@ -105,9 +94,9 @@ namespace Halloumi.BassEngine
         /// <returns>
         ///     The loaded sample
         /// </returns>
-        public Sample LoadSample(string filename, string description, float gain)
+        private Sample LoadSample(string filename, string description, float gain)
         {
-            DebugHelper.WriteLine("Loading sample " + filename);
+            DebugHelper.WriteLine("Loading audioStream " + filename);
 
             if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
 
@@ -121,7 +110,8 @@ namespace Halloumi.BassEngine
                     : description
             };
 
-            LoadSampleAudioData(sample);
+
+            AudioStreamHelper.LoadAudio(sample);
             AddSampleToSampler(sample);
 
             _cachedSamples.Add(sample);
@@ -145,7 +135,7 @@ namespace Halloumi.BassEngine
             return trackSample == null ? null : LoadSample(track, trackSample);
         }
 
-        public Sample LoadSample(Track track, TrackSample trackSample)
+        private Sample LoadSample(Track track, TrackSample trackSample)
         {
             if (trackSample == null) return null;
             if (track == null) return null;
@@ -255,7 +245,7 @@ namespace Halloumi.BassEngine
             return trackSamples;
         }
 
-        public List<TrackSample> GetTrackSamples(Track track)
+        private List<TrackSample> GetTrackSamples(Track track)
         {
             return GetAutomationAttributes(track)
                 .TrackSamples
@@ -300,7 +290,7 @@ namespace Halloumi.BassEngine
         /// <returns>
         ///     The loaded sample
         /// </returns>
-        public Sample GetSampleBySampleId(string sampleId)
+        private Sample GetSampleBySampleId(string sampleId)
         {
             return Samples.FirstOrDefault(s => s.SampleId == sampleId);
         }
@@ -344,14 +334,12 @@ namespace Halloumi.BassEngine
         /// <summary>
         ///     Stops the sample.
         /// </summary>
-        /// <param name="sample">The sample.</param>
-        public void StopSample(Sample sample)
+        /// <param name="audioStream">The sample.</param>
+        private void StopSample(AudioStream audioStream)
         {
-            if (sample == null || sample.Channel == int.MinValue) return;
-
             lock (_samplePlayLock)
             {
-                BassMix.BASS_Mixer_ChannelPause(sample.Channel);
+                AudioStreamHelper.Pause(audioStream);
             }
         }
 
@@ -409,7 +397,7 @@ namespace Halloumi.BassEngine
 
             _samplerOutputSplitter = new OutputSplitter(_samplerMixer, _speakerOutput, _monitorOutput);
 
-            // delete any temporary sample files
+            // delete any temporary audioStream files
             _tempSamplerFolder = Path.Combine(Path.GetTempPath(), "Sampler");
             if (!Directory.Exists(_tempSamplerFolder))
                 Directory.CreateDirectory(_tempSamplerFolder);
@@ -430,21 +418,12 @@ namespace Halloumi.BassEngine
         ///     Loads the sample audio data.
         /// </summary>
         /// <param name="sample">The sample to load.</param>
-        /// <param name="mode">The mode.</param>
         /// <returns>
         ///     The loaded sample
         /// </returns>
-        private static void LoadSampleAudioData(Sample sample, AudioDataMode mode = AudioDataMode.LoadIntoMemory)
+        private static void LoadSampleAudioData(Sample sample)
         {
-            lock (sample)
-            {
-                // abort if audio data already loaded
-                if (sample.IsAudioLoaded()) return;
 
-                DebugHelper.WriteLine("Loading sample Audio Data " + sample.Description);
-
-                AudioStreamHelper.LoadAudio(sample);
-            }
         }
 
         /// <summary>
@@ -455,12 +434,15 @@ namespace Halloumi.BassEngine
         {
             if (sample == null) return;
 
-            DebugHelper.WriteLine("Add sample to sampler " + sample.Description);
+            DebugHelper.WriteLine("Add audioStream to sampler " + sample.Description);
 
             // load audio data if not loaded
-            if (sample.Channel == int.MinValue)
+            if (!sample.IsAudioLoaded())
             {
-                LoadSampleAudioData(sample);
+                lock (sample)
+                {
+                    AudioStreamHelper.LoadAudio(sample);
+                }
             }
 
             lock (MixerLock)
@@ -468,7 +450,7 @@ namespace Halloumi.BassEngine
                 AudioStreamHelper.AddToMixer(sample, _samplerMixer.InternalChannel);
             }
 
-            // set sample sync event
+            // set audioStream sync event
             sample.SyncProc = OnSampleSync;
 
             SetSampleSyncPositions(sample);
@@ -478,15 +460,15 @@ namespace Halloumi.BassEngine
         ///     Sets the sample sync positions.
         /// </summary>
         /// <param name="sample">The sample.</param>
-        private void SetSampleSyncPositions(Sample sample)
+        private static void SetSampleSyncPositions(Sample sample)
         {
             if (sample == null) return;
 
             ClearSampleSyncPositions(sample);
 
-            DebugHelper.WriteLine("Set sample sync positions " + sample.Description);
+            DebugHelper.WriteLine("Set audioStream sync positions " + sample.Description);
 
-            // set end sample sync
+            // set end audioStream sync
             SetSampleSync(sample, sample.Length - 2000, SampleSyncType.SampleEnd);
         }
 
@@ -516,7 +498,7 @@ namespace Halloumi.BassEngine
         /// <param name="sample">The sample.</param>
         private static void ClearSampleSyncPositions(Sample sample)
         {
-            DebugHelper.WriteLine("Clear sample sync positions " + sample.Description);
+            DebugHelper.WriteLine("Clear audioStream sync positions " + sample.Description);
 
             if (sample.Channel == int.MinValue || sample.SampleEndSyncId == int.MinValue) return;
 
@@ -524,7 +506,7 @@ namespace Halloumi.BassEngine
             sample.SampleEndSyncId = int.MinValue;
         }
 
-        private void LoopSample(Sample sample)
+        private void LoopSample(AudioStream sample)
         {
             if (sample == null || sample.Channel == int.MinValue) return;
             lock (_samplePlayLock)
@@ -554,12 +536,12 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        ///     Enumeration style representing different types of sample sync events.
+        ///     Enumeration style representing different types of audioStream sync events.
         /// </summary>
         private enum SampleSyncType
         {
             /// <summary>
-            ///     sample end sync event type
+            ///     audioStream end sync event type
             /// </summary>
             SampleEnd = 0
         }
