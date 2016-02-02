@@ -415,18 +415,6 @@ namespace Halloumi.BassEngine
         }
 
         /// <summary>
-        ///     Loads the sample audio data.
-        /// </summary>
-        /// <param name="sample">The sample to load.</param>
-        /// <returns>
-        ///     The loaded sample
-        /// </returns>
-        private static void LoadSampleAudioData(Sample sample)
-        {
-
-        }
-
-        /// <summary>
         ///     Adds to the mixer channel, and sets the sync points.
         /// </summary>
         /// <param name="sample">The sample to sync.</param>
