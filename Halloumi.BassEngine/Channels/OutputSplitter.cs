@@ -4,26 +4,28 @@ namespace Halloumi.BassEngine.Channels
 {
     public class OutputSplitter
     {
-        public MixerChannel SpeakerMixerChannel { get; private set; }
+        private SoundOutput _soundOutput = SoundOutput.Speakers;
 
-        public MixerChannel MonitorMixerChannel { get; private set; }
-
-        public OutputSplitter(MixerChannel inputChannel, SpeakerOutputChannel speakerChannel, MonitorOutputChannel monitorChannel)
+        public OutputSplitter(MixerChannel inputChannel, Channel speakerChannel,
+            Channel monitorChannel)
         {
-
-            SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
+            SpeakerMixerChannel = new MixerChannel(MixerChannelOutputType.SingleOutput, inputChannel.BpmProvider);
             SpeakerMixerChannel.AddInputChannel(inputChannel);
             speakerChannel.AddInputChannel(SpeakerMixerChannel);
 
-            MonitorMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
+            MonitorMixerChannel = new MixerChannel(MixerChannelOutputType.SingleOutput, inputChannel.BpmProvider);
             MonitorMixerChannel.AddInputChannel(inputChannel);
             monitorChannel.AddInputChannel(MonitorMixerChannel);
 
             SoundOutput = SoundOutput.Speakers;
         }
 
+        public MixerChannel SpeakerMixerChannel { get; }
+
+        public MixerChannel MonitorMixerChannel { get; }
+
         /// <summary>
-        /// Gets or sets the sampler output.
+        ///     Gets or sets the sampler output.
         /// </summary>
         public SoundOutput SoundOutput
         {
@@ -50,8 +52,6 @@ namespace Halloumi.BassEngine.Channels
                 _soundOutput = value;
             }
         }
-
-        private SoundOutput _soundOutput = SoundOutput.Speakers;
     }
 
     public enum SoundOutput

@@ -9,7 +9,7 @@ namespace Halloumi.BassEngine.Channels
 
         private int _eqChannel = int.MinValue;
 
-        public MixerChannel(IBmpProvider bpmProvider, MixerChannelOutputType outputType)
+        public MixerChannel(MixerChannelOutputType outputType = MixerChannelOutputType.SingleOutput, IBmpProvider bpmProvider = null)
             : base(bpmProvider)
         {
             InternalChannel = ChannelHelper.IntialiseMixerChannel();

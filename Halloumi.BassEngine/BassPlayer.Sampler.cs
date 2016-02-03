@@ -391,7 +391,7 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("InitialiseSampler");
 
             // create mixer channel
-            _samplerMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
+            _samplerMixer = new MixerChannel(MixerChannelOutputType.SingleOutput, this);
             _samplerMixer.SetVolume((decimal) DefaultFadeOutStartVolume);
             _samplerMixer.CutBass();
 

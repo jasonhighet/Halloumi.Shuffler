@@ -33,7 +33,7 @@ namespace Halloumi.BassEngine
         {
             DebugHelper.WriteLine("InitialiseRawLoopMixer");
 
-            _rawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
+            _rawLoopMixer = new MixerChannel(MixerChannelOutputType.MultipleOutputs, this);
             _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, _speakerOutput, _monitorOutput);
 
             DebugHelper.WriteLine("END InitialiseRawLoopMixer");
