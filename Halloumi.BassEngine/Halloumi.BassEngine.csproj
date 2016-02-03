@@ -172,7 +172,7 @@
     <Compile Include="Plugins\VSTPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="silence.mp3" />
+    <None Include="Resources\silence.mp3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BassPlayer.Automation.cs" />
