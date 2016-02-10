@@ -339,7 +339,7 @@ namespace Halloumi.BassEngine.Helpers
 
             lock (Lock)
             {
-                DebugHelper.WriteLine("Play (" + audioStream.Description + ")");
+                DebugHelper.WriteLine("Queue (" + audioStream.Description + ")");
                 BassMix.BASS_Mixer_ChannelPlay(audioStream.Channel);
                 DebugHelper.WriteLine("Playing (" + audioStream.Description + ")");
             }

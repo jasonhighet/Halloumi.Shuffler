@@ -1021,7 +1021,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack != null)
             {
-                DebugHelper.WriteLine("Play");
+                DebugHelper.WriteLine("Queue");
 
                 if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
 

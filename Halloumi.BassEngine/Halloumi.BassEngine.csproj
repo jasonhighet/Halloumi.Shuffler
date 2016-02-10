@@ -109,6 +109,10 @@
     <Compile Include="Models\AudioData.cs" />
     <Compile Include="Models\AudioStream.cs" />
     <Compile Include="Models\PlayState.cs" />
+    <Compile Include="Players\AudioPlayer.cs" />
+    <Compile Include="Players\AudioSection.cs" />
+    <Compile Include="Players\AudioSync.cs" />
+    <Compile Include="Players\SyncType.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -123,7 +127,7 @@
     <Compile Include="Models\Track.cs" />
     <Compile Include="Models\TrackPosition.cs" />
     <Compile Include="Channels\VolumeLevels.cs" />
-    <Compile Include="RawLoopPlayer.cs" />
+    <Compile Include="Players\RawLoopPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
