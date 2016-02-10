@@ -266,16 +266,16 @@ namespace Halloumi.BassEngine
             DebugHelper.WriteLine("InitialiseTrackMixer");
 
             // create mixer channel
-            _trackMixer = new MixerChannel(MixerChannelOutputType.MultipleOutputs, this);
+            _trackMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
             _trackOutputSplitter = new OutputSplitter(_trackMixer, _speakerOutput, _monitorOutput);
 
             // create clone of mixer channel and mute it
-            _trackSendMixer = new MixerChannel(MixerChannelOutputType.SingleOutput, this);
+            _trackSendMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
             _trackSendMixer.AddInputChannel(_trackMixer);
             _trackSendMixer.SetVolume(0);
 
             // add the track FX to the track FX mixer,
-            _trackSendFxMixer = new MixerChannel(MixerChannelOutputType.SingleOutput, this);
+            _trackSendFxMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
             _trackSendFxMixer.AddInputChannel(_trackSendMixer);
             _trackSendFxMixer.CutBass();
 
@@ -1021,7 +1021,7 @@ namespace Halloumi.BassEngine
         {
             if (CurrentTrack != null)
             {
-                DebugHelper.WriteLine("Queue");
+                DebugHelper.WriteLine("QueueSection");
 
                 if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
 

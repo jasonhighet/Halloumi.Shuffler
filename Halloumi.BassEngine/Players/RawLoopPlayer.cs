@@ -5,12 +5,12 @@ namespace Halloumi.BassEngine.Players
     public class RawLoopPlayer
     {
         private readonly AudioPlayer _audioPlayer;
-        private AudioSection _audioSection;
-        private const string StreamKey = "RawLoopTrack";
+        private const string StreamKey = "RawLoop";
+        private const string SectionKey = "RawLoop";
 
-        public RawLoopPlayer()
+        public RawLoopPlayer(IBmpProvider bpmProvider = null)
         {
-            _audioPlayer = new AudioPlayer();
+            _audioPlayer = new AudioPlayer(bpmProvider);
         }
 
         public MixerChannel Output => _audioPlayer.Output;
@@ -19,28 +19,19 @@ namespace Halloumi.BassEngine.Players
         {
             _audioPlayer.UnloadAll();
             _audioPlayer.Load(StreamKey, filename);
+            _audioPlayer.AddSection(StreamKey, SectionKey);
         }
 
         public void UnloadAudio()
         {
-            _audioSection = null;
             _audioPlayer.UnloadAll();
         }
 
         public void SetPositions(double start, double length, double offset = double.MinValue)
         {
             _audioPlayer.Pause(StreamKey);
-            if (_audioSection == null)
-            {
-                _audioSection = _audioPlayer.AddAudioSection(StreamKey, start, length, offset);
-                _audioSection.LoopIndefinitely = true;
-            }
-            else
-            {
-                _audioPlayer.UpdateAudioSection(StreamKey, _audioSection , start, length, offset);
-            }
-
-            _audioPlayer.Queue(StreamKey, _audioSection);
+            _audioPlayer.SetSectionPositions(StreamKey, SectionKey, start, length, offset);
+            _audioPlayer.QueueSection(StreamKey, SectionKey);
             _audioPlayer.Play(StreamKey);
         }
 

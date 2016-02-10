@@ -16,20 +16,20 @@ namespace Halloumi.BassEngine.Players
     {
         private readonly List<AudioStreamSection> _audioStreamSections;
 
-        public AudioPlayer()
+        public AudioPlayer(IBmpProvider bpmProvider = null)
         {
-            Output = new MixerChannel();
+            Output = new MixerChannel(bpmProvider);
             _audioStreamSections = new List<AudioStreamSection>();
         }
 
         public MixerChannel Output { get; }
 
-        public AudioStream Load(string key, string filename)
+        public AudioStream Load(string streamKey, string filename)
         {
             if (!File.Exists(filename))
                 throw new Exception("Cannot find file " + filename);
-            if (_audioStreamSections.Any(x => x.Key == key))
-                throw new Exception("AudioStream already exists with key " + key);
+            if (_audioStreamSections.Any(x => x.Key == streamKey))
+                throw new Exception("AudioStream already exists with streamKey " + streamKey);
 
             var audioStream = new Sample
             {
@@ -43,7 +43,7 @@ namespace Halloumi.BassEngine.Players
 
             _audioStreamSections.Add(new AudioStreamSection
             {
-                Key = key,
+                Key = streamKey,
                 AudioStream = audioStream,
                 AudioSections = new List<AudioSection>()
             });
@@ -51,17 +51,17 @@ namespace Halloumi.BassEngine.Players
             return audioStream;
         }
 
-        public void Unload(string key)
+        public void Unload(string streamKey)
         {
-            var streamSection = _audioStreamSections.FirstOrDefault(x => x.Key == key);
+            var streamSection = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey);
             if (streamSection == null)
                 return;
 
             AudioStreamHelper.Pause(streamSection.AudioStream);
 
-            foreach (var section in streamSection.AudioSections)
+            foreach (var sync in streamSection.AudioSections.SelectMany(section => section.AudioSyncs))
             {
-                RemoveSyncs(streamSection.AudioStream, section);
+                RemoveSyncFromStream(streamSection.AudioStream, sync);
             }
 
             AudioStreamHelper.RemoveFromMixer(streamSection.AudioStream, Output.InternalChannel);
@@ -74,36 +74,41 @@ namespace Halloumi.BassEngine.Players
         public void UnloadAll()
         {
             var keys = _audioStreamSections.Select(x => x.Key);
-            foreach (var key in keys)
+            foreach (var streamKey in keys)
             {
-                Unload(key);
+                Unload(streamKey);
             }
         }
 
-        public void Play(string key)
+        public void Play(string streamKey)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == key)?.AudioStream;
+            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
             AudioStreamHelper.Play(audioStream);
         }
 
-        public void Pause(string key)
+        public void Pause(string streamKey)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == key)?.AudioStream;
+            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
             AudioStreamHelper.Pause(audioStream);
         }
 
-        public AudioSection AddAudioSection(string key, double start, double length,
-            double offset = double.MinValue)
+        public AudioSection AddSection(string streamKey, string sectionKey)
         {
-            var streamSection = _audioStreamSections.FirstOrDefault(x => x.Key == key);
+            var streamSection = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey);
             if (streamSection == null)
                 return null;
 
-            var audioSection = new AudioSection();
+            var audioSection = _audioStreamSections
+                .FirstOrDefault(x => x.Key == streamKey)?
+                .AudioSections.FirstOrDefault(x => x.Key == sectionKey);
 
-            SetSync(streamSection.AudioStream, audioSection, SyncType.Start, start);
-            SetSync(streamSection.AudioStream, audioSection, SyncType.End, start + length);
-            SetSync(streamSection.AudioStream, audioSection, SyncType.End, offset);
+            if (audioSection != null)
+                return audioSection;
+
+            audioSection = new AudioSection
+            {
+                Key = sectionKey
+            };
 
             streamSection.AudioSections.Add(audioSection);
 
@@ -111,21 +116,37 @@ namespace Halloumi.BassEngine.Players
         }
 
 
-        public void UpdateAudioSection(string key, AudioSection audioSection, double start, double length,
+        public void SetSectionPositions(string streamKey, string sectionKey, double start, double length,
             double offset = double.MinValue)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == key)?.AudioStream;
-            RemoveSyncs(audioStream, audioSection);
+            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            if (audioStream == null)
+                return;
+
+            var audioSection = _audioStreamSections
+                .FirstOrDefault(x => x.Key == streamKey)?
+                .AudioSections.FirstOrDefault(x => x.Key == sectionKey);
+            if (audioSection == null)
+                return;
 
             SetSync(audioStream, audioSection, SyncType.Start, start);
             SetSync(audioStream, audioSection, SyncType.End, start + length);
             SetSync(audioStream, audioSection, SyncType.End, offset);
         }
 
-        public void Queue(string key, AudioSection audioSection)
+        public void QueueSection(string streamKey, string sectionKey)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == key)?.AudioStream;
-            if (audioStream == null || audioSection == null)
+            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            if (audioStream == null)
+                return;
+
+            var audioSection = _audioStreamSections
+                .FirstOrDefault(x => x.Key == streamKey)?
+                .AudioSections.FirstOrDefault(x => x.Key == sectionKey);
+            if (audioSection == null)
+                return;
+
+            if(!audioSection.HasStartAndEnd)
                 return;
 
             var startPosition = audioSection.HasOffset
@@ -138,7 +159,12 @@ namespace Halloumi.BassEngine.Players
         private static void SetSync(AudioStream audioStream, AudioSection audioSection, SyncType syncType,
             double position)
         {
-            audioSection.AudioSyncs.RemoveAll(x => x.SyncType == syncType);
+            var audioSync = audioSection.AudioSyncs.FirstOrDefault(x => x.SyncType == syncType);
+            if (audioSync != null)
+            {
+                RemoveSyncFromStream(audioStream, audioSync);
+                audioSection.AudioSyncs.Remove(audioSync);
+            }
 
             if (position == double.MinValue) return;
 
@@ -148,15 +174,11 @@ namespace Halloumi.BassEngine.Players
             if (samplePosition > maxSample)
                 samplePosition = maxSample;
 
-            var audioSync = new AudioSync {SyncType = syncType, Position = samplePosition};
+            audioSync = new AudioSync {SyncType = syncType, Position = samplePosition};
 
             audioSection.AudioSyncs.Add(audioSync);
 
-            audioSync.Id = BassMix.BASS_Mixer_ChannelSetSync(audioStream.Channel,
-                BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME,
-                audioSync.Position,
-                audioStream.SyncProc,
-                new IntPtr((int) audioSync.SyncType));
+            AddSyncToStream(audioStream, audioSync);
         }
 
         private void OnSync(int syncId, int channel, int data, IntPtr pointer)
@@ -219,13 +241,20 @@ namespace Halloumi.BassEngine.Players
                 .FirstOrDefault(a => a.AudioSyncs.Any(x => x.Id == syncId));
         }
 
-        private static void RemoveSyncs(AudioStream audioStream, AudioSection audioSection)
+        private static void RemoveSyncFromStream(AudioStream audioStream, AudioSync sync)
         {
-            foreach (var sync in audioSection.AudioSyncs.Where(x => x.Id != int.MinValue))
-            {
-                BassMix.BASS_Mixer_ChannelRemoveSync(audioStream.Channel, sync.Id);
-                sync.Id = int.MinValue;
-            }
+            if(sync.Id == int.MinValue) return;
+            BassMix.BASS_Mixer_ChannelRemoveSync(audioStream.Channel, sync.Id);
+            sync.Id = int.MinValue;
+        }
+
+        private static void AddSyncToStream(AudioStream audioStream, AudioSync audioSync)
+        {
+            audioSync.Id = BassMix.BASS_Mixer_ChannelSetSync(audioStream.Channel,
+                BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME,
+                audioSync.Position,
+                audioStream.SyncProc,
+                new IntPtr((int)audioSync.SyncType));
         }
 
         private class AudioStreamSection

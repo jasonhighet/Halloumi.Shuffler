@@ -13,6 +13,8 @@ namespace Halloumi.BassEngine.Players
             AudioSyncs = new List<AudioSync>();
         }
 
+        public string Key { get; set;  }
+
         public List<AudioSync> AudioSyncs { get; }
 
         public AudioSync Start => AudioSyncs.FirstOrDefault(x => x.SyncType == SyncType.Start);
@@ -22,6 +24,8 @@ namespace Halloumi.BassEngine.Players
         public AudioSync Offset => AudioSyncs.FirstOrDefault(x => x.SyncType == SyncType.Offset);
 
         public bool HasOffset => Offset != null;
+
+        public bool HasStartAndEnd=> Start != null && End != null;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this section should loop indefinitely.

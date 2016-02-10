@@ -9,11 +9,11 @@ namespace Halloumi.BassEngine.Channels
         public OutputSplitter(MixerChannel inputChannel, Channel speakerChannel,
             Channel monitorChannel)
         {
-            SpeakerMixerChannel = new MixerChannel(MixerChannelOutputType.SingleOutput, inputChannel.BpmProvider);
+            SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
             SpeakerMixerChannel.AddInputChannel(inputChannel);
             speakerChannel.AddInputChannel(SpeakerMixerChannel);
 
-            MonitorMixerChannel = new MixerChannel(MixerChannelOutputType.SingleOutput, inputChannel.BpmProvider);
+            MonitorMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
             MonitorMixerChannel.AddInputChannel(inputChannel);
             monitorChannel.AddInputChannel(MonitorMixerChannel);
 
