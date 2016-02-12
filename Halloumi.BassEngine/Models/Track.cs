@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 
-namespace Halloumi.BassEngine.Models
+namespace Halloumi.Shuffler.AudioEngine.Models
 {
     /// <summary>
     ///     Represents a playable mp3 file

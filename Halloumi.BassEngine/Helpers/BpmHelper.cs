@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Models;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public static class BpmHelper

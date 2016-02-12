@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.Engine;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -58,7 +58,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         /// Gets or sets the bass player.

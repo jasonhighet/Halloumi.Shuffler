@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Track = Halloumi.Shuffler.Engine.Models.Track;
 

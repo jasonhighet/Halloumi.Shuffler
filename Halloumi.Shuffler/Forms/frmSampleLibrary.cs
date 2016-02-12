@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Engine;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -12,7 +12,7 @@ namespace Halloumi.Shuffler.Forms
             InitializeComponent();
         }
 
-        internal void Initialize(BE.BassPlayer bassPlayer, SampleLibrary sampleLibrary)
+        internal void Initialize(AE.BassPlayer bassPlayer, SampleLibrary sampleLibrary)
         {
             sampleLibraryControl.BassPlayer = bassPlayer;
             sampleLibraryControl.SampleLibrary = sampleLibrary;

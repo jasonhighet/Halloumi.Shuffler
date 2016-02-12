@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Halloumi.Common.Windows.Forms;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -53,7 +53,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         /// Handles the Slid event of the sldVolume control.

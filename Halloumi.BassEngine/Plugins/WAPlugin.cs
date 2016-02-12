@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine.Plugins
+﻿namespace Halloumi.Shuffler.AudioEngine.Plugins
 {
     /// <summary>
     /// Represents a Winamp DSP plugin.

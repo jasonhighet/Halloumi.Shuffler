@@ -7,11 +7,11 @@ using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Forms;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Common.Helpers;
 using System.IO;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.Engine.Models;
 
 namespace Halloumi.Shuffler.Controls
@@ -74,7 +74,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         public SampleLibraryControl()
         {

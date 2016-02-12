@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Models;
 
-namespace Halloumi.BassEngine.Players
+namespace Halloumi.Shuffler.AudioEngine.Players
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     internal class AudioSection

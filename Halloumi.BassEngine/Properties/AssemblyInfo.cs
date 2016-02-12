@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Halloumi.BassEngine")]
+[assembly: AssemblyTitle("Halloumi.Shuffler.AudioEngine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Simpl")]
-[assembly: AssemblyProduct("Halloumi.BassEngine")]
+[assembly: AssemblyProduct("Halloumi.Shuffler.AudioEngine")]
 [assembly: AssemblyCopyright("Copyright © Simpl 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

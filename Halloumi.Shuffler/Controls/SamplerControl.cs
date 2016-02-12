@@ -4,21 +4,20 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Engine.Models;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
     public partial class SamplerControl : UserControl
     {
-        private BassEngine.Models.Track _currentTrack = null;
-        private BassEngine.Models.Track _nextTrack = null;
+        private AE.Models.Track _currentTrack = null;
+        private AE.Models.Track _nextTrack = null;
 
-        //private BE.Track _previousTrack = null;
-        private BassEngine.Models.Track _additionalTrack = null;
+        //private AE.Track _previousTrack = null;
+        private AE.Models.Track _additionalTrack = null;
 
         private List<SamplePlayer> SamplePlayers { get; set; }
 
@@ -163,7 +162,7 @@ namespace Halloumi.Shuffler.Controls
         /// Gets the previous track.
         /// </summary>
         /// <returns>The previous track</returns>
-        private BassEngine.Models.Track GetPreviousTrack()
+        private AudioEngine.Models.Track GetPreviousTrack()
         {
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return null;
@@ -202,9 +201,9 @@ namespace Halloumi.Shuffler.Controls
                 SetVolume(settings.SamplerVolume);
 
                 BassPlayer.SamplerOutput = settings.SamplerOutput;
-                if (settings.SamplerOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.SamplerOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.SamplerOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
+                if (settings.SamplerOutput == AE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
+                if (settings.SamplerOutput == AE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
+                if (settings.SamplerOutput == AE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
             }
             catch
             { }
@@ -222,7 +221,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         /// Handles the Click event of the btnRefresh control.
@@ -308,7 +307,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var outputType = cmbOutput.ParseEnum<BE.Channels.SoundOutput>();
+            var outputType = cmbOutput.ParseEnum<AE.Channels.SoundOutput>();
             BassPlayer.SamplerOutput = outputType;
         }
 

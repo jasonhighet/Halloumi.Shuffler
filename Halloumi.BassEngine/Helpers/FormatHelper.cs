@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class FormatHelper
     {

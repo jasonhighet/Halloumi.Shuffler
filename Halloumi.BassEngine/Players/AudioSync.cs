@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine.Players
+﻿namespace Halloumi.Shuffler.AudioEngine.Players
 {
     internal class AudioSync
     {

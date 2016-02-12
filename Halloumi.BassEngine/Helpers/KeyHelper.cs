@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using Halloumi.Common.Helpers;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class KeyHelper
     {

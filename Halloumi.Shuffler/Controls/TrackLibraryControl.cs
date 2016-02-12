@@ -6,13 +6,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Engine.Models;
 using Halloumi.Shuffler.Forms;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -128,7 +128,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         /// Gets the playlist control.

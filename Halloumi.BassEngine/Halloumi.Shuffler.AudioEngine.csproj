@@ -8,8 +8,8 @@
     <ProjectGuid>{B2B7650C-8209-4D48-AADF-5A1E76928B7E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Halloumi.BassEngine</RootNamespace>
-    <AssemblyName>Halloumi.BassEngine</AssemblyName>
+    <RootNamespace>Halloumi.Shuffler.AudioEngine</RootNamespace>
+    <AssemblyName>Halloumi.Shuffler.AudioEngine</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>

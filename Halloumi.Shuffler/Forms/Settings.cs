@@ -81,13 +81,13 @@ namespace Halloumi.Shuffler.Forms
             BypassTrackFxEffect2 = false;
             TrackFxVolume = 50;
             TrackFxDelayNotes = 0.25M;
-            SamplerOutput = BassEngine.Channels.SoundOutput.Speakers;
-            TrackOutput = BassEngine.Channels.SoundOutput.Speakers;
+            SamplerOutput = AudioEngine.Channels.SoundOutput.Speakers;
+            TrackOutput = AudioEngine.Channels.SoundOutput.Speakers;
             MonitorVolume = 5;
             MixableRankFilterIndex = 0;
             MixableKeyRankFilterIndex = 0;
             MixableViewIndex = 0;
-            RawLoopOutput = BassEngine.Channels.SoundOutput.Speakers;
+            RawLoopOutput = AudioEngine.Channels.SoundOutput.Speakers;
             EnableTrackFxAutomation = true;
             EnableSampleAutomation = true;
             ShufflerMode = TrackSelector.MixStrategy.None;
@@ -175,9 +175,9 @@ namespace Halloumi.Shuffler.Forms
 
         public decimal TrackFxDelayNotes { get; set; }
 
-        public BassEngine.Channels.SoundOutput SamplerOutput { get; set; }
+        public AudioEngine.Channels.SoundOutput SamplerOutput { get; set; }
 
-        public BassEngine.Channels.SoundOutput TrackOutput { get; set; }
+        public AudioEngine.Channels.SoundOutput TrackOutput { get; set; }
 
         public int MonitorVolume { get; set; }
 
@@ -189,7 +189,7 @@ namespace Halloumi.Shuffler.Forms
 
         public bool MixableTracksExcludeQueued { get; set; }
 
-        public BassEngine.Channels.SoundOutput RawLoopOutput { get; set; }
+        public AudioEngine.Channels.SoundOutput RawLoopOutput { get; set; }
 
         public bool EnableTrackFxAutomation { get; set; }
 

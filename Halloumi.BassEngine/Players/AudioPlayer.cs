@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using Halloumi.BassEngine.Channels;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
-namespace Halloumi.BassEngine.Players
+namespace Halloumi.Shuffler.AudioEngine.Players
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     internal class AudioPlayer

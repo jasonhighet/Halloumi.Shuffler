@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Halloumi.BassEngine.Models
+namespace Halloumi.Shuffler.AudioEngine.Models
 {
     public class AudioData
     {

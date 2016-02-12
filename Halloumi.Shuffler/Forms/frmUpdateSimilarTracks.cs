@@ -7,13 +7,13 @@ using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Engine.Models;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
     public partial class FrmUpdateSimilarTracks : BaseForm
     {
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         public Library Library { get; set; }
 

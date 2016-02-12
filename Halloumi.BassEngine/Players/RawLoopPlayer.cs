@@ -1,6 +1,6 @@
-﻿using Halloumi.BassEngine.Channels;
+﻿using Halloumi.Shuffler.AudioEngine.Channels;
 
-namespace Halloumi.BassEngine.Players
+namespace Halloumi.Shuffler.AudioEngine.Players
 {
     public class RawLoopPlayer
     {

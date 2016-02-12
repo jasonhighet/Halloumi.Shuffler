@@ -4,15 +4,15 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.Engine.Models.Track;
 
 namespace Halloumi.Shuffler.Forms
@@ -68,7 +68,7 @@ namespace Halloumi.Shuffler.Forms
             mnuSkipToEnd.Click += mnuSkipToEnd_Click;
             NotifyIcon.ContextMenuStrip = notificationContextMenu;
 
-            BassPlayer = new BE.BassPlayer(Handle);
+            BassPlayer = new AE.BassPlayer(Handle);
             Library = new Library(BassPlayer);
 
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
@@ -126,7 +126,7 @@ namespace Halloumi.Shuffler.Forms
 
             MixLibrary.AvailableTracks = Library.GetTracks();
             MixLibrary.LoadAllMixDetails();
-            //var devices = BE.BassHelper.GetWaveOutDevices();
+            //var devices = AE.BassHelper.GetWaveOutDevices();
 
             SetView(PlayerDetails.SelectedView.Library);
         }
@@ -137,7 +137,7 @@ namespace Halloumi.Shuffler.Forms
 
         private SampleLibrary SampleLibrary { get; }
 
-        private BE.BassPlayer BassPlayer { get; }
+        private AE.BassPlayer BassPlayer { get; }
 
         /// <summary>
         ///     Handles the LoadDocument event of the fileMenuController control.

@@ -1,6 +1,6 @@
-﻿using Halloumi.BassEngine.Helpers;
+﻿using Halloumi.Shuffler.AudioEngine.Helpers;
 
-namespace Halloumi.BassEngine.Models
+namespace Halloumi.Shuffler.AudioEngine.Models
 {
     public class TrackSample
     {

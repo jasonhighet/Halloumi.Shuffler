@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class TrackHelper
     {

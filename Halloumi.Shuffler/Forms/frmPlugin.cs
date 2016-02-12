@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Halloumi.Common.Windows.Forms;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
     public partial class FrmPlugin : BaseForm
     {
-        private BE.BassPlayer BassPlayer { get; set; }
+        private AE.BassPlayer BassPlayer { get; set; }
 
-        public FrmPlugin(BE.BassPlayer bassPlayer)
+        public FrmPlugin(AE.BassPlayer bassPlayer)
         {
             InitializeComponent();
             BassPlayer = bassPlayer;

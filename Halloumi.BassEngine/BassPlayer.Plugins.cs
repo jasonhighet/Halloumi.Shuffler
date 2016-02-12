@@ -2,14 +2,14 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
-using Halloumi.BassEngine.Plugins;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass.AddOn.Vst;
 using Un4seen.Bass.AddOn.WaDsp;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.Shuffler.AudioEngine
 {
     public partial class BassPlayer
     {

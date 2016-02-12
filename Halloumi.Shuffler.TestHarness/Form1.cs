@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Players;
-using Halloumi.BassEngine.Channels;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Players;
+using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 
 namespace Halloumi.Shuffler.TestHarness
 {
@@ -22,7 +22,7 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ChannelHelper.InitialiseBassEngine(Handle);
+            ChannelHelper.InitialiseAudioEngine(Handle);
 
             var speakers = new SpeakerOutputChannel();
             var rawLoopPlayer = new RawLoopPlayer();

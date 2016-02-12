@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Halloumi.BassEngine.Plugins
+namespace Halloumi.Shuffler.AudioEngine.Plugins
 {
     /// <summary>
     ///     Represents a VST plug-in.

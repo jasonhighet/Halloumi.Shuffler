@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using Halloumi.BassEngine.Channels;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.Shuffler.AudioEngine
 {
     public partial class BassPlayer
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Un4seen.Bass;
 
-namespace Halloumi.BassEngine.Models
+namespace Halloumi.Shuffler.AudioEngine.Models
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public abstract class AudioStream

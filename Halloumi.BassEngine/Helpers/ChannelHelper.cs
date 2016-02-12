@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class ChannelHelper
     {
@@ -15,7 +15,7 @@ namespace Halloumi.BassEngine.Helpers
         /// <summary>
         ///     Initialises the Bass audio engine.
         /// </summary>
-        public static void InitialiseBassEngine(IntPtr windowHandle)
+        public static void InitialiseAudioEngine(IntPtr windowHandle)
         {
             BassNet.Registration("jason.highet@gmail.com", "2X1931822152222");
 

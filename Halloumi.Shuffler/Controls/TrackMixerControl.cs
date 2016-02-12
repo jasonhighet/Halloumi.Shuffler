@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Halloumi.BassEngine;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
 
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -322,9 +322,9 @@ namespace Halloumi.Shuffler.Controls
                 SetTrackFxVolume(settings.TrackFxVolume);
 
                 BassPlayer.TrackOutput = settings.TrackOutput;
-                if (settings.TrackOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.TrackOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.TrackOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
+                if (settings.TrackOutput == AE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
+                if (settings.TrackOutput == AE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
+                if (settings.TrackOutput == AE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
 
                 BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
             }
@@ -367,7 +367,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 //if (MessageBoxHelper.Confirm("Are you sure you want to power down the current track?"))
                 //{
-                //    BE.BassHelper.PowerDown(track);
+                //    AE.BassHelper.PowerDown(track);
                 //    for (int i = 0; i < 8; i++)
                 //    {
                 //        Application.DoEvents();
@@ -638,7 +638,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var outputType = cmbOutput.ParseEnum<BE.Channels.SoundOutput>();
+            var outputType = cmbOutput.ParseEnum<AE.Channels.SoundOutput>();
             BassPlayer.TrackOutput = outputType;
         }
 

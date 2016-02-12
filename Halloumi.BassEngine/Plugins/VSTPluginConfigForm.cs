@@ -7,7 +7,7 @@ using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Un4seen.Bass.AddOn.Vst;
 
-namespace Halloumi.BassEngine.Plugins
+namespace Halloumi.Shuffler.AudioEngine.Plugins
 {
     public class VstPluginConfigForm : Form
     {

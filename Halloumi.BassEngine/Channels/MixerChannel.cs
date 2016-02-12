@@ -1,7 +1,7 @@
-﻿using Halloumi.BassEngine.Helpers;
+﻿using Halloumi.Shuffler.AudioEngine.Helpers;
 using Un4seen.Bass;
 
-namespace Halloumi.BassEngine.Channels
+namespace Halloumi.Shuffler.AudioEngine.Channels
 {
     public class MixerChannel : Channel
     {

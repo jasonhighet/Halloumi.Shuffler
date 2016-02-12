@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
-using Halloumi.BassEngine.Channels;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.Forms
         public Track Track { get; private set; }
 
 
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         public string Filename { get; set; }
 

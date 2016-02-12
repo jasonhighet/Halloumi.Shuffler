@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Halloumi.BassEngine.Models;
-using Halloumi.BassEngine.Properties;
+using Halloumi.Shuffler.AudioEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Properties;
 using Halloumi.Common.Helpers;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class AnalogXScratchHelper
     {

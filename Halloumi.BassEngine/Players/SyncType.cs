@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine.Players
+﻿namespace Halloumi.Shuffler.AudioEngine.Players
 {
     /// <summary>
     ///     Enumeration style representing different types of audioStream sync events.

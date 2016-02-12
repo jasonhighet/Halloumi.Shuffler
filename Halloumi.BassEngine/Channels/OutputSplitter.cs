@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Halloumi.BassEngine.Channels
+namespace Halloumi.Shuffler.AudioEngine.Channels
 {
     public class OutputSplitter
     {

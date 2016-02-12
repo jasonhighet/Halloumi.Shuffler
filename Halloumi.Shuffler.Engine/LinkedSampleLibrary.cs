@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Halloumi.BassEngine;
+using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Common.Helpers;
-using BE = Halloumi.BassEngine.Models;
+using AE = Halloumi.Shuffler.AudioEngine.Models;
 
 namespace Halloumi.Shuffler.Engine
 {
@@ -32,9 +32,9 @@ namespace Halloumi.Shuffler.Engine
         /// <returns>
         ///     A list of samples linked to the track
         /// </returns>
-        public List<BE.Sample> LoadLinkedSamples(BassPlayer bassPlayer, BE.Track track)
+        public List<AE.Sample> LoadLinkedSamples(BassPlayer bassPlayer, AE.Track track)
         {
-            var samples = new List<BE.Sample>();
+            var samples = new List<AE.Sample>();
             if (track == null) return samples;
 
             var linkedSamples = LoadLinkedSamples(track.Description);
@@ -62,7 +62,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="sample">The sample.</param>
-        public void LinkSampleToTrack(BE.Track track, BE.Sample sample)
+        public void LinkSampleToTrack(AE.Track track, AE.Sample sample)
         {
             var linkedSamples = LoadLinkedSamples(track.Description);
             linkedSamples.Add(new LinkedSample
@@ -78,7 +78,7 @@ namespace Halloumi.Shuffler.Engine
         /// </summary>
         /// <param name="track">The track.</param>
         /// <param name="sample">The sample.</param>
-        public void UnlinkSampleFromTrack(BE.Track track, BE.Sample sample)
+        public void UnlinkSampleFromTrack(AE.Track track, AE.Sample sample)
         {
             var linkedSamples = LoadLinkedSamples(track.Description);
 
@@ -100,7 +100,7 @@ namespace Halloumi.Shuffler.Engine
         /// <returns>
         ///     True if the sample is linked to the track; otherwise, false.
         /// </returns>
-        public bool IsSampleLinkedToTrack(BE.Track track, BE.Sample sample)
+        public bool IsSampleLinkedToTrack(AE.Track track, AE.Sample sample)
         {
             var linkedSamples = LoadLinkedSamples(track.Description);
             if (linkedSamples == null || linkedSamples.Count == 0) return false;

@@ -485,9 +485,9 @@
     <None Include="Resources\player_pause.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.BassEngine.csproj">
+    <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj">
       <Project>{b2b7650c-8209-4d48-aadf-5a1e76928b7e}</Project>
-      <Name>Halloumi.BassEngine</Name>
+      <Name>Halloumi.Shuffler.AudioEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.Engine.csproj">
       <Project>{744ec40e-007a-4d10-bbe1-fc084a9db425}</Project>

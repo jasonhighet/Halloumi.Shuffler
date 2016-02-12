@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Engine.Models;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -18,7 +18,7 @@ namespace Halloumi.Shuffler.Forms
     {
         #region Constructors
 
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         public string Filename { get; set; }
 
@@ -70,9 +70,9 @@ namespace Halloumi.Shuffler.Forms
             {
                 var settings = Settings.Default;
                 BassPlayer.RawLoopOutput = settings.RawLoopOutput;
-                if (settings.RawLoopOutput == BE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.RawLoopOutput == BE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.RawLoopOutput == BE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
+                if (settings.RawLoopOutput == AE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
+                if (settings.RawLoopOutput == AE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
+                if (settings.RawLoopOutput == AE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
             }
             catch
             { }
@@ -329,7 +329,7 @@ namespace Halloumi.Shuffler.Forms
 
         #region Properties
 
-        public BassEngine.Models.Track Track { get; private set; }
+        public AudioEngine.Models.Track Track { get; private set; }
 
         public Track LibraryTrack { get; private set; }
 
@@ -428,7 +428,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var outputType = cmbOutput.ParseEnum<BE.Channels.SoundOutput>();
+            var outputType = cmbOutput.ParseEnum<AE.Channels.SoundOutput>();
             BassPlayer.RawLoopOutput = outputType;
         }
 

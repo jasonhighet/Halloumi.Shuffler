@@ -2,14 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.Bass.Misc;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public static class ExportHelper

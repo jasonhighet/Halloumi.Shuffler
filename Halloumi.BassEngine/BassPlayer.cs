@@ -6,16 +6,16 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Halloumi.BassEngine.Channels;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Fx;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.Bass.AddOn.Tags;
 
-namespace Halloumi.BassEngine
+namespace Halloumi.Shuffler.AudioEngine
 {
     /// <summary>
     ///     Track mixing engine utilizing the Bass.Net audio engine
@@ -1372,7 +1372,7 @@ namespace Halloumi.BassEngine
         {
             if (_engineStarted) return;
             DebugHelper.WriteLine("Start Engine");
-            ChannelHelper.InitialiseBassEngine(windowHandle);
+            ChannelHelper.InitialiseAudioEngine(windowHandle);
             _engineStarted = true;
         }
 

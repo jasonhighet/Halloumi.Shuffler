@@ -7,12 +7,12 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using Halloumi.BassEngine.Helpers;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Windows.Controls;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 using Sample = Halloumi.Shuffler.Engine.Models.Sample;
 
 namespace Halloumi.Shuffler.Controls
@@ -87,7 +87,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass track.

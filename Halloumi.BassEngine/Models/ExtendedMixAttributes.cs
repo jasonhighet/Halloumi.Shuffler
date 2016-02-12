@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace Halloumi.BassEngine.Models
+namespace Halloumi.Shuffler.AudioEngine.Models
 {
     public class ExtendedMixAttributes
     {

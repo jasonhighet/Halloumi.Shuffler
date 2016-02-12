@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.Engine.Models;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 using Sample = Halloumi.Shuffler.Engine.Models.Sample;
 using Track = Halloumi.Shuffler.Engine.Models.Track;
 
@@ -15,7 +15,7 @@ namespace Halloumi.Shuffler.Engine
         /// <summary>
         ///     Initializes a new instance of the Library class.
         /// </summary>
-        public SampleLibrary(BE.BassPlayer bassPlayer, Library trackLibrary)
+        public SampleLibrary(AE.BassPlayer bassPlayer, Library trackLibrary)
         {
             Samples = new List<Sample>();
             BassPlayer = bassPlayer;
@@ -29,7 +29,7 @@ namespace Halloumi.Shuffler.Engine
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
-        private BE.BassPlayer BassPlayer { get; }
+        private AE.BassPlayer BassPlayer { get; }
 
         /// <summary>
         ///     Gets or sets the track library.
@@ -184,7 +184,7 @@ namespace Halloumi.Shuffler.Engine
             BassPlayer.UnloadTrackAudioData(bassTrack);
         }
 
-        private void SaveSampleFile(BE.Models.Track bassTrack, Sample sample)
+        private void SaveSampleFile(AE.Models.Track bassTrack, Sample sample)
         {
             var sampleFolder = GetSampleFolder(sample);
 

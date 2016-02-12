@@ -1,5 +1,5 @@
 ﻿using System;
-using Halloumi.BassEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 
 namespace Halloumi.Shuffler.Engine.Models
 {

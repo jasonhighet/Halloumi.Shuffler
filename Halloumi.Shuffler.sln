@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler", "Hallou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler.Engine", "Halloumi.Shuffler.Engine\Halloumi.Shuffler.Engine.csproj", "{744EC40E-007A-4D10-BBE1-FC084A9DB425}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.BassEngine", "Halloumi.BassEngine\Halloumi.BassEngine.csproj", "{B2B7650C-8209-4D48-AADF-5A1E76928B7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler.AudioEngine", "Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj", "{B2B7650C-8209-4D48-AADF-5A1E76928B7E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler.TestHarness", "Halloumi.Shuffler.TestHarness\Halloumi.Shuffler.TestHarness.csproj", "{6C92528A-844A-4FB4-9882-3EBC3B438E8F}"
 EndProject

@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Halloumi.BassEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Models;
 
-namespace Halloumi.BassEngine.Helpers
+namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class AudioDataHelper
     {

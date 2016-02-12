@@ -1,5 +1,5 @@
 ﻿using System;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
 {
@@ -13,7 +13,7 @@ namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
 
         private void btnFadeNow_Click(object sender, EventArgs e)
         {
-            var fadeType = cmbFadeType.ParseEnum<BE.ForceFadeType>();
+            var fadeType = cmbFadeType.ParseEnum<AE.ForceFadeType>();
             BassPlayer.ForceFadeNow(fadeType);
             Close();
         }

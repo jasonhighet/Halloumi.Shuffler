@@ -2,7 +2,7 @@
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
-using BE = Halloumi.BassEngine;
+using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
 {
@@ -13,7 +13,7 @@ namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BE.BassPlayer BassPlayer { get; set; }
+        public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         /// Gets or sets the bass player.

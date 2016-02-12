@@ -1,4 +1,4 @@
-﻿namespace Halloumi.BassEngine.Channels
+﻿namespace Halloumi.Shuffler.AudioEngine.Channels
 {
     /// <summary>
     /// Represents the current left and right volume levels
