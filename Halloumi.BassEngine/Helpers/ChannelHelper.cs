@@ -17,6 +17,8 @@ namespace Halloumi.BassEngine.Helpers
         /// </summary>
         public static void InitialiseBassEngine(IntPtr windowHandle)
         {
+            BassNet.Registration("jason.highet@gmail.com", "2X1931822152222");
+
             if (!Bass.BASS_Init(-1, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, windowHandle))
             {
                 throw new Exception("Cannot create Bass Engine.");

@@ -83,8 +83,6 @@ namespace Halloumi.BassEngine
 
             TrackFxAutomationEnabled = false;
 
-            BassNet.Registration("jason.highet@gmail.com", "2X1931822152222");
-
             // start audio engine
             StartAudioEngine(windowHandle);
 

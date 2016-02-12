@@ -182,7 +182,6 @@
   <ItemGroup>
     <Compile Include="BassPlayer.Automation.cs" />
     <Compile Include="Channels\Channel.cs" />
-    <Compile Include="Channels\ChannelEngine.cs" />
     <Compile Include="Channels\MonitorOutputChannel.cs" />
     <Compile Include="Channels\OutputSplitter.cs" />
     <Compile Include="Channels\SpeakerOutputChannel.cs" />

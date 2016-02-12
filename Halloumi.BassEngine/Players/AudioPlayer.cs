@@ -117,7 +117,7 @@ namespace Halloumi.BassEngine.Players
 
 
         public void SetSectionPositions(string streamKey, string sectionKey, double start, double length,
-            double offset = double.MinValue)
+            double offset = 0)
         {
             var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
             if (audioStream == null)
@@ -131,7 +131,9 @@ namespace Halloumi.BassEngine.Players
 
             SetSync(audioStream, audioSection, SyncType.Start, start);
             SetSync(audioStream, audioSection, SyncType.End, start + length);
-            SetSync(audioStream, audioSection, SyncType.End, offset);
+
+            if (offset == 0) offset = double.MinValue;
+            SetSync(audioStream, audioSection, SyncType.Offset, offset);
         }
 
         public void QueueSection(string streamKey, string sectionKey)

@@ -19,7 +19,8 @@ namespace Halloumi.BassEngine.Players
         {
             _audioPlayer.UnloadAll();
             _audioPlayer.Load(StreamKey, filename);
-            _audioPlayer.AddSection(StreamKey, SectionKey);
+            var section = _audioPlayer.AddSection(StreamKey, SectionKey);
+            section.LoopIndefinitely = true;
         }
 
         public void UnloadAudio()
@@ -27,7 +28,7 @@ namespace Halloumi.BassEngine.Players
             _audioPlayer.UnloadAll();
         }
 
-        public void SetPositions(double start, double length, double offset = double.MinValue)
+        public void SetPositions(double start, double length, double offset = 0)
         {
             _audioPlayer.Pause(StreamKey);
             _audioPlayer.SetSectionPositions(StreamKey, SectionKey, start, length, offset);
