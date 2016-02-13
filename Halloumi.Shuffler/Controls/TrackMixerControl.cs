@@ -7,7 +7,7 @@ using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Engine;
-
+using Halloumi.Shuffler.AudioEngine.Plugins;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
@@ -618,7 +618,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (BassPlayer.TrackVstPlugin != null)
             {
-                BassPlayer.ShowVstPluginConfig(BassPlayer.TrackVstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackVstPlugin);
             }
         }
 
@@ -629,7 +629,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (BassPlayer.MainVstPlugin != null)
             {
-                BassPlayer.ShowVstPluginConfig(BassPlayer.MainVstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.MainVstPlugin);
             }
         }
 
@@ -649,7 +649,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (BassPlayer.TrackSendFxvstPlugin2 != null)
             {
-                BassPlayer.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin2);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin2);
             }
         }
 
@@ -660,7 +660,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (BassPlayer.TrackSendFxvstPlugin != null)
             {
-                BassPlayer.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin);
             }
         }
 

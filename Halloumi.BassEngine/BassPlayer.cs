@@ -97,9 +97,6 @@ namespace Halloumi.Shuffler.AudioEngine
             InitialiseManualMixer();
 
             ExtendedAttributeFolder = "";
-
-            if (string.IsNullOrEmpty(WaPluginsFolder)) WaPluginsFolder = @"C:\Program Files\Winamp\Plugins\";
-            if (string.IsNullOrEmpty(VstPluginsFolder)) VstPluginsFolder = @"C:\Program Files\Steinberg\VstPlugins\";
         }
 
 

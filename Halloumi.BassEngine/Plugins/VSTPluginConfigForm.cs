@@ -11,7 +11,6 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
 {
     public class VstPluginConfigForm : Form
     {
-        private BassPlayer _bassPlayer;
         private MenuStrip _menuStrip;
         private ToolStripMenuItem _mnuParameters;
         private ToolStripMenuItem _mnuPresets;
@@ -19,21 +18,20 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
         private VstPlugin _plugin;
         private Panel _pnlEditor;
 
-        public VstPluginConfigForm(VstPlugin plugin, BassPlayer bassPlayer)
+        public VstPluginConfigForm(VstPlugin plugin)
         {
             InitializeComponent();
-            Initialize(plugin, bassPlayer);
+            Initialize(plugin);
         }
 
         public bool CanClose { get; set; }
 
         public IntPtr EditorPanelHandle => _pnlEditor.Handle;
 
-        private void Initialize(VstPlugin plugin, BassPlayer bassPlayer)
+        private void Initialize(VstPlugin plugin)
         {
             _plugin = plugin;
-            _bassPlayer = bassPlayer;
-
+            
             CanClose = false;
             FormClosing += VSTPluginConfigForm_FormClosing;
 
@@ -60,34 +58,31 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
 
         private void LoadPresets(VstPlugin plugin)
         {
-            var presetNames = BassVst.BASS_VST_GetProgramNames(plugin.Id).ToList();
+            var presets = PluginHelper.GetPluginPresets(plugin);
 
-            var i = 0;
-            foreach (var presetName in presetNames)
+            foreach (var preset in presets)
             {
                 var existingMenuItems = _mnuPresets.DropDownItems.Cast<ToolStripItem>().Select(t => t.Text).ToList();
 
-                if (presetName != null && presetName.Trim() != "" && !existingMenuItems.Contains(presetName.Trim()))
+                if (!existingMenuItems.Contains(preset.Name))
                 {
                     var menuItem = new ToolStripMenuItem
                     {
-                        Text = presetName.Trim(),
-                        Tag = i.ToString()
+                        Text = preset.Name,
+                        Tag = preset.Id
                     };
                     menuItem.Click += mnuPreset_Click;
                     _mnuPresets.DropDownItems.Add(menuItem);
                 }
-
-                i++;
             }
         }
 
         private void mnuPreset_Click(object sender, EventArgs e)
         {
             var menuItem = (ToolStripDropDownItem) sender;
-            var index = int.Parse(menuItem.Tag.ToString());
+            var presetId = int.Parse(menuItem.Tag.ToString());
 
-            _bassPlayer.SetVstPluginPreset(_plugin, index);
+            PluginHelper.SetVstPluginPreset(_plugin, presetId);
         }
 
 
@@ -100,7 +95,6 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
             }
             else
             {
-                _bassPlayer = null;
                 _plugin = null;
             }
         }

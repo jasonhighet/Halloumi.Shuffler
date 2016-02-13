@@ -12,6 +12,7 @@ using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Controls;
 using Halloumi.Shuffler.Engine;
 using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
+using Halloumi.Shuffler.AudioEngine.Plugins;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.Engine.Models.Track;
 
@@ -341,8 +342,8 @@ namespace Halloumi.Shuffler.Forms
             Library.PlaylistFolder = settings.PlaylistFolder;
             Library.ShufflerFolder = settings.ShufflerFolder;
             BassPlayer.ExtendedAttributeFolder = settings.ShufflerFolder;
-            BassPlayer.WaPluginsFolder = settings.WaPluginsFolder;
-            BassPlayer.VstPluginsFolder = settings.VstPluginsFolder;
+            PluginHelper.WaPluginsFolder = settings.WaPluginsFolder;
+            PluginHelper.VstPluginsFolder = settings.VstPluginsFolder;
             formStateController.FormStateSettings = settings.FormStateSettings;
             BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
             BassPlayer.SampleAutomationEnabled = settings.EnableSampleAutomation;
@@ -407,7 +408,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.MainVstPlugin, settings.MainMixerVstPluginParameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin, settings.MainMixerVstPluginParameters);
                 }
                 catch
                 {
@@ -419,7 +420,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.MainVstPlugin2, settings.MainMixerVstPlugin2Parameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin2, settings.MainMixerVstPlugin2Parameters);
                 }
                 catch
                 {
@@ -443,7 +444,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.SamplerVstPlugin, settings.SamplerVstPluginParameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin, settings.SamplerVstPluginParameters);
                 }
                 catch
                 {
@@ -467,7 +468,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2, settings.SamplerVstPlugin2Parameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2, settings.SamplerVstPlugin2Parameters);
                 }
                 catch
                 {
@@ -491,7 +492,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.TrackVstPlugin, settings.TrackVstPluginParameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackVstPlugin, settings.TrackVstPluginParameters);
                 }
                 catch
                 {
@@ -515,7 +516,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin,
+                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin,
                         settings.TrackFxvstPluginParameters);
                 }
                 catch
@@ -540,7 +541,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.SetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin2,
+                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin2,
                         settings.TrackFxvstPlugin2Parameters);
                 }
                 catch
@@ -602,12 +603,12 @@ namespace Halloumi.Shuffler.Forms
 
             var mainVstPluginParameters = "";
             if (BassPlayer.MainVstPlugin != null)
-                mainVstPluginParameters = BassPlayer.GetVstPluginParameters(BassPlayer.MainVstPlugin);
+                mainVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin);
             settings.MainMixerVstPluginParameters = mainVstPluginParameters;
 
             var mainVstPluginParameters2 = "";
             if (BassPlayer.MainVstPlugin2 != null)
-                mainVstPluginParameters2 = BassPlayer.GetVstPluginParameters(BassPlayer.MainVstPlugin2);
+                mainVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin2);
             settings.MainMixerVstPlugin2Parameters = mainVstPluginParameters2;
 
             var samplerVstPlugin = "";
@@ -616,7 +617,7 @@ namespace Halloumi.Shuffler.Forms
 
             var samplerVstPluginParameters = "";
             if (BassPlayer.SamplerVstPlugin != null)
-                samplerVstPluginParameters = BassPlayer.GetVstPluginParameters(BassPlayer.SamplerVstPlugin);
+                samplerVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin);
             settings.SamplerVstPluginParameters = samplerVstPluginParameters;
 
             var samplerVstPlugin2 = "";
@@ -625,7 +626,7 @@ namespace Halloumi.Shuffler.Forms
 
             var samplerVstPluginParameters2 = "";
             if (BassPlayer.SamplerVstPlugin2 != null)
-                samplerVstPluginParameters2 = BassPlayer.GetVstPluginParameters(BassPlayer.SamplerVstPlugin2);
+                samplerVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin2);
             settings.SamplerVstPlugin2Parameters = samplerVstPluginParameters2;
 
             var trackVstPlugin = "";
@@ -634,7 +635,7 @@ namespace Halloumi.Shuffler.Forms
 
             var trackVstPluginParameters = "";
             if (BassPlayer.TrackVstPlugin != null)
-                trackVstPluginParameters = BassPlayer.GetVstPluginParameters(BassPlayer.TrackVstPlugin);
+                trackVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackVstPlugin);
             settings.TrackVstPluginParameters = trackVstPluginParameters;
 
             var trackFxVstPlugin = "";
@@ -643,7 +644,7 @@ namespace Halloumi.Shuffler.Forms
 
             var trackFxVstPluginParameters = "";
             if (BassPlayer.TrackSendFxvstPlugin != null)
-                trackFxVstPluginParameters = BassPlayer.GetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin);
+                trackFxVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin);
             settings.TrackFxvstPluginParameters = trackFxVstPluginParameters;
 
             var trackFxVstPlugin2 = "";
@@ -652,7 +653,7 @@ namespace Halloumi.Shuffler.Forms
 
             var trackFxVstPluginParameters2 = "";
             if (BassPlayer.TrackSendFxvstPlugin2 != null)
-                trackFxVstPluginParameters2 = BassPlayer.GetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin2);
+                trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin2);
             settings.TrackFxvstPlugin2Parameters = trackFxVstPluginParameters2;
 
             settings.SkipAfterMix = mnuSkipAfterMix.Checked;
@@ -778,7 +779,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.MainVstPlugin == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowVstPluginConfig(BassPlayer.MainVstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.MainVstPlugin);
         }
 
         /// <summary>
@@ -789,7 +790,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.WaPlugin == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowWaPluginConfig(BassPlayer.WaPlugin);
+                PluginHelper.ShowWaPluginConfig(BassPlayer.WaPlugin);
         }
 
         /// <summary>
@@ -800,7 +801,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.SamplerVstPlugin == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
         }
 
         /// <summary>
@@ -811,7 +812,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.TrackVstPlugin == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowVstPluginConfig(BassPlayer.TrackVstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackVstPlugin);
         }
 
         /// <summary>
@@ -822,7 +823,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.TrackSendFxvstPlugin == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin);
         }
 
         /// <summary>
@@ -833,7 +834,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.TrackSendFxvstPlugin2 == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin2);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin2);
         }
 
         /// <summary>
@@ -844,7 +845,7 @@ namespace Halloumi.Shuffler.Forms
             if (BassPlayer.SamplerVstPlugin2 == null)
                 ShowPluginForm();
             else
-                BassPlayer.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
+                PluginHelper.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
         }
 
         /// <summary>
