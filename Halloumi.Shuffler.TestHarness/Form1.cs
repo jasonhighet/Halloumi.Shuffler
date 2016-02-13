@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Players;
@@ -25,13 +19,25 @@ namespace Halloumi.Shuffler.TestHarness
             ChannelHelper.InitialiseAudioEngine(Handle);
 
             var speakers = new SpeakerOutputChannel();
-            var rawLoopPlayer = new RawLoopPlayer();
+            var player = new AudioPlayer();
 
-            speakers.AddInputChannel(rawLoopPlayer.Output);
+            speakers.AddInputChannel(player.Output);
 
-            rawLoopPlayer.LoadAudio(@"E:\Music\Library\A Reggae Tribute To The Beatles\14 - Various - Roslyn Sweat & The Paragons  Blackbird.mp3");
-            rawLoopPlayer.SetPositions(0, 3);
-            rawLoopPlayer.Play();
+            Parallel.For(0, 10, i => 
+            {
+                player.Load("stream" + i.ToString(), @"E:\Music\Library\A Reggae Tribute To The Beatles\14 - Various - Roslyn Sweat & The Paragons  Blackbird.mp3");
+
+                for (int j = 0; j < 10; j++)
+                {
+                    player.AddSection("stream"+ i.ToString(), "section" + j.ToString());
+                    player.SetSectionPositions("stream" + i.ToString(), "section" + j.ToString(), (j * 10) + i, 3);
+                }
+
+                player.QueueSection("stream" + i.ToString(), "section0");
+                player.Play("stream" + i.ToString());
+            });
+
+
         }
     }
 }

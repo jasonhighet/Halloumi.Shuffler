@@ -6,7 +6,7 @@ using Halloumi.Shuffler.AudioEngine.Models;
 namespace Halloumi.Shuffler.AudioEngine.Players
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    internal class AudioSection
+    public class AudioSection
     {
         public AudioSection()
         {

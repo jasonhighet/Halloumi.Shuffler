@@ -3,7 +3,7 @@
     /// <summary>
     ///     Enumeration style representing different types of audioStream sync events.
     /// </summary>
-    internal enum SyncType
+    public enum SyncType
     {
         Start,
         Offset,

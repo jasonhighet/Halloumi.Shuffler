@@ -12,14 +12,14 @@ using Un4seen.Bass.AddOn.Mix;
 namespace Halloumi.Shuffler.AudioEngine.Players
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    internal class AudioPlayer
+    public class AudioPlayer
     {
-        private readonly List<AudioStreamSection> _audioStreamSections;
+        private readonly List<AudioStreamSection> _streamSections;
 
         public AudioPlayer(IBmpProvider bpmProvider = null)
         {
             Output = new MixerChannel(bpmProvider);
-            _audioStreamSections = new List<AudioStreamSection>();
+            _streamSections = new List<AudioStreamSection>();
         }
 
         public MixerChannel Output { get; }
@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             if (!File.Exists(filename))
                 throw new Exception("Cannot find file " + filename);
-            if (_audioStreamSections.Any(x => x.Key == streamKey))
+            if (GetStreamSection(streamKey) != null)
                 throw new Exception("AudioStream already exists with streamKey " + streamKey);
 
             var audioStream = new Sample
@@ -41,67 +41,98 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AudioStreamHelper.AddToMixer(audioStream, Output.InternalChannel);
             AudioStreamHelper.SetPosition(audioStream, 0);
 
-            _audioStreamSections.Add(new AudioStreamSection
+            lock (_streamSections)
             {
-                Key = streamKey,
-                AudioStream = audioStream,
-                AudioSections = new List<AudioSection>()
-            });
+                _streamSections.Add(new AudioStreamSection
+                {
+                    Key = streamKey,
+                    AudioStream = audioStream,
+                    AudioSections = new List<AudioSection>()
+                });
+            }
 
             return audioStream;
         }
 
         public void Unload(string streamKey)
         {
-            var streamSection = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey);
+            var streamSection = GetStreamSection(streamKey);
             if (streamSection == null)
                 return;
 
             AudioStreamHelper.Pause(streamSection.AudioStream);
-
-            foreach (var sync in streamSection.AudioSections.SelectMany(section => section.AudioSyncs))
+            lock (streamSection)
             {
-                RemoveSyncFromStream(streamSection.AudioStream, sync);
+                foreach (var sync in streamSection.AudioSections.SelectMany(section => section.AudioSyncs))
+                {
+                    RemoveSyncFromStream(streamSection.AudioStream, sync);
+                }
             }
 
             AudioStreamHelper.RemoveFromMixer(streamSection.AudioStream, Output.InternalChannel);
             AudioStreamHelper.UnloadAudio(streamSection.AudioStream);
 
             streamSection.AudioStream.SyncProc = null;
-            _audioStreamSections.Remove(streamSection);
+
+            lock (_streamSections)
+            {
+                _streamSections.Remove(streamSection);
+            }
+
+        }
+
+        private AudioStreamSection GetStreamSection(string streamKey)
+        {
+            lock (_streamSections)
+            {
+                return _streamSections.FirstOrDefault(x => x.Key == streamKey);
+            }
         }
 
         public void UnloadAll()
         {
-            var keys = _audioStreamSections.Select(x => x.Key);
+            var keys = GetStreamSectionsKeys();
             foreach (var streamKey in keys)
             {
                 Unload(streamKey);
             }
         }
 
+        private IEnumerable<string> GetStreamSectionsKeys()
+        {
+            lock (_streamSections)
+            {
+                return _streamSections.Select(x => x.Key);
+            }
+        }
+
         public void Play(string streamKey)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            var audioStream = GetAudioStream(streamKey);
             AudioStreamHelper.Play(audioStream);
+        }
+
+        private AudioStream GetAudioStream(string streamKey)
+        {
+            lock (_streamSections)
+            {
+                return _streamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            }
         }
 
         public void Pause(string streamKey)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            var audioStream = GetAudioStream(streamKey);
             AudioStreamHelper.Pause(audioStream);
         }
 
         public AudioSection AddSection(string streamKey, string sectionKey)
         {
-            var streamSection = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey);
+            var streamSection = GetStreamSection(streamKey);
             if (streamSection == null)
                 return null;
 
-            var audioSection = _audioStreamSections
-                .FirstOrDefault(x => x.Key == streamKey)?
-                .AudioSections.FirstOrDefault(x => x.Key == sectionKey);
-
+            var audioSection = GetAudioSection(streamKey, sectionKey);
             if (audioSection != null)
                 return audioSection;
 
@@ -110,22 +141,32 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 Key = sectionKey
             };
 
-            streamSection.AudioSections.Add(audioSection);
+            lock (streamSection)
+            {
+                streamSection.AudioSections.Add(audioSection);
+            }
 
             return audioSection;
         }
 
+        private AudioSection GetAudioSection(string streamKey, string sectionKey)
+        {
+            var streamSection = GetStreamSection(streamKey);
+            lock (streamSection)
+            {
+                return streamSection?.AudioSections.FirstOrDefault(x => x.Key == sectionKey);
+            }
+
+        }
 
         public void SetSectionPositions(string streamKey, string sectionKey, double start, double length,
             double offset = 0)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
                 return;
 
-            var audioSection = _audioStreamSections
-                .FirstOrDefault(x => x.Key == streamKey)?
-                .AudioSections.FirstOrDefault(x => x.Key == sectionKey);
+            var audioSection = GetAudioSection(streamKey, sectionKey);
             if (audioSection == null)
                 return;
 
@@ -138,17 +179,15 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public void QueueSection(string streamKey, string sectionKey)
         {
-            var audioStream = _audioStreamSections.FirstOrDefault(x => x.Key == streamKey)?.AudioStream;
+            var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
                 return;
 
-            var audioSection = _audioStreamSections
-                .FirstOrDefault(x => x.Key == streamKey)?
-                .AudioSections.FirstOrDefault(x => x.Key == sectionKey);
+            var audioSection = GetAudioSection(streamKey, sectionKey);
             if (audioSection == null)
                 return;
 
-            if(!audioSection.HasStartAndEnd)
+            if (!audioSection.HasStartAndEnd)
                 return;
 
             var startPosition = audioSection.HasOffset
@@ -161,11 +200,16 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private static void SetSync(AudioStream audioStream, AudioSection audioSection, SyncType syncType,
             double position)
         {
-            var audioSync = audioSection.AudioSyncs.FirstOrDefault(x => x.SyncType == syncType);
+            var audioSync = GetAudioSync(audioSection, syncType);
             if (audioSync != null)
             {
                 RemoveSyncFromStream(audioStream, audioSync);
-                audioSection.AudioSyncs.Remove(audioSync);
+
+                lock (audioSection)
+                {
+                    audioSection.AudioSyncs.Remove(audioSync);
+                }
+
             }
 
             if (position == double.MinValue) return;
@@ -176,29 +220,41 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (samplePosition > maxSample)
                 samplePosition = maxSample;
 
-            audioSync = new AudioSync {SyncType = syncType, Position = samplePosition};
+            audioSync = new AudioSync { SyncType = syncType, Position = samplePosition };
 
-            audioSection.AudioSyncs.Add(audioSync);
+            lock (audioSection)
+            {
+                audioSection.AudioSyncs.Add(audioSync);
+            }
 
             AddSyncToStream(audioStream, audioSync);
         }
 
+        private static AudioSync GetAudioSync(AudioSection audioSection, SyncType syncType)
+        {
+            lock (audioSection)
+            {
+                return audioSection.AudioSyncs.FirstOrDefault(x => x.SyncType == syncType);
+            }
+        }
+
         private void OnSync(int syncId, int channel, int data, IntPtr pointer)
         {
-            var audioStream = GetAudioStreamByChannel(channel);
+            var streamSection = GetStreamSectionByChannel(channel);
             var audioSection = GetAudioSectionBySync(channel, syncId);
             var audioSync = GetAudioSyncById(channel, syncId);
+            
 
-            if (audioStream == null || audioSync == null || audioSection == null)
+            if (streamSection == null || audioSync == null || audioSection == null)
                 return;
 
             switch (audioSync.SyncType)
             {
                 case SyncType.End:
-                    OnSectionEnd(audioSection, audioStream);
+                    OnSectionEnd(audioSection, streamSection);
                     break;
                 case SyncType.Offset:
-                    OnSectionOffset(audioSection, audioStream);
+                    OnSectionOffset(audioSection, streamSection);
                     break;
                 case SyncType.Start:
                     break;
@@ -207,45 +263,91 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             }
         }
 
-        private static void OnSectionOffset(AudioSection audioSection, AudioStream audioStream)
+        private void OnSectionOffset(AudioSection audioSection, AudioStreamSection streamSection)
         {
             if (!audioSection.LoopIndefinitely)
-                AudioStreamHelper.Pause(audioStream);
+                PlayNextSection(audioSection, streamSection);
         }
 
-        private static void OnSectionEnd(AudioSection audioSection, AudioStream audioStream)
+        private void OnSectionEnd(AudioSection audioSection, AudioStreamSection streamSection)
         {
             if (audioSection.LoopIndefinitely)
-                AudioStreamHelper.SetPosition(audioStream, audioSection.Start.Position);
+                AudioStreamHelper.SetPosition(streamSection.AudioStream, audioSection.Start.Position);
             else
-                AudioStreamHelper.Pause(audioStream);
+                PlayNextSection(audioSection, streamSection);
+        }
+
+        private void PlayNextSection(AudioSection audioSection, AudioStreamSection streamSection)
+        {
+            var nextSection = GetNextSection(audioSection, streamSection);
+
+            if (nextSection != null)
+            {
+                QueueSection(streamSection.Key, nextSection.Key);               
+            }
+            else
+            {
+                AudioStreamHelper.Pause(streamSection.AudioStream);
+            }
+        }
+
+        private static AudioSection GetNextSection(AudioSection audioSection, AudioStreamSection streamSection)
+        {
+            lock(streamSection)
+            {
+                var index = streamSection.AudioSections.IndexOf(audioSection);
+
+                index++;
+                if (index < streamSection.AudioSections.Count)
+                {
+                    Console.WriteLine(index);
+                    return streamSection.AudioSections[index];
+                }
+                return null;
+            }
         }
 
         private AudioSync GetAudioSyncById(int channel, int syncId)
         {
-            return _audioStreamSections
-                .FirstOrDefault(x => x.AudioStream.Channel == channel)
-                ?.AudioSections
-                .SelectMany(a => a.AudioSyncs)
-                .FirstOrDefault(x => x.Id == syncId);
+            var streamSection = GetStreamSectionByChannel(channel);
+            lock (streamSection)
+            {
+                return streamSection?.AudioSections
+                    .SelectMany(a => a.AudioSyncs)
+                    .FirstOrDefault(x => x.Id == syncId);
+            }
+
         }
 
         private AudioStream GetAudioStreamByChannel(int channel)
         {
-            return _audioStreamSections.Select(x => x.AudioStream).FirstOrDefault(x => x.Channel == channel);
+            lock (_streamSections)
+            {
+                return _streamSections.Select(x => x.AudioStream).FirstOrDefault(x => x.Channel == channel);
+            }
         }
 
         private AudioSection GetAudioSectionBySync(int channel, int syncId)
         {
-            return _audioStreamSections
-                .FirstOrDefault(x => x.AudioStream.Channel == channel)
-                ?.AudioSections
+            var streamSection = GetStreamSectionByChannel(channel);
+            lock (streamSection)
+            {
+                return streamSection?.AudioSections
                 .FirstOrDefault(a => a.AudioSyncs.Any(x => x.Id == syncId));
+            }
+        }
+
+        private AudioStreamSection GetStreamSectionByChannel(int channel)
+        {
+            lock (_streamSections)
+            {
+                return _streamSections.FirstOrDefault(x => x.AudioStream.Channel == channel);
+            }
         }
 
         private static void RemoveSyncFromStream(AudioStream audioStream, AudioSync sync)
         {
-            if(sync.Id == int.MinValue) return;
+            if (sync.Id == int.MinValue) return;
             BassMix.BASS_Mixer_ChannelRemoveSync(audioStream.Channel, sync.Id);
             sync.Id = int.MinValue;
         }
