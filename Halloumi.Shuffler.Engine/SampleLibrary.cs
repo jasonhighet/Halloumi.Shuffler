@@ -197,7 +197,7 @@ namespace Halloumi.Shuffler.Engine
             var offset = bassTrack.SecondsToSamples(sample.Offset);
             var length = bassTrack.SecondsToSamples(sample.Length);
 
-            ExportHelper.SavePartialAsWave(bassTrack, sampleFile, start, length, offset, sample.Gain);
+            AudioExportHelper.SavePartialAsWave(bassTrack, sampleFile, start, length, offset, sample.Gain);
         }
 
         private void CreateSampleFolder(Sample sample)
@@ -208,7 +208,7 @@ namespace Halloumi.Shuffler.Engine
             if (!Directory.Exists(sampleFolder))
                 Directory.CreateDirectory(sampleFolder);
 
-            var titleFolder = $"{sample.TrackTitle} ({FormatHelper.GetFormattedSeconds(sample.TrackLength)})";
+            var titleFolder = $"{sample.TrackTitle} ({TimeFormatHelper.GetFormattedSeconds(sample.TrackLength)})";
             titleFolder = FileSystemHelper.StripInvalidFileNameChars(titleFolder);
 
             sampleFolder = Path.Combine(sampleFolder, titleFolder);
@@ -222,7 +222,7 @@ namespace Halloumi.Shuffler.Engine
             var sampleFolder = Path.Combine(SampleLibraryFolder,
                 FileSystemHelper.StripInvalidFileNameChars(sample.TrackArtist));
 
-            var titleFolder = $"{sample.TrackTitle} ({FormatHelper.GetFormattedSeconds(sample.TrackLength)})";
+            var titleFolder = $"{sample.TrackTitle} ({TimeFormatHelper.GetFormattedSeconds(sample.TrackLength)})";
             titleFolder = FileSystemHelper.StripInvalidFileNameChars(titleFolder);
 
             sampleFolder = Path.Combine(sampleFolder, titleFolder);

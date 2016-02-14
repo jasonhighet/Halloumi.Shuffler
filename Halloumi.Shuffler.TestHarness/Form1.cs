@@ -23,9 +23,10 @@ namespace Halloumi.Shuffler.TestHarness
 
             speakers.AddInputChannel(player.Output);
 
+            var file = @"E:\Music\Library\A Reggae Tribute To The Beatles\14 - Various - Roslyn Sweat & The Paragons  Blackbird.mp3";
             Parallel.For(0, 10, i => 
             {
-                player.Load("stream" + i.ToString(), @"E:\Music\Library\A Reggae Tribute To The Beatles\14 - Various - Roslyn Sweat & The Paragons  Blackbird.mp3");
+                player.Load("stream" + i.ToString(), file);
 
                 for (int j = 0; j < 10; j++)
                 {

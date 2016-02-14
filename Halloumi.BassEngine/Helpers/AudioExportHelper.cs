@@ -12,7 +12,7 @@ using Un4seen.Bass.Misc;
 namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public static class ExportHelper
+    public static class AudioExportHelper
     {
         /// <summary>
         ///     Saves a portion of a track as a wave file

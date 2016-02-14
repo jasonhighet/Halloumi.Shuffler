@@ -35,11 +35,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (!_silenceSaved) SaveSilenceLoop();
             if (!File.Exists(sample.Filename))
             {
-                ExportHelper.SaveAsWave(sample.AudioData.Data, sample.Filename);
+                AudioExportHelper.SaveAsWave(sample.AudioData.Data, sample.Filename);
             }
 
             var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);
-            ExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, sample.Gain);
+            AudioExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, sample.Gain);
             NormalizeWave(scratchFilePath);
 
             var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
@@ -61,7 +61,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (shortLength > sample.LengthSeconds) shortLength = sample.LengthSeconds;
 
             var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);
-            ExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, shortLength, sample.Gain);
+            AudioExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, shortLength, sample.Gain);
             NormalizeWave(scratchFilePath);
 
             var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
@@ -76,7 +76,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var audioData = Resources.silence_mp3.ToArray();
             var loopFilePath = Path.Combine(_applicationFolder, LoopFile);
 
-            ExportHelper.SaveAsMonoWave(audioData, loopFilePath);
+            AudioExportHelper.SaveAsMonoWave(audioData, loopFilePath);
             _silenceSaved = true;
         }
 

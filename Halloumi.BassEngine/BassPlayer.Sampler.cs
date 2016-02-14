@@ -144,7 +144,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             if (!File.Exists(filename))
             {
-                ExportHelper.SavePartialAsWave(track, filename, track.SecondsToSamples(trackSample.Start),
+                AudioExportHelper.SavePartialAsWave(track, filename, track.SecondsToSamples(trackSample.Start),
                     track.SecondsToSamples(trackSample.Length));
             }
 

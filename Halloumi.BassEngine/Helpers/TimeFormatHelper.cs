@@ -2,7 +2,7 @@
 
 namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
-    public static class FormatHelper
+    public static class TimeFormatHelper
     {
         /// <summary>
         ///     Gets a seconds value formatted as mm:ss.ttt

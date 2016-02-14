@@ -364,10 +364,10 @@ namespace Halloumi.Shuffler.Controls
 
         private void UpdateViewText()
         {
-            var start = FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomStart));
-            var end = FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomEnd));
-            var length = FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomLength));
-            var position = FormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(CurrentPosition));
+            var start = TimeFormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomStart));
+            var end = TimeFormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomEnd));
+            var length = TimeFormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(ZoomLength));
+            var position = TimeFormatHelper.GetFormattedSeconds(BassTrack.SamplesToSeconds(CurrentPosition));
 
             lblViewDetails.Text = $"View: {start} to {end} ({length}) Cursor: {position}";
         }
@@ -803,7 +803,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (!File.Exists(editPath)) return;
 
-            ExportHelper.SaveAsWave(BassTrack.Filename, output);
+            AudioExportHelper.SaveAsWave(BassTrack.Filename, output);
 
             if (!File.Exists(output)) return;
             output = $"\"{output}\"";

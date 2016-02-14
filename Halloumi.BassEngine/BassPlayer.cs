@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Halloumi.Shuffler.AudioEngine.Channels;
@@ -11,7 +10,6 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Fx;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.Bass.AddOn.Tags;
 
@@ -503,33 +501,28 @@ namespace Halloumi.Shuffler.AudioEngine
                 if (track.TagDataLoaded) return;
 
                 DebugHelper.WriteLine("Loading track tags - " + track.Description);
-                var tags = BassTags.BASS_TAG_GetFromFile(track.Filename);
-                if (tags == null) throw new Exception("Cannot load tags for track " + track.Filename);
 
-                track.Title = tags.title;
-                track.Artist = tags.artist;
-                if (track.Title.Contains("/"))
-                {
-                    track.Artist = tags.title.Split('/')[0].Trim();
-                    track.Title = tags.title.Split('/')[1].Trim();
-                }
+                var tags = TagHelper.LoadTags(track.Filename);
+
+                track.Title = tags.Title;
+                track.Artist = tags.Artist;
 
                 if (track.Title == "" || track.Artist == "")
                 {
                     GuessArtistAndTitleFromFilename(track);
                 }
 
-                track.Gain = tags.replaygain_track_peak;
+                if (tags.Gain.HasValue)
+                    track.Gain = tags.Gain.Value;
 
-                var key = tags.NativeTag("InitialKey");
-                if (key != "") track.Key = key;
+                track.Key = tags.Key;
 
-                decimal bpm;
-                decimal.TryParse(tags.bpm, out bpm);
-                track.TagBpm = BpmHelper.NormaliseBpm(bpm);
+                if (tags.Bpm.HasValue)
+                    track.TagBpm = tags.Bpm.Value;
 
-                var duration = TimeSpan.FromSeconds(tags.duration);
-                track.Length = (long) duration.TotalMilliseconds;
+                if(tags.Length.HasValue)
+                    track.Length = (long)tags.Length.Value * 1000;
+
                 track.TagDataLoaded = true;
 
                 TrackTagsLoaded?.Invoke(track, EventArgs.Empty);

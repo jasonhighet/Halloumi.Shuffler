@@ -36,7 +36,15 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 Filename = filename
             };
 
+            var tags = TagHelper.LoadTags(filename);
+            if (tags.Gain.HasValue)
+                audioStream.Gain = tags.Gain.Value;
+
+            if (tags.Bpm.HasValue)
+                audioStream.Bpm = tags.Bpm.Value;
+
             AudioStreamHelper.LoadAudio(audioStream);
+
             audioStream.SyncProc = OnSync;
             AudioStreamHelper.AddToMixer(audioStream, Output.InternalChannel);
             AudioStreamHelper.SetPosition(audioStream, 0);
