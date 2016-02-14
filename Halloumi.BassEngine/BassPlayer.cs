@@ -21,12 +21,6 @@ namespace Halloumi.Shuffler.AudioEngine
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public partial class BassPlayer : IDisposable, IBmpProvider
     {
-        public enum AudioDataMode
-        {
-            StreamFromFile,
-            LoadIntoMemory
-        }
-
         /// <summary>
         ///     A collection of all loaded tracks
         /// </summary>
@@ -547,20 +541,14 @@ namespace Halloumi.Shuffler.AudioEngine
             CachedTracks.Remove(track);
         }
 
-        public Track LoadTrackAudioData(Track track)
-        {
-            return LoadTrackAudioData(track, AudioDataMode.LoadIntoMemory);
-        }
-
         /// <summary>
         ///     Loads the track audio data.
         /// </summary>
         /// <param name="track">The track to load.</param>
-        /// <param name="mode">The mode.</param>
         /// <returns>
         ///     The loaded track
         /// </returns>
-        public Track LoadTrackAudioData(Track track, AudioDataMode mode)
+        public Track LoadTrackAudioData(Track track)
         {
             // abort if audio data already loaded
             if (track.IsAudioLoaded()) return track;
@@ -572,8 +560,6 @@ namespace Halloumi.Shuffler.AudioEngine
             lock (track)
             {
                 AudioStreamHelper.LoadAudio(track);
-
-
 
                 track.FadeInStart = 0;
                 track.FadeInStartVolume = (float) (DefaultFadeInStartVolume/100);
@@ -716,83 +702,8 @@ namespace Halloumi.Shuffler.AudioEngine
             {
                 track.Key = attributes["Key"];
             }
-
-            if (attributes.ContainsKey("Sample1Start")
-                || attributes.ContainsKey("Sample2Start")
-                || attributes.ContainsKey("Sample3Start")
-                || attributes.ContainsKey("Sample4Start"))
-            {
-                LoadSamplesFromExtenedAttributes(track, attributes);
-            }
         }
 
-        private void LoadSamplesFromExtenedAttributes(Track track, Dictionary<string, string> attributes)
-        {
-            var xmlAttributes = AutomationAttributes.GetAutomationAttributes(track, ExtendedAttributeFolder);
-
-            if (attributes.ContainsKey("Sample1Start") && xmlAttributes.GetTrackSampleByKey("Sample1") == null)
-            {
-                var sample1 = new TrackSample
-                {
-                    Start = ConversionHelper.ToDouble(attributes["Sample1Start"]),
-                    Length = ConversionHelper.ToDouble(attributes["Sample1LengthInSeconds"])
-                };
-                if (attributes.ContainsKey("Sample1IsLoop"))
-                {
-                    sample1.IsLooped = ConversionHelper.ToBoolean(attributes["Sample1IsLoop"]);
-                }
-                sample1.Key = "Sample1";
-                sample1.Description = "Sample #1";
-                xmlAttributes.TrackSamples.Add(sample1);
-            }
-
-            if (attributes.ContainsKey("Sample2Start") && xmlAttributes.GetTrackSampleByKey("Sample2") == null)
-            {
-                var sample2 = new TrackSample
-                {
-                    Start = ConversionHelper.ToDouble(attributes["Sample2Start"]),
-                    Length = ConversionHelper.ToDouble(attributes["Sample2LengthInSeconds"])
-                };
-                if (attributes.ContainsKey("Sample2IsLoop"))
-                {
-                    sample2.IsLooped = ConversionHelper.ToBoolean(attributes["Sample2IsLoop"]);
-                }
-                sample2.Key = "Sample2";
-                sample2.Description = "Sample #2";
-                xmlAttributes.TrackSamples.Add(sample2);
-            }
-            if (attributes.ContainsKey("Sample3Start") && xmlAttributes.GetTrackSampleByKey("Sample3") == null)
-            {
-                var sample3 = new TrackSample
-                {
-                    Start = ConversionHelper.ToDouble(attributes["Sample3Start"]),
-                    Length = ConversionHelper.ToDouble(attributes["Sample3LengthInSeconds"])
-                };
-                if (attributes.ContainsKey("Sample3IsLoop"))
-                {
-                    sample3.IsLooped = ConversionHelper.ToBoolean(attributes["Sample3IsLoop"]);
-                }
-                sample3.Key = "Sample3";
-                sample3.Description = "Sample #3";
-                xmlAttributes.TrackSamples.Add(sample3);
-            }
-
-            if (attributes.ContainsKey("Sample4Start") && xmlAttributes.GetTrackSampleByKey("Sample4") == null)
-            {
-                var sample4 = new TrackSample
-                {
-                    Start = ConversionHelper.ToDouble(attributes["Sample4Start"]),
-                    Length = ConversionHelper.ToDouble(attributes["Sample4LengthInSeconds"])
-                };
-                if (attributes.ContainsKey("Sample4IsLoop"))
-                {
-                    sample4.IsLooped = ConversionHelper.ToBoolean(attributes["Sample4IsLoop"]);
-                }
-                sample4.Key = "Sample4";
-                sample4.Description = "Sample #4";
-                xmlAttributes.TrackSamples.Add(sample4);
-            }
-        }
 
         /// <summary>
         ///     Gets the path of extended attribute file for the specified track

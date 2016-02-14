@@ -60,7 +60,7 @@ namespace Halloumi.Shuffler.AudioEngine
             SetArtistAndTitle(track, "", "");
             LoadTagData(track);
             LoadExtendedAttributes(track);
-            LoadTrackAudioData(track, AudioDataMode.LoadIntoMemory);
+            LoadTrackAudioData(track);
 
             DebugHelper.WriteLine("Loaded raw loop track " + track.Description);
 
