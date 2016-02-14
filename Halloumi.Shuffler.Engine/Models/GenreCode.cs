@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Halloumi.Shuffler.Engine.Models
+namespace Halloumi.Shuffler.AudioLibrary.Models
 {
     public class GenreCode
     {

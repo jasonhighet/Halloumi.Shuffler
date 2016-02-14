@@ -5,14 +5,14 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Common.Helpers;
 using System.IO;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Controls
 {

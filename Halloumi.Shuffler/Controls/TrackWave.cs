@@ -13,7 +13,7 @@ using Halloumi.Common.Windows.Controls;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using AE = Halloumi.Shuffler.AudioEngine;
-using Sample = Halloumi.Shuffler.Engine.Models.Sample;
+using Sample = Halloumi.Shuffler.AudioLibrary.Models.Sample;
 
 namespace Halloumi.Shuffler.Controls
 {

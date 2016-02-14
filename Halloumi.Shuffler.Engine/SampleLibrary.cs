@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
-using Sample = Halloumi.Shuffler.Engine.Models.Sample;
-using Track = Halloumi.Shuffler.Engine.Models.Track;
+using Sample = Halloumi.Shuffler.AudioLibrary.Models.Sample;
+using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
-namespace Halloumi.Shuffler.Engine
+namespace Halloumi.Shuffler.AudioLibrary
 {
     public class SampleLibrary
     {

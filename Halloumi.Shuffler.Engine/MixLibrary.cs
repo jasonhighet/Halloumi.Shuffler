@@ -6,9 +6,9 @@ using System.Text;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
-using Track = Halloumi.Shuffler.Engine.Models.Track;
+using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
-namespace Halloumi.Shuffler.Engine
+namespace Halloumi.Shuffler.AudioLibrary
 {
     /// <summary>
     ///     A library of preferred/compulsory/forbidden track segues.

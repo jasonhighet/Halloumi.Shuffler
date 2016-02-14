@@ -10,11 +10,11 @@ using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.Controls;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 using AE = Halloumi.Shuffler.AudioEngine;
-using Track = Halloumi.Shuffler.Engine.Models.Track;
+using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
 namespace Halloumi.Shuffler.Forms
 {

@@ -7,13 +7,13 @@ using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Engine;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using AE = Halloumi.Shuffler.AudioEngine;
-using Track = Halloumi.Shuffler.Engine.Models.Track;
+using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
 namespace Halloumi.Shuffler.Controls
 {

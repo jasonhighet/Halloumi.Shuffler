@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Halloumi.Shuffler.Engine")]
+[assembly: AssemblyTitle("Halloumi.Shuffler.AudioLibrary")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Hewlett-Packard Company")]
-[assembly: AssemblyProduct("Halloumi.Shuffler.Engine")]
+[assembly: AssemblyProduct("Halloumi.Shuffler.AudioLibrary")]
 [assembly: AssemblyCopyright("Copyright © Hewlett-Packard Company 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

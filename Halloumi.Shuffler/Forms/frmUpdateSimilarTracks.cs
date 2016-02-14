@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Engine;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms

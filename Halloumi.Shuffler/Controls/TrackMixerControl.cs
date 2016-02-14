@@ -6,7 +6,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 using AE = Halloumi.Shuffler.AudioEngine;
 

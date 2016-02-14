@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms

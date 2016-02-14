@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Engine;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
 {

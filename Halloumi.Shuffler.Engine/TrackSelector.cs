@@ -4,12 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
-namespace Halloumi.Shuffler.Engine
+namespace Halloumi.Shuffler.AudioLibrary
 {
     public class TrackSelector
     {

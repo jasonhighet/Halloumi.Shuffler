@@ -9,11 +9,11 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using IdSharp.Tagging.ID3v2;
-using Track = Halloumi.Shuffler.Engine.Models.Track;
+using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
-namespace Halloumi.Shuffler.Engine
+namespace Halloumi.Shuffler.AudioLibrary
 {
     /// <summary>
     ///     Represents a cache-able library of mp3 tracks.

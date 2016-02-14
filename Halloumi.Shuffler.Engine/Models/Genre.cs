@@ -1,4 +1,4 @@
-﻿namespace Halloumi.Shuffler.Engine.Models
+﻿namespace Halloumi.Shuffler.AudioLibrary.Models
 {
     public class Genre
     {

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.Engine;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls

@@ -5,11 +5,11 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 using System.IO;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Engine.Models;
+using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
 {

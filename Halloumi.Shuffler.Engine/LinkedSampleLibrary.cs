@@ -7,7 +7,7 @@ using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Common.Helpers;
 using AE = Halloumi.Shuffler.AudioEngine.Models;
 
-namespace Halloumi.Shuffler.Engine
+namespace Halloumi.Shuffler.AudioLibrary
 {
     public class LinkedSampleLibrary
     {

@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler", "Halloumi.Shuffler\Halloumi.Shuffler.csproj", "{96A9FFAC-90BB-4D8F-B237-8DC09024B043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler.Engine", "Halloumi.Shuffler.Engine\Halloumi.Shuffler.Engine.csproj", "{744EC40E-007A-4D10-BBE1-FC084A9DB425}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler.AudioLibrary", "Halloumi.Shuffler.Engine\Halloumi.Shuffler.AudioLibrary.csproj", "{744EC40E-007A-4D10-BBE1-FC084A9DB425}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halloumi.Shuffler.AudioEngine", "Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj", "{B2B7650C-8209-4D48-AADF-5A1E76928B7E}"
 EndProject

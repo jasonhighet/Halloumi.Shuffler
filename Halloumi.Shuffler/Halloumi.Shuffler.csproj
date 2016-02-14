@@ -489,9 +489,9 @@
       <Project>{b2b7650c-8209-4d48-aadf-5a1e76928b7e}</Project>
       <Name>Halloumi.Shuffler.AudioEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.Engine.csproj">
+    <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.AudioLibrary.csproj">
       <Project>{744ec40e-007a-4d10-bbe1-fc084a9db425}</Project>
-      <Name>Halloumi.Shuffler.Engine</Name>
+      <Name>Halloumi.Shuffler.AudioLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

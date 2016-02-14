@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Halloumi.Shuffler.Engine.Models
+namespace Halloumi.Shuffler.AudioLibrary.Models
 {
     public class Sample
     {

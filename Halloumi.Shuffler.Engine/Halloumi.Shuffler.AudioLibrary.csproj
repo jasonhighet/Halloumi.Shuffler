@@ -8,8 +8,8 @@
     <ProjectGuid>{744EC40E-007A-4D10-BBE1-FC084A9DB425}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Halloumi.Shuffler.Engine</RootNamespace>
-    <AssemblyName>Halloumi.Shuffler.Engine</AssemblyName>
+    <RootNamespace>Halloumi.Shuffler.AudioLibrary</RootNamespace>
+    <AssemblyName>Halloumi.Shuffler.AudioLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.Controls;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms.TrackPlayerExtensions

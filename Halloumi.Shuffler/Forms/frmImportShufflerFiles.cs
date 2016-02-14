@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Engine;
+using Halloumi.Shuffler.AudioLibrary;
 
 namespace Halloumi.Shuffler.Forms
 {

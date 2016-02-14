@@ -1,7 +1,7 @@
 ﻿using System;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 
-namespace Halloumi.Shuffler.Engine.Models
+namespace Halloumi.Shuffler.AudioLibrary.Models
 {
     /// <summary>
     /// Represents a track in the library
