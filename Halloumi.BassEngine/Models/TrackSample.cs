@@ -1,7 +1,9 @@
-﻿using Halloumi.Shuffler.AudioEngine.Helpers;
+﻿using System.Diagnostics.CodeAnalysis;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 
 namespace Halloumi.Shuffler.AudioEngine.Models
 {
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public class TrackSample
     {
         public double Start { get; set; }
@@ -15,7 +17,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets the BPM of the sample
+        ///     Gets the BPM of the sample
         /// </summary>
         public decimal CalculateBpm(Track track)
         {
@@ -23,7 +25,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             {
                 return track.StartBpm;
             }
-            else if (Length != 0 && IsLooped)
+            if (Length != 0 && IsLooped)
             {
                 return BpmHelper.GetBpmFromLoopLength(Length);
             }
@@ -33,7 +35,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
 
         public TrackSample Clone()
         {
-            return new TrackSample()
+            return new TrackSample
             {
                 Start = Start,
                 Length = Length,

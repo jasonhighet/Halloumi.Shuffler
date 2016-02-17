@@ -382,7 +382,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <returns>The automation attributes</returns>
         public AutomationAttributes GetAutomationAttributes(string trackDescription)
         {
-            return AutomationAttributes.GetAutomationAttributes(trackDescription, ExtendedAttributeFolder);
+            return AutomationAttributes.GetAutomationAttributes(trackDescription, ExtenedAttributesHelper.ExtendedAttributeFolder);
         }
 
         /// <summary>
@@ -392,7 +392,7 @@ namespace Halloumi.Shuffler.AudioEngine
         public void SaveAutomationAttributes(Track track)
         {
             if (track == null) return;
-            AutomationAttributes.SaveAutomationAttributes(track, ExtendedAttributeFolder);
+            AutomationAttributes.SaveAutomationAttributes(track, ExtenedAttributesHelper.ExtendedAttributeFolder);
         }
 
         /// <summary>
@@ -402,7 +402,7 @@ namespace Halloumi.Shuffler.AudioEngine
         public void ReloadAutomationAttributes(Track track)
         {
             if (track == null) return;
-            AutomationAttributes.SaveAutomationAttributes(track, ExtendedAttributeFolder);
+            AutomationAttributes.SaveAutomationAttributes(track, ExtenedAttributesHelper.ExtendedAttributeFolder);
         }
 
         /// <summary>

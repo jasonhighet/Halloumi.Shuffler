@@ -171,7 +171,7 @@ namespace Halloumi.Shuffler.Controls
 
             var track = BassPlayer.LoadTrack(prevTrack.Filename);
             BassPlayer.LoadTrackAudioData(track);
-            BassPlayer.LoadExtendedAttributes(track);
+            ExtenedAttributesHelper.LoadExtendedAttributes(track);
             return track;
         }
 

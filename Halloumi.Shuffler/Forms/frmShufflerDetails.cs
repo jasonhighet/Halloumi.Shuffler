@@ -362,7 +362,7 @@ namespace Halloumi.Shuffler.Forms
                 AutomationAttributes.TrackSamples.Add(sample);
             }
 
-            BassPlayer.SaveExtendedAttributes(Track);
+            ExtenedAttributesHelper.SaveExtendedAttributes(Track);
             BassPlayer.ReloadTrack(Track.Filename);
             BassPlayer.SaveAutomationAttributes(Track);
             BassPlayer.ReloadTrack(Track.Filename);

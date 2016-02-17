@@ -340,8 +340,7 @@ namespace Halloumi.Shuffler.Forms
             var settings = Settings.Default;
             Library.LibraryFolder = settings.LibraryFolder;
             Library.PlaylistFolder = settings.PlaylistFolder;
-            Library.ShufflerFolder = settings.ShufflerFolder;
-            BassPlayer.ExtendedAttributeFolder = settings.ShufflerFolder;
+            ExtenedAttributesHelper.ExtendedAttributeFolder = settings.ShufflerFolder;
             PluginHelper.WaPluginsFolder = settings.WaPluginsFolder;
             PluginHelper.VstPluginsFolder = settings.VstPluginsFolder;
             formStateController.FormStateSettings = settings.FormStateSettings;

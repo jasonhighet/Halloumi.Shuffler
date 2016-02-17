@@ -103,11 +103,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Gets or sets the folder where the shuffler extended attribute files for the library are kept
         /// </summary>
-        public string ShufflerFolder
-        {
-            get { return BassPlayer.ExtendedAttributeFolder; }
-            set { BassPlayer.ExtendedAttributeFolder = value; }
-        }
+        public string ShufflerFolder => ExtenedAttributesHelper.ExtendedAttributeFolder;
 
         /// <summary>
         ///     Gets the name of the file where the track data is cached.
@@ -1456,7 +1452,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             var bassTrack = BassPlayer.LoadTrack(track.Filename);
             bassTrack.Rank = track.Rank;
-            BassPlayer.SaveExtendedAttributes(bassTrack);
+            ExtenedAttributesHelper.SaveExtendedAttributes(bassTrack);
         }
 
 
@@ -1606,7 +1602,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 {
                     if (attributes != null) attributes["Key"] = tagKey;
                 }
-                BassPlayer.SaveExtendedAttributes(attributes, GetShufflerAttributeFile(track.Description));
+                ExtenedAttributesHelper.SaveExtendedAttributes(attributes, GetShufflerAttributeFile(track.Description));
             }
             else if (tagKey == "" && attributeKey != "")
             {

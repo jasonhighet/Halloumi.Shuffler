@@ -177,9 +177,9 @@ namespace Halloumi.Shuffler.AudioEngine
             return filename;
         }
 
-        private DateTime GetTrackLastModified(Track track)
+        private static DateTime GetTrackLastModified(AudioStream track)
         {
-            var shufflerFile = GetExtendedAttributeFile(track);
+            var shufflerFile = ExtenedAttributesHelper.GetExtendedAttributeFile(track.Description);
             var shufflerDate = DateTime.MinValue;
 
             if (File.Exists(shufflerFile))
