@@ -23,7 +23,7 @@ namespace Halloumi.Shuffler.TestHarness
 
             speakers.AddInputChannel(player.Output);
 
-            var file = @"E:\Music\Library\A Reggae Tribute To The Beatles\14 - Various - Roslyn Sweat & The Paragons  Blackbird.mp3";
+            var file = @"H:\Music\Pucho & His Latin Soul Brothers\Big Stick Dateline\04 - Pucho & His Latin Soul Brothers - Sunny.mp3";
             Parallel.For(0, 10, i => 
             {
                 player.Load("stream" + i.ToString(), file);
@@ -32,6 +32,7 @@ namespace Halloumi.Shuffler.TestHarness
                 {
                     player.AddSection("stream"+ i.ToString(), "section" + j.ToString());
                     player.SetSectionPositions("stream" + i.ToString(), "section" + j.ToString(), (j * 10) + i, 3);
+                    player.AddCustomSync("stream" + i.ToString(), (j * 10) + i + 2);
                 }
 
                 player.QueueSection("stream" + i.ToString(), "section0");
@@ -39,6 +40,7 @@ namespace Halloumi.Shuffler.TestHarness
             });
 
 
+            //player.UnloadAll();
         }
     }
 }

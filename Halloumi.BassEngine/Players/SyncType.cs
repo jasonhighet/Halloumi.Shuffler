@@ -7,6 +7,7 @@
     {
         Start,
         Offset,
-        End
+        End,
+        Custom
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices;
+using Halloumi.Shuffler.AudioEngine.Players;
 using Un4seen.Bass;
 
 namespace Halloumi.Shuffler.AudioEngine.Models
@@ -24,6 +24,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
 
         protected AudioStream()
         {
+            AudioSyncs = new List<AudioSync>();
             Channels = new List<int>();
             Gain = 0;
             GainChannel = int.MinValue;
@@ -95,9 +96,19 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         public int DefaultSampleRate { get; set; }
 
         /// <summary>
+        ///     Gets the audio syncs.
+        /// </summary>
+        public List<AudioSync> AudioSyncs { get; }
+
+        /// <summary>
         ///     Gets or sets the key.
         /// </summary>
         public string Key { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the gain channel for the track
+        /// </summary>
+        internal int GainChannel { get; set; }
 
         /// <summary>
         ///     Determines whether the audio is loaded.
@@ -105,7 +116,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <returns></returns>
         public bool IsAudioLoaded()
         {
-            return AudioData != null &&  Channel != int.MinValue;
+            return AudioData != null && Channel != int.MinValue;
         }
 
         /// <summary>
@@ -118,12 +129,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         }
 
         /// <summary>
-        ///     Gets or sets the gain channel for the track
-        /// </summary>
-        internal int GainChannel { get; set; }
-
-        /// <summary>
-        /// Determines whether the gain channel has been initialized.
+        ///     Determines whether the gain channel has been initialized.
         /// </summary>
         /// <returns>True if the gain channel has been initialized</returns>
         internal bool IsGainChannelInitialized()

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Halloumi.Shuffler.AudioEngine.Models;
 
 namespace Halloumi.Shuffler.AudioEngine.Players
 {
@@ -13,7 +12,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AudioSyncs = new List<AudioSync>();
         }
 
-        public string Key { get; set;  }
+        public string Key { get; set; }
 
         public List<AudioSync> AudioSyncs { get; }
 
@@ -25,7 +24,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public bool HasOffset => Offset != null;
 
-        public bool HasStartAndEnd=> Start != null && End != null;
+        public bool HasStartAndEnd => Start != null && End != null;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this section should loop indefinitely.
