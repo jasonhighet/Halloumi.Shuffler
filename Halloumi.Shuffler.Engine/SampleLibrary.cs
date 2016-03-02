@@ -160,6 +160,14 @@ namespace Halloumi.Shuffler.AudioLibrary
             return TrackLibrary.GetTrack(sample.TrackArtist, sample.TrackTitle, sample.TrackLength);
         }
 
+        public void EnsureSampleExists(Sample sample)
+        {
+            if (!File.Exists(GetSampleFileName(sample)))
+            {
+                SaveSampleFiles(GetTrackFromSample(sample));
+            }
+        }
+
         public void SaveSampleFiles(Track track)
         {
             var samples = GetSamples(track);

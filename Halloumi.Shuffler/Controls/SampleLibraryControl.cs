@@ -370,7 +370,11 @@ namespace Halloumi.Shuffler.Controls
             var sample = GetSelectedSample();
             if (sample == null) return;
 
+            SampleLibrary.EnsureSampleExists(sample);
+
             var filename = SampleLibrary.GetSampleFileName(sample);
+            if (!File.Exists(filename))
+                return;
             
             BassPlayer.LoadRawLoopTrack(filename);
             BassPlayer.PlayRawLoop();

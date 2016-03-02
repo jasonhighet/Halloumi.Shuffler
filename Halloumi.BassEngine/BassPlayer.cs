@@ -483,7 +483,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (track == null) return;
 
-            if ((Path.GetExtension(track.Filename) + "").ToLower() == "wav") return;
+            if ((Path.GetExtension(track.Filename) + "").ToLower() == ".wav") return;
 
             lock (track)
             {
