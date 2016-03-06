@@ -509,7 +509,8 @@ namespace Halloumi.Shuffler.Controls
                 foreach (var sample in samples)
                 {
                     var source = SampleLibrary.GetSampleFileName(sample);
-                    var destination = Path.Combine(folder, Path.GetFileName(source));
+                    var filename = FileSystemHelper.StripInvalidFileNameChars(sample.Description) + Path.GetExtension(source);
+                    var destination = Path.Combine(folder, filename);
                     FileSystemHelper.Copy(source, destination);
                 }
             }

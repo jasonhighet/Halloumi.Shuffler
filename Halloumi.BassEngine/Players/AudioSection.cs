@@ -30,5 +30,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         ///     Gets or sets a value indicating whether this section should loop indefinitely.
         /// </summary>
         public bool LoopIndefinitely { get; set; }
+        
+        /// <summary>
+        ///     Gets the BPM.
+        /// </summary>
+        public decimal Bpm { get; set; }
     }
 }

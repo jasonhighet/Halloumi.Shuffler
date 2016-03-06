@@ -53,6 +53,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static decimal GetAdjustedBpmPercentChange(decimal bpm1, decimal bpm2)
         {
             if (bpm1 == 0M || bpm2 == 0M) return 100M;
+            if (bpm1 == bpm2) return 0M;
 
             var percentChanges = new List<decimal>
             {

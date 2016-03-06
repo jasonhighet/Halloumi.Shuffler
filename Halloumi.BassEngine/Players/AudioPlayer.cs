@@ -17,6 +17,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
     {
         private readonly List<AudioStreamSection> _streamSections;
 
+        private decimal _lockBpm = 0;
+
         public AudioPlayer(IBmpProvider bpmProvider = null)
         {
             Output = new MixerChannel(bpmProvider);
@@ -115,6 +117,21 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             }
         }
 
+        public void LockToBpm(decimal lockBpm)
+        {
+            _lockBpm = lockBpm;
+        }
+
+        public void UnlockFromBpm()
+        {
+            _lockBpm = 0;
+        }
+
+        private bool IsBpmLocked()
+        {
+            return _lockBpm != 0;
+        }
+
         private IEnumerable<string> GetStreamSectionsKeys()
         {
             lock (_streamSections)
@@ -176,7 +193,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         }
 
         public void SetSectionPositions(string streamKey, string sectionKey, double start, double length,
-            double offset = 0)
+            double offset = 0, bool calculateBpmFromLength = false)
         {
             var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
@@ -191,6 +208,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             if (offset == 0) offset = double.MinValue;
             SetSync(audioStream, audioSection, SyncType.Offset, offset);
+
+            audioSection.Bpm = calculateBpmFromLength
+                ? BpmHelper.GetBpmFromLoopLength(length)
+                : audioSection.Bpm = audioStream.Bpm;
+            
         }
 
         public void AddCustomSync(string streamKey, double position)
@@ -235,6 +257,16 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 : audioSection.Start.Position;
 
             AudioStreamHelper.SetPosition(audioStream, startPosition);
+            SetSectionTempo(audioStream, audioSection);
+        }
+
+        private void SetSectionTempo(AudioStream audioStream, AudioSection audioSection)
+        {
+            if(IsBpmLocked())
+                AudioStreamHelper.SetTempoToMatchBpm(audioStream, audioSection.Bpm, _lockBpm);
+            else
+                AudioStreamHelper.SetTempoToMatchBpm(audioStream, audioSection.Bpm, audioSection.Bpm);
+
         }
 
         private static void SetSync(AudioStream audioStream, AudioSection audioSection, SyncType syncType,
