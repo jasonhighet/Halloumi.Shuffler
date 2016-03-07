@@ -263,9 +263,10 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Sets the audio stream tempo to match another BPM
+        /// Sets the audio stream tempo to match another BPM
         /// </summary>
         /// <param name="audioStream">The audio stream to change the temp of.</param>
+        /// <param name="streamBpm">The stream BPM.</param>
         /// <param name="matchBpm">The match BPM.</param>
         public static void SetTempoToMatchBpm(AudioStream audioStream, decimal streamBpm, decimal matchBpm)
         {
@@ -273,6 +274,44 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
+        }
+
+
+        /// <summary>
+        ///     Sets the audio stream pitch to match another BPM
+        /// </summary>
+        /// <param name="audioStream">The audio stream to change the temp of.</param>
+        /// <param name="matchBpm">The match BPM.</param>
+        public static void SetPitchToMatchBpm(AudioStream audioStream, decimal matchBpm)
+        {
+            if (audioStream == null || audioStream.Channel == int.MinValue) return;
+            SetPitchToMatchBpm(audioStream, audioStream.Bpm, matchBpm);
+        }
+
+        /// <summary>
+        /// Sets the audio stream pitch to match another BPM
+        /// </summary>
+        /// <param name="audioStream">The audio stream to change the temp of.</param>
+        /// <param name="streamBpm">The stream BPM.</param>
+        /// <param name="matchBpm">The match BPM.</param>
+        public static void SetPitchToMatchBpm(AudioStream audioStream, decimal streamBpm, decimal matchBpm)
+        {
+            if (audioStream == null || audioStream.Channel == int.MinValue) return;
+
+            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
+            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, percentChange);
+        }
+
+
+        /// <summary>
+        ///     Resets the audio stream pitch.
+        /// </summary>
+        /// <param name="audioStream">The audio stream.</param>
+        public static void ResetPitch(AudioStream audioStream)
+        {
+            if (audioStream == null || !audioStream.IsAudioLoaded()) return;
+
+            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, 0F);
         }
 
         /// <summary>
@@ -285,8 +324,8 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
             if (samplePosition < 0 || samplePosition > audioStream.Length) return;
 
-            DebugHelper.WriteLine(
-                $"SetTrackPosition {audioStream.Description} {audioStream.Channel} {samplePosition} {audioStream.Length}...");
+            //DebugHelper.WriteLine(
+            //    $"SetTrackPosition {audioStream.Description} {audioStream.Channel} {samplePosition} {audioStream.Length}...");
             Bass.BASS_ChannelSetPosition(audioStream.Channel, samplePosition);
             DebugHelper.WriteLine("done");
         }
@@ -427,7 +466,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Bass.BASS_StreamFree(channel);
             return length;
         }
-
+       
         /// <summary>
         /// Sets the replay gain for a channel.
         /// </summary>

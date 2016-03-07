@@ -454,11 +454,13 @@ namespace Halloumi.Shuffler.Controls
 
             StopCurrentSample();
 
-            var form = new FrmEditTrackSamples();
-            form.BassPlayer = BassPlayer;
-            form.Filename = track.Filename;
-            form.SampleLibrary = SampleLibrary;
-            form.Library = SampleLibrary.TrackLibrary;
+            var form = new FrmEditTrackSamples
+            {
+                BassPlayer = BassPlayer,
+                Filename = track.Filename,
+                SampleLibrary = SampleLibrary,
+                Library = SampleLibrary.TrackLibrary
+            };
 
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
@@ -478,10 +480,9 @@ namespace Halloumi.Shuffler.Controls
 
             StopCurrentSample();
 
-            foreach (var sample in GetSelectedSamples())
+            foreach (var sample in GetSelectedSamples().Where(sample => sample.Key == ""))
             {
-                if(sample.Key == "")
-                    SampleLibrary.CalculateSampleKey(sample);            
+                SampleLibrary.CalculateSampleKey(sample);
             }
 
             SampleLibrary.SaveCache();
@@ -504,17 +505,16 @@ namespace Halloumi.Shuffler.Controls
             if (samples == null) return;
 
             var folder = FileDialogHelper.OpenFolder();
-            if (folder != "")
+            if (folder == "") return;
+
+            foreach (var sample in samples)
             {
-                foreach (var sample in samples)
-                {
-                    var source = SampleLibrary.GetSampleFileName(sample);
-                    var filename = FileSystemHelper.StripInvalidFileNameChars(sample.Description) + Path.GetExtension(source);
-                    var destination = Path.Combine(folder, filename);
-                    FileSystemHelper.Copy(source, destination);
-                }
+                var source = SampleLibrary.GetSampleFileName(sample);
+                var filename = $"{sample.TrackArtist} - {sample.TrackTitle} - {sample.Description}";
+                filename = FileSystemHelper.StripInvalidFileNameChars(filename) + Path.GetExtension(source);
+                var destination = Path.Combine(folder, filename);
+                FileSystemHelper.Copy(source, destination);
             }
-            
         }
     }
 }
