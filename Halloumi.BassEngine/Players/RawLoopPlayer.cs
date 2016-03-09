@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _audioPlayer.UnloadAll();
         }
 
-        public void SetPositions(double start, double length, double offset = 0)
+        public void SetPositions(double start = 0, double length = 0, double offset = 0)
         {
             _audioPlayer.Pause(StreamKey);
             _audioPlayer.SetSectionPositions(StreamKey, SectionKey, start, length, offset);

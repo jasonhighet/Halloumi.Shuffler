@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Channels;
@@ -18,6 +19,8 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Debug.WriteLine(BpmHelper.GetDefaultLoopLength(65));
+
             ChannelHelper.InitialiseAudioEngine(Handle);
 
             var speakers = new SpeakerOutputChannel();

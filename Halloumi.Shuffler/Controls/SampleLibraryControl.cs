@@ -11,7 +11,9 @@ using AE = Halloumi.Shuffler.AudioEngine;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Common.Helpers;
 using System.IO;
+using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Controls
@@ -76,6 +78,8 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AE.BassPlayer BassPlayer { get; set; }
 
+        private readonly RawLoopPlayer _rawLoopPlayer;
+
         public SampleLibraryControl()
         {
             InitializeComponent();
@@ -116,6 +120,12 @@ namespace Halloumi.Shuffler.Controls
 
             LoopFilter = "";
             KeyFilter = "";
+
+
+            var speakers = new SpeakerOutputChannel();
+            _rawLoopPlayer = new RawLoopPlayer();
+            speakers.AddInputChannel(_rawLoopPlayer.Output);
+
         }
 
         public void Initialize()
@@ -130,8 +140,10 @@ namespace Halloumi.Shuffler.Controls
 
         private void StopCurrentSample()
         {
-            BassPlayer.StopRawLoop();
-            BassPlayer.UnloadRawLoopTrack();
+            //BassPlayer.StopRawLoop();
+            //BassPlayer.UnloadRawLoopTrack();
+            _rawLoopPlayer.Pause();
+            _rawLoopPlayer.UnloadAudio();
         }
 
         public List<Sample> GetDisplayedSamples()
@@ -163,8 +175,9 @@ namespace Halloumi.Shuffler.Controls
             }
             else
             {
-                criteria.Atonal = false;
                 criteria.Key = KeyHelper.GetKeyFromDisplayKey(KeyFilter);
+                if(!string.IsNullOrEmpty(criteria.Key))
+                    criteria.Atonal = false;
             }
 
             criteria.MaxBpm = MaxBpm;
@@ -184,7 +197,6 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         /// Binds the data.
         /// </summary>
-        /// <param name="bindSamples">If set to true, binds the samples.</param>
         private void BindData()
         {
             if (_binding) return;
@@ -364,20 +376,24 @@ namespace Halloumi.Shuffler.Controls
 
         private void PlayCurrentSample()
         {
-            BassPlayer.StopRawLoop();
-            BassPlayer.UnloadRawLoopTrack();
-
             var sample = GetSelectedSample();
             if (sample == null) return;
+
+            _rawLoopPlayer.Pause();
+            _rawLoopPlayer.UnloadAudio();
 
             SampleLibrary.EnsureSampleExists(sample);
 
             var filename = SampleLibrary.GetSampleFileName(sample);
             if (!File.Exists(filename))
                 return;
-            
-            BassPlayer.LoadRawLoopTrack(filename);
-            BassPlayer.PlayRawLoop();
+
+            _rawLoopPlayer.LoadAudio(filename);
+            _rawLoopPlayer.SetPositions();
+            _rawLoopPlayer.Play();
+
+            //BassPlayer.LoadRawLoopTrack(filename);
+            //BassPlayer.PlayRawLoop();
         }
 
         /// <summary>

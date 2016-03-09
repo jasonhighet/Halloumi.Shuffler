@@ -135,11 +135,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             return _lockBpm != 0;
         }
 
-        private IEnumerable<string> GetStreamSectionsKeys()
+        private IList<string> GetStreamSectionsKeys()
         {
             lock (_streamSections)
             {
-                return _streamSections.Select(x => x.Key);
+                return _streamSections.Select(x => x.Key).ToList();
             }
         }
 
