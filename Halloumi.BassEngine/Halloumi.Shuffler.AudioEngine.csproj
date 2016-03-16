@@ -102,6 +102,7 @@
     <Compile Include="Helpers\AudioStreamHelper.cs" />
     <Compile Include="Helpers\BpmHelper.cs" />
     <Compile Include="Helpers\ExtenedAttributesHelper.cs" />
+    <Compile Include="Helpers\SilenceHelper.cs" />
     <Compile Include="Helpers\TagHelper.cs" />
     <Compile Include="Helpers\TimeFormatHelper.cs" />
     <Compile Include="Helpers\PlaylistHelper.cs" />

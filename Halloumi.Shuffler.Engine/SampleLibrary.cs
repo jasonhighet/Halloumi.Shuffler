@@ -121,8 +121,8 @@ namespace Halloumi.Shuffler.AudioLibrary
                     .Where(s => string.IsNullOrEmpty(criteria.TrackArtist) || s.Description == criteria.TrackArtist)
                     .Where(s => string.IsNullOrEmpty(criteria.TrackTitle) || s.TrackTitle == criteria.TrackTitle)
                     .Where(s => string.IsNullOrEmpty(criteria.Description) || s.Description == criteria.Description)
-                    .Where(s => string.IsNullOrEmpty(criteria.Key) || (KeyHelper.GetKeyMixRank(s.Key, criteria.Key) > 3 || s.IsAtonal ))
-                    //.Where(s => criteria.Atonal.HasValue && criteria.Atonal.Value && s.IsAtonal == criteria.Atonal.Value)
+                    .Where(s => string.IsNullOrEmpty(criteria.Key) || s.Key == criteria.Key || criteria.IncludeAtonal && s.IsAtonal)
+                    .Where(s => !criteria.AtonalOnly || (criteria.AtonalOnly && s.IsAtonal))
                     .Where(s => !criteria.Primary.HasValue || s.IsPrimaryLoop == criteria.Primary.Value)
                     .Where(s => !criteria.LoopMode.HasValue || s.LoopMode == criteria.LoopMode)
                     .Where(s => s.Bpm >= criteria.MinBpm && s.Bpm <= criteria.MaxBpm)
@@ -319,7 +319,9 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             public decimal MaxBpm { get; set; }
 
-            public bool? Atonal { get; set; }
+            public bool AtonalOnly { get; set; }
+
+            public bool IncludeAtonal { get; set; }
 
             public bool? Primary { get; set; }
 

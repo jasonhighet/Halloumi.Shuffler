@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Channels;
@@ -19,7 +20,7 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Debug.WriteLine(BpmHelper.GetDefaultLoopLength(65));
+            var targetBpm = 123;
 
             ChannelHelper.InitialiseAudioEngine(Handle);
 
@@ -28,22 +29,30 @@ namespace Halloumi.Shuffler.TestHarness
 
             speakers.AddInputChannel(_player.Output);
 
-            _player.LockToBpm(75);
             _player.OnCustomSync += Player_OnCustomSync;
 
+            var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);
+
+            _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
+            _player.AddSection("Silence", "Silence", true);
+            _player.SetSectionPositions("Silence", "Silence", 0, loopLength);
+            _player.SetSectionBpm("Silence", "Silence", calculateBpmFromLength: true, targetBpm: targetBpm);
+            _player.AddCustomSync("Silence", 0);
+            _player.QueueSection("Silence", "Silence");
+
             _player.Load("DrumLoop1", @"H:\Music\Samples\DrumLoop1.wav");
-            var section1 = _player.AddSection("DrumLoop1", "DrumLoop1");
-            section1.LoopIndefinitely = true;
-            _player.SetSectionPositions("DrumLoop1", "DrumLoop1", calculateBpmFromLength: true);
+             _player.AddSection("DrumLoop1", "DrumLoop1", true);
+            _player.SetSectionPositions("DrumLoop1", "DrumLoop1");
+            _player.SetSectionBpm("DrumLoop1", "DrumLoop1",calculateBpmFromLength:true, targetBpm:targetBpm);
             _player.QueueSection("DrumLoop1", "DrumLoop1");
 
-            _player.AddCustomSync("DrumLoop1", 0);
-
             _player.Load("BassLoop", @"H:\Music\Samples\BassLoop.wav");
-            _player.AddSection("BassLoop", "BassLoop");
-            _player.SetSectionPositions("BassLoop", "BassLoop", calculateBpmFromLength: true);
+            _player.AddSection("BassLoop", "BassLoop", true);
+            _player.SetSectionPositions("BassLoop", "BassLoop");
+            _player.SetSectionBpm("BassLoop", "BassLoop", calculateBpmFromLength: true, targetBpm: targetBpm);
+            _player.QueueSection("BassLoop", "BassLoop");
 
-            _player.Play("DrumLoop1");
+            _player.Play("Silence");
 
             //var file2 = @"H:\Music\Samples\BassLoop1.wav";
             //player.Load("BassLoop", file2);
@@ -68,12 +77,9 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Player_OnCustomSync(object sender, CustomSyncEventArgs e)
         {
-            if (e.StreamKey == "DrumLoop1")
-            {
-                _player.QueueSection("BassLoop", "BassLoop");
-                _player.Play("BassLoop");
-            }
-
+            if (e.StreamKey != "Silence") return;
+            var streamKeys = _player.GetStreamKeys().Where(x => x != "Silence").ToList();
+            _player.Play(streamKeys);
         }
     }
 }

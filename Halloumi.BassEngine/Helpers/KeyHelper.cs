@@ -166,8 +166,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         public static string GetKeyFromDisplayKey(string displayKey)
         {
-            if (!_displayKeys.ContainsValue(displayKey)) return "";
-            return _displayKeys.Where(x => x.Value == displayKey).FirstOrDefault().Key;
+            return !_displayKeys.ContainsValue(displayKey) ? "" : _displayKeys.FirstOrDefault(x => x.Value == displayKey).Key;
         }
     }
 }

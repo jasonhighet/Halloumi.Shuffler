@@ -384,7 +384,7 @@
             this.label15.Size = new System.Drawing.Size(135, 30);
             this.label15.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label15.TabIndex = 69;
-            this.label15.Text = "Atonal:";
+            this.label15.Text = "AtonalOnly:";
             // 
             // chkAtonal
             // 
@@ -397,7 +397,7 @@
             this.chkAtonal.TabIndex = 66;
             this.chkAtonal.UncheckedValue = "1";
             this.chkAtonal.Value = "1";
-            this.chkAtonal.Values.Text = "Atonal";
+            this.chkAtonal.Values.Text = "AtonalOnly";
             // 
             // txtTags
             // 

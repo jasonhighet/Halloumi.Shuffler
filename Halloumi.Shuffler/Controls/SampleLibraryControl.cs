@@ -48,7 +48,7 @@ namespace Halloumi.Shuffler.Controls
 
             cmbKey.Items.Clear();
             cmbKey.Items.Add("");
-            cmbKey.Items.Add("Atonal");
+            cmbKey.Items.Add("AtonalOnly");
             foreach (var key in KeyHelper.GetDisplayKeys())
             {
                 cmbKey.Items.Add(key);
@@ -77,6 +77,8 @@ namespace Halloumi.Shuffler.Controls
         private int MaxBpm { get; set; }
 
         private string KeyFilter { get; set; }
+
+        private bool IncludeAntonalFilter { get; set; }
 
         private string LoopFilter { get; set; }
 
@@ -134,16 +136,18 @@ namespace Halloumi.Shuffler.Controls
             }
 
             var keyText = KeyFilter;
-            if (keyText == "Atonal")
+            if (keyText == "AtonalOnly")
             {
-                criteria.Atonal = true;
+                criteria.AtonalOnly = true;
                 criteria.Key = "";
             }
             else
             {
                 criteria.Key = KeyHelper.GetKeyFromDisplayKey(KeyFilter);
-                criteria.Atonal = false;
+                criteria.AtonalOnly = false;
             }
+
+            criteria.IncludeAtonal = IncludeAntonalFilter;
 
             criteria.MaxBpm = MaxBpm;
             criteria.MinBpm = MinBpm;
@@ -307,6 +311,19 @@ namespace Halloumi.Shuffler.Controls
             BeginInvoke(bindData);
         }
 
+        /// <summary>
+        ///     Sets the loop filter.
+        /// </summary>
+        private void SetIncludeAtonalFilter()
+        {
+            if (IncludeAntonalFilter == chkIncludeAntonal.Checked)
+                return;
+
+            IncludeAntonalFilter = chkIncludeAntonal.Checked;
+            var bindData = new BindDataHandler(BindData);
+            BeginInvoke(bindData);
+        }
+
         private void SetBpmFilter()
         {
             var min = 0;
@@ -345,12 +362,12 @@ namespace Halloumi.Shuffler.Controls
                 var section = _player.AddSection(filename, filename);
                 section.LoopIndefinitely = true;
 
-                _player.SetSectionPositions(filename, filename, calculateBpmFromLength: true);
+                _player.SetSectionPositions(filename, filename);
                 _player.QueueSection(filename, filename);
 
                 if (bpm != decimal.MinValue) continue;
                 bpm = section.Bpm;
-                _player.LockToBpm(bpm);
+                //_player.LockToBpm(bpm);
             }
 
             var keys = samples.Select(sample=>SampleLibrary.GetSampleFileName(sample)).ToList();
@@ -493,30 +510,33 @@ namespace Halloumi.Shuffler.Controls
                 Bpm = sample.Bpm;
                 Sample = sample;
                 Key = sample.IsAtonal
-                    ? "Atonal"
+                    ? "AtonalOnly"
                     : KeyHelper.GetDisplayKey(sample.Key);
             }
 
-            public string Description { get; set; }
+            public string Description { get; }
 
-            public string Artist { get; set; }
+            public string Tags { get; }
 
-            public string Tags { get; set; }
+            public string LengthFormatted { get;  }
 
-            public string LengthFormatted { get; set; }
+            public decimal Length { get; }
 
-            public decimal Length { get; set; }
+            public decimal Bpm { get;  }
 
-            public decimal Bpm { get; set; }
+            public string Key { get; }
 
-            public string Key { get; set; }
-
-            public Sample Sample { get; set; }
+            public Sample Sample { get;  }
         }
 
         /// <summary>
         ///     Binds the data.
         /// </summary>
         private delegate void BindDataHandler();
+
+        private void chkIncludeAntonal_CheckedChanged(object sender, EventArgs e)
+        {
+            SetIncludeAtonalFilter();
+        }
     }
 }

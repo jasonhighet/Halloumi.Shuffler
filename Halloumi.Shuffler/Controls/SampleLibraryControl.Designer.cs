@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlBackground2 = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlLibraryDetails = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlTrack = new Halloumi.Common.Windows.Controls.Panel();
@@ -59,6 +59,8 @@
             this.txtMaxBPM = new Halloumi.Common.Windows.Controls.TextBox();
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbKey = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.label6 = new Halloumi.Common.Windows.Controls.Label();
+            this.chkIncludeAntonal = new Halloumi.Common.Windows.Controls.CheckBox();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbLoopType = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label2 = new Halloumi.Common.Windows.Controls.Label();
@@ -88,7 +90,7 @@
             this.pnlBackground2.Location = new System.Drawing.Point(0, 0);
             this.pnlBackground2.Name = "pnlBackground2";
             this.pnlBackground2.Padding = new System.Windows.Forms.Padding(5);
-            this.pnlBackground2.Size = new System.Drawing.Size(1139, 612);
+            this.pnlBackground2.Size = new System.Drawing.Size(1190, 612);
             this.pnlBackground2.TabIndex = 13;
             // 
             // pnlLibraryDetails
@@ -101,7 +103,7 @@
             this.pnlLibraryDetails.Location = new System.Drawing.Point(5, 5);
             this.pnlLibraryDetails.Margin = new System.Windows.Forms.Padding(4);
             this.pnlLibraryDetails.Name = "pnlLibraryDetails";
-            this.pnlLibraryDetails.Size = new System.Drawing.Size(1129, 602);
+            this.pnlLibraryDetails.Size = new System.Drawing.Size(1180, 602);
             this.pnlLibraryDetails.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlLibraryDetails.TabIndex = 12;
             // 
@@ -115,7 +117,7 @@
             this.pnlTrack.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTrack.Name = "pnlTrack";
             this.pnlTrack.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlTrack.Size = new System.Drawing.Size(1129, 488);
+            this.pnlTrack.Size = new System.Drawing.Size(1180, 488);
             this.pnlTrack.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlTrack.TabIndex = 57;
             // 
@@ -148,7 +150,7 @@
             this.grdSamples.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grdSamples.RowTemplate.Height = 24;
             this.grdSamples.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdSamples.Size = new System.Drawing.Size(1127, 486);
+            this.grdSamples.Size = new System.Drawing.Size(1178, 486);
             this.grdSamples.SortColumnIndex = 0;
             this.grdSamples.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdSamples.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
@@ -179,7 +181,7 @@
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             this.dataGridViewTextBoxColumn2.ReadOnly = true;
             this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn2.Width = 66;
+            this.dataGridViewTextBoxColumn2.Width = 70;
             // 
             // dataGridViewTextBoxColumn3
             // 
@@ -189,7 +191,7 @@
             this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
             this.dataGridViewTextBoxColumn3.ReadOnly = true;
             this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn3.Width = 60;
+            this.dataGridViewTextBoxColumn3.Width = 64;
             // 
             // dataGridViewTextBoxColumn4
             // 
@@ -201,7 +203,7 @@
             this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
             this.dataGridViewTextBoxColumn4.ReadOnly = true;
             this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn4.Width = 81;
+            this.dataGridViewTextBoxColumn4.Width = 85;
             // 
             // dataGridViewTextBoxColumn5
             // 
@@ -211,7 +213,7 @@
             this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
             this.dataGridViewTextBoxColumn5.ReadOnly = true;
             this.dataGridViewTextBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn5.Width = 67;
+            this.dataGridViewTextBoxColumn5.Width = 71;
             // 
             // contextMenuStrip
             // 
@@ -223,7 +225,7 @@
             this.mnuCalculateKey,
             this.mnuCopySample});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(183, 128);
+            this.contextMenuStrip.Size = new System.Drawing.Size(183, 100);
             this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
             // 
             // mnEditSample
@@ -260,7 +262,7 @@
             this.pnlSampleDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlSampleDetails.Location = new System.Drawing.Point(0, 525);
             this.pnlSampleDetails.Name = "pnlSampleDetails";
-            this.pnlSampleDetails.Size = new System.Drawing.Size(1129, 77);
+            this.pnlSampleDetails.Size = new System.Drawing.Size(1180, 77);
             this.pnlSampleDetails.TabIndex = 56;
             // 
             // pnlDivider
@@ -272,7 +274,7 @@
             this.pnlDivider.Location = new System.Drawing.Point(0, 0);
             this.pnlDivider.Name = "pnlDivider";
             this.pnlDivider.Padding = new System.Windows.Forms.Padding(5, 3, 5, 5);
-            this.pnlDivider.Size = new System.Drawing.Size(1129, 37);
+            this.pnlDivider.Size = new System.Drawing.Size(1180, 37);
             this.pnlDivider.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlDivider.TabIndex = 52;
             // 
@@ -287,6 +289,8 @@
             this.flpToolbarRight.Controls.Add(this.txtMaxBPM);
             this.flpToolbarRight.Controls.Add(this.label3);
             this.flpToolbarRight.Controls.Add(this.cmbKey);
+            this.flpToolbarRight.Controls.Add(this.label6);
+            this.flpToolbarRight.Controls.Add(this.chkIncludeAntonal);
             this.flpToolbarRight.Controls.Add(this.label1);
             this.flpToolbarRight.Controls.Add(this.cmbLoopType);
             this.flpToolbarRight.Controls.Add(this.label2);
@@ -295,7 +299,7 @@
             this.flpToolbarRight.Location = new System.Drawing.Point(5, 3);
             this.flpToolbarRight.Margin = new System.Windows.Forms.Padding(0);
             this.flpToolbarRight.Name = "flpToolbarRight";
-            this.flpToolbarRight.Size = new System.Drawing.Size(1119, 29);
+            this.flpToolbarRight.Size = new System.Drawing.Size(1170, 29);
             this.flpToolbarRight.TabIndex = 0;
             // 
             // lblFilter
@@ -320,7 +324,7 @@
             this.txtSearch.MaximumValue = 2147483647D;
             this.txtSearch.MinimumValue = -2147483648D;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(279, 24);
+            this.txtSearch.Size = new System.Drawing.Size(184, 24);
             this.txtSearch.TabIndex = 1;
             // 
             // label5
@@ -328,7 +332,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label5.Location = new System.Drawing.Point(343, 0);
+            this.label5.Location = new System.Drawing.Point(248, 0);
             this.label5.Margin = new System.Windows.Forms.Padding(0);
             this.label5.Name = "label5";
             this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -341,7 +345,7 @@
             // 
             this.txtMinBPM.EntryType = Halloumi.Common.Windows.Controls.TextBox.TextEntryType.Integer;
             this.txtMinBPM.ErrorProvider = null;
-            this.txtMinBPM.Location = new System.Drawing.Point(384, 4);
+            this.txtMinBPM.Location = new System.Drawing.Point(289, 4);
             this.txtMinBPM.Margin = new System.Windows.Forms.Padding(4);
             this.txtMinBPM.MaximumValue = 2147483647D;
             this.txtMinBPM.MinimumValue = -2147483648D;
@@ -354,7 +358,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(423, 0);
+            this.label4.Location = new System.Drawing.Point(328, 0);
             this.label4.Margin = new System.Windows.Forms.Padding(0);
             this.label4.Name = "label4";
             this.label4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -367,7 +371,7 @@
             // 
             this.txtMaxBPM.EntryType = Halloumi.Common.Windows.Controls.TextBox.TextEntryType.Integer;
             this.txtMaxBPM.ErrorProvider = null;
-            this.txtMaxBPM.Location = new System.Drawing.Point(467, 4);
+            this.txtMaxBPM.Location = new System.Drawing.Point(372, 4);
             this.txtMaxBPM.Margin = new System.Windows.Forms.Padding(4);
             this.txtMaxBPM.MaximumValue = 2147483647D;
             this.txtMaxBPM.MinimumValue = -2147483648D;
@@ -380,7 +384,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(506, 0);
+            this.label3.Location = new System.Drawing.Point(411, 0);
             this.label3.Margin = new System.Windows.Forms.Padding(0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -398,19 +402,43 @@
             "",
             "Yes",
             "No"});
-            this.cmbKey.Location = new System.Drawing.Point(546, 4);
+            this.cmbKey.Location = new System.Drawing.Point(451, 4);
             this.cmbKey.Margin = new System.Windows.Forms.Padding(4);
             this.cmbKey.Name = "cmbKey";
             this.cmbKey.Size = new System.Drawing.Size(81, 25);
             this.cmbKey.TabIndex = 6;
             this.cmbKey.SelectedIndexChanged += new System.EventHandler(this.cmbKey_SelectedIndexChanged);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label6.Location = new System.Drawing.Point(536, 0);
+            this.label6.Margin = new System.Windows.Forms.Padding(0);
+            this.label6.Name = "label6";
+            this.label6.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label6.Size = new System.Drawing.Size(116, 26);
+            this.label6.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
+            this.label6.TabIndex = 18;
+            this.label6.Text = "Include Antonal:";
+            // 
+            // chkIncludeAntonal
+            // 
+            this.chkIncludeAntonal.Location = new System.Drawing.Point(655, 10);
+            this.chkIncludeAntonal.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.chkIncludeAntonal.Name = "chkIncludeAntonal";
+            this.chkIncludeAntonal.Size = new System.Drawing.Size(19, 13);
+            this.chkIncludeAntonal.TabIndex = 19;
+            this.chkIncludeAntonal.Values.Text = "";
+            this.chkIncludeAntonal.CheckedChanged += new System.EventHandler(this.chkIncludeAntonal_CheckedChanged);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(631, 0);
+            this.label1.Location = new System.Drawing.Point(677, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -428,7 +456,7 @@
             "",
             "Yes",
             "No"});
-            this.cmbLoopType.Location = new System.Drawing.Point(717, 4);
+            this.cmbLoopType.Location = new System.Drawing.Point(763, 4);
             this.cmbLoopType.Margin = new System.Windows.Forms.Padding(4);
             this.cmbLoopType.Name = "cmbLoopType";
             this.cmbLoopType.Size = new System.Drawing.Size(160, 25);
@@ -440,7 +468,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(881, 0);
+            this.label2.Location = new System.Drawing.Point(927, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -458,7 +486,7 @@
             "",
             "Yes",
             "No"});
-            this.cmbTag.Location = new System.Drawing.Point(922, 4);
+            this.cmbTag.Location = new System.Drawing.Point(968, 4);
             this.cmbTag.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTag.Name = "cmbTag";
             this.cmbTag.Size = new System.Drawing.Size(147, 25);
@@ -521,7 +549,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlBackground2);
             this.Name = "SampleLibraryControl";
-            this.Size = new System.Drawing.Size(1139, 612);
+            this.Size = new System.Drawing.Size(1190, 612);
             this.pnlBackground2.ResumeLayout(false);
             this.pnlLibraryDetails.ResumeLayout(false);
             this.pnlTrack.ResumeLayout(false);
@@ -573,5 +601,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private Common.Windows.Controls.Label label6;
+        private Common.Windows.Controls.CheckBox chkIncludeAntonal;
     }
 }
