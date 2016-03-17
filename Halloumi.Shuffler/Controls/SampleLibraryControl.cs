@@ -64,10 +64,10 @@ namespace Halloumi.Shuffler.Controls
             LoopFilter = "";
             KeyFilter = "";
 
-
             var speakers = new SpeakerOutputChannel();
             _player = new AudioPlayer();
             speakers.AddInputChannel(_player.Output);
+            _player.OnCustomSync += Player_OnCustomSync;
         }
 
         private string SearchFilter { get; set; }
@@ -340,38 +340,66 @@ namespace Halloumi.Shuffler.Controls
             BeginInvoke(bindData);
         }
 
-        private void PlayCurrentSample()
+        private void PlayCurrentSamples()
         {
             var samples = GetSelectedSamples();
             if (samples == null || samples.Count == 0) return;
 
-            _player.Pause();
-            _player.UnloadAll();
-
-            var bpm = decimal.MinValue;
-            foreach (var sample in samples)
+            lock (_player)
             {
-                SampleLibrary.EnsureSampleExists(sample);
 
-                var filename = SampleLibrary.GetSampleFileName(sample);
-                if (!File.Exists(filename))
-                    return;
+                _player.Pause();
+                _player.UnloadAll();
 
-                _player.Load(filename, filename);
+                var targetBpm = decimal.MinValue;
+                foreach (var sample in samples)
+                {
+                    SampleLibrary.EnsureSampleExists(sample);
 
-                var section = _player.AddSection(filename, filename);
-                section.LoopIndefinitely = true;
+                    var filename = SampleLibrary.GetSampleFileName(sample);
+                    if (!File.Exists(filename))
+                        return;
 
-                _player.SetSectionPositions(filename, filename);
-                _player.QueueSection(filename, filename);
+                    _player.Load(filename, filename);
+                    var section = _player.AddSection(filename, filename, true);
+                    _player.SetSectionPositions(filename, filename);
 
-                if (bpm != decimal.MinValue) continue;
-                bpm = section.Bpm;
-                //_player.LockToBpm(bpm);
+                    if (targetBpm == decimal.MinValue)
+                    {
+                        _player.SetSectionBpm(filename, filename, calculateBpmFromLength: true);
+                        targetBpm = section.Bpm;
+                    }
+                    else
+                    {
+                        _player.SetSectionBpm(filename, filename, calculateBpmFromLength: true, targetBpm: targetBpm);
+                    }
+
+                    _player.QueueSection(filename, filename);
+                }
+
+                var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);
+
+                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
+                _player.AddSection("Silence", "Silence", true);
+                _player.SetSectionPositions("Silence", "Silence", 0, loopLength);
+                _player.SetSectionBpm("Silence", "Silence", calculateBpmFromLength: true, targetBpm: targetBpm);
+                _player.AddCustomSync("Silence", 0);
+                _player.QueueSection("Silence", "Silence");
+
+                _player.Play("Silence");
             }
+            
+        }
 
-            var keys = samples.Select(sample=>SampleLibrary.GetSampleFileName(sample)).ToList();
-            _player.Play(keys);
+        private void Player_OnCustomSync(object sender, CustomSyncEventArgs e)
+        {
+            lock (_player)
+            {
+                if (e.StreamKey != "Silence") return;
+                var streamKeys = _player.GetStreamKeys().Where(x => x != "Silence").ToList();
+                _player.Play(streamKeys);
+
+            }
         }
 
         /// <summary>
@@ -396,7 +424,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdSamples_SelectionChanged(object sender, EventArgs e)
         {
-            PlayCurrentSample();
+            PlayCurrentSamples();
         }
 
         /// <summary>
@@ -499,6 +527,11 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
+        private void chkIncludeAntonal_CheckedChanged(object sender, EventArgs e)
+        {
+            SetIncludeAtonalFilter();
+        }
+
         private class SampleModel
         {
             public SampleModel(Sample sample)
@@ -518,25 +551,20 @@ namespace Halloumi.Shuffler.Controls
 
             public string Tags { get; }
 
-            public string LengthFormatted { get;  }
+            public string LengthFormatted { get; }
 
             public decimal Length { get; }
 
-            public decimal Bpm { get;  }
+            public decimal Bpm { get; }
 
             public string Key { get; }
 
-            public Sample Sample { get;  }
+            public Sample Sample { get; }
         }
 
         /// <summary>
         ///     Binds the data.
         /// </summary>
         private delegate void BindDataHandler();
-
-        private void chkIncludeAntonal_CheckedChanged(object sender, EventArgs e)
-        {
-            SetIncludeAtonalFilter();
-        }
     }
 }
