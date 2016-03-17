@@ -48,7 +48,7 @@ namespace Halloumi.Shuffler.Controls
 
             cmbKey.Items.Clear();
             cmbKey.Items.Add("");
-            cmbKey.Items.Add("AtonalOnly");
+            cmbKey.Items.Add("Atonal");
             foreach (var key in KeyHelper.GetDisplayKeys())
             {
                 cmbKey.Items.Add(key);
@@ -136,7 +136,7 @@ namespace Halloumi.Shuffler.Controls
             }
 
             var keyText = KeyFilter;
-            if (keyText == "AtonalOnly")
+            if (keyText == "Atonal")
             {
                 criteria.AtonalOnly = true;
                 criteria.Key = "";
@@ -543,7 +543,7 @@ namespace Halloumi.Shuffler.Controls
                 Bpm = sample.Bpm;
                 Sample = sample;
                 Key = sample.IsAtonal
-                    ? "AtonalOnly"
+                    ? "Atonal"
                     : KeyHelper.GetDisplayKey(sample.Key);
             }
 

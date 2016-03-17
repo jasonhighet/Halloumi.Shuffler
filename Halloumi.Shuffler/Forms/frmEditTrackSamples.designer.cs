@@ -397,7 +397,7 @@
             this.chkAtonal.TabIndex = 66;
             this.chkAtonal.UncheckedValue = "1";
             this.chkAtonal.Value = "1";
-            this.chkAtonal.Values.Text = "AtonalOnly";
+            this.chkAtonal.Values.Text = "Atonal";
             // 
             // txtTags
             // 
