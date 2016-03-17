@@ -653,14 +653,17 @@ namespace Halloumi.Shuffler.AudioLibrary
         public void LoadFromCache()
         {
             if (!File.Exists(LibraryCacheFilename)) return;
-
-            var tracks = SerializationHelper<List<Track>>.FromXmlFile(LibraryCacheFilename);
-
-            lock (Tracks)
+            try
             {
-                Tracks.Clear();
-                Tracks.AddRange(tracks.ToArray());
+                var tracks = SerializationHelper<List<Track>>.FromXmlFile(LibraryCacheFilename);
+                lock (Tracks)
+                {
+                    Tracks.Clear();
+                    Tracks.AddRange(tracks.ToArray());
+                }
+
             }
+            catch { }
         }
 
         public void ReloadTrackMetaData(string filename)
