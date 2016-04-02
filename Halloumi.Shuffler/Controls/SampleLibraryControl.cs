@@ -386,6 +386,7 @@ namespace Halloumi.Shuffler.Controls
                 _player.AddCustomSync("Silence", 0);
                 _player.QueueSection("Silence", "Silence");
 
+                _player.Pause();
                 _player.Play("Silence");
             }
             
