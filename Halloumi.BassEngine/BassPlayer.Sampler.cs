@@ -339,7 +339,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             lock (_samplePlayLock)
             {
-                AudioStreamHelper.Pause(audioStream);
+                AudioStreamHelper.SmoothPause(audioStream);
             }
         }
 
@@ -358,14 +358,9 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Mutes the sample.
         /// </summary>
         /// <param name="sample">The sample.</param>
-        public void MuteSample(Sample sample)
+        public void PauseSample(Sample sample)
         {
-            var volume = AudioStreamHelper.GetVolume(sample);
-            if (volume != 0)
-            {
-                AudioStreamHelper.SetVolumeSlide(sample, 1F, 0F, 0.1D);
-            }
-
+            StopSample(sample);
             StopRecordingSampleTrigger();
         }
 

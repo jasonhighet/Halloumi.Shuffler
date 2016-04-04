@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.kryptonManager = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
             this.pnlTop = new System.Windows.Forms.Panel();
             this.playerDetails = new Halloumi.Shuffler.Controls.PlayerDetails();
@@ -87,7 +87,6 @@
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTracker = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSequencer = new System.Windows.Forms.ToolStripMenuItem();
             this.formStateController = new Halloumi.Common.Windows.Contollers.FormStateController(this.components);
             this.notificationContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuPlayPause = new System.Windows.Forms.ToolStripMenuItem();
@@ -144,7 +143,7 @@
             this.pnlTop.Controls.Add(this.pnlMenuBar);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlTop.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.Size = new System.Drawing.Size(1253, 149);
             this.pnlTop.TabIndex = 30;
@@ -155,7 +154,7 @@
             this.playerDetails.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(72)))), ((int)(((byte)(72)))));
             this.playerDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.playerDetails.Location = new System.Drawing.Point(0, 37);
-            this.playerDetails.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.playerDetails.Margin = new System.Windows.Forms.Padding(5);
             this.playerDetails.Name = "playerDetails";
             this.playerDetails.PlaylistControl = null;
             this.playerDetails.Size = new System.Drawing.Size(1253, 112);
@@ -168,7 +167,7 @@
             this.pnlMenuBar.Controls.Add(this.menuStrip);
             this.pnlMenuBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlMenuBar.Location = new System.Drawing.Point(0, 0);
-            this.pnlMenuBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlMenuBar.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMenuBar.Name = "pnlMenuBar";
             this.pnlMenuBar.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridHeaderRowList;
             this.pnlMenuBar.Size = new System.Drawing.Size(1253, 37);
@@ -178,7 +177,7 @@
             // 
             this.linMenuBorder.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.linMenuBorder.Location = new System.Drawing.Point(0, 36);
-            this.linMenuBorder.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.linMenuBorder.Margin = new System.Windows.Forms.Padding(4);
             this.linMenuBorder.Name = "linMenuBorder";
             this.linMenuBorder.Size = new System.Drawing.Size(1253, 1);
             this.linMenuBorder.Text = "kryptonBorderEdge4";
@@ -193,9 +192,9 @@
             this.mnuFile,
             this.mnuLibrary,
             this.mnuView,
+            this.mnuTracker,
             this.mnuOptions,
-            this.mnuHelp,
-            this.mnuTracker});
+            this.mnuHelp});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
@@ -561,11 +560,10 @@
             // mnuTracker
             // 
             this.mnuTracker.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuSampleLibrary,
-            this.mnuSequencer});
+            this.mnuSampleLibrary});
             this.mnuTracker.Name = "mnuTracker";
-            this.mnuTracker.Size = new System.Drawing.Size(68, 33);
-            this.mnuTracker.Text = "&Tracker";
+            this.mnuTracker.Size = new System.Drawing.Size(76, 33);
+            this.mnuTracker.Text = "&Sampler";
             // 
             // mnuSampleLibrary
             // 
@@ -573,11 +571,6 @@
             this.mnuSampleLibrary.Size = new System.Drawing.Size(183, 26);
             this.mnuSampleLibrary.Text = "Sample Library";
             this.mnuSampleLibrary.Click += new System.EventHandler(this.mnuSampleLibrary_Click);
-            // 
-            // mnuSequencer
-            // 
-            this.mnuSequencer.Name = "mnuSequencer";
-            this.mnuSequencer.Size = new System.Drawing.Size(183, 26);
             // 
             // formStateController
             // 
@@ -841,7 +834,7 @@
             // 
             this.trackLibraryControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trackLibraryControl.Location = new System.Drawing.Point(0, 0);
-            this.trackLibraryControl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.trackLibraryControl.Margin = new System.Windows.Forms.Padding(5);
             this.trackLibraryControl.Name = "trackLibraryControl";
             this.trackLibraryControl.Size = new System.Drawing.Size(1253, 625);
             this.trackLibraryControl.TabIndex = 2;
@@ -850,7 +843,7 @@
             // 
             this.playlistControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.playlistControl.Location = new System.Drawing.Point(0, 0);
-            this.playlistControl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.playlistControl.Margin = new System.Windows.Forms.Padding(5);
             this.playlistControl.Name = "playlistControl";
             this.playlistControl.Size = new System.Drawing.Size(1253, 625);
             this.playlistControl.TabIndex = 3;
@@ -865,7 +858,7 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
-            // frmMain
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -874,7 +867,7 @@
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.pnlTop);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmMain";
             this.Text = "Halloumi : Shuffler";
             this.UseApplicationIcon = true;
@@ -992,6 +985,5 @@
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuTracker;
         private System.Windows.Forms.ToolStripMenuItem mnuSampleLibrary;
-        private System.Windows.Forms.ToolStripMenuItem mnuSequencer;
     }
 }

@@ -96,7 +96,7 @@
             this.pnlBackground.Controls.Add(this.pnlHeader);
             this.pnlBackground.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlBackground.Location = new System.Drawing.Point(0, 0);
-            this.pnlBackground.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlBackground.Margin = new System.Windows.Forms.Padding(4);
             this.pnlBackground.Name = "pnlBackground";
             this.pnlBackground.Padding = new System.Windows.Forms.Padding(1);
             this.pnlBackground.Size = new System.Drawing.Size(799, 694);
@@ -110,7 +110,7 @@
             this.flpLeft.Controls.Add(this.samplePlayer);
             this.flpLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpLeft.Location = new System.Drawing.Point(1, 164);
-            this.flpLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flpLeft.Margin = new System.Windows.Forms.Padding(4);
             this.flpLeft.Name = "flpLeft";
             this.flpLeft.Padding = new System.Windows.Forms.Padding(0, 0, 0, 12);
             this.flpLeft.Size = new System.Drawing.Size(797, 475);
@@ -121,10 +121,10 @@
             this.samplePlayer.BackColor = System.Drawing.Color.White;
             this.samplePlayer.Dock = System.Windows.Forms.DockStyle.Top;
             this.samplePlayer.Location = new System.Drawing.Point(0, 0);
-            this.samplePlayer.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.samplePlayer.Margin = new System.Windows.Forms.Padding(5);
             this.samplePlayer.Name = "samplePlayer";
             this.samplePlayer.Padding = new System.Windows.Forms.Padding(7, 2, 7, 2);
-            this.samplePlayer.Size = new System.Drawing.Size(797, 50);
+            this.samplePlayer.Size = new System.Drawing.Size(797, 42);
             this.samplePlayer.TabIndex = 41;
             this.samplePlayer.Visible = false;
             // 
@@ -132,7 +132,7 @@
             // 
             this.kryptonBorderEdge1.Dock = System.Windows.Forms.DockStyle.Top;
             this.kryptonBorderEdge1.Location = new System.Drawing.Point(1, 163);
-            this.kryptonBorderEdge1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.kryptonBorderEdge1.Margin = new System.Windows.Forms.Padding(4);
             this.kryptonBorderEdge1.Name = "kryptonBorderEdge1";
             this.kryptonBorderEdge1.Size = new System.Drawing.Size(797, 1);
             this.kryptonBorderEdge1.Text = "kryptonBorderEdge1";
@@ -141,7 +141,7 @@
             // 
             this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.linLine.Location = new System.Drawing.Point(1, 639);
-            this.linLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.linLine.Margin = new System.Windows.Forms.Padding(4);
             this.linLine.Name = "linLine";
             this.linLine.Size = new System.Drawing.Size(797, 2);
             this.linLine.TabIndex = 46;
@@ -155,7 +155,7 @@
             this.pnlEffectsSettings.Controls.Add(this.panel2);
             this.pnlEffectsSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlEffectsSettings.Location = new System.Drawing.Point(1, 29);
-            this.pnlEffectsSettings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlEffectsSettings.Margin = new System.Windows.Forms.Padding(4);
             this.pnlEffectsSettings.Name = "pnlEffectsSettings";
             this.pnlEffectsSettings.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.pnlEffectsSettings.Size = new System.Drawing.Size(797, 134);
@@ -166,7 +166,7 @@
             this.panel4.Controls.Add(this.flpRight);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(7, 91);
-            this.panel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel4.Margin = new System.Windows.Forms.Padding(4);
             this.panel4.Name = "panel4";
             this.panel4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
             this.panel4.Size = new System.Drawing.Size(783, 37);
@@ -183,7 +183,7 @@
             this.flpRight.Controls.Add(this.rdbDelayNone);
             this.flpRight.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpRight.Location = new System.Drawing.Point(0, 6);
-            this.flpRight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flpRight.Margin = new System.Windows.Forms.Padding(4);
             this.flpRight.Name = "flpRight";
             this.flpRight.Size = new System.Drawing.Size(783, 36);
             this.flpRight.TabIndex = 45;
@@ -204,7 +204,7 @@
             // rdbDelay1
             // 
             this.rdbDelay1.Location = new System.Drawing.Point(141, 4);
-            this.rdbDelay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdbDelay1.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay1.Name = "rdbDelay1";
             this.rdbDelay1.Size = new System.Drawing.Size(46, 24);
             this.rdbDelay1.TabIndex = 58;
@@ -216,7 +216,7 @@
             // 
             this.rdbDelay2.Checked = true;
             this.rdbDelay2.Location = new System.Drawing.Point(195, 4);
-            this.rdbDelay2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdbDelay2.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay2.Name = "rdbDelay2";
             this.rdbDelay2.Size = new System.Drawing.Size(46, 24);
             this.rdbDelay2.TabIndex = 59;
@@ -227,7 +227,7 @@
             // rdbDelay3
             // 
             this.rdbDelay3.Location = new System.Drawing.Point(249, 4);
-            this.rdbDelay3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdbDelay3.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay3.Name = "rdbDelay3";
             this.rdbDelay3.Size = new System.Drawing.Size(46, 24);
             this.rdbDelay3.TabIndex = 60;
@@ -238,7 +238,7 @@
             // rdbDelay4
             // 
             this.rdbDelay4.Location = new System.Drawing.Point(303, 4);
-            this.rdbDelay4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdbDelay4.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay4.Name = "rdbDelay4";
             this.rdbDelay4.Size = new System.Drawing.Size(55, 24);
             this.rdbDelay4.TabIndex = 61;
@@ -249,7 +249,7 @@
             // rdbDelayNone
             // 
             this.rdbDelayNone.Location = new System.Drawing.Point(366, 4);
-            this.rdbDelayNone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdbDelayNone.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelayNone.Name = "rdbDelayNone";
             this.rdbDelayNone.Size = new System.Drawing.Size(61, 24);
             this.rdbDelayNone.TabIndex = 62;
@@ -264,7 +264,7 @@
             this.panel3.Controls.Add(this.lblVolume);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(7, 60);
-            this.panel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(783, 31);
             this.panel3.TabIndex = 43;
@@ -275,7 +275,7 @@
             this.pnlFader.Controls.Add(this.sldVolume);
             this.pnlFader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFader.Location = new System.Drawing.Point(137, 0);
-            this.pnlFader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlFader.Margin = new System.Windows.Forms.Padding(4);
             this.pnlFader.Name = "pnlFader";
             this.pnlFader.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.pnlFader.Size = new System.Drawing.Size(609, 31);
@@ -361,7 +361,7 @@
             this.panel2.Controls.Add(this.flowLayoutPanel6);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(7, 6);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(783, 54);
             this.panel2.TabIndex = 38;
@@ -371,7 +371,7 @@
             this.panel1.Controls.Add(this.chkEnableAutomation);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
             this.panel1.Size = new System.Drawing.Size(494, 54);
@@ -399,7 +399,7 @@
             this.flowLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Right;
             this.flowLayoutPanel6.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel6.Location = new System.Drawing.Point(494, 0);
-            this.flowLayoutPanel6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowLayoutPanel6.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel6.Name = "flowLayoutPanel6";
             this.flowLayoutPanel6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanel6.Size = new System.Drawing.Size(289, 54);
@@ -408,7 +408,7 @@
             // btnClearSampleTriggers
             // 
             this.btnClearSampleTriggers.Location = new System.Drawing.Point(196, 6);
-            this.btnClearSampleTriggers.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnClearSampleTriggers.Margin = new System.Windows.Forms.Padding(4);
             this.btnClearSampleTriggers.Name = "btnClearSampleTriggers";
             this.btnClearSampleTriggers.Size = new System.Drawing.Size(83, 38);
             this.btnClearSampleTriggers.TabIndex = 37;
@@ -418,7 +418,7 @@
             // btnRemoveLastSampleTrigger
             // 
             this.btnRemoveLastSampleTrigger.Location = new System.Drawing.Point(105, 6);
-            this.btnRemoveLastSampleTrigger.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnRemoveLastSampleTrigger.Margin = new System.Windows.Forms.Padding(4);
             this.btnRemoveLastSampleTrigger.Name = "btnRemoveLastSampleTrigger";
             this.btnRemoveLastSampleTrigger.Size = new System.Drawing.Size(83, 38);
             this.btnRemoveLastSampleTrigger.TabIndex = 38;
@@ -428,7 +428,7 @@
             // btnSaveLastSampleTrigger
             // 
             this.btnSaveLastSampleTrigger.Location = new System.Drawing.Point(14, 6);
-            this.btnSaveLastSampleTrigger.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSaveLastSampleTrigger.Margin = new System.Windows.Forms.Padding(4);
             this.btnSaveLastSampleTrigger.Name = "btnSaveLastSampleTrigger";
             this.btnSaveLastSampleTrigger.Size = new System.Drawing.Size(83, 38);
             this.btnSaveLastSampleTrigger.TabIndex = 36;
@@ -442,7 +442,7 @@
             this.pnlButtons.Controls.Add(this.flpButtons);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlButtons.Location = new System.Drawing.Point(1, 641);
-            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(797, 52);
             this.pnlButtons.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
@@ -454,7 +454,7 @@
             this.flowLayoutPanel2.Controls.Add(this.cmbOutput);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanel2.Size = new System.Drawing.Size(195, 52);
@@ -485,7 +485,7 @@
             "Monitor",
             "Both"});
             this.cmbOutput.Location = new System.Drawing.Point(86, 6);
-            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4);
             this.cmbOutput.Name = "cmbOutput";
             this.cmbOutput.Size = new System.Drawing.Size(96, 25);
             this.cmbOutput.TabIndex = 6;
@@ -500,7 +500,7 @@
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flpButtons.Location = new System.Drawing.Point(374, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
             this.flpButtons.Size = new System.Drawing.Size(423, 52);
@@ -509,7 +509,7 @@
             // btnRefresh
             // 
             this.btnRefresh.Location = new System.Drawing.Point(259, 7);
-            this.btnRefresh.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(5);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(149, 38);
             this.btnRefresh.TabIndex = 9;
@@ -519,7 +519,7 @@
             // btnEffect2
             // 
             this.btnEffect2.Location = new System.Drawing.Point(138, 7);
-            this.btnEffect2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnEffect2.Margin = new System.Windows.Forms.Padding(5);
             this.btnEffect2.Name = "btnEffect2";
             this.btnEffect2.Size = new System.Drawing.Size(111, 38);
             this.btnEffect2.TabIndex = 10;
@@ -529,7 +529,7 @@
             // btnEffect1
             // 
             this.btnEffect1.Location = new System.Drawing.Point(17, 7);
-            this.btnEffect1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnEffect1.Margin = new System.Windows.Forms.Padding(5);
             this.btnEffect1.Name = "btnEffect1";
             this.btnEffect1.Size = new System.Drawing.Size(111, 38);
             this.btnEffect1.TabIndex = 11;
@@ -540,7 +540,7 @@
             // 
             this.linHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.linHeader.Location = new System.Drawing.Point(1, 28);
-            this.linHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.linHeader.Margin = new System.Windows.Forms.Padding(4);
             this.linHeader.Name = "linHeader";
             this.linHeader.Size = new System.Drawing.Size(797, 1);
             this.linHeader.Text = "kryptonBorderEdge1";
@@ -550,7 +550,7 @@
             this.pnlHeader.Controls.Add(this.lblHeader);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(1, 1);
-            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridHeaderColumnCustom1;
             this.pnlHeader.Size = new System.Drawing.Size(797, 27);
@@ -561,7 +561,7 @@
             this.lblHeader.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblHeader.LabelStyle = ComponentFactory.Krypton.Toolkit.LabelStyle.NormalPanel;
             this.lblHeader.Location = new System.Drawing.Point(0, 0);
-            this.lblHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lblHeader.Margin = new System.Windows.Forms.Padding(4);
             this.lblHeader.Name = "lblHeader";
             this.lblHeader.Size = new System.Drawing.Size(68, 27);
             this.lblHeader.TabIndex = 0;
@@ -572,7 +572,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlBackground);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SamplerControl";
             this.Size = new System.Drawing.Size(799, 694);
             this.pnlBackground.ResumeLayout(false);

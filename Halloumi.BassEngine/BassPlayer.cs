@@ -1000,10 +1000,20 @@ namespace Halloumi.Shuffler.AudioEngine
         public void SetConservativeFadeOutSettings()
         {
             if (CurrentTrack == null || NextTrack == null) return;
+            if (CurrentTrack.PowerDownOnEnd) return;
 
             if (!BpmHelper.IsBpmInRange(CurrentTrack.EndBpm, NextTrack.StartBpm, 10))
             {
-                CurrentTrack.PowerDownOnEnd = true;
+                if (KeyHelper.GetKeyMixRank(CurrentTrack.Key, NextTrack.Key) < 3)
+                {
+                    CurrentTrack.PowerDownOnEnd = true;
+                }
+                else
+                {
+                    CurrentTrack.EndLoopCount = 8;
+                    CurrentTrack.FadeOutEnd = CurrentTrack.FadeOutStart +
+                        CurrentTrack.SecondsToSamples(BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm) / 32);
+                }
             }
             else if (KeyHelper.GetKeyMixRank(CurrentTrack.Key, NextTrack.Key) < 3)
             {
@@ -1019,6 +1029,8 @@ namespace Halloumi.Shuffler.AudioEngine
                 }
                 CurrentTrack.EndLoopCount = 0;
             }
+
+            SetTrackSyncPositions(CurrentTrack);
         }
 
 

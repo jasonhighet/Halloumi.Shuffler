@@ -281,7 +281,7 @@ namespace Halloumi.Shuffler.AudioEngine
             var sample = GetSampleBySampleId(trigger.SampleId);
             if (sample == null) return;
 
-            MuteSample(sample);
+            PauseSample(sample);
         }
 
         /// <summary>
@@ -612,7 +612,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 fadeOutLength = BpmHelper.GetDefaultLoopLength(fromTrack.EndBpm);
 
             if (toTrack != null)
-                fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
+                fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(toTrack, fromTrack, fadeOutLength);
 
             return fadeOutLength;
         }

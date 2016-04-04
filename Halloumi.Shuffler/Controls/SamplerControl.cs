@@ -17,8 +17,6 @@ namespace Halloumi.Shuffler.Controls
     {
         private AE.Models.Track _currentTrack = null;
         private AE.Models.Track _nextTrack = null;
-
-        //private AE.Track _previousTrack = null;
         private AE.Models.Track _additionalTrack = null;
 
         private List<SamplePlayer> SamplePlayers { get; set; }
@@ -59,6 +57,27 @@ namespace Halloumi.Shuffler.Controls
             LoadSamples();
 
             BassPlayer.OnTrackQueued += new EventHandler(BassPlayer_OnTrackQueued);
+
+            flpLeft.SuspendLayout();
+            SamplePlayers.Clear();
+
+            for (int i = 0; i < 20; i++)
+            {
+                var samplePlayer = new SamplePlayer();
+                samplePlayer.BackColor = Color.White;
+                samplePlayer.Size = new Size(this.samplePlayer.Width, this.samplePlayer.Height);
+                samplePlayer.Dock = DockStyle.Top;
+                samplePlayer.BassPlayer = BassPlayer;
+                samplePlayer.Library = PlaylistControl.Library;
+                if (i % 2 != 0) samplePlayer.BackColor = Color.WhiteSmoke;
+                SamplePlayers.Add(samplePlayer);
+                flpLeft.Controls.Add(samplePlayer);
+                samplePlayer.Visible = false;
+            }
+
+            flpLeft.Controls.Remove(this.samplePlayer);
+
+            flpLeft.ResumeLayout();
         }
 
         private void SetVolume(int volume)
@@ -125,36 +144,22 @@ namespace Halloumi.Shuffler.Controls
         {
             flpLeft.SuspendLayout();
 
-            SamplePlayers.ForEach(sp => sp.Visible = false);
-            foreach (var samplePlayer in SamplePlayers)
-            {
-                flpLeft.Controls.Remove(samplePlayer);
-                samplePlayer.Dispose();
-            }
-            SamplePlayers.Clear();
-
             var samples = BassPlayer.Samples.ToList();
             samples.Reverse();
 
-            var i = 0;
-            foreach (var sample in samples)
+            for (int i = 0; i < SamplePlayers.Count; i++)
             {
-                var samplePlayer = new SamplePlayer();
-
-                samplePlayer.BackColor = Color.White;
-                samplePlayer.Size = new Size(577, 50);
-                samplePlayer.Dock = DockStyle.Top;
-
-                samplePlayer.BassPlayer = BassPlayer;
-                samplePlayer.Library = PlaylistControl.Library;
-
-                if (i % 2 != 0) samplePlayer.BackColor = Color.WhiteSmoke;
-
-                samplePlayer.SetSample(sample);
-                SamplePlayers.Add(samplePlayer);
-                flpLeft.Controls.Add(samplePlayer);
-
-                i++;
+                var samplePlayer = SamplePlayers[i];
+                if (i < samples.Count)
+                {
+                    samplePlayer.SetSample(samples[i]);
+                    samplePlayer.Visible = true;
+                }
+                else
+                {
+                    samplePlayer.Pause();
+                    samplePlayer.Visible = false;
+                }
             }
 
             flpLeft.ResumeLayout();
@@ -248,7 +253,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new MethodInvoker(delegate()
+                BeginInvoke(new MethodInvoker(delegate ()
                 {
                     BassPlayer_OnTrackQueued();
                 }));

@@ -67,6 +67,12 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
 
+        public void Pause()
+        {
+            if (this.Sample != null)
+                this.BassPlayer.PauseSample(this.Sample);
+        }
+
         /// <summary>
         /// Gets the linked sample library.
         /// </summary>
@@ -97,7 +103,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 if (btnPlay.Text == "&Stop")
                 {
-                    BassPlayer.MuteSample(Sample);
+                    BassPlayer.PauseSample(Sample);
                     btnPlay.Text = "&Play";
                 }
                 else
@@ -119,7 +125,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (e.Button == MouseButtons.Left)
             {
-                BassPlayer.MuteSample(Sample);
+                BassPlayer.PauseSample(Sample);
             }
         }
 
