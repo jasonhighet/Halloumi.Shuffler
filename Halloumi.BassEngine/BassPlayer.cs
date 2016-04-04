@@ -1713,6 +1713,11 @@ namespace Halloumi.Shuffler.AudioEngine
                     fadeOutLength = GetPowerDownFadeLength(fromTrack);
                     fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
                 }
+
+                if (toTrack.StartBpm > (fromTrack.EndBpm * 1.1M))
+                {
+                    fadeOutLength = fadeOutLength / 2;
+                }
             }
 
             var fadeLength = fadeOutLength;

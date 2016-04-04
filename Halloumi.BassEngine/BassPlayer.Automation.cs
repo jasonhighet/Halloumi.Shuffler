@@ -612,7 +612,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 fadeOutLength = BpmHelper.GetDefaultLoopLength(fromTrack.EndBpm);
 
             if (toTrack != null)
-                fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(toTrack, fromTrack, fadeOutLength);
+                fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
 
             return fadeOutLength;
         }

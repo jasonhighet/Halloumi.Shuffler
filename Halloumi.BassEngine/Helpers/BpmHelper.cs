@@ -59,7 +59,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             {
                 GetBpmPercentChange(bpm1, bpm2),
                 GetBpmPercentChange(bpm1, bpm2/2),
-                GetBpmPercentChange(bpm1, bpm2*2)
+                GetBpmPercentChange(bpm1, bpm2*2),
             };
 
             var minPercentChange = percentChanges
@@ -211,7 +211,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static double GetLengthAdjustedToMatchAnotherTrack(Track track1, Track track2, double length)
         {
             if (track1 == null || track2 == null) return length;
-            var ratio = GetTrackTempoChangeAsRatio(track2, track1);
+            var ratio = GetTrackTempoChangeAsRatio(track1, track2);
             return length * ratio;
         }
 
