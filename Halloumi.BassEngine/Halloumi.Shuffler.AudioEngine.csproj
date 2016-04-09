@@ -86,6 +86,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\IdSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Sanford.Multimedia.Midi, Version=6.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sanford.Multimedia.Midi.6.1.1\lib\net20\Sanford.Multimedia.Midi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -109,6 +113,8 @@
     <Compile Include="Helpers\AudioExportHelper.cs" />
     <Compile Include="Helpers\TrackHelper.cs" />
     <Compile Include="Helpers\ChannelHelper.cs" />
+    <Compile Include="Midi\BassPlayerMidiMapper.cs" />
+    <Compile Include="Midi\MidiManager.cs" />
     <Compile Include="Models\AudioData.cs" />
     <Compile Include="Models\AudioStream.cs" />
     <Compile Include="Models\PlayState.cs" />
@@ -181,6 +187,7 @@
     <Compile Include="Plugins\VSTPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\silence.mp3" />
   </ItemGroup>
   <ItemGroup>

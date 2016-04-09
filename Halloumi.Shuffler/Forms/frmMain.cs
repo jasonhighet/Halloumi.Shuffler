@@ -34,6 +34,10 @@ namespace Halloumi.Shuffler.Forms
 
         private FrmPlugin _pluginForm;
 
+        private AE.Midi.MidiManager _midiManager;
+
+        private AE.Midi.BassPlayerMidiMapper _midiMapper;
+
 
         /// <summary>
         ///     Initializes a new instance of the frmMain class.
@@ -71,6 +75,9 @@ namespace Halloumi.Shuffler.Forms
 
             BassPlayer = new AE.BassPlayer(Handle);
             Library = new Library(BassPlayer);
+
+            _midiManager = new AE.Midi.MidiManager();
+            _midiMapper = new AE.Midi.BassPlayerMidiMapper(BassPlayer, _midiManager);
 
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
@@ -742,6 +749,7 @@ namespace Halloumi.Shuffler.Forms
             mixerControl.Unload();
             Library.SaveCache();
             BassPlayer.Dispose();
+            _midiManager.Dispose();
         }
 
         /// <summary>
