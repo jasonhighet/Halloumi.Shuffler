@@ -61,9 +61,13 @@ namespace Halloumi.Shuffler.Controls
         {
             var settings = Settings.Default;
             BassPlayer.SetMixerVolume(settings.Volume);
-            sldVolume.Value = (int)settings.Volume;
-            lblVolume.Text = settings.Volume.ToString();
+
+            SetVolume((int)settings.Volume);
+
+            BassPlayer.OnVolumeChanged += BassPlayer_OnVolumeChanged;
         }
+
+
 
         private Track GetCurrentTrack()
         {
@@ -422,9 +426,26 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void sldVolume_Slid(object sender, EventArgs e)
         {
+            _bindingVolumeSlider = true;
             var volume = Convert.ToDecimal(sldVolume.ScrollValue);
             BassPlayer.SetMixerVolume(volume);
             lblVolume.Text = volume.ToString();
+            _bindingVolumeSlider = false;
+        }
+        private bool _bindingVolumeSlider = false;
+
+        private void SetVolume(int volume)
+        {
+            sldVolume.Value = volume;
+            lblVolume.Text = volume.ToString();
+        }
+
+        private void BassPlayer_OnVolumeChanged(object sender, EventArgs e)
+        {
+            if (_bindingVolumeSlider) return;
+            var volume = (int)BassPlayer.GetMixerVolume();
+            if (volume != sldVolume.Value)
+                SetVolume(volume);
         }
 
         #endregion

@@ -21,6 +21,7 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
             _controlMappings = new List<ControlMapping>();
             _controlMappings.Add(new ControlMapping { CommandName = "Play", ControlId = 45 });
             _controlMappings.Add(new ControlMapping { CommandName = "Pause", ControlId = 46 });
+            _controlMappings.Add(new ControlMapping { CommandName = "Volume", ControlId = 14 });
 
             _midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
         }
@@ -44,6 +45,12 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 if (e.Value != 0)
                     _bassPlayer.Pause();
             }
+            if (controlMapping.CommandName == "Volume")
+            {
+                var volume = (Convert.ToDecimal(e.Value) / 127M) * 100;
+                    _bassPlayer.SetMixerVolume(volume);
+            }
+
         }
 
         private class ControlMapping

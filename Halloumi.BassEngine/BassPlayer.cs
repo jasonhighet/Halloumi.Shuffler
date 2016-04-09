@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
@@ -11,7 +10,6 @@ using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
-using Un4seen.Bass.AddOn.Tags;
 
 namespace Halloumi.Shuffler.AudioEngine
 {
@@ -131,14 +129,14 @@ namespace Halloumi.Shuffler.AudioEngine
         public PlayState PlayState { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the volume of the bass player as decimal 0 - 99.99.
+        ///     Gets or sets the volume of the bass player as decimal 0 - 100.
         /// </summary>
         public decimal Volume
         {
             get { return (decimal) (Bass.BASS_GetVolume()*100); }
             set
             {
-                if (value >= 0 && value < 100)
+                if (value >= 0 && value <= 100)
                 {
                     Bass.BASS_SetVolume((float) (value/100));
                 }
@@ -239,6 +237,8 @@ namespace Halloumi.Shuffler.AudioEngine
         public event EventHandler OnSkipToEnd;
 
         public event EventHandler TrackTagsLoaded;
+
+        public event EventHandler OnVolumeChanged;
 
         /// <summary>
         ///     Initialises the track mixer.
@@ -831,6 +831,7 @@ namespace Halloumi.Shuffler.AudioEngine
         public void SetMixerVolume(decimal volume)
         {
             _speakerOutput.SetVolume(volume);
+            OnVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
 
         /// <summary>
