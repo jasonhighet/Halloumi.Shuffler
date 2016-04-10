@@ -28,23 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.mnuNext = new ComponentFactory.Krypton.Toolkit.KryptonContextMenu();
-            this.mnuNextItems = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItems();
-            this.mnuSkipToEnd = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem();
-            this.mnuPowerDown = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem();
-            this.mnuFadeNow = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem();
             this.pnlTrackMixer = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlNextTrack = new Halloumi.Common.Windows.Controls.Panel();
             this.lblNextFadeDetails = new Halloumi.Common.Windows.Controls.Label();
             this.lblNextTitle = new Halloumi.Common.Windows.Controls.Label();
-            this.linLine = new Halloumi.Common.Windows.Controls.BeveledLine();
-            this.pnlButtons = new Halloumi.Common.Windows.Controls.Panel();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnMainEffect = new Halloumi.Common.Windows.Controls.Button();
-            this.btnTrackEffect = new Halloumi.Common.Windows.Controls.Button();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label3 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbOutput = new Halloumi.Common.Windows.Controls.ComboBox();
             this.panel1 = new Halloumi.Common.Windows.Controls.Panel();
             this.flpFadeOutSettings = new System.Windows.Forms.FlowLayoutPanel();
             this.cmbFadeOutType = new Halloumi.Common.Windows.Controls.ComboBox();
@@ -91,21 +78,11 @@
             this.btnClearSends = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnRemoveLastSend = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnSaveLastSend = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
-            this.panel4 = new Halloumi.Common.Windows.Controls.Panel();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnEffect2 = new Halloumi.Common.Windows.Controls.Button();
-            this.btnEffect1 = new Halloumi.Common.Windows.Controls.Button();
             this.kryptonBorderEdge1 = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
             this.hdrTrackFX = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             this.lblTrackFX = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             this.pnlTrackMixer.SuspendLayout();
             this.pnlNextTrack.SuspendLayout();
-            this.pnlButtons.SuspendLayout();
-            this.flpButtons.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).BeginInit();
             this.panel1.SuspendLayout();
             this.flpFadeOutSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbFadeOutType)).BeginInit();
@@ -125,49 +102,15 @@
             this.pnlVolumeInner.SuspendLayout();
             this.panel5.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.flowLayoutPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hdrTrackFX)).BeginInit();
             this.hdrTrackFX.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // mnuNext
-            // 
-            this.mnuNext.Items.AddRange(new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItemBase[] {
-            this.mnuNextItems});
-            // 
-            // mnuNextItems
-            // 
-            this.mnuNextItems.Items.AddRange(new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItemBase[] {
-            this.mnuSkipToEnd,
-            this.mnuPowerDown,
-            this.mnuFadeNow});
-            // 
-            // mnuSkipToEnd
-            // 
-            this.mnuSkipToEnd.Tag = "SkipToEnd";
-            this.mnuSkipToEnd.Text = "Skip To &End";
-            this.mnuSkipToEnd.Click += new System.EventHandler(this.mnuSkipToEnd_Click);
-            // 
-            // mnuPowerDown
-            // 
-            this.mnuPowerDown.Tag = "PowerDown";
-            this.mnuPowerDown.Text = "&Power Down";
-            this.mnuPowerDown.Click += new System.EventHandler(this.mnuPowerDown_Click);
-            // 
-            // mnuFadeNow
-            // 
-            this.mnuFadeNow.Tag = "FadeNow";
-            this.mnuFadeNow.Text = "&Fade Now";
-            this.mnuFadeNow.Click += new System.EventHandler(this.mnuFadeNow_Click);
             // 
             // pnlTrackMixer
             // 
             this.pnlTrackMixer.BackColor = System.Drawing.Color.White;
             this.pnlTrackMixer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlTrackMixer.Controls.Add(this.pnlNextTrack);
-            this.pnlTrackMixer.Controls.Add(this.linLine);
-            this.pnlTrackMixer.Controls.Add(this.pnlButtons);
             this.pnlTrackMixer.Controls.Add(this.panel1);
             this.pnlTrackMixer.Controls.Add(this.pnlFader);
             this.pnlTrackMixer.Controls.Add(this.pnlPreviousTrack);
@@ -175,11 +118,11 @@
             this.pnlTrackMixer.Controls.Add(this.linHeader);
             this.pnlTrackMixer.Controls.Add(this.pnlHeader);
             this.pnlTrackMixer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTrackMixer.Location = new System.Drawing.Point(0, 277);
+            this.pnlTrackMixer.Location = new System.Drawing.Point(0, 222);
             this.pnlTrackMixer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTrackMixer.Name = "pnlTrackMixer";
             this.pnlTrackMixer.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlTrackMixer.Size = new System.Drawing.Size(503, 488);
+            this.pnlTrackMixer.Size = new System.Drawing.Size(503, 379);
             this.pnlTrackMixer.TabIndex = 77;
             // 
             // pnlNextTrack
@@ -192,7 +135,7 @@
             this.pnlNextTrack.Margin = new System.Windows.Forms.Padding(4);
             this.pnlNextTrack.Name = "pnlNextTrack";
             this.pnlNextTrack.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlNextTrack.Size = new System.Drawing.Size(501, 124);
+            this.pnlNextTrack.Size = new System.Drawing.Size(501, 68);
             this.pnlNextTrack.TabIndex = 80;
             // 
             // lblNextFadeDetails
@@ -218,105 +161,6 @@
             this.lblNextTitle.Size = new System.Drawing.Size(487, 25);
             this.lblNextTitle.TabIndex = 62;
             this.lblNextTitle.Text = "Some Dumb Cop Gave Me 2 Tickets Already (Instrumental)";
-            // 
-            // linLine
-            // 
-            this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.linLine.Location = new System.Drawing.Point(1, 434);
-            this.linLine.Margin = new System.Windows.Forms.Padding(4);
-            this.linLine.Name = "linLine";
-            this.linLine.Size = new System.Drawing.Size(501, 2);
-            this.linLine.TabIndex = 78;
-            // 
-            // pnlButtons
-            // 
-            this.pnlButtons.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlButtons.Controls.Add(this.flpButtons);
-            this.pnlButtons.Controls.Add(this.flowLayoutPanel2);
-            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(1, 436);
-            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
-            this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(501, 51);
-            this.pnlButtons.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
-            this.pnlButtons.TabIndex = 77;
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.BackColor = System.Drawing.Color.Transparent;
-            this.flpButtons.Controls.Add(this.btnMainEffect);
-            this.flpButtons.Controls.Add(this.btnTrackEffect);
-            this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(189, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.flpButtons.Size = new System.Drawing.Size(312, 51);
-            this.flpButtons.TabIndex = 18;
-            // 
-            // btnMainEffect
-            // 
-            this.btnMainEffect.Location = new System.Drawing.Point(190, 7);
-            this.btnMainEffect.Margin = new System.Windows.Forms.Padding(5);
-            this.btnMainEffect.Name = "btnMainEffect";
-            this.btnMainEffect.Size = new System.Drawing.Size(111, 38);
-            this.btnMainEffect.TabIndex = 11;
-            this.btnMainEffect.Text = "Main Effect";
-            this.btnMainEffect.Click += new System.EventHandler(this.btnMainEffect_Click);
-            // 
-            // btnTrackEffect
-            // 
-            this.btnTrackEffect.Location = new System.Drawing.Point(69, 7);
-            this.btnTrackEffect.Margin = new System.Windows.Forms.Padding(5);
-            this.btnTrackEffect.Name = "btnTrackEffect";
-            this.btnTrackEffect.Size = new System.Drawing.Size(111, 38);
-            this.btnTrackEffect.TabIndex = 10;
-            this.btnTrackEffect.Text = "Track Effect";
-            this.btnTrackEffect.Click += new System.EventHandler(this.btnTrackEffect_Click);
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.label3);
-            this.flowLayoutPanel2.Controls.Add(this.cmbOutput);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(189, 51);
-            this.flowLayoutPanel2.TabIndex = 17;
-            this.flowLayoutPanel2.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(7, 2);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.label3.Size = new System.Drawing.Size(71, 33);
-            this.label3.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Output:";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // cmbOutput
-            // 
-            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOutput.DropDownWidth = 72;
-            this.cmbOutput.ErrorProvider = null;
-            this.cmbOutput.Items.AddRange(new object[] {
-            "Speakers",
-            "Monitor",
-            "Both"});
-            this.cmbOutput.Location = new System.Drawing.Point(86, 6);
-            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbOutput.Name = "cmbOutput";
-            this.cmbOutput.Size = new System.Drawing.Size(96, 25);
-            this.cmbOutput.TabIndex = 6;
-            this.cmbOutput.SelectedIndexChanged += new System.EventHandler(this.cmbOutput_SelectedIndexChanged);
             // 
             // panel1
             // 
@@ -421,7 +265,7 @@
             this.sldFader.BackgroundImage = null;
             this.sldFader.BackGroundImage = null;
             this.sldFader.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sldFader.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(169)))), ((int)(((byte)(179)))));
+            this.sldFader.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
             this.sldFader.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.sldFader.ButtonCornerRadius = ((uint)(2u));
             this.sldFader.ButtonSize = new System.Drawing.Size(24, 12);
@@ -445,7 +289,7 @@
             this.sldFader.TickColor = System.Drawing.Color.DarkOliveGreen;
             this.sldFader.TickStyle = System.Windows.Forms.TickStyle.None;
             this.sldFader.TickType = MediaSlider.MediaSlider.TickMode.Standard;
-            this.sldFader.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(169)))), ((int)(((byte)(179)))));
+            this.sldFader.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
             this.sldFader.TrackDepth = 6;
             this.sldFader.TrackFillColor = System.Drawing.Color.Transparent;
             this.sldFader.TrackProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(228)))), ((int)(((byte)(138)))));
@@ -618,7 +462,7 @@
             // 
             this.pnlMiddleBackground.BackColor = System.Drawing.SystemColors.Control;
             this.pnlMiddleBackground.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlMiddleBackground.Location = new System.Drawing.Point(0, 271);
+            this.pnlMiddleBackground.Location = new System.Drawing.Point(0, 216);
             this.pnlMiddleBackground.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMiddleBackground.Name = "pnlMiddleBackground";
             this.pnlMiddleBackground.Padding = new System.Windows.Forms.Padding(1);
@@ -632,8 +476,6 @@
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.pnlEffectsSettings);
             this.panel3.Controls.Add(this.panel5);
-            this.panel3.Controls.Add(this.beveledLine1);
-            this.panel3.Controls.Add(this.panel4);
             this.panel3.Controls.Add(this.kryptonBorderEdge1);
             this.panel3.Controls.Add(this.hdrTrackFX);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
@@ -641,7 +483,7 @@
             this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(1);
-            this.panel3.Size = new System.Drawing.Size(503, 271);
+            this.panel3.Size = new System.Drawing.Size(503, 216);
             this.panel3.TabIndex = 75;
             // 
             // pnlEffectsSettings
@@ -655,7 +497,7 @@
             this.pnlEffectsSettings.Margin = new System.Windows.Forms.Padding(4);
             this.pnlEffectsSettings.Name = "pnlEffectsSettings";
             this.pnlEffectsSettings.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlEffectsSettings.Size = new System.Drawing.Size(501, 131);
+            this.pnlEffectsSettings.Size = new System.Drawing.Size(501, 130);
             this.pnlEffectsSettings.TabIndex = 83;
             // 
             // panel6
@@ -663,7 +505,7 @@
             this.panel6.BackColor = System.Drawing.Color.Transparent;
             this.panel6.Controls.Add(this.panel7);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel6.Location = new System.Drawing.Point(7, 75);
+            this.panel6.Location = new System.Drawing.Point(7, 74);
             this.panel6.Margin = new System.Windows.Forms.Padding(4);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(487, 50);
@@ -812,7 +654,7 @@
             this.sldTrackFXVolume.BackgroundImage = null;
             this.sldTrackFXVolume.BackGroundImage = null;
             this.sldTrackFXVolume.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sldTrackFXVolume.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(169)))), ((int)(((byte)(179)))));
+            this.sldTrackFXVolume.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
             this.sldTrackFXVolume.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.sldTrackFXVolume.ButtonCornerRadius = ((uint)(2u));
             this.sldTrackFXVolume.ButtonSize = new System.Drawing.Size(24, 12);
@@ -836,7 +678,7 @@
             this.sldTrackFXVolume.TickColor = System.Drawing.Color.DarkOliveGreen;
             this.sldTrackFXVolume.TickStyle = System.Windows.Forms.TickStyle.None;
             this.sldTrackFXVolume.TickType = MediaSlider.MediaSlider.TickMode.Standard;
-            this.sldTrackFXVolume.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(169)))), ((int)(((byte)(179)))));
+            this.sldTrackFXVolume.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
             this.sldTrackFXVolume.TrackDepth = 6;
             this.sldTrackFXVolume.TrackFillColor = System.Drawing.Color.Transparent;
             this.sldTrackFXVolume.TrackProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(228)))), ((int)(((byte)(138)))));
@@ -945,72 +787,6 @@
             this.btnSaveLastSend.Values.Text = "Save";
             this.btnSaveLastSend.Click += new System.EventHandler(this.btnSaveLastTrackFX_Click);
             // 
-            // beveledLine1
-            // 
-            this.beveledLine1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.beveledLine1.Location = new System.Drawing.Point(1, 216);
-            this.beveledLine1.Margin = new System.Windows.Forms.Padding(4);
-            this.beveledLine1.Name = "beveledLine1";
-            this.beveledLine1.Size = new System.Drawing.Size(501, 2);
-            this.beveledLine1.TabIndex = 80;
-            // 
-            // panel4
-            // 
-            this.panel4.BackColor = System.Drawing.SystemColors.Control;
-            this.panel4.Controls.Add(this.flowLayoutPanel3);
-            this.panel4.Controls.Add(this.flowLayoutPanel4);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(1, 218);
-            this.panel4.Margin = new System.Windows.Forms.Padding(4);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(501, 52);
-            this.panel4.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
-            this.panel4.TabIndex = 79;
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Left;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(4);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(189, 52);
-            this.flowLayoutPanel3.TabIndex = 17;
-            // 
-            // flowLayoutPanel4
-            // 
-            this.flowLayoutPanel4.BackColor = System.Drawing.Color.Transparent;
-            this.flowLayoutPanel4.Controls.Add(this.btnEffect2);
-            this.flowLayoutPanel4.Controls.Add(this.btnEffect1);
-            this.flowLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(249, 0);
-            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(4);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(252, 52);
-            this.flowLayoutPanel4.TabIndex = 16;
-            // 
-            // btnEffect2
-            // 
-            this.btnEffect2.Location = new System.Drawing.Point(126, 7);
-            this.btnEffect2.Margin = new System.Windows.Forms.Padding(5);
-            this.btnEffect2.Name = "btnEffect2";
-            this.btnEffect2.Size = new System.Drawing.Size(111, 38);
-            this.btnEffect2.TabIndex = 12;
-            this.btnEffect2.Text = "Effect #2";
-            this.btnEffect2.Click += new System.EventHandler(this.btnEffect2_Click);
-            // 
-            // btnEffect1
-            // 
-            this.btnEffect1.Location = new System.Drawing.Point(5, 7);
-            this.btnEffect1.Margin = new System.Windows.Forms.Padding(5);
-            this.btnEffect1.Name = "btnEffect1";
-            this.btnEffect1.Size = new System.Drawing.Size(111, 38);
-            this.btnEffect1.TabIndex = 13;
-            this.btnEffect1.Text = "Effect #1";
-            this.btnEffect1.Click += new System.EventHandler(this.btnEffect1_Click);
-            // 
             // kryptonBorderEdge1
             // 
             this.kryptonBorderEdge1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1051,14 +827,10 @@
             this.Controls.Add(this.panel3);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TrackMixerControl";
-            this.Size = new System.Drawing.Size(503, 765);
+            this.Size = new System.Drawing.Size(503, 601);
             this.pnlTrackMixer.ResumeLayout(false);
             this.pnlTrackMixer.PerformLayout();
             this.pnlNextTrack.ResumeLayout(false);
-            this.pnlButtons.ResumeLayout(false);
-            this.flpButtons.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).EndInit();
             this.panel1.ResumeLayout(false);
             this.flpFadeOutSettings.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cmbFadeOutType)).EndInit();
@@ -1081,8 +853,6 @@
             this.pnlVolumeInner.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.flowLayoutPanel4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.hdrTrackFX)).EndInit();
             this.hdrTrackFX.ResumeLayout(false);
             this.hdrTrackFX.PerformLayout();
@@ -1091,12 +861,6 @@
         }
 
         #endregion
-
-        private ComponentFactory.Krypton.Toolkit.KryptonContextMenu mnuNext;
-        private ComponentFactory.Krypton.Toolkit.KryptonContextMenuItems mnuNextItems;
-        private ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem mnuPowerDown;
-        private ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem mnuSkipToEnd;
-        private ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem mnuFadeNow;
         private Halloumi.Common.Windows.Controls.Panel panel3;
         private ComponentFactory.Krypton.Toolkit.KryptonBorderEdge kryptonBorderEdge1;
         private ComponentFactory.Krypton.Toolkit.KryptonPanel hdrTrackFX;
@@ -1118,17 +882,6 @@
         private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlHeader;
         private ComponentFactory.Krypton.Toolkit.KryptonLabel lblHeader;
         private Slider sldFader;
-        private Halloumi.Common.Windows.Controls.BeveledLine linLine;
-        private Halloumi.Common.Windows.Controls.Panel pnlButtons;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private Halloumi.Common.Windows.Controls.Label label3;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbOutput;
-        private Halloumi.Common.Windows.Controls.BeveledLine beveledLine1;
-        private Halloumi.Common.Windows.Controls.Panel panel4;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
-        private Halloumi.Common.Windows.Controls.Button btnEffect2;
-        private Halloumi.Common.Windows.Controls.Button btnEffect1;
         private Halloumi.Common.Windows.Controls.Panel panel5;
         private Halloumi.Common.Windows.Controls.Panel pnlEffectsSettings;
         private ComponentFactory.Krypton.Toolkit.KryptonButton btnTrackFX;
@@ -1155,9 +908,6 @@
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelayNone;
         private Halloumi.Common.Windows.Controls.CheckBox chkEnableTrackFXAutomation;
         private Halloumi.Common.Windows.Controls.CheckBox chkManualFading;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
-        private Halloumi.Common.Windows.Controls.Button btnMainEffect;
-        private Halloumi.Common.Windows.Controls.Button btnTrackEffect;
         private Halloumi.Common.Windows.Controls.Panel pnlNextTrack;
         private Halloumi.Common.Windows.Controls.Label lblNextFadeDetails;
         private Halloumi.Common.Windows.Controls.Label lblNextTitle;

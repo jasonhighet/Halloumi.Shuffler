@@ -49,7 +49,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
         private void InitialiseManualMixer()
         {
-            ManualFadeOut = false;
+            IsManualMixMode = false;
             PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
             CurrentManualExtendedFadeType = ExtendedFadeType.Default;
         }
@@ -509,7 +509,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (CurrentTrack == null) return;
             if (PreviousTrack == null) return;
-            if (!ManualFadeOut) return;
+            if (!IsManualMixMode) return;
             if (PreviousManaulExtendedFadeType == ExtendedFadeType.PowerDown) return;
 
             CreateLastExtendedMixAttributes();
@@ -521,7 +521,7 @@ namespace Halloumi.Shuffler.AudioEngine
             attributes.FadeEndVolume = Convert.ToSingle(AudioStreamHelper.GetVolume(PreviousTrack)/100);
             attributes.PowerDownAfterFade = powerDownAfterFade;
 
-            if (ManualFadeOut)
+            if (IsManualMixMode)
                 RaiseOnEndFadeIn();
         }
 
@@ -529,7 +529,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (CurrentTrack == null) return;
             if (PreviousTrack == null) return;
-            if (!ManualFadeOut) return;
+            if (!IsManualMixMode) return;
             if (PreviousManaulExtendedFadeType != ExtendedFadeType.PowerDown
                 && PreviousManaulExtendedFadeType != ExtendedFadeType.Cut) return;
 
@@ -625,6 +625,75 @@ namespace Halloumi.Shuffler.AudioEngine
             return mixAttributes.ExtendedFadeType;
         }
 
+        public void SetManualMixVolume(decimal value)
+        {
+            //if (!IsManualMixMode) return;
+            //if (PreviousManaulExtendedFadeType != ExtendedFadeType.Default) return;
+
+            value = 100M - value;
+
+            var track = PreviousTrack;
+            if (track == null) return;
+
+            var range = (decimal)DefaultFadeOutStartVolume;
+            var volume = (range * (value / 100));
+            volume = (decimal)DefaultFadeOutEndVolume + volume;
+
+            AudioStreamHelper.SetVolume(track, volume);
+
+            OnManualMixVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
+        }
+
+        public decimal GetManualMixVolume()
+        {
+            if (PreviousTrack == null) return 100M;
+
+            var volume = AudioStreamHelper.GetVolume(PreviousTrack) - (decimal)DefaultFadeOutEndVolume;
+            volume = volume / (decimal)DefaultFadeOutStartVolume;
+            volume = volume * 100;
+            return 100 - volume;
+        }
+
+        /// <summary>
+        /// Makes the power off noise on a track
+        /// </summary>
+        /// <param name="track">The track.</param>
+        public void PowerOffPreviousTrack()
+        {
+            if (PreviousTrack == null) return;
+            if (PlayState != PlayState.Playing) return;
+            if (!IsTrackInUse(PreviousTrack)) return;
+
+            AudioStreamHelper.PowerDown(PreviousTrack);
+            StopRecordingManualExtendedMix(true);
+        }
+
+        /// <summary>
+        /// Pauses the track.
+        /// </summary>
+        /// <param name="track">The track.</param>
+        public void PausePreviousTrack()
+        {
+            if (PreviousTrack == null) return;
+            if (!IsTrackInUse(PreviousTrack)) return;
+            if (!AudioStreamHelper.IsPlaying(PreviousTrack)) return;
+
+            StopRecordingManualExtendedMix();
+            AudioStreamHelper.SmoothPause(PreviousTrack);
+        }
+
+        /// <summary>
+        /// Makes the power off noise on a track
+        /// </summary>
+        /// <param name="track">The track.</param>
+        public void PowerOffCurrentTrack()
+        {
+            if (CurrentTrack == null) return;
+            if (PlayState != PlayState.Playing) return;
+            if (!IsTrackInUse(CurrentTrack)) return;
+            AudioStreamHelper.PowerDown(CurrentTrack);
+        }
+
         public void ForceFadeNow(ForceFadeType fadeType)
         {
             if (PlayState != PlayState.Playing)
@@ -636,7 +705,7 @@ namespace Halloumi.Shuffler.AudioEngine
             if (fadeType == ForceFadeType.SkipToEnd)
             {
                 AudioStreamHelper.SetPosition(CurrentTrack,
-                    CurrentTrack.FadeOutStart - CurrentTrack.SecondsToSamples(0.05M));
+                    CurrentTrack.FadeOutStart - CurrentTrack.SecondsToSamples(0.01M));
             }
             else
             {

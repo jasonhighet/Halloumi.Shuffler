@@ -22,12 +22,18 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
             _controlMappings.Add(new ControlMapping { CommandName = "Play", ControlId = 45 });
             _controlMappings.Add(new ControlMapping { CommandName = "Pause", ControlId = 46 });
             _controlMappings.Add(new ControlMapping { CommandName = "Volume", ControlId = 14 });
+            _controlMappings.Add(new ControlMapping { CommandName = "PausePrevious", ControlId = 23 });
+            _controlMappings.Add(new ControlMapping { CommandName = "PowerDownPrevious", ControlId = 33 });
+            _controlMappings.Add(new ControlMapping { CommandName = "ManualMixVolume", ControlId = 2 });
+            _controlMappings.Add(new ControlMapping { CommandName = "FadeNow", ControlId = 48 });
+            _controlMappings.Add(new ControlMapping { CommandName = "TrackSendFx", ControlId = 24 });
 
             _midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
         }
 
         private void MidiManager_OnControlMessageEvent(ControlMessageEventArgs e)
-        {            DebugHelper.WriteLine("MidiMessage - ControlId:" + e.ControlId.ToString() + " Value:" + e.Value.ToString());
+        {
+            DebugHelper.WriteLine("MidiMessage - ControlId:" + e.ControlId.ToString() + " Value:" + e.Value.ToString());
 
             var controlMapping = _controlMappings.FirstOrDefault(x => x.ControlId == e.ControlId);
             if (controlMapping == null)
@@ -40,15 +46,42 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 if (e.Value != 0)
                     _bassPlayer.Play();
             }
-            if (controlMapping.CommandName == "Pause")
+            else if (controlMapping.CommandName == "TrackSendFx")
+            {
+                if (e.Value != 0)
+                    _bassPlayer.StartTrackFxSend();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
+            else if (controlMapping.CommandName == "FadeNow")
+            {
+                if (e.Value != 0)
+                    _bassPlayer.ForceFadeNow(ForceFadeType.SkipToEnd);
+            }
+            else if (controlMapping.CommandName == "Volume")
+            {
+                var volume = (Convert.ToDecimal(e.Value) / 127M) * 100;
+                _bassPlayer.SetMixerVolume(volume);
+            }
+            else if (controlMapping.CommandName == "Pause")
             {
                 if (e.Value != 0)
                     _bassPlayer.Pause();
             }
-            if (controlMapping.CommandName == "Volume")
+            else if (controlMapping.CommandName == "ManualMixVolume")
             {
                 var volume = (Convert.ToDecimal(e.Value) / 127M) * 100;
-                    _bassPlayer.SetMixerVolume(volume);
+                _bassPlayer.SetManualMixVolume(volume);
+            }
+            else if (controlMapping.CommandName == "PowerDownPrevious")
+            {
+                if (e.Value != 0)
+                    _bassPlayer.PowerOffPreviousTrack();
+            }
+            else if (controlMapping.CommandName == "PausePrevious")
+            {
+                if (e.Value != 0)
+                    _bassPlayer.PausePreviousTrack();
             }
 
         }

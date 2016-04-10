@@ -181,7 +181,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Gets or sets a value indicating whether the volume fade out is manual or automatic
         /// </summary>
-        public bool ManualFadeOut { get; set; }
+        public bool IsManualMixMode { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether automatic track FX is enabled
@@ -239,6 +239,8 @@ namespace Halloumi.Shuffler.AudioEngine
         public event EventHandler TrackTagsLoaded;
 
         public event EventHandler OnVolumeChanged;
+
+        public event EventHandler OnManualMixVolumeChanged;
 
         /// <summary>
         ///     Initialises the track mixer.
@@ -1481,7 +1483,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 AudioStreamHelper.SetVolume(CurrentTrack, 1F);
                 Unlock();
 
-                if ((!ManualFadeOut) || (ManualFadeOut && PreviousManaulExtendedFadeType == ExtendedFadeType.PowerDown))
+                if ((!IsManualMixMode) || (IsManualMixMode && PreviousManaulExtendedFadeType == ExtendedFadeType.PowerDown))
                 {
                     RaiseOnEndFadeIn();
                 }
@@ -1542,7 +1544,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 // change tempo if required
                 AudioStreamHelper.SetTrackTempoToMatchAnotherTrack(PreviousTrack, CurrentTrack);
 
-                if (ManualFadeOut)
+                if (IsManualMixMode)
                 {
                     switch (PreviousManaulExtendedFadeType)
                     {
@@ -1740,7 +1742,7 @@ namespace Halloumi.Shuffler.AudioEngine
             var maxLoops = GetActiveEndLoopCount();
             var isLooped = PreviousTrack.IsLoopedAtEnd;
             var currentLoop = PreviousTrack.CurrentEndLoop;
-            var loopForever = isLooped && (ManualFadeOut || HasExtendedMixAttributes());
+            var loopForever = isLooped && (IsManualMixMode || HasExtendedMixAttributes());
 
             // set to loop start if necessary
             if ((isLooped && currentLoop < maxLoops - 1) || loopForever)
@@ -1753,7 +1755,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 // set position (add one to void StartFadeIn firing)
                 AudioStreamHelper.SetPosition(PreviousTrack, PreviousTrack.FadeOutStart + 1);
             }
-            else if (!ManualFadeOut && !HasExtendedMixAttributes())
+            else if (!IsManualMixMode && !HasExtendedMixAttributes())
             {
                 // stop track
                 AudioStreamHelper.Pause(PreviousTrack);
@@ -1762,7 +1764,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
         private void EndExtendedMix()
         {
-            if (ManualFadeOut) return;
+            if (IsManualMixMode) return;
             if (PreviousTrack == null) return;
             if (!HasExtendedMixAttributes()) return;
 
