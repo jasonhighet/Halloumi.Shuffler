@@ -146,6 +146,9 @@ namespace Halloumi.Shuffler.Controls
             var track1 = GetTrackByIndex(rowIndex - 1);
             var track2 = GetTrackByIndex(rowIndex);
 
+            if(track1 == null || track2 == null)
+                return;
+
             var mixRank = MixLibrary.GetMixLevel(track1, track2);
             var hasExtendedMix = MixLibrary.HasExtendedMix(track1, track2);
 
@@ -368,8 +371,13 @@ namespace Halloumi.Shuffler.Controls
             SetNextBassPlayerTrack();
             PreloadTrack();
 
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(BindData));
+            }
+            else BindData();
+
             PlaylistChanged?.Invoke(this, EventArgs.Empty);
-            BindData();
         }
 
         private Track GetLibraryTrack(TrackModel trackModel)
