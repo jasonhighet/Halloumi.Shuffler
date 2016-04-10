@@ -221,7 +221,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
             else if (!blank)
             {
-                File.WriteAllText(filename, content.ToString(), Encoding.Unicode);
+                File.WriteAllText(filename, content.ToString(), Encoding.UTF8);
             }
         }
 

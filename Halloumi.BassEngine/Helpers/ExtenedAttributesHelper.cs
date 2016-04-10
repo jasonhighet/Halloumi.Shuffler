@@ -193,7 +193,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 var extendedAttributeData = attributes.Aggregate("",
                     (current, keyvalue) => current + $"{keyvalue.Key}={keyvalue.Value};");
 
-                File.WriteAllText(extendedAttributeFile, extendedAttributeData, Encoding.Unicode);
+                File.WriteAllText(extendedAttributeFile, extendedAttributeData, Encoding.UTF8);
             }
         }
 

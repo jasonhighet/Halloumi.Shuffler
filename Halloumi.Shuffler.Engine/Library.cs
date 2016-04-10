@@ -661,9 +661,11 @@ namespace Halloumi.Shuffler.AudioLibrary
                     Tracks.Clear();
                     Tracks.AddRange(tracks.ToArray());
                 }
-
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         public void ReloadTrackMetaData(string filename)
