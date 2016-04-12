@@ -24,7 +24,8 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 new ControlMapping {CommandName = "FadeNow", ControlId = 48},
                 new ControlMapping {CommandName = "TrackSendFx", ControlId = 24},
                 new ControlMapping {CommandName = "TrackSendFxVolume", ControlId = 3},
-                new ControlMapping {CommandName = "SamplerVolume", ControlId = 15}
+                new ControlMapping {CommandName = "SamplerVolume", ControlId = 15},
+                new ControlMapping {CommandName = "ToggleManualMixMode", ControlId = 44}
             };
 
             midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
@@ -89,6 +90,13 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 var volume = GetPercentage(e.Value, controlMapping);
                 _bassPlayer.SetSamplerMixerVolume(volume);
             }
+            else if (controlMapping.CommandName == "ToggleManualMixMode")
+            {
+                if (IsControlOn(e.Value, controlMapping))
+                    _bassPlayer.ToggleManualMixMode();
+            }
+
+
         }
 
         private static bool IsControlOn(int value, ControlMapping controlMapping)

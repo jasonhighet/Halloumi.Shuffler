@@ -183,6 +183,14 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public bool IsManualMixMode { get; private set; }
 
+        public void ToggleManualMixMode()
+        {
+            if (IsManualMixMode)
+                DisableManualMixMode();
+            else
+                EnableManualMixMode();
+        }
+
         public void EnableManualMixMode()
         {
             IsManualMixMode = true;

@@ -1,9 +1,5 @@
-﻿using Sanford.Multimedia.Midi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Sanford.Multimedia.Midi;
 
 namespace Halloumi.Shuffler.AudioEngine.Midi
 {
@@ -27,21 +23,19 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
             if (OnControlMessageEvent == null) return;
             if (e.Message.Command != ChannelCommand.Controller) return;
 
-            OnControlMessageEvent(new ControlMessageEventArgs()
+            OnControlMessageEvent(new ControlMessageEventArgs
             {
                 ControlId = e.Message.Data1,
-                Value = e.Message.Data2,
+                Value = e.Message.Data2
             });
         }
 
         public void Dispose()
         {
-            if (_inDevice != null)
-            {
-                _inDevice.StopRecording();
-                _inDevice.Dispose();
-                _inDevice = null;
-            }
+            if (_inDevice == null) return;
+            _inDevice.StopRecording();
+            _inDevice.Dispose();
+            _inDevice = null;
         }
 
         public event ControlMessageEventDelegate OnControlMessageEvent;
@@ -53,6 +47,5 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
     {
         public int ControlId { get; set; }
         public int Value { get; set; }
-    } 
-
+    }
 }
