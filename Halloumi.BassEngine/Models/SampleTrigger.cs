@@ -1,4 +1,6 @@
-﻿namespace Halloumi.Shuffler.AudioEngine.Models
+﻿using System.Xml.Serialization;
+
+namespace Halloumi.Shuffler.AudioEngine.Models
 {
     public class SampleTrigger
     {
@@ -17,6 +19,7 @@
         /// </summary>
         public decimal DelayNotes { get; set; }
 
+        [XmlElement(ElementName = "SampleID")]
         public string SampleId { get; set; }
 
         /// <summary>
