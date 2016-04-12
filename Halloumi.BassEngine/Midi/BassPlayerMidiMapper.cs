@@ -107,7 +107,7 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
         private static decimal GetPercentage(int value, ControlMapping controlMapping)
         {
             var adjustedValue = Convert.ToDecimal(value - controlMapping.MinValue);
-            var adjustedMax = Convert.ToDecimal(controlMapping.MaxValue - controlMapping.MaxValue);
+            var adjustedMax = Convert.ToDecimal(controlMapping.MaxValue - controlMapping.MinValue);
             return adjustedValue/adjustedMax*100;
         }
 
