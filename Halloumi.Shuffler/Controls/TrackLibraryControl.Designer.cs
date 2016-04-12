@@ -417,13 +417,6 @@
             this.sepOpenFileLocation.Name = "sepOpenFileLocation";
             this.sepOpenFileLocation.Size = new System.Drawing.Size(238, 6);
             // 
-            // mnuAddToSampler
-            // 
-            this.mnuAddToSampler.Name = "mnuAddToSampler";
-            this.mnuAddToSampler.Size = new System.Drawing.Size(241, 24);
-            this.mnuAddToSampler.Text = "Add To Sampler";
-            this.mnuAddToSampler.Click += new System.EventHandler(this.mnuAddToSampler_Click);
-            // 
             // pnlBackground2
             // 
             this.pnlBackground2.BackColor = System.Drawing.SystemColors.Control;

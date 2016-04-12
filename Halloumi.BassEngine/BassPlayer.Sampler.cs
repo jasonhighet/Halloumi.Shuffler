@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
@@ -379,6 +379,7 @@ namespace Halloumi.Shuffler.AudioEngine
         public void SetSamplerMixerVolume(decimal volume)
         {
             _samplerMixer.SetVolume(volume);
+            OnSamplerMixerVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
 
         private void InitialiseSampler()
@@ -386,7 +387,7 @@ namespace Halloumi.Shuffler.AudioEngine
             DebugHelper.WriteLine("InitialiseSampler");
 
             // create mixer channel
-            _samplerMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
+            _samplerMixer = new MixerChannel(this);
             _samplerMixer.SetVolume((decimal) DefaultFadeOutStartVolume);
             _samplerMixer.CutBass();
 

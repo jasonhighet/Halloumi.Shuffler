@@ -1,96 +1,121 @@
-﻿using Halloumi.Common.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Halloumi.Shuffler.AudioEngine.Midi
 {
     public class BassPlayerMidiMapper
     {
-        private BassPlayer _bassPlayer;
-        private MidiManager _midiManager;
-        private List<ControlMapping> _controlMappings;
+        private readonly BassPlayer _bassPlayer;
+        private readonly List<ControlMapping> _controlMappings;
 
         public BassPlayerMidiMapper(BassPlayer bassPlayer, MidiManager midiManager)
         {
             _bassPlayer = bassPlayer;
-            _midiManager = midiManager;
 
-            _controlMappings = new List<ControlMapping>();
-            _controlMappings.Add(new ControlMapping { CommandName = "Play", ControlId = 45 });
-            _controlMappings.Add(new ControlMapping { CommandName = "Pause", ControlId = 46 });
-            _controlMappings.Add(new ControlMapping { CommandName = "Volume", ControlId = 14 });
-            _controlMappings.Add(new ControlMapping { CommandName = "PausePrevious", ControlId = 23 });
-            _controlMappings.Add(new ControlMapping { CommandName = "PowerDownPrevious", ControlId = 33 });
-            _controlMappings.Add(new ControlMapping { CommandName = "ManualMixVolume", ControlId = 2 });
-            _controlMappings.Add(new ControlMapping { CommandName = "FadeNow", ControlId = 48 });
-            _controlMappings.Add(new ControlMapping { CommandName = "TrackSendFx", ControlId = 24 });
+            _controlMappings = new List<ControlMapping>
+            {
+                new ControlMapping {CommandName = "Play", ControlId = 45},
+                new ControlMapping {CommandName = "PowerDownCurrent", ControlId = 46},
+                new ControlMapping {CommandName = "Volume", ControlId = 14},
+                new ControlMapping {CommandName = "PausePrevious", ControlId = 23},
+                new ControlMapping {CommandName = "PowerDownPrevious", ControlId = 33},
+                new ControlMapping {CommandName = "ManualMixVolume", ControlId = 2},
+                new ControlMapping {CommandName = "FadeNow", ControlId = 48},
+                new ControlMapping {CommandName = "TrackSendFx", ControlId = 24},
+                new ControlMapping {CommandName = "TrackSendFxVolume", ControlId = 3},
+                new ControlMapping {CommandName = "SamplerVolume", ControlId = 15}
+            };
 
-            _midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
+            midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
         }
 
         private void MidiManager_OnControlMessageEvent(ControlMessageEventArgs e)
         {
-            DebugHelper.WriteLine("MidiMessage - ControlId:" + e.ControlId.ToString() + " Value:" + e.Value.ToString());
-
             var controlMapping = _controlMappings.FirstOrDefault(x => x.ControlId == e.ControlId);
             if (controlMapping == null)
                 return;
 
-            DebugHelper.WriteLine("ControlMapped - " + controlMapping.CommandName);
-
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (controlMapping.CommandName == "Play")
             {
-                if (e.Value != 0)
+                if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.Play();
             }
             else if (controlMapping.CommandName == "TrackSendFx")
             {
-                if (e.Value != 0)
+                if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.StartTrackFxSend();
                 else
                     _bassPlayer.StopTrackFxSend();
             }
             else if (controlMapping.CommandName == "FadeNow")
             {
-                if (e.Value != 0)
+                if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.ForceFadeNow(ForceFadeType.SkipToEnd);
             }
             else if (controlMapping.CommandName == "Volume")
             {
-                var volume = (Convert.ToDecimal(e.Value) / 127M) * 100;
+                var volume = GetPercentage(e.Value, controlMapping);
                 _bassPlayer.SetMixerVolume(volume);
             }
-            else if (controlMapping.CommandName == "Pause")
+            else if (controlMapping.CommandName == "PowerDownCurrent")
             {
-                if (e.Value != 0)
-                    _bassPlayer.Pause();
+                if (IsControlOn(e.Value, controlMapping))
+                    _bassPlayer.PowerOffCurrentTrack();
             }
             else if (controlMapping.CommandName == "ManualMixVolume")
             {
-                var volume = (Convert.ToDecimal(e.Value) / 127M) * 100;
+                var volume = GetPercentage(e.Value, controlMapping);
                 _bassPlayer.SetManualMixVolume(volume);
             }
             else if (controlMapping.CommandName == "PowerDownPrevious")
             {
-                if (e.Value != 0)
+                if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.PowerOffPreviousTrack();
             }
             else if (controlMapping.CommandName == "PausePrevious")
             {
-                if (e.Value != 0)
+                if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.PausePreviousTrack();
             }
+            else if (controlMapping.CommandName == "TrackSendFxVolume")
+            {
+                var volume = GetPercentage(e.Value, controlMapping);
+                _bassPlayer.SetTrackSendFxVolume(volume);
+            }
+            else if (controlMapping.CommandName == "SamplerVolume")
+            {
+                var volume = GetPercentage(e.Value, controlMapping);
+                _bassPlayer.SetSamplerMixerVolume(volume);
+            }
+        }
 
+        private static bool IsControlOn(int value, ControlMapping controlMapping)
+        {
+            return value != controlMapping.MinValue;
+        }
+
+        private static decimal GetPercentage(int value, ControlMapping controlMapping)
+        {
+            var adjustedValue = Convert.ToDecimal(value - controlMapping.MinValue);
+            var adjustedMax = Convert.ToDecimal(controlMapping.MaxValue - controlMapping.MaxValue);
+            return adjustedValue/adjustedMax*100;
         }
 
         private class ControlMapping
         {
+            public ControlMapping()
+            {
+                MinValue = 0;
+                MaxValue = 127;
+            }
+
             public string CommandName { get; set; }
             public int ControlId { get; set; }
-        }
 
+            public int MinValue { get; }
+            public int MaxValue { get; }
+        }
     }
 }

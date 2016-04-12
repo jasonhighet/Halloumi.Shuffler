@@ -31,7 +31,7 @@
             this.pnlBackground = new Halloumi.Common.Windows.Controls.Panel();
             this.spllLeftRight = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.trackMixerControl = new Halloumi.Shuffler.Controls.TrackMixerControl();
-            this.samplerControl = new Halloumi.Shuffler.Controls.SamplerControl();
+            this.SamplerControl = new Halloumi.Shuffler.Controls.SamplerControl();
             this.pnlBackground.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spllLeftRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spllLeftRight.Panel1)).BeginInit();
@@ -68,7 +68,7 @@
             // 
             // spllLeftRight.Panel2
             // 
-            this.spllLeftRight.Panel2.Controls.Add(this.samplerControl);
+            this.spllLeftRight.Panel2.Controls.Add(this.SamplerControl);
             this.spllLeftRight.Size = new System.Drawing.Size(1275, 664);
             this.spllLeftRight.SplitterDistance = 622;
             this.spllLeftRight.TabIndex = 5;
@@ -84,12 +84,12 @@
             // 
             // samplerControl
             // 
-            this.samplerControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.samplerControl.Location = new System.Drawing.Point(0, 0);
-            this.samplerControl.Margin = new System.Windows.Forms.Padding(5);
-            this.samplerControl.Name = "samplerControl";
-            this.samplerControl.Size = new System.Drawing.Size(648, 664);
-            this.samplerControl.TabIndex = 0;
+            this.SamplerControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SamplerControl.Location = new System.Drawing.Point(0, 0);
+            this.SamplerControl.Margin = new System.Windows.Forms.Padding(5);
+            this.SamplerControl.Name = "SamplerControl";
+            this.SamplerControl.Size = new System.Drawing.Size(648, 664);
+            this.SamplerControl.TabIndex = 0;
             // 
             // MixerControl
             // 
@@ -115,8 +115,5 @@
         private Halloumi.Common.Windows.Controls.Panel pnlBackground;
         private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer spllLeftRight;
         private TrackMixerControl trackMixerControl;
-        private SamplerControl samplerControl;
-
-
     }
 }

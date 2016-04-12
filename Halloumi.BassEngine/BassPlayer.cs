@@ -181,7 +181,26 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Gets or sets a value indicating whether the volume fade out is manual or automatic
         /// </summary>
-        public bool IsManualMixMode { get; set; }
+        public bool IsManualMixMode { get; private set; }
+
+        public void EnableManualMixMode()
+        {
+            IsManualMixMode = true;
+            CurrentManualExtendedFadeType = ExtendedFadeType.Default;
+            PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
+            SetManualMixVolume(0);
+            OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
+        }
+
+        public void DisableManualMixMode()
+        {
+            IsManualMixMode = false;
+            CurrentManualExtendedFadeType = ExtendedFadeType.Default;
+            PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
+            SetManualMixVolume(0);
+            OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
+        }
+    
 
         /// <summary>
         ///     Gets or sets a value indicating whether automatic track FX is enabled
@@ -242,6 +261,12 @@ namespace Halloumi.Shuffler.AudioEngine
 
         public event EventHandler OnManualMixVolumeChanged;
 
+        public event EventHandler OnTrackFxVolumeChanged;
+
+        public event EventHandler OnSamplerMixerVolumeChanged;
+
+        public event EventHandler OnManualMixModeChanged;
+
         /// <summary>
         ///     Initialises the track mixer.
         /// </summary>
@@ -254,12 +279,12 @@ namespace Halloumi.Shuffler.AudioEngine
             _trackOutputSplitter = new OutputSplitter(_trackMixer, _speakerOutput, _monitorOutput);
 
             // create clone of mixer channel and mute it
-            _trackSendMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
+            _trackSendMixer = new MixerChannel(this);
             _trackSendMixer.AddInputChannel(_trackMixer);
             _trackSendMixer.SetVolume(0);
 
             // add the track FX to the track FX mixer,
-            _trackSendFxMixer = new MixerChannel(this, MixerChannelOutputType.SingleOutput);
+            _trackSendFxMixer = new MixerChannel(this);
             _trackSendFxMixer.AddInputChannel(_trackSendMixer);
             _trackSendFxMixer.CutBass();
 

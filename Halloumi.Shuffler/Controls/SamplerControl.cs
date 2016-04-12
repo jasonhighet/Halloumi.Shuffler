@@ -16,8 +16,7 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class SamplerControl : UserControl
     {
-        private Track _additionalTrack;
-
+        private bool _bindingVolumeSlider;
         private bool _bassPlayerOnTrackQueued;
         private Track _currentTrack;
         private Track _nextTrack;
@@ -48,14 +47,6 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AE.BassPlayer BassPlayer { get; set; }
 
-        public void LoadAdditionalTrack(AudioLibrary.Models.Track track)
-        {
-            _additionalTrack = BassPlayer.LoadTrack(track.Filename);
-            BassPlayer.LoadTagData(_additionalTrack);
-            BassPlayer.LoadTrackAudioData(_additionalTrack);
-            LoadSamples();
-        }
-
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
@@ -73,6 +64,7 @@ namespace Halloumi.Shuffler.Controls
             LoadSamples();
 
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
+            BassPlayer.OnSamplerMixerVolumeChanged += BassPlayer_OnSamplerMixerVolumeChanged;
 
             flpLeft.SuspendLayout();
             SamplePlayers.Clear();
@@ -98,6 +90,15 @@ namespace Halloumi.Shuffler.Controls
             flpLeft.ResumeLayout();
         }
 
+        private void BassPlayer_OnSamplerMixerVolumeChanged(object sender, EventArgs e)
+        {
+            if (_bindingVolumeSlider) return;
+            var volume = (int)BassPlayer.GetSamplerMixerVolume();
+
+            lblVolume.Text = volume.ToString();
+            if (sldVolume.Value != volume) sldVolume.Value = volume;
+        }
+
         private void SetVolume(int volume)
         {
             if (volume < 0 || volume > 100) return;
@@ -105,9 +106,7 @@ namespace Halloumi.Shuffler.Controls
             BassPlayer.SetSamplerMixerVolume(Convert.ToDecimal(volume));
 
             volume = (int) BassPlayer.GetSamplerMixerVolume();
-
             lblVolume.Text = volume.ToString();
-
             if (sldVolume.Value != volume) sldVolume.Value = volume;
         }
 
@@ -123,16 +122,12 @@ namespace Halloumi.Shuffler.Controls
         {
             BassPlayer.UnloadSamples(_currentTrack);
             BassPlayer.UnloadSamples(_nextTrack);
-            BassPlayer.UnloadSamples(_additionalTrack);
 
             _currentTrack = BassPlayer.CurrentTrack;
             _nextTrack = BassPlayer.NextTrack;
 
             BassPlayer.LoadSamples(_nextTrack);
             BassPlayer.LoadSamples(_currentTrack);
-
-            if (!BassPlayer.IsTrackInUse(_additionalTrack))
-                BassPlayer.LoadSamples(_additionalTrack);
 
             PlaylistControl.Library.LinkedSampleLibrary.LoadLinkedSamples(BassPlayer, _currentTrack);
 
@@ -146,7 +141,6 @@ namespace Halloumi.Shuffler.Controls
         {
             BassPlayer.UnloadSamples(_nextTrack);
             BassPlayer.UnloadSamples(_currentTrack);
-            BassPlayer.UnloadSamples(_additionalTrack);
             BassPlayer.UnloadSamples();
         }
 
@@ -216,7 +210,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void sldVolume_Slid(object sender, EventArgs e)
         {
+            _bindingVolumeSlider = true;
             SetVolume(sldVolume.ScrollValue);
+            _bindingVolumeSlider = false;
         }
 
         /// <summary>
@@ -282,9 +278,8 @@ namespace Halloumi.Shuffler.Controls
             var track = BassPlayer.CurrentTrack;
             if (track == null) return;
 
-            if (
-                !MessageBoxHelper.Confirm("Are you sure you wish to clear all sample triggers for " + track.Description +
-                                          "?")) return;
+            var message = "Are you sure you wish to clear all sample triggers for " + track.Description + "?";
+            if (!MessageBoxHelper.Confirm(message)) return;
 
             BassPlayer.ClearSampleTriggers();
         }

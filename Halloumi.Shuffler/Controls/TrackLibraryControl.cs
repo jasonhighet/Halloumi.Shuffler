@@ -1741,14 +1741,6 @@ namespace Halloumi.Shuffler.Controls
             SetBpmFilter();
         }
 
-        /// <summary>
-        ///     Handles the Click event of the mnuAddToSampler control.
-        /// </summary>
-        private void mnuAddToSampler_Click(object sender, EventArgs e)
-        {
-            SamplerControl?.LoadAdditionalTrack(GetSelectedTrack());
-        }
-
         #endregion
     }
 }

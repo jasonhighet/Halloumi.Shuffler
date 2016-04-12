@@ -31,10 +31,7 @@ namespace Halloumi.Shuffler.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SamplerControl SamplerControl
-        {
-            get { return samplerControl; }
-        }
+        public SamplerControl SamplerControl { get; private set; }
 
         protected override void OnVisibleChanged(EventArgs e)
         {
@@ -54,13 +51,13 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initialize()
         {
-            samplerControl.BassPlayer = BassPlayer;
-            samplerControl.PlaylistControl = PlaylistControl;
+            SamplerControl.BassPlayer = BassPlayer;
+            SamplerControl.PlaylistControl = PlaylistControl;
             trackMixerControl.BassPlayer = BassPlayer;
             trackMixerControl.Library = Library;
             trackMixerControl.PlaylistControl = PlaylistControl;
 
-            samplerControl.Initialize();
+            SamplerControl.Initialize();
             trackMixerControl.Initialize();
 
             SamplerControl.RefreshSamples();
@@ -68,14 +65,14 @@ namespace Halloumi.Shuffler.Controls
 
         public void LoadSettings()
         {
-            samplerControl.LoadSettings();
+            SamplerControl.LoadSettings();
             trackMixerControl.LoadSettings();
             spllLeftRight.SplitterDistance = (Width / 4) * 2;
         }
 
         public void Unload()
         {
-            samplerControl.Unload();
+            SamplerControl.Unload();
         }
     }
 }

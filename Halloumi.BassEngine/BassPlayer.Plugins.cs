@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System;
+using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Plugins;
-using Halloumi.Common.Helpers;
-using Un4seen.Bass.AddOn.Vst;
-using Un4seen.Bass.AddOn.WaDsp;
 
 namespace Halloumi.Shuffler.AudioEngine
 {
@@ -245,27 +240,11 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Sets the sample mixer volume.
         /// </summary>
         /// <param name="volume">The volume as a value between 0 and 100.</param>
-        public void SetTrackSendFxMixerVolume(decimal volume)
+        public void SetTrackSendFxVolume(decimal volume)
         {
             _trackSendFxMixer.SetVolume(volume);
+            OnTrackFxVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
-
-        ///// <summary>
-        /////     Returns a list of all available (unloaded) VST plug-ins
-        ///// </summary>
-        ///// <returns>A list of all available (unloaded) VST plug-ins</returns>
-        //public List<VstPlugin> FindVstPlugins()
-        //{
-        //    if (!Directory.Exists(VstPluginsFolder)) return new List<VstPlugin>();
-
-        //    return Directory
-        //        .GetFiles(VstPluginsFolder, "*.dll", SearchOption.AllDirectories)
-        //        .Select(filename => new VstPlugin
-        //        {
-        //            Location = filename,
-        //            Name = GetPluginNameFromFileName(filename)
-        //        }).ToList();
-        //}
 
         /// <summary>
         ///     Clears the main VST plug-in.
@@ -345,111 +324,6 @@ namespace Halloumi.Shuffler.AudioEngine
             _speakerOutput.ClearWaPlugin();
         }
 
-        ///// <summary>
-        /////     Shows the WinAmp DSP plug-in configuration screen
-        ///// </summary>
-        ///// <param name="plugin">The WinAmp DSP plug-in.</param>
-        //public void ShowWaPluginConfig(WaPlugin plugin)
-        //{
-        //    if (plugin == null) return;
-
-        //    BassWaDsp.BASS_WADSP_Config(plugin.Id);
-        //}
-
-        ///// <summary>
-        /////     Shows the VST plug-in configuration screen.
-        ///// </summary>
-        ///// <param name="plugin">The plug-in.</param>
-        //public void ShowVstPluginConfig(VstPlugin plugin)
-        //{
-        //    if (plugin == null) return;
-
-        //    SetDelayByBpm();
-
-        //    if (plugin.Form != null && !plugin.Form.IsDisposed)
-        //    {
-        //        plugin.Form.Show();
-        //        plugin.Form.BringToFront();
-        //        return;
-        //    }
-
-        //    plugin.Form = null;
-
-        //    var containerForm = new VstPluginConfigForm(plugin, this);
-        //    containerForm.Show();
-        //}
-
-        ///// <summary>
-        /////     Returns a list of all available (unloaded) WinAmp DSP plug-ins
-        ///// </summary>
-        ///// <returns>A list of all available (unloaded) WinAmp DSP plug-ins</returns>
-        //public List<WaPlugin> FindWaPlugins()
-        //{
-        //    var plugins = new List<WaPlugin>();
-        //    if (WaPluginsFolder == "") return plugins;
-
-        //    plugins = Directory.GetFiles(WaPluginsFolder, "dsp_*.dll", SearchOption.AllDirectories)
-        //        .Select(filename => new WaPlugin
-        //        {
-        //            Location = filename,
-        //            Name = GetPluginNameFromFileName(filename)
-        //        }).ToList();
-
-        //    return plugins;
-        //}
-
-        //private static string GetPluginNameFromFileName(string pluginLocation)
-        //{
-        //    return StringHelper.TitleCase((Path.GetFileNameWithoutExtension(pluginLocation) + "")
-        //        .Replace("dsp_", "")
-        //        .Replace("_", " ")
-        //        .ToLower());
-        //}
-
-        ///// <summary>
-        /////     Gets the VST plug-in settings.
-        ///// </summary>
-        ///// <param name="plugin">The plug-in.</param>
-        ///// <returns>The settings as a key=value comma delimited list</returns>
-        //public string GetVstPluginParameters(VstPlugin plugin)
-        //{
-        //    var values = new List<string>();
-        //    var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
-        //    for (var i = 0; i < parameterCount; i++)
-        //    {
-        //        var value = BassVst.BASS_VST_GetParam(plugin.Id, i);
-        //        values.Add(value.ToString(CultureInfo.InvariantCulture));
-        //    }
-        //    return string.Join(",", values.ToArray());
-        //}
-
-        ///// <summary>
-        /////     Sets the VST plug-in settings.
-        ///// </summary>
-        ///// <param name="plugin">The plug-in.</param>
-        ///// <param name="parameters">The parameters.</param>
-        //public void SetVstPluginParameters(VstPlugin plugin, string parameters)
-        //{
-        //    if (parameters.Trim() == "") return;
-        //    var values = parameters.Split(',').ToList();
-        //    var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
-        //    for (var i = 0; i < parameterCount; i++)
-        //    {
-        //        try
-        //        {
-        //            if (i >= values.Count) continue;
-        //            var value = float.Parse(values[i]);
-        //            BassVst.BASS_VST_SetParam(plugin.Id, i, value);
-        //        }
-        //        catch
-        //        {
-        //            // ignored
-        //        }
-        //    }
-
-        //    SetDelayByBpm();
-        //}
-
 
         /// <summary>
         ///     Sets the delay by BPM.
@@ -459,11 +333,5 @@ namespace Halloumi.Shuffler.AudioEngine
             _trackSendFxMixer.SetPluginBpm();
             _samplerMixer.SetPluginBpm();
         }
-
-        //public void SetVstPluginPreset(VstPlugin plugin, int presetIndex)
-        //{
-        //    BassVst.BASS_VST_SetProgram(plugin.Id, presetIndex);
-        //    SetDelayByBpm();
-        //}
     }
 }
