@@ -32,7 +32,6 @@
             this.flpLeft = new Halloumi.Common.Windows.Controls.Panel();
             this.samplePlayer = new Halloumi.Shuffler.Controls.SamplePlayer();
             this.kryptonBorderEdge1 = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
-            this.linLine = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.pnlEffectsSettings = new Halloumi.Common.Windows.Controls.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
@@ -54,14 +53,6 @@
             this.btnClearSampleTriggers = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnRemoveLastSampleTrigger = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnSaveLastSampleTrigger = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.pnlButtons = new Halloumi.Common.Windows.Controls.Panel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label3 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbOutput = new Halloumi.Common.Windows.Controls.ComboBox();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnRefresh = new Halloumi.Common.Windows.Controls.Button();
-            this.btnEffect2 = new Halloumi.Common.Windows.Controls.Button();
-            this.btnEffect1 = new Halloumi.Common.Windows.Controls.Button();
             this.linHeader = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
             this.pnlHeader = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             this.lblHeader = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
@@ -75,10 +66,6 @@
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
-            this.pnlButtons.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).BeginInit();
-            this.flpButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlHeader)).BeginInit();
             this.pnlHeader.SuspendLayout();
             this.SuspendLayout();
@@ -89,9 +76,7 @@
             this.pnlBackground.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlBackground.Controls.Add(this.flpLeft);
             this.pnlBackground.Controls.Add(this.kryptonBorderEdge1);
-            this.pnlBackground.Controls.Add(this.linLine);
             this.pnlBackground.Controls.Add(this.pnlEffectsSettings);
-            this.pnlBackground.Controls.Add(this.pnlButtons);
             this.pnlBackground.Controls.Add(this.linHeader);
             this.pnlBackground.Controls.Add(this.pnlHeader);
             this.pnlBackground.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -113,7 +98,7 @@
             this.flpLeft.Margin = new System.Windows.Forms.Padding(4);
             this.flpLeft.Name = "flpLeft";
             this.flpLeft.Padding = new System.Windows.Forms.Padding(0, 0, 0, 12);
-            this.flpLeft.Size = new System.Drawing.Size(797, 475);
+            this.flpLeft.Size = new System.Drawing.Size(797, 529);
             this.flpLeft.TabIndex = 59;
             // 
             // samplePlayer
@@ -136,15 +121,6 @@
             this.kryptonBorderEdge1.Name = "kryptonBorderEdge1";
             this.kryptonBorderEdge1.Size = new System.Drawing.Size(797, 1);
             this.kryptonBorderEdge1.Text = "kryptonBorderEdge1";
-            // 
-            // linLine
-            // 
-            this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.linLine.Location = new System.Drawing.Point(1, 639);
-            this.linLine.Margin = new System.Windows.Forms.Padding(4);
-            this.linLine.Name = "linLine";
-            this.linLine.Size = new System.Drawing.Size(797, 2);
-            this.linLine.TabIndex = 46;
             // 
             // pnlEffectsSettings
             // 
@@ -435,107 +411,6 @@
             this.btnSaveLastSampleTrigger.Values.Text = "Save";
             this.btnSaveLastSampleTrigger.Click += new System.EventHandler(this.btnSaveLastSampleTrigger_Click);
             // 
-            // pnlButtons
-            // 
-            this.pnlButtons.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlButtons.Controls.Add(this.flowLayoutPanel2);
-            this.pnlButtons.Controls.Add(this.flpButtons);
-            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(1, 641);
-            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
-            this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(797, 52);
-            this.pnlButtons.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
-            this.pnlButtons.TabIndex = 42;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.label3);
-            this.flowLayoutPanel2.Controls.Add(this.cmbOutput);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(195, 52);
-            this.flowLayoutPanel2.TabIndex = 17;
-            this.flowLayoutPanel2.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(7, 2);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.label3.Size = new System.Drawing.Size(71, 33);
-            this.label3.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Output:";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // cmbOutput
-            // 
-            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOutput.DropDownWidth = 72;
-            this.cmbOutput.ErrorProvider = null;
-            this.cmbOutput.Items.AddRange(new object[] {
-            "Speakers",
-            "Monitor",
-            "Both"});
-            this.cmbOutput.Location = new System.Drawing.Point(86, 6);
-            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbOutput.Name = "cmbOutput";
-            this.cmbOutput.Size = new System.Drawing.Size(96, 25);
-            this.cmbOutput.TabIndex = 6;
-            this.cmbOutput.SelectedIndexChanged += new System.EventHandler(this.cmbOutput_SelectedIndexChanged);
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.BackColor = System.Drawing.Color.Transparent;
-            this.flpButtons.Controls.Add(this.btnRefresh);
-            this.flpButtons.Controls.Add(this.btnEffect2);
-            this.flpButtons.Controls.Add(this.btnEffect1);
-            this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(374, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
-            this.flpButtons.Size = new System.Drawing.Size(423, 52);
-            this.flpButtons.TabIndex = 16;
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(259, 7);
-            this.btnRefresh.Margin = new System.Windows.Forms.Padding(5);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(149, 38);
-            this.btnRefresh.TabIndex = 9;
-            this.btnRefresh.Text = "Refresh Samples";
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
-            // btnEffect2
-            // 
-            this.btnEffect2.Location = new System.Drawing.Point(138, 7);
-            this.btnEffect2.Margin = new System.Windows.Forms.Padding(5);
-            this.btnEffect2.Name = "btnEffect2";
-            this.btnEffect2.Size = new System.Drawing.Size(111, 38);
-            this.btnEffect2.TabIndex = 10;
-            this.btnEffect2.Text = "Effect #2";
-            this.btnEffect2.Click += new System.EventHandler(this.btnEffect2_Click);
-            // 
-            // btnEffect1
-            // 
-            this.btnEffect1.Location = new System.Drawing.Point(17, 7);
-            this.btnEffect1.Margin = new System.Windows.Forms.Padding(5);
-            this.btnEffect1.Name = "btnEffect1";
-            this.btnEffect1.Size = new System.Drawing.Size(111, 38);
-            this.btnEffect1.TabIndex = 11;
-            this.btnEffect1.Text = "Effect #1";
-            this.btnEffect1.Click += new System.EventHandler(this.btnEffect1_Click);
-            // 
             // linHeader
             // 
             this.linHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -587,10 +462,6 @@
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
-            this.pnlButtons.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).EndInit();
-            this.flpButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pnlHeader)).EndInit();
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
@@ -604,16 +475,7 @@
         private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlHeader;
         private Halloumi.Common.Windows.Controls.Panel pnlBackground;
         private ComponentFactory.Krypton.Toolkit.KryptonBorderEdge linHeader;
-        private Halloumi.Common.Windows.Controls.Panel pnlButtons;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
-        private Halloumi.Common.Windows.Controls.Button btnRefresh;
-        private Halloumi.Common.Windows.Controls.BeveledLine linLine;
         private Halloumi.Common.Windows.Controls.Panel pnlEffectsSettings;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private Halloumi.Common.Windows.Controls.Label label3;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbOutput;
-        private Halloumi.Common.Windows.Controls.Button btnEffect2;
-        private Halloumi.Common.Windows.Controls.Button btnEffect1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
         private ComponentFactory.Krypton.Toolkit.KryptonButton btnClearSampleTriggers;
         private ComponentFactory.Krypton.Toolkit.KryptonButton btnRemoveLastSampleTrigger;

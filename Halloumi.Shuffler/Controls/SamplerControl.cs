@@ -4,10 +4,11 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.Shuffler.AudioEngine.Helpers;
+using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioLibrary.Models;
-using Halloumi.Shuffler.AudioEngine.Plugins;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
+using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 
@@ -15,11 +16,11 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class SamplerControl : UserControl
     {
-        private AE.Models.Track _currentTrack = null;
-        private AE.Models.Track _nextTrack = null;
-        private AE.Models.Track _additionalTrack = null;
+        private Track _additionalTrack;
 
-        private List<SamplePlayer> SamplePlayers { get; set; }
+        private bool _bassPlayerOnTrackQueued;
+        private Track _currentTrack;
+        private Track _nextTrack;
 
         public SamplerControl()
         {
@@ -27,11 +28,27 @@ namespace Halloumi.Shuffler.Controls
 
             SamplePlayers = new List<SamplePlayer>();
 
-            var settings = Forms.Settings.Default;
+            var settings = Settings.Default;
             AnalogXScratchHelper.SetApplicationFolder(settings.AnalogXScratchFolder);
         }
 
-        public void LoadAdditionalTrack(Track track)
+        private List<SamplePlayer> SamplePlayers { get; }
+
+        /// <summary>
+        ///     Gets or sets the playlist control.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PlaylistControl PlaylistControl { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the bass player.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AE.BassPlayer BassPlayer { get; set; }
+
+        public void LoadAdditionalTrack(AudioLibrary.Models.Track track)
         {
             _additionalTrack = BassPlayer.LoadTrack(track.Filename);
             BassPlayer.LoadTagData(_additionalTrack);
@@ -40,11 +57,11 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Initializes this instance.
+        ///     Initializes this instance.
         /// </summary>
         public void Initialize()
         {
-            sldVolume.Scrolled += new MediaSlider.MediaSlider.ScrollDelegate(sldVolume_Slid);
+            sldVolume.Scrolled += sldVolume_Slid;
             sldVolume.Minimum = 0;
             sldVolume.Maximum = 100;
 
@@ -52,30 +69,31 @@ namespace Halloumi.Shuffler.Controls
 
             rdbDelay2.Checked = true;
             chkEnableAutomation.Checked = BassPlayer.SampleAutomationEnabled;
-            cmbOutput.SelectedIndex = 0;
 
             LoadSamples();
 
-            BassPlayer.OnTrackQueued += new EventHandler(BassPlayer_OnTrackQueued);
+            BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
 
             flpLeft.SuspendLayout();
             SamplePlayers.Clear();
 
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
-                var samplePlayer = new SamplePlayer();
-                samplePlayer.BackColor = Color.White;
-                samplePlayer.Size = new Size(this.samplePlayer.Width, this.samplePlayer.Height);
-                samplePlayer.Dock = DockStyle.Top;
-                samplePlayer.BassPlayer = BassPlayer;
-                samplePlayer.Library = PlaylistControl.Library;
-                if (i % 2 != 0) samplePlayer.BackColor = Color.WhiteSmoke;
-                SamplePlayers.Add(samplePlayer);
-                flpLeft.Controls.Add(samplePlayer);
-                samplePlayer.Visible = false;
+                var player = new SamplePlayer
+                {
+                    BackColor = Color.White,
+                    Size = new Size(samplePlayer.Width, samplePlayer.Height),
+                    Dock = DockStyle.Top,
+                    BassPlayer = BassPlayer,
+                    Library = PlaylistControl.Library
+                };
+                if (i%2 != 0) player.BackColor = Color.WhiteSmoke;
+                SamplePlayers.Add(player);
+                flpLeft.Controls.Add(player);
+                player.Visible = false;
             }
 
-            flpLeft.Controls.Remove(this.samplePlayer);
+            flpLeft.Controls.Remove(samplePlayer);
 
             flpLeft.ResumeLayout();
         }
@@ -86,7 +104,7 @@ namespace Halloumi.Shuffler.Controls
 
             BassPlayer.SetSamplerMixerVolume(Convert.ToDecimal(volume));
 
-            volume = (int)BassPlayer.GetSamplerMixerVolume();
+            volume = (int) BassPlayer.GetSamplerMixerVolume();
 
             lblVolume.Text = volume.ToString();
 
@@ -99,23 +117,19 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Loads the samples.
+        ///     Loads the samples.
         /// </summary>
         private void LoadSamples()
         {
-            //this.BassPlayer.UnloadSamples(_previousTrack);
             BassPlayer.UnloadSamples(_currentTrack);
             BassPlayer.UnloadSamples(_nextTrack);
             BassPlayer.UnloadSamples(_additionalTrack);
 
             _currentTrack = BassPlayer.CurrentTrack;
             _nextTrack = BassPlayer.NextTrack;
-            //_previousTrack = this.BassPlayer.PreviousTrack;
-            //if (_previousTrack == null) _previousTrack = GetPreviousTrack();
 
             BassPlayer.LoadSamples(_nextTrack);
             BassPlayer.LoadSamples(_currentTrack);
-            //this.BassPlayer.LoadTrackSamples(_previousTrack);
 
             if (!BassPlayer.IsTrackInUse(_additionalTrack))
                 BassPlayer.LoadSamples(_additionalTrack);
@@ -126,19 +140,18 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Unloads the samples.
+        ///     Unloads the samples.
         /// </summary>
         private void UnloadSamples()
         {
             BassPlayer.UnloadSamples(_nextTrack);
             BassPlayer.UnloadSamples(_currentTrack);
-            //this.BassPlayer.UnloadSamples(_previousTrack);
             BassPlayer.UnloadSamples(_additionalTrack);
             BassPlayer.UnloadSamples();
         }
 
         /// <summary>
-        /// Loads the sample players.
+        ///     Loads the sample players.
         /// </summary>
         private void LoadSamplePlayers()
         {
@@ -147,18 +160,18 @@ namespace Halloumi.Shuffler.Controls
             var samples = BassPlayer.Samples.ToList();
             samples.Reverse();
 
-            for (int i = 0; i < SamplePlayers.Count; i++)
+            for (var i = 0; i < SamplePlayers.Count; i++)
             {
-                var samplePlayer = SamplePlayers[i];
+                var player = SamplePlayers[i];
                 if (i < samples.Count)
                 {
-                    samplePlayer.SetSample(samples[i]);
-                    samplePlayer.Visible = true;
+                    player.SetSample(samples[i]);
+                    player.Visible = true;
                 }
                 else
                 {
-                    samplePlayer.Pause();
-                    samplePlayer.Visible = false;
+                    player.Pause();
+                    player.Visible = false;
                 }
             }
 
@@ -166,22 +179,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Gets the previous track.
-        /// </summary>
-        /// <returns>The previous track</returns>
-        private AudioEngine.Models.Track GetPreviousTrack()
-        {
-            var prevTrack = PlaylistControl.GetPreviousTrack();
-            if (prevTrack == null) return null;
-
-            var track = BassPlayer.LoadTrack(prevTrack.Filename);
-            BassPlayer.LoadTrackAudioData(track);
-            ExtenedAttributesHelper.LoadExtendedAttributes(track);
-            return track;
-        }
-
-        /// <summary>
-        /// Refreshes the samples.
+        ///     Refreshes the samples.
         /// </summary>
         public void RefreshSamples()
         {
@@ -190,13 +188,13 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Loads the settings.
+        ///     Loads the settings.
         /// </summary>
         public void LoadSettings()
         {
             try
             {
-                var settings = Forms.Settings.Default;
+                var settings = Settings.Default;
 
                 if (settings.SamplerDelayNotes == 0.5M) rdbDelay1.Checked = true;
                 else if (settings.SamplerDelayNotes == 0.25M) rdbDelay2.Checked = true;
@@ -206,40 +204,15 @@ namespace Halloumi.Shuffler.Controls
                 BassPlayer.SamplerDelayNotes = settings.SamplerDelayNotes;
 
                 SetVolume(settings.SamplerVolume);
-
-                BassPlayer.SamplerOutput = settings.SamplerOutput;
-                if (settings.SamplerOutput == AE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.SamplerOutput == AE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.SamplerOutput == AE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
             }
             catch
-            { }
+            {
+                // ignored
+            }
         }
 
         /// <summary>
-        /// Gets or sets the playlist control.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public PlaylistControl PlaylistControl { get; set; }
-
-        /// <summary>
-        /// Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AE.BassPlayer BassPlayer { get; set; }
-
-        /// <summary>
-        /// Handles the Click event of the btnRefresh control.
-        /// </summary>
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            RefreshSamples();
-        }
-
-        /// <summary>
-        /// Handles the Slid event of the sldVolume control.
+        ///     Handles the Slid event of the sldVolume control.
         /// </summary>
         private void sldVolume_Slid(object sender, EventArgs e)
         {
@@ -247,22 +220,19 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the OnTrackQueued event of the BassPlayer control.
+        ///     Handles the OnTrackQueued event of the BassPlayer control.
         /// </summary>
         private void BassPlayer_OnTrackQueued(object sender, EventArgs e)
         {
             if (InvokeRequired)
             {
-                BeginInvoke(new MethodInvoker(delegate ()
-                {
-                    BassPlayer_OnTrackQueued();
-                }));
+                BeginInvoke(new MethodInvoker(BassPlayer_OnTrackQueued));
             }
             else BassPlayer_OnTrackQueued();
         }
 
         /// <summary>
-        /// Handles the OnTrackQueued event of the BassPlayer control.
+        ///     Handles the OnTrackQueued event of the BassPlayer control.
         /// </summary>
         private void BassPlayer_OnTrackQueued()
         {
@@ -274,52 +244,20 @@ namespace Halloumi.Shuffler.Controls
             _bassPlayerOnTrackQueued = false;
         }
 
-        private bool _bassPlayerOnTrackQueued = false;
-
         /// <summary>
-        /// Handles the CheckedChanged event of the rdbDelay control.
+        ///     Handles the CheckedChanged event of the rdbDelay control.
         /// </summary>
         private void rdbDelay_CheckedChanged(object sender, EventArgs e)
         {
-            var radioButton = sender as ComponentFactory.Krypton.Toolkit.KryptonRadioButton;
+            var radioButton = sender as KryptonRadioButton;
+            if (radioButton == null) return;
             if (!radioButton.Checked) return;
-            var delayNotes = Decimal.Parse(radioButton.Tag.ToString());
+            var delayNotes = decimal.Parse(radioButton.Tag.ToString());
             BassPlayer.SamplerDelayNotes = delayNotes;
         }
 
         /// <summary>
-        /// Handles the Click event of the btnEffect2 control.
-        /// </summary>
-        private void btnEffect2_Click(object sender, EventArgs e)
-        {
-            if (BassPlayer.SamplerVstPlugin2 != null)
-            {
-                PluginHelper.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
-            }
-        }
-
-        /// <summary>
-        /// Handles the Click event of the btnEffect1 control.
-        /// </summary>
-        private void btnEffect1_Click(object sender, EventArgs e)
-        {
-            if (BassPlayer.SamplerVstPlugin != null)
-            {
-                PluginHelper.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
-            }
-        }
-
-        /// <summary>
-        /// Handles the SelectedIndexChanged event of the cmbOutput control.
-        /// </summary>
-        private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var outputType = cmbOutput.ParseEnum<AE.Channels.SoundOutput>();
-            BassPlayer.SamplerOutput = outputType;
-        }
-
-        /// <summary>
-        /// Handles the Click event of the btnSaveLastSampleTrigger control.
+        ///     Handles the Click event of the btnSaveLastSampleTrigger control.
         /// </summary>
         private void btnSaveLastSampleTrigger_Click(object sender, EventArgs e)
         {
@@ -327,7 +265,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Click event of the btnRemoveLastSampleTrigger control.
+        ///     Handles the Click event of the btnRemoveLastSampleTrigger control.
         /// </summary>
         private void btnRemoveLastSampleTrigger_Click(object sender, EventArgs e)
         {
@@ -337,14 +275,16 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Click event of the btnClearSampleTriggers control.
+        ///     Handles the Click event of the btnClearSampleTriggers control.
         /// </summary>
         private void btnClearSampleTriggers_Click(object sender, EventArgs e)
         {
             var track = BassPlayer.CurrentTrack;
             if (track == null) return;
 
-            if (!MessageBoxHelper.Confirm("Are you sure you wish to clear all sample triggers for " + track.Description + "?")) return;
+            if (
+                !MessageBoxHelper.Confirm("Are you sure you wish to clear all sample triggers for " + track.Description +
+                                          "?")) return;
 
             BassPlayer.ClearSampleTriggers();
         }
