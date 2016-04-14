@@ -160,10 +160,16 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             }
         }
 
-        public void Pause(string streamKey)
+        public void Unmute(string streamKey)
         {
             var audioStream = GetAudioStream(streamKey);
-            AudioStreamHelper.Pause(audioStream);
+            AudioStreamHelper.SetVolume(audioStream, 100M);
+        }
+
+        public void Mute(string streamKey)
+        {
+            var audioStream = GetAudioStream(streamKey);
+            AudioStreamHelper.SetVolume(audioStream, 0M);
         }
 
         public void Pause()
@@ -176,6 +182,13 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 AudioStreamHelper.Pause(audioStream);
             });
         }
+
+        public void Pause(string streamKey)
+        {
+            var audioStream = GetAudioStream(streamKey);
+            AudioStreamHelper.Pause(audioStream);
+        }
+
 
         public AudioSection AddSection(string streamKey, string sectionKey, bool loopIndefinitely = false)
         {

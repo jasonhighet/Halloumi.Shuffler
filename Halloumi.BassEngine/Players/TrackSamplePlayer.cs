@@ -142,6 +142,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 return;
 
             _audioPlayer.SetSectionBpm(sampleId, sampleId, section.Bpm, targetBpm: _bpmProvider.GetCurrentBpm());
+            _audioPlayer.Unmute(sampleId);
             _audioPlayer.Play(sampleId);
         }
 
@@ -158,8 +159,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         public void PauseSample(string sampleId)
         {
             var section = _audioPlayer.GetAudioSection(sampleId, sampleId);
+            if (section == null)
+                return;
+
             _audioPlayer.SetSectionBpm(sampleId, sampleId, section.Bpm, targetBpm: _bpmProvider.GetCurrentBpm());
-            _audioPlayer.Pause(sampleId);
+            _audioPlayer.Mute(sampleId);
         }
         
         public void PauseAllSamples()
