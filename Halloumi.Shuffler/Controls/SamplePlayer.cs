@@ -32,12 +32,6 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
 
-
-        /// <summary>
-        ///     Gets the current track.
-        /// </summary>
-        private Track CurrentTrack => BassPlayer.CurrentTrack;
-
         /// <summary>
         ///     Gets or sets the this.Sample.
         /// </summary>
@@ -58,7 +52,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindData()
         {
-            var description = (Sample.LinkedTrackDescription + @" - " + Sample.Description).Trim().Replace("&", "&&");
+            var artist = Sample.LinkedTrackDescription.Split('-')[0].Trim();
+            var title = Sample.LinkedTrackDescription.Split('-')[1].Trim();
+            var description = $"{Sample.Description} - {title} - {artist}";
+
+            description = description.Trim().Replace("&", "&&");
             DebugHelper.WriteLine("Setting sample:" + description);
 
             lblSampleDescription.Text = description;

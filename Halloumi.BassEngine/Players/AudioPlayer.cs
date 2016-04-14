@@ -169,7 +169,12 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         public void Mute(string streamKey)
         {
             var audioStream = GetAudioStream(streamKey);
-            AudioStreamHelper.SetVolume(audioStream, 0M);
+
+            var volume = AudioStreamHelper.GetVolume(audioStream);
+            if (volume != 0)
+            {
+                AudioStreamHelper.SetVolumeSlide(audioStream, 1F, 0F, 0.1D);
+            }
         }
 
         public void Pause()

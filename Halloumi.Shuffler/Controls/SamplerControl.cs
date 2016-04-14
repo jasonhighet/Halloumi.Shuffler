@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 
@@ -99,7 +97,7 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnSamplerMixerVolumeChanged(object sender, EventArgs e)
         {
             if (_bindingVolumeSlider) return;
-            var volume = (int)BassPlayer.GetSamplerMixerVolume();
+            var volume = (int) BassPlayer.GetSamplerMixerVolume();
 
             lblVolume.Text = volume.ToString();
             if (sldVolume.Value != volume) sldVolume.Value = volume;
@@ -124,6 +122,7 @@ namespace Halloumi.Shuffler.Controls
             flpLeft.SuspendLayout();
 
             var samples = BassPlayer.GetSamples();
+            samples.Reverse();
 
             for (var i = 0; i < SamplePlayers.Count; i++)
             {

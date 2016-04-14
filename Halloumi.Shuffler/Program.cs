@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.Forms;
 using Halloumi.Common.Windows.Helpers;
 
@@ -24,7 +25,8 @@ namespace Halloumi.Shuffler
             if (settings.LibraryFolder != "")
             {
 #if DEBUG
-                 Application.Run(new FrmMain());
+                Application.Run(new FrmMain());
+                DebugHelper.DebugMode = false;
 #else
                 try
                 {
