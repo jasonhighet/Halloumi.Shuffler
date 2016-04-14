@@ -33,17 +33,6 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SamplerControl SamplerControl { get; private set; }
 
-        protected override void OnVisibleChanged(EventArgs e)
-        {
-            base.OnVisibleChanged(e);
-            if (!DesignMode
-                && SamplerControl != null
-                && Visible)
-            {
-                SamplerControl.RefreshSamples();
-            }
-        }
-
         public MixerControl()
         {
             InitializeComponent();
@@ -59,8 +48,6 @@ namespace Halloumi.Shuffler.Controls
 
             SamplerControl.Initialize();
             trackMixerControl.Initialize();
-
-            SamplerControl.RefreshSamples();
         }
 
         public void LoadSettings()
@@ -72,7 +59,7 @@ namespace Halloumi.Shuffler.Controls
 
         public void Unload()
         {
-            SamplerControl.Unload();
+            //SamplerControl.UnloadAll();
         }
     }
 }

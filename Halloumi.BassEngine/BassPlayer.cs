@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
@@ -273,6 +274,8 @@ namespace Halloumi.Shuffler.AudioEngine
 
         public event EventHandler OnSamplerMixerVolumeChanged;
 
+        public event EventHandler OnTrackSamplesChanged;
+
         public event EventHandler OnManualMixModeChanged;
 
         /// <summary>
@@ -342,7 +345,6 @@ namespace Halloumi.Shuffler.AudioEngine
             PreloadedTrack = track;
 
             LoadTrackAudioData(track);
-            LoadSamples(track);
 
             DebugHelper.WriteLine("Preloading track " + track.Description + "...Done");
 
@@ -363,8 +365,6 @@ namespace Halloumi.Shuffler.AudioEngine
 
             AddTrackToMixer(track);
 
-            StopSamples();
-
             if (CurrentTrack == null)
             {
                 CurrentTrack = track;
@@ -380,6 +380,7 @@ namespace Halloumi.Shuffler.AudioEngine
             }
 
             RaiseOnTrackQueued();
+            RefreshSamples();
         }
 
         /// <summary>
@@ -770,6 +771,7 @@ namespace Halloumi.Shuffler.AudioEngine
             QueueTrack(filename);
             RaiseOnTrackChange();
             Play();
+            RefreshSamples();
         }
 
         /// <summary>
@@ -815,6 +817,8 @@ namespace Halloumi.Shuffler.AudioEngine
         public void Pause()
         {
             DebugHelper.WriteLine("Pause");
+
+            StopSamples();
 
             if (CurrentTrack != null)
             {
@@ -1560,7 +1564,6 @@ namespace Halloumi.Shuffler.AudioEngine
 
             if (CurrentTrack != null)
             {
-                StopSamples();
                 RaiseOnTrackChange();
             }
             else
@@ -1646,6 +1649,8 @@ namespace Halloumi.Shuffler.AudioEngine
             {
                 StartFadeIn();
             }
+
+            RefreshSamples();
         }
 
         /// <summary>
@@ -1856,10 +1861,11 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RaiseOnTrackChange()
         {
             DebugHelper.WriteLine("Track change event");
-            if (OnTrackChange == null) return;
-
-            OnTrackChange(CurrentTrack, EventArgs.Empty);
-            SetDelayByBpm();
+            Task.Run(() =>
+            {
+                OnTrackChange?.Invoke(CurrentTrack, EventArgs.Empty);
+                SetDelayByBpm();
+            });
         }
 
         /// <summary>
@@ -1868,7 +1874,10 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RaiseOnEndFadeIn()
         {
             DebugHelper.WriteLine("End fade in event");
-            OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty);
+            Task.Run(() =>
+            {
+                OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty);
+            });
         }
 
         /// <summary>
@@ -1877,7 +1886,10 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RaiseOnSkipToEnd()
         {
             DebugHelper.WriteLine("Skip to end event");
-            OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty);
+            Task.Run(() =>
+            {
+                OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty);
+            });
         }
 
         /// <summary>
@@ -1886,7 +1898,10 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RaiseOnTrackQueued()
         {
             DebugHelper.WriteLine("Track queued event");
-            OnTrackQueued?.Invoke(CurrentTrack, EventArgs.Empty);
+            Task.Run(() =>
+            {
+                OnTrackQueued?.Invoke(CurrentTrack, EventArgs.Empty);
+            });
         }
 
         /// <summary>

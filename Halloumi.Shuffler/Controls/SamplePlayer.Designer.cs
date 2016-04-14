@@ -30,7 +30,6 @@
         {
             this.pnlBackground = new Halloumi.Common.Windows.Controls.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnLink = new Halloumi.Common.Windows.Controls.Button();
             this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
             this.btnScratch = new Halloumi.Common.Windows.Controls.Button();
             this.lblSampleDescription = new Halloumi.Common.Windows.Controls.Label();
@@ -53,7 +52,6 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnLink);
             this.panel1.Controls.Add(this.btnPlay);
             this.panel1.Controls.Add(this.btnScratch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
@@ -61,17 +59,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(224, 40);
             this.panel1.TabIndex = 5;
-            // 
-            // btnLink
-            // 
-            this.btnLink.Location = new System.Drawing.Point(5, 5);
-            this.btnLink.Margin = new System.Windows.Forms.Padding(5);
-            this.btnLink.Name = "btnLink";
-            this.btnLink.Size = new System.Drawing.Size(67, 32);
-            this.btnLink.TabIndex = 4;
-            this.btnLink.Text = "&Unlink";
-            this.btnLink.Visible = false;
-            this.btnLink.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // btnPlay
             // 
@@ -132,7 +119,6 @@
 
         private Halloumi.Common.Windows.Controls.Panel pnlBackground;
         private Halloumi.Common.Windows.Controls.Label lblSampleDescription;
-        private Halloumi.Common.Windows.Controls.Button btnLink;
         private System.Windows.Forms.Panel panel1;
         private Common.Windows.Controls.Button btnPlay;
         private Common.Windows.Controls.Button btnScratch;

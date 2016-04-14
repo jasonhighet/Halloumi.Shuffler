@@ -122,6 +122,7 @@
     <Compile Include="Players\AudioSection.cs" />
     <Compile Include="Players\AudioSync.cs" />
     <Compile Include="Players\SyncType.cs" />
+    <Compile Include="Players\TrackSamplePlayer.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

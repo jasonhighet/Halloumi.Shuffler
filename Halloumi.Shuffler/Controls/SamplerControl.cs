@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 
@@ -17,9 +15,6 @@ namespace Halloumi.Shuffler.Controls
     public partial class SamplerControl : UserControl
     {
         private bool _bindingVolumeSlider;
-        private bool _bassPlayerOnTrackQueued;
-        private Track _currentTrack;
-        private Track _nextTrack;
 
         public SamplerControl()
         {
@@ -61,9 +56,9 @@ namespace Halloumi.Shuffler.Controls
             rdbDelay2.Checked = true;
             chkEnableAutomation.Checked = BassPlayer.SampleAutomationEnabled;
 
-            LoadSamples();
+            LoadSamplePlayers();
 
-            BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
+            BassPlayer.OnTrackSamplesChanged += BassPlayer_OnTrackSamplesChanged;
             BassPlayer.OnSamplerMixerVolumeChanged += BassPlayer_OnSamplerMixerVolumeChanged;
 
             flpLeft.SuspendLayout();
@@ -90,10 +85,19 @@ namespace Halloumi.Shuffler.Controls
             flpLeft.ResumeLayout();
         }
 
+        private void BassPlayer_OnTrackSamplesChanged(object sender, EventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(LoadSamplePlayers));
+            }
+            else LoadSamplePlayers();
+        }
+
         private void BassPlayer_OnSamplerMixerVolumeChanged(object sender, EventArgs e)
         {
             if (_bindingVolumeSlider) return;
-            var volume = (int)BassPlayer.GetSamplerMixerVolume();
+            var volume = (int) BassPlayer.GetSamplerMixerVolume();
 
             lblVolume.Text = volume.ToString();
             if (sldVolume.Value != volume) sldVolume.Value = volume;
@@ -110,40 +114,6 @@ namespace Halloumi.Shuffler.Controls
             if (sldVolume.Value != volume) sldVolume.Value = volume;
         }
 
-        public void Unload()
-        {
-            UnloadSamples();
-        }
-
-        /// <summary>
-        ///     Loads the samples.
-        /// </summary>
-        private void LoadSamples()
-        {
-            BassPlayer.UnloadSamples(_currentTrack);
-            BassPlayer.UnloadSamples(_nextTrack);
-
-            _currentTrack = BassPlayer.CurrentTrack;
-            _nextTrack = BassPlayer.NextTrack;
-
-            BassPlayer.LoadSamples(_nextTrack);
-            BassPlayer.LoadSamples(_currentTrack);
-
-            PlaylistControl.Library.LinkedSampleLibrary.LoadLinkedSamples(BassPlayer, _currentTrack);
-
-            LoadSamplePlayers();
-        }
-
-        /// <summary>
-        ///     Unloads the samples.
-        /// </summary>
-        private void UnloadSamples()
-        {
-            BassPlayer.UnloadSamples(_nextTrack);
-            BassPlayer.UnloadSamples(_currentTrack);
-            BassPlayer.UnloadSamples();
-        }
-
         /// <summary>
         ///     Loads the sample players.
         /// </summary>
@@ -151,7 +121,7 @@ namespace Halloumi.Shuffler.Controls
         {
             flpLeft.SuspendLayout();
 
-            var samples = BassPlayer.Samples.ToList();
+            var samples = BassPlayer.GetSamples();
             samples.Reverse();
 
             for (var i = 0; i < SamplePlayers.Count; i++)
@@ -170,15 +140,6 @@ namespace Halloumi.Shuffler.Controls
             }
 
             flpLeft.ResumeLayout();
-        }
-
-        /// <summary>
-        ///     Refreshes the samples.
-        /// </summary>
-        public void RefreshSamples()
-        {
-            UnloadSamples();
-            LoadSamples();
         }
 
         /// <summary>
@@ -215,30 +176,6 @@ namespace Halloumi.Shuffler.Controls
             _bindingVolumeSlider = false;
         }
 
-        /// <summary>
-        ///     Handles the OnTrackQueued event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackQueued(object sender, EventArgs e)
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new MethodInvoker(BassPlayer_OnTrackQueued));
-            }
-            else BassPlayer_OnTrackQueued();
-        }
-
-        /// <summary>
-        ///     Handles the OnTrackQueued event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackQueued()
-        {
-            if (_bassPlayerOnTrackQueued) return;
-            _bassPlayerOnTrackQueued = true;
-
-            if (_currentTrack != BassPlayer.CurrentTrack) RefreshSamples();
-
-            _bassPlayerOnTrackQueued = false;
-        }
 
         /// <summary>
         ///     Handles the CheckedChanged event of the rdbDelay control.
