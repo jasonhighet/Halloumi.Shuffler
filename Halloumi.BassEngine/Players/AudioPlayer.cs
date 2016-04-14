@@ -146,6 +146,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             });
         }
 
+        public List<AudioStream> GetAudioStreams()
+        {
+            return GetStreamKeys().Select(GetAudioStream).ToList();
+        }
+
 
         private AudioStream GetAudioStream(string streamKey)
         {
@@ -196,9 +201,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             return audioSection;
         }
 
-        private AudioSection GetAudioSection(string streamKey, string sectionKey)
+        public AudioSection GetAudioSection(string streamKey, string sectionKey)
         {
             var streamSection = GetStreamSection(streamKey);
+            if (streamSection == null) return null;
+
             lock (streamSection)
             {
                 return streamSection.AudioSections.FirstOrDefault(x => x.Key == sectionKey);
@@ -299,9 +306,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             if (audioSection.TargetBpm != 0)
                 AudioStreamHelper.SetTempoToMatchBpm(audioStream, audioSection.Bpm, audioSection.TargetBpm);
-            //else
-            //    AudioStreamHelper.ResetTempo(audioStream);
-        }
+       }
 
         private static void SetSync(AudioStream audioStream, AudioSection audioSection, SyncType syncType,
             double position)

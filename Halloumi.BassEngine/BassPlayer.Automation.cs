@@ -685,9 +685,9 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         /// Makes the power off noise on a track
         /// </summary>
-        /// <param name="track">The track.</param>
         public void PowerOffCurrentTrack()
         {
+            StopSamples();
             if (CurrentTrack == null) return;
             if (PlayState != PlayState.Playing) return;
             if (!IsTrackInUse(CurrentTrack)) return;

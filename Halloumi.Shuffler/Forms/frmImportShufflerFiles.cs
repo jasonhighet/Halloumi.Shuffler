@@ -59,7 +59,6 @@ namespace Halloumi.Shuffler.Forms
             var folder = txtOutputFolder.Text;
             MixLibrary.ImportFromFolder(folder, chkDeleteAfterImport.Checked);
             Library.ImportShufflerDetails(folder, chkDeleteAfterImport.Checked);
-            Library.LinkedSampleLibrary.ImportDetails(folder, chkDeleteAfterImport.Checked);
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

@@ -4,11 +4,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Halloumi.Common.Helpers;
+using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Helpers;
-using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using IdSharp.Tagging.ID3v2;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
@@ -62,8 +62,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             Tracks = new List<Track>();
             AlbumCovers = new Dictionary<string, Image>();
             BassPlayer = bassPlayer;
-
-            LinkedSampleLibrary = new LinkedSampleLibrary(this);
             Playlists = new List<Playlist>();
         }
 
@@ -115,11 +113,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         ///     Gets or sets the a cached collection of album covers.
         /// </summary>
         private Dictionary<string, Image> AlbumCovers { get; }
-
-        /// <summary>
-        ///     Gets the linked sample library.
-        /// </summary>
-        public LinkedSampleLibrary LinkedSampleLibrary { get; private set; }
 
         public Track GetTrack(string artist, string title, decimal length)
         {
@@ -779,12 +772,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
 
             ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), ImportTrack);
-
-            //// update or add tracks from file system
-            //foreach (var file in files.TakeWhile(file => !_cancelImport))
-            //{
-            //    ImportTrack(file);
-            //}
 
             SaveCache();
         }

@@ -129,6 +129,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         public static bool IsSameTrack(Track track1, Track track2)
         {
+            if (track1 == null && track2 == null) return true;
             if (track1 == null || track2 == null) return false;
             return (track1.Description == track2.Description);
         }
