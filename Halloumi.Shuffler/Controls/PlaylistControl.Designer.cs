@@ -594,7 +594,6 @@
             this.mixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mixableTracks.Location = new System.Drawing.Point(0, 0);
             this.mixableTracks.Margin = new System.Windows.Forms.Padding(4);
-            this.mixableTracks.MixLibrary = null;
             this.mixableTracks.Name = "mixableTracks";
             this.mixableTracks.PlaylistControl = null;
             this.mixableTracks.Size = new System.Drawing.Size(871, 117);

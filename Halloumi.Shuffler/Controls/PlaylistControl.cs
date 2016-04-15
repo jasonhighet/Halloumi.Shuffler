@@ -315,14 +315,13 @@ namespace Halloumi.Shuffler.Controls
             return TrackModels.Count - (GetCurrentTrackIndex() + 1);
         }
 
-        public void Initalize()
+        public void Initalize(TrackLibraryControl trackLibraryControl)
         {
             trackDetails.Library = Library;
             trackDetails.DisplayTrackDetails(null);
 
-            mixableTracks.MixLibrary = MixLibrary;
             mixableTracks.PlaylistControl = this;
-            mixableTracks.Initialize();
+            mixableTracks.Initialize(MixLibrary, trackLibraryControl);
 
             if (BassPlayer == null) return;
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;

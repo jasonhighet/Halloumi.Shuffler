@@ -125,7 +125,7 @@ namespace Halloumi.Shuffler.Forms
 
             mixerControl.Initialize();
             playerDetails.Initialize();
-            playlistControl.Initalize();
+            playlistControl.Initalize(trackLibraryControl);
 
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;

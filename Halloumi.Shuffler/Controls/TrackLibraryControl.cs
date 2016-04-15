@@ -324,9 +324,8 @@ namespace Halloumi.Shuffler.Controls
         {
             trackDetails.Library = Library;
 
-            mixableTracks.MixLibrary = MixLibrary;
             mixableTracks.PlaylistControl = PlaylistControl;
-            mixableTracks.Initialize();
+            mixableTracks.Initialize(MixLibrary, this);
 
             trackDetails.DisplayTrackDetails(null);
 
