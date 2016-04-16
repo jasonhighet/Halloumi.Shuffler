@@ -17,15 +17,17 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
             {
                 new ControlMapping {CommandName = "Play", ControlId = 45},
                 new ControlMapping {CommandName = "PowerDownCurrent", ControlId = 46},
-                new ControlMapping {CommandName = "Volume", ControlId = 14},
+                new ControlMapping {CommandName = "Volume", ControlId = 2},
                 new ControlMapping {CommandName = "PausePrevious", ControlId = 23},
                 new ControlMapping {CommandName = "PowerDownPrevious", ControlId = 33},
-                new ControlMapping {CommandName = "ManualMixVolume", ControlId = 2},
+                new ControlMapping {CommandName = "ManualMixVolume", ControlId = 14},
                 new ControlMapping {CommandName = "FadeNow", ControlId = 48},
                 new ControlMapping {CommandName = "TrackSendFx", ControlId = 24},
                 new ControlMapping {CommandName = "TrackSendFxVolume", ControlId = 3},
-                new ControlMapping {CommandName = "SamplerVolume", ControlId = 15},
-                new ControlMapping {CommandName = "ToggleManualMixMode", ControlId = 44}
+                new ControlMapping {CommandName = "SamplerVolume", ControlId = 4},
+                new ControlMapping {CommandName = "ToggleManualMixMode", ControlId = 44},
+                new ControlMapping {CommandName = "LoopFadeInForever", ControlId = 49},
+                new ControlMapping {CommandName = "JumpBack", ControlId = 47}
             };
 
             midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
@@ -95,8 +97,16 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.ToggleManualMixMode();
             }
-
-
+            else if (controlMapping.CommandName == "LoopFadeInForever")
+            {
+                if (IsControlOn(e.Value, controlMapping))
+                    _bassPlayer.LoopFadeInForever = !_bassPlayer.LoopFadeInForever;
+            }
+            else if (controlMapping.CommandName == "JumpBack")
+            {
+                if (IsControlOn(e.Value, controlMapping))
+                    _bassPlayer.JumpBack();
+            }
         }
 
         private static bool IsControlOn(int value, ControlMapping controlMapping)

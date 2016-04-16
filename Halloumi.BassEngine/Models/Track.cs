@@ -51,7 +51,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             RawLoopStart = 0;
             RawLoopEnd = 0;
             RawLoopEndSyncId = int.MinValue;
-            LoopFadeInIndefinitely = false;
             SkipStart = 0;
             SkipEnd = 0;
             SkipSyncId = int.MinValue;

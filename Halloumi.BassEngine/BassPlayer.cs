@@ -71,6 +71,7 @@ namespace Halloumi.Shuffler.AudioEngine
             DefaultFadeInEndVolume = 100; // 100%
             DefaultFadeOutStartVolume = 80; // 100%
             DefaultFadeOutEndVolume = 0; // 0%
+            LoopFadeInForever = false;
 
             TrackFxAutomationEnabled = false;
 
@@ -90,6 +91,7 @@ namespace Halloumi.Shuffler.AudioEngine
             ExtenedAttributesHelper.ExtendedAttributeFolder = "";
         }
 
+        public bool LoopFadeInForever { get; set; }
 
         /// <summary>
         ///     Gets the mixer lock.
@@ -303,6 +305,17 @@ namespace Halloumi.Shuffler.AudioEngine
             _speakerOutput.AddInputChannel(_trackSendFxMixer);
 
             DebugHelper.WriteLine("END InitialiseTrackMixer");
+        }
+
+        public void JumpBack()
+        {
+            if (!IsPlaying())
+                return;
+
+            var loopLength = BpmHelper.GetDefaultLoopLength(GetCurrentBpm()) / 2;
+            var position = GetAdjustedPositionSeconds(CurrentTrack) - loopLength;
+            if (position < 0) return;
+            SetTrackPosition(position);
         }
 
 
@@ -1499,7 +1512,7 @@ namespace Halloumi.Shuffler.AudioEngine
             var isLooped = CurrentTrack.IsLoopedAtStart;
             var maxLoops = CurrentTrack.StartLoopCount;
             var currentLoop = CurrentTrack.CurrentStartLoop;
-            var loopForever = CurrentTrack.LoopFadeInIndefinitely;
+            var loopForever = LoopFadeInForever;
 
             // set to loop start if necessary
             if ((isLooped && currentLoop < maxLoops - 1) || loopForever)
