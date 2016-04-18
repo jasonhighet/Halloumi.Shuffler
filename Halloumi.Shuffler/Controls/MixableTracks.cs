@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.Controls
                 .ToList();
 
             return _libraryControl
-                .GetAvailableTracks()
+                .GetDisplayedTracks()
                 .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
@@ -58,7 +58,7 @@ namespace Halloumi.Shuffler.Controls
                 .ToList();
 
             return _libraryControl
-                .GetAvailableTracks()
+                .GetDisplayedTracks()
                 .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
