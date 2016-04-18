@@ -172,7 +172,7 @@ namespace Halloumi.Shuffler.Forms
             var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
 
             var track = playlistControl.GetCurrentTrack();
-            track.Rank = mixRank;
+            track.Rank = (int)mixRank;
             Library.SaveRank(track);
         }
 
@@ -1009,7 +1009,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 var mixRankDescription = toolStripDropDownItem.Text;
                 var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
-                playerDetails.SetCurrentMixRank(mixRank);
+                playerDetails.SetCurrentMixRank((int)mixRank);
             }
             playerDetails.DisplayCurrentTrackDetails();
 

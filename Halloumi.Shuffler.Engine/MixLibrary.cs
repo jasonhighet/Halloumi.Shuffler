@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Helpers;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
 namespace Halloumi.Shuffler.AudioLibrary
@@ -15,6 +15,16 @@ namespace Halloumi.Shuffler.AudioLibrary
     /// </summary>
     public class MixLibrary
     {
+        public enum MixRank
+        {
+            Forbidden = 0,
+            Bearable = 2,
+            Good = 3,
+            VeryGood = 4,
+            Excellent = 5,
+            Unranked = 1
+        }
+
         private readonly Dictionary<string, List<MixRanking>> _fromMixes = new Dictionary<string, List<MixRanking>>();
 
         private readonly List<string> _loadedTracks = new List<string>();
@@ -60,20 +70,22 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>The description of the mix ranking</returns>
         public string GetRankDescription(int ranking)
         {
-            switch (ranking)
+            switch ((MixRank)ranking)
             {
-                case 0:
+                case MixRank.Forbidden:
                     return "Forbidden";
-                case 2:
+                case MixRank.Bearable:
                     return "Bearable";
-                case 3:
+                case MixRank.Good:
                     return "Good";
-                case 4:
+                case MixRank.VeryGood:
                     return "Very Good";
-                case 5:
+                case MixRank.Excellent:
                     return "Excellent";
-                default:
+                case MixRank.Unranked:
                     return "Unranked";
+                default:
+                    throw new Exception("Weird mix rank");
             }
         }
 
@@ -82,22 +94,22 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         /// <param name="description">The description.</param>
         /// <returns>The mix ranking</returns>
-        public int GetRankFromDescription(string description)
+        public MixRank GetRankFromDescription(string description)
         {
             switch (description)
             {
                 case "Forbidden":
-                    return 0;
+                    return MixRank.Forbidden;
                 case "Bearable":
-                    return 2;
+                    return MixRank.Bearable;
                 case "Good":
-                    return 3;
+                    return MixRank.Good;
                 case "Very Good":
-                    return 4;
+                    return MixRank.VeryGood;
                 case "Excellent":
-                    return 5;
+                    return MixRank.Excellent;
                 default:
-                    return 1;
+                    return MixRank.Unranked;
             }
         }
 
@@ -422,6 +434,21 @@ namespace Halloumi.Shuffler.AudioLibrary
             else if (track1.PowerDown) mixLevel += 0.25;
             return mixLevel;
         }
+
+        /// <summary>
+        ///     Gets the mix level for mixing track 1 into track 1
+        /// </summary>
+        /// <param name="track1">The track 1.</param>
+        /// <param name="track2">The track 2.</param>
+        /// <returns>A mix level from 0 to 5</returns>
+        public string GetExtendedMixDescription(Track track1, Track track2)
+        {
+            var description = GetRankDescription(GetMixLevel(track1, track2));
+            return (HasExtendedMix(track1, track2)) 
+                ? description + "*"
+                : description;
+        }
+
 
         /// <summary>
         ///     Gets the extended mix attributes.
@@ -839,7 +866,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 else
                 {
                     mixRank.ToTrack = value;
-                    mixRank.MixLevel = 1;
+                    mixRank.MixLevel = (int)MixRank.Unranked;
                 }
 
                 return mixRank;

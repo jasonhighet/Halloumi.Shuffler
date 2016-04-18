@@ -28,11 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlContentBackground = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlGridBorder = new Halloumi.Common.Windows.Controls.Panel();
+            this.grdMixableTracks = new Halloumi.Shuffler.Controls.DataGridView();
+            this.colTrackDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBPM = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDiff = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMixRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colKeyDiff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.linLine = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.pnlButtons = new Halloumi.Common.Windows.Controls.Panel();
             this.lblCount = new Halloumi.Common.Windows.Controls.Label();
@@ -44,22 +52,14 @@
             this.cmbRank = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.chkExcludeQueued = new Halloumi.Common.Windows.Controls.CheckBox();
-            this.grdMixableTracks = new Halloumi.Shuffler.Controls.DataGridView();
-            this.colTrackDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colBPM = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDiff = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMixRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colKeyDiff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlContentBackground.SuspendLayout();
             this.pnlGridBorder.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdMixableTracks)).BeginInit();
             this.pnlButtons.SuspendLayout();
             this.flpButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKeyRank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbRank)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.grdMixableTracks)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlContentBackground
@@ -89,6 +89,120 @@
             this.pnlGridBorder.Size = new System.Drawing.Size(881, 222);
             this.pnlGridBorder.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlGridBorder.TabIndex = 11;
+            // 
+            // grdMixableTracks
+            // 
+            this.grdMixableTracks.AllowUserToAddRows = false;
+            this.grdMixableTracks.AllowUserToDeleteRows = false;
+            this.grdMixableTracks.AllowUserToResizeColumns = false;
+            this.grdMixableTracks.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.grdMixableTracks.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.grdMixableTracks.ColumnHeadersHeight = 26;
+            this.grdMixableTracks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colTrackDescription,
+            this.colBPM,
+            this.colDiff,
+            this.colMixRank,
+            this.colRank,
+            this.colKey,
+            this.colKeyDiff});
+            this.grdMixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grdMixableTracks.HideOuterBorders = true;
+            this.grdMixableTracks.Location = new System.Drawing.Point(1, 1);
+            this.grdMixableTracks.Margin = new System.Windows.Forms.Padding(4);
+            this.grdMixableTracks.MergeColor = System.Drawing.Color.Gainsboro;
+            this.grdMixableTracks.Name = "grdMixableTracks";
+            this.grdMixableTracks.ReadOnly = true;
+            this.grdMixableTracks.RowHeadersVisible = false;
+            this.grdMixableTracks.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.grdMixableTracks.RowTemplate.Height = 24;
+            this.grdMixableTracks.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.grdMixableTracks.Size = new System.Drawing.Size(879, 181);
+            this.grdMixableTracks.SortColumnIndex = -1;
+            this.grdMixableTracks.SortOrder = System.Windows.Forms.SortOrder.None;
+            this.grdMixableTracks.StateCommon.Background.Color1 = System.Drawing.Color.White;
+            this.grdMixableTracks.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridBackgroundList;
+            this.grdMixableTracks.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
+            this.grdMixableTracks.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdMixableTracks.TabIndex = 51;
+            // 
+            // colTrackDescription
+            // 
+            this.colTrackDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colTrackDescription.DataPropertyName = "Description";
+            this.colTrackDescription.HeaderText = "Track";
+            this.colTrackDescription.Name = "colTrackDescription";
+            this.colTrackDescription.ReadOnly = true;
+            this.colTrackDescription.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // colBPM
+            // 
+            this.colBPM.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colBPM.DataPropertyName = "BPM";
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.colBPM.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colBPM.HeaderText = "BPM";
+            this.colBPM.Name = "colBPM";
+            this.colBPM.ReadOnly = true;
+            this.colBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colBPM.Width = 70;
+            // 
+            // colDiff
+            // 
+            this.colDiff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colDiff.DataPropertyName = "Diff";
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = null;
+            this.colDiff.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colDiff.HeaderText = "Diff";
+            this.colDiff.Name = "colDiff";
+            this.colDiff.ReadOnly = true;
+            this.colDiff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colDiff.Visible = false;
+            this.colDiff.Width = 65;
+            // 
+            // colMixRank
+            // 
+            this.colMixRank.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colMixRank.DataPropertyName = "MixRankDescription";
+            this.colMixRank.HeaderText = "Mix";
+            this.colMixRank.Name = "colMixRank";
+            this.colMixRank.ReadOnly = true;
+            this.colMixRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colMixRank.Width = 64;
+            // 
+            // colRank
+            // 
+            this.colRank.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colRank.DataPropertyName = "RankDescription";
+            this.colRank.HeaderText = "Rank";
+            this.colRank.Name = "colRank";
+            this.colRank.ReadOnly = true;
+            this.colRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colRank.Width = 72;
+            // 
+            // colKey
+            // 
+            this.colKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colKey.DataPropertyName = "Key";
+            this.colKey.HeaderText = "Key";
+            this.colKey.Name = "colKey";
+            this.colKey.ReadOnly = true;
+            this.colKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colKey.Width = 64;
+            // 
+            // colKeyDiff
+            // 
+            this.colKeyDiff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colKeyDiff.DataPropertyName = "KeyRankDescription";
+            this.colKeyDiff.HeaderText = "Key Rank";
+            this.colKeyDiff.Name = "colKeyDiff";
+            this.colKeyDiff.ReadOnly = true;
+            this.colKeyDiff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
             // linLine
             // 
@@ -197,14 +311,14 @@
             // 
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(388, 2);
+            this.label1.Location = new System.Drawing.Point(416, 2);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.label1.Size = new System.Drawing.Size(82, 33);
+            this.label1.Size = new System.Drawing.Size(54, 33);
             this.label1.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label1.TabIndex = 10;
-            this.label1.Text = "Key Rank:";
+            this.label1.Text = "Key:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmbRank
@@ -218,7 +332,7 @@
             "Bearable+",
             "Unranked",
             "Forbidden"});
-            this.cmbRank.Location = new System.Drawing.Point(279, 6);
+            this.cmbRank.Location = new System.Drawing.Point(307, 6);
             this.cmbRank.Margin = new System.Windows.Forms.Padding(4);
             this.cmbRank.Name = "cmbRank";
             this.cmbRank.Size = new System.Drawing.Size(101, 25);
@@ -229,7 +343,7 @@
             // 
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(214, 2);
+            this.label3.Location = new System.Drawing.Point(242, 2);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
@@ -241,128 +355,13 @@
             // 
             // chkExcludeQueued
             // 
-            this.chkExcludeQueued.Location = new System.Drawing.Point(92, 7);
+            this.chkExcludeQueued.Location = new System.Drawing.Point(120, 7);
             this.chkExcludeQueued.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.chkExcludeQueued.Name = "chkExcludeQueued";
             this.chkExcludeQueued.Size = new System.Drawing.Size(115, 24);
             this.chkExcludeQueued.TabIndex = 9;
             this.chkExcludeQueued.Values.Text = "Hide Queued";
             this.chkExcludeQueued.CheckedChanged += new System.EventHandler(this.chkExcludeQueued_CheckedChanged);
-            // 
-            // grdMixableTracks
-            // 
-            this.grdMixableTracks.AllowUserToAddRows = false;
-            this.grdMixableTracks.AllowUserToDeleteRows = false;
-            this.grdMixableTracks.AllowUserToResizeColumns = false;
-            this.grdMixableTracks.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.grdMixableTracks.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.grdMixableTracks.ColumnHeadersHeight = 26;
-            this.grdMixableTracks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colTrackDescription,
-            this.colBPM,
-            this.colDiff,
-            this.colMixRank,
-            this.colRank,
-            this.colKey,
-            this.colKeyDiff});
-            this.grdMixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdMixableTracks.HideOuterBorders = true;
-            this.grdMixableTracks.Location = new System.Drawing.Point(1, 1);
-            this.grdMixableTracks.Margin = new System.Windows.Forms.Padding(4);
-            this.grdMixableTracks.MergeColor = System.Drawing.Color.Gainsboro;
-            this.grdMixableTracks.Name = "grdMixableTracks";
-            this.grdMixableTracks.ReadOnly = true;
-            this.grdMixableTracks.RowHeadersVisible = false;
-            this.grdMixableTracks.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.grdMixableTracks.RowTemplate.Height = 24;
-            this.grdMixableTracks.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdMixableTracks.Size = new System.Drawing.Size(879, 181);
-            this.grdMixableTracks.SortColumnIndex = -1;
-            this.grdMixableTracks.SortOrder = System.Windows.Forms.SortOrder.None;
-            this.grdMixableTracks.StateCommon.Background.Color1 = System.Drawing.Color.White;
-            this.grdMixableTracks.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridBackgroundList;
-            this.grdMixableTracks.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdMixableTracks.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
-            this.grdMixableTracks.TabIndex = 51;
-            // 
-            // colTrackDescription
-            // 
-            this.colTrackDescription.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colTrackDescription.DataPropertyName = "Description";
-            this.colTrackDescription.HeaderText = "Track";
-            this.colTrackDescription.Name = "colTrackDescription";
-            this.colTrackDescription.ReadOnly = true;
-            this.colTrackDescription.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // colBPM
-            // 
-            this.colBPM.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colBPM.DataPropertyName = "BPM";
-            dataGridViewCellStyle2.Format = "N2";
-            dataGridViewCellStyle2.NullValue = null;
-            this.colBPM.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colBPM.HeaderText = "BPM";
-            this.colBPM.Name = "colBPM";
-            this.colBPM.ReadOnly = true;
-            this.colBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colBPM.Width = 66;
-            // 
-            // colDiff
-            // 
-            this.colDiff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colDiff.DataPropertyName = "Diff";
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = null;
-            this.colDiff.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colDiff.HeaderText = "Diff";
-            this.colDiff.Name = "colDiff";
-            this.colDiff.ReadOnly = true;
-            this.colDiff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colDiff.Visible = false;
-            this.colDiff.Width = 61;
-            // 
-            // colMixRank
-            // 
-            this.colMixRank.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colMixRank.DataPropertyName = "MixRankDescription";
-            this.colMixRank.HeaderText = "Mix";
-            this.colMixRank.Name = "colMixRank";
-            this.colMixRank.ReadOnly = true;
-            this.colMixRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colMixRank.Width = 60;
-            // 
-            // colRank
-            // 
-            this.colRank.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colRank.DataPropertyName = "RankDescription";
-            this.colRank.HeaderText = "Rank";
-            this.colRank.Name = "colRank";
-            this.colRank.ReadOnly = true;
-            this.colRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colRank.Width = 68;
-            // 
-            // colKey
-            // 
-            this.colKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colKey.DataPropertyName = "Key";
-            this.colKey.HeaderText = "Key";
-            this.colKey.Name = "colKey";
-            this.colKey.ReadOnly = true;
-            this.colKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colKey.Width = 60;
-            // 
-            // colKeyDiff
-            // 
-            this.colKeyDiff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colKeyDiff.DataPropertyName = "KeyRankDescription";
-            this.colKeyDiff.HeaderText = "Key Rank";
-            this.colKeyDiff.Name = "colKeyDiff";
-            this.colKeyDiff.ReadOnly = true;
-            this.colKeyDiff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colKeyDiff.Width = 96;
             // 
             // MixableTracks
             // 
@@ -374,13 +373,13 @@
             this.Size = new System.Drawing.Size(881, 222);
             this.pnlContentBackground.ResumeLayout(false);
             this.pnlGridBorder.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.grdMixableTracks)).EndInit();
             this.pnlButtons.ResumeLayout(false);
             this.flpButtons.ResumeLayout(false);
             this.flpButtons.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKeyRank)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbRank)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.grdMixableTracks)).EndInit();
             this.ResumeLayout(false);
 
         }

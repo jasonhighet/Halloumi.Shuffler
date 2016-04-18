@@ -39,19 +39,27 @@ namespace Halloumi.Shuffler.Controls
 
         private List<Track> GetMixableFromTracks(Track track, List<int> mixLevels)
         {
-            var displayedTracks = _libraryControl.GetAvailableTracks().Select(x => x.Description).ToList();
+            var mixableTracks = _mixLibrary
+                .GetMixableFromTracks(track, mixLevels)
+                .Select(x => x.Description)
+                .ToList();
 
-            return _mixLibrary.GetMixableFromTracks(track, mixLevels)
-                .Where(x => displayedTracks.Contains(x.Description))
+            return _libraryControl
+                .GetAvailableTracks()
+                .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
 
         private List<Track> GetMixableToTracks(Track track, List<int> mixLevels)
         {
-            var displayedTracks = _libraryControl.GetAvailableTracks().Select(x => x.Description).ToList();
+            var mixableTracks = _mixLibrary
+                .GetMixableToTracks(track, mixLevels)
+                .Select(x => x.Description)
+                .ToList();
 
-            return _mixLibrary.GetMixableToTracks(track, mixLevels)
-                .Where(x => displayedTracks.Contains(x.Description))
+            return _libraryControl
+                .GetAvailableTracks()
+                .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
 
@@ -70,8 +78,11 @@ namespace Halloumi.Shuffler.Controls
             _parentTrack = parentTrack;
 
             // BindData();
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData);
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(BindData));
+            }
+            else BindData();
         }
 
 
@@ -150,7 +161,7 @@ namespace Halloumi.Shuffler.Controls
                     minimumKeyRank = 0;
                     break;
                 default:
-                    minimumKeyRank = 0;
+                    minimumKeyRank = -1;
                     break;
             }
 
@@ -193,9 +204,18 @@ namespace Halloumi.Shuffler.Controls
                     MixRank = (view == View.FromTracks)
                         ? _mixLibrary.GetExtendedMixLevel(track, _parentTrack)
                         : _mixLibrary.GetExtendedMixLevel(_parentTrack, track),
+
+                    MixRankDescription = (view == View.FromTracks)
+                        ? _mixLibrary.GetExtendedMixDescription(track, _parentTrack)
+                        : _mixLibrary.GetExtendedMixDescription(_parentTrack, track),
+
                     Rank = track.Rank,
+                    RankDescription = track.RankDescription,
                     Key = KeyHelper.GetDisplayKey(track.Key),
-                    KeyDiff = KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key)
+
+                    KeyDiff = KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
+                    KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track.Key, _parentTrack.Key)
+                     
                 };
 
                 mixableTrack.MixRankDescription =
@@ -212,7 +232,7 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "Description") mixableTracks = mixableTracks.OrderBy(t => t.Description).ToList();
                 if (sortField == "BPM") mixableTracks = mixableTracks.OrderBy(t => t.Bpm).ToList();
                 if (sortField == "Diff") mixableTracks = mixableTracks.OrderBy(t => t.Diff).ToList();
-                if (sortField == "Mix")
+                if (sortField == "MixRankDescription")
                     mixableTracks = mixableTracks.OrderBy(t => t.MixRank).ThenByDescending(t => t.Diff).ToList();
                 if (sortField == "RankDescription")
                     mixableTracks = mixableTracks.OrderBy(t => t.Rank).ThenByDescending(t => t.Diff).ToList();
@@ -314,6 +334,10 @@ namespace Halloumi.Shuffler.Controls
             public double MixRank { get; set; }
 
             public string MixRankDescription { get; set; }
+
+            public string KeyRankDescription { get; set; }
+
+            public string RankDescription { get; set; }
 
             public decimal Diff { get; set; }
 

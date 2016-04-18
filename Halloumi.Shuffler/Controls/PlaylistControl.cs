@@ -169,7 +169,7 @@ namespace Halloumi.Shuffler.Controls
 
             foreach (var track in GetSelectedLibraryTracks())
             {
-                track.Rank = trackRank;
+                track.Rank = (int)trackRank;
                 Library.SaveRank(track);
                 var trackModel = TrackModels.FirstOrDefault(t => t.Description == track.Description);
                 if (trackModel == null) continue;
@@ -193,7 +193,7 @@ namespace Halloumi.Shuffler.Controls
                 if (row.Index == 0) continue;
                 var track2 = GetTrackByIndex(row.Index);
                 var track1 = GetTrackByIndex(row.Index - 1);
-                MixLibrary.SetMixLevel(track1, track2, mixRank);
+                MixLibrary.SetMixLevel(track1, track2, (int)mixRank);
 
                 var trackModel = GetTrackModelByIndex(row.Index);
                 trackModel.MixRankDescription = mixRankDescription;

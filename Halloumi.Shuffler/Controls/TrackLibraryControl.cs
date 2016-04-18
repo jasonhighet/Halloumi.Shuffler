@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
@@ -37,7 +38,7 @@ namespace Halloumi.Shuffler.Controls
 
             foreach (var track in GetSelectedTracks())
             {
-                track.Rank = mixRank;
+                track.Rank = (int)mixRank;
                 Library.SaveRank(track);
             }
             BindData();
@@ -141,6 +142,9 @@ namespace Halloumi.Shuffler.Controls
                 RankDescription = track.RankDescription;
                 Track = track;
                 Key = track.Key;
+
+                InCount = -1;
+                OutCount = -1;
             }
 
             public string Filename { get; }
@@ -537,15 +541,6 @@ namespace Halloumi.Shuffler.Controls
                 .Select(t => new TrackModel(t))
                 .ToList();
 
-            if (ShufflerFilter == Library.ShufflerFilter.ShuflerTracks)
-            {
-                foreach (var trackModel in trackModels)
-                {
-                    trackModel.InCount = MixLibrary.GetKeyMixedInCount(trackModel.Track);
-                    trackModel.OutCount = MixLibrary.GetKeyMixedOutCount(trackModel.Track);
-                }
-            }
-
             if (grdTracks.SortedColumn != null)
             {
                 var sortField = grdTracks.SortedColumn.DataPropertyName;
@@ -555,13 +550,30 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "Genre") trackModels = trackModels.OrderBy(t => t.Genre).ToList();
                 if (sortField == "StartBPM") trackModels = trackModels.OrderBy(t => t.StartBpm).ToList();
                 if (sortField == "EndBPM") trackModels = trackModels.OrderBy(t => t.EndBpm).ToList();
+
+
                 if (sortField == "InCount")
-                    trackModels =
-                        trackModels.OrderByDescending(t => t.InCount).ThenByDescending(t => t.OutCount).ToList();
+                {
+                    foreach (var trackModel in trackModels.Where(trackModel => trackModel.InCount == -1))
+                    {
+                        trackModel.InCount = MixLibrary.GetMixInCount(trackModel.Track);
+                    }
+                    trackModels = trackModels
+                        .OrderByDescending(t => t.InCount)
+                        .ToList();
+                }
+
                 if (sortField == "OutCount")
-                    trackModels =
-                        trackModels.OrderByDescending(t => t.OutCount).ThenByDescending(t => t.InCount).ToList();
-                //if (sortField == "UnrankedCount") trackModels = trackModels.OrderByDescending(t => t.UnrankedCount).ThenByDescending(t => t.OutCount).ToList();
+                {
+                    foreach (var trackModel in trackModels.Where(trackModel => trackModel.OutCount == -1))
+                    {
+                        trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
+                    }
+                    trackModels = trackModels
+                        .OrderByDescending(t => t.OutCount)
+                        .ToList();
+                }
+                
                 if (sortField == "RankDescription")
                     trackModels = trackModels.OrderByDescending(t => t.Track.Rank).ToList();
                 if (sortField == "Key") trackModels = trackModels.OrderByDescending(t => t.Key).ToList();
@@ -602,8 +614,19 @@ namespace Halloumi.Shuffler.Controls
             else if (e.ColumnIndex == 4) e.Value = trackModel.StartBpm;
             else if (e.ColumnIndex == 5) e.Value = trackModel.Bpm;
             else if (e.ColumnIndex == 6) e.Value = trackModel.TrackNumberFormatted;
-            else if (e.ColumnIndex == 7) e.Value = trackModel.InCount;
-            else if (e.ColumnIndex == 8) e.Value = trackModel.OutCount;
+            else if (e.ColumnIndex == 7)
+            {
+                if(trackModel.InCount == -1)
+                    trackModel.InCount = MixLibrary.GetMixInCount(trackModel.Track);
+                e.Value = trackModel.InCount;
+            }
+            
+            else if (e.ColumnIndex == 8) 
+            {
+                if (trackModel.OutCount == -1)
+                    trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
+                e.Value = trackModel.OutCount;
+            }
             else if (e.ColumnIndex == 10) e.Value = trackModel.RankDescription;
             else if (e.ColumnIndex == 11) e.Value = KeyHelper.GetDisplayKey(trackModel.Key);
         }
@@ -1715,8 +1738,11 @@ namespace Halloumi.Shuffler.Controls
             var track = GetSelectedTrack();
             trackDetails.DisplayTrackDetails(track);
 
-            if (!splLibraryMixable.Panel2Collapsed)
-                mixableTracks.DisplayMixableTracks(track);
+            Task.Run(() =>
+            {
+                if (!splLibraryMixable.Panel2Collapsed)
+                    mixableTracks.DisplayMixableTracks(track);
+            });
         }
 
         private void RaiseSelectedTracksChanged()
