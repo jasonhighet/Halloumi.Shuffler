@@ -125,16 +125,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 ?? new List<TrackSample>();
         }
 
-        public void PlaySample(int index)
-        {
-            var keys= _audioPlayer.GetStreamKeys();
-            if(index >= keys.Count)
-                return;
-            var key = keys[index];
-
-            PlaySample(key);
-        }
-
         public void PlaySample(string sampleId)
         {
             var section = _audioPlayer.GetAudioSection(sampleId, sampleId);
@@ -147,16 +137,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _audioPlayer.QueueSection(sampleId, sampleId);
             _audioPlayer.Unmute(sampleId);
             _audioPlayer.Play(sampleId);
-        }
-
-        public void PauseSample(int index)
-        {
-            var keys = _audioPlayer.GetStreamKeys();
-            if (index >= keys.Count)
-                return;
-            var key = keys[index];
-
-            PauseSample(key);
         }
 
         public void PauseSample(string sampleId)

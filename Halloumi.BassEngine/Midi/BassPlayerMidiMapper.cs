@@ -30,6 +30,15 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 new ControlMapping {CommandName = "JumpBack", ControlId = 47}
             };
 
+            for (var i = 0; i < 12; i++)
+            {
+                _controlMappings.Add(new ControlMapping
+                {
+                    CommandName = "Sample" + (i + 1),
+                    ControlId =  (i < 6) ?  i + 26 : i + 36
+                });
+            }
+
             midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
         }
 
@@ -107,6 +116,15 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 if (IsControlOn(e.Value, controlMapping))
                     _bassPlayer.JumpBack();
             }
+            else if (controlMapping.CommandName.StartsWith("Sample"))
+            {
+                var index = int.Parse(controlMapping.CommandName.Replace("Sample", ""));
+                if (IsControlOn(e.Value, controlMapping))
+                    _bassPlayer.PlaySample(index);
+                else
+                    _bassPlayer.PauseSample(index);
+            }
+
         }
 
         private static bool IsControlOn(int value, ControlMapping controlMapping)

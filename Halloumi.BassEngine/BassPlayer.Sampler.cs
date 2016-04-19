@@ -69,10 +69,37 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="sample">The sample.</param>
         public void PlaySample(Sample sample)
         {
+            if(sample == null) return;
+            
             _samplePlayer.PlaySample(sample.SampleId);
             _samplerMixer.SetPluginBpm();
             if (CurrentTrack == null) return;
             StartRecordingSampleTrigger(sample);
+        }
+
+        /// <summary>
+        /// Plays a sample.
+        /// </summary>
+        /// <param name="sampleIndex">Index of the sample.</param>
+        public void PlaySample(int sampleIndex)
+        {
+            PlaySample(GetSample(sampleIndex));
+        }
+
+        private Sample GetSample(int sampleIndex)
+        {
+            var samples = _samplePlayer.GetSamples();
+            if (sampleIndex >= samples.Count || sampleIndex < 0) return null;
+            return samples[sampleIndex];
+        }
+
+        /// <summary>
+        /// Plays a sample.
+        /// </summary>
+        /// <param name="sampleIndex">Index of the sample.</param>
+        public void PauseSample(int sampleIndex)
+        {
+            PauseSample(GetSample(sampleIndex));
         }
 
         /// <summary>
