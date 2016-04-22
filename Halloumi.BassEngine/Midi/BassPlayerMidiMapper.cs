@@ -48,7 +48,7 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 {
                     VstPlugin = _bassPlayer.MainVstPlugin,
                     MidiControlId = 17,
-                    ParameterIndex = 5,
+                    ParameterIndex = 4,
                 }
             };
 
