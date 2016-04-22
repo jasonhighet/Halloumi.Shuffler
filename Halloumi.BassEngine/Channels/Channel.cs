@@ -257,18 +257,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                     SyncUsingLogScale = true,
                     VariableSyncNotes = true,
                     DefaultSyncNotes = (1M/4M)
-                },
-                //new
-                //{
-                //    PluginName = "Classic Flanger",
-                //    ParameterName = "Delay",
-                //    SyncToBpm = true,
-                //    MinSyncMilliSeconds = 0.1M,
-                //    MaxSyncMilliSeconds = 10M,
-                //    SyncUsingLogScale = true,
-                //    VariableSyncNotes = false,
-                //    DefaultSyncNotes = (1M/512M)
-                //},
+                }
             }.ToList();
 
 

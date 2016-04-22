@@ -76,9 +76,6 @@ namespace Halloumi.Shuffler.Forms
             BassPlayer = new AE.BassPlayer(Handle);
             Library = new Library(BassPlayer);
 
-            _midiManager = new AE.Midi.MidiManager();
-            _midiMapper = new AE.Midi.BassPlayerMidiMapper(BassPlayer, _midiManager);
-
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
 
@@ -586,6 +583,10 @@ namespace Halloumi.Shuffler.Forms
             mnuUpdateLibraryOnStartup.Checked = settings.UpdateLibraryOnStartup;
 
             fileMenuController.RecentFiles = settings.RecentFiles;
+
+
+            _midiManager = new AE.Midi.MidiManager();
+            _midiMapper = new AE.Midi.BassPlayerMidiMapper(BassPlayer, _midiManager);
         }
 
         /// <summary>

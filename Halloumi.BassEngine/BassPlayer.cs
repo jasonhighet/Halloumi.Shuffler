@@ -1874,11 +1874,11 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RaiseOnTrackChange()
         {
             DebugHelper.WriteLine("Track change event");
-            Task.Run(() =>
-            {
+            //Task.Run(() =>
+            //{
                 OnTrackChange?.Invoke(CurrentTrack, EventArgs.Empty);
                 SetDelayByBpm();
-            });
+            //});
         }
 
         /// <summary>
@@ -1911,10 +1911,10 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RaiseOnTrackQueued()
         {
             DebugHelper.WriteLine("Track queued event");
-            Task.Run(() =>
-            {
+            //Task.Run(() =>
+            //{
                 OnTrackQueued?.Invoke(CurrentTrack, EventArgs.Empty);
-            });
+            //});
         }
 
         /// <summary>
