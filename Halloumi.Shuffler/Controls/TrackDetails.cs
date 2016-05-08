@@ -35,14 +35,13 @@ namespace Halloumi.Shuffler.Controls
 
             if (track != null)
             {
-                lblCurrentTrackDescription.Text = track.Description.Replace("&", "&&");
-
-                var details = track.Album + " - " + track.Genre + " ";
-                details += " - " + track.LengthFormatted;
-                if (track.Bpm != 0) details += " - " + track.Bpm.ToString("0.00") + " BPM";
-                if (track.Key != "") details += " - " + KeyHelper.GetDisplayKey(track.Key);
-
-                lblCurrentTrackDetails.Text = details;
+                lblArtist.Text = track.Artist.Replace("&", "&&");
+                lblTime.Text = track.LengthFormatted;
+                lblAlbum.Text = track.Album.Replace("&", "&&");
+                lblGenre.Text = track.Genre.Replace("&", "&&");
+                lblTrack.Text = track.Title.Replace("&", "&&");
+                lblBpm.Text = track.Bpm.ToString("0.00") + " BPM";
+                lblKey.Text= KeyHelper.GetDisplayKey(track.Key);
 
                 picCover.Image = Library.GetAlbumCover(new Album(track.Album));
 
@@ -50,8 +49,14 @@ namespace Halloumi.Shuffler.Controls
             }
             else
             {
-                lblCurrentTrackDescription.Text = "";
-                lblCurrentTrackDetails.Text = "";
+                lblArtist.Text = "";
+                lblTime.Text = "";
+                lblAlbum.Text = "";
+                lblGenre.Text = "";
+                lblTrack.Text = "";
+                lblBpm.Text = "";
+                lblKey.Text = "";
+
                 picCover.Image = null;
 
                 _currentFilename = "";

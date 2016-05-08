@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.mnuGenre = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRenameGenre = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuArtist = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -74,6 +74,7 @@
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.sepOpenFileLocation = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAddToSampler = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEditSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.pnlBackground2 = new Halloumi.Common.Windows.Controls.Panel();
             this.splLibraryMixable = new System.Windows.Forms.SplitContainer();
@@ -89,8 +90,8 @@
             this.colArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlAlbum = new Halloumi.Common.Windows.Controls.Panel();
             this.lstAlbum = new Halloumi.Common.Windows.Controls.ListView();
-            this.colAlbumName = new System.Windows.Forms.ColumnHeader();
-            this.colAlbumAlbumArtist = new System.Windows.Forms.ColumnHeader();
+            this.colAlbumName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colAlbumAlbumArtist = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.linAlbumHeader = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
             this.pnlAlbumHeader = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             this.lblAlbumHeader = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
@@ -128,12 +129,12 @@
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbShufflerFilter = new Halloumi.Common.Windows.Controls.ComboBox();
             this.mixableTracks = new Halloumi.Shuffler.Controls.MixableTracks();
-            this.mnuEditSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGenre.SuspendLayout();
             this.mnuArtist.SuspendLayout();
             this.mnuAlbum.SuspendLayout();
             this.mnuTrack.SuspendLayout();
             this.pnlBackground2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splLibraryMixable)).BeginInit();
             this.splLibraryMixable.Panel1.SuspendLayout();
             this.splLibraryMixable.Panel2.SuspendLayout();
             this.splLibraryMixable.SuspendLayout();
@@ -177,6 +178,7 @@
             // mnuGenre
             // 
             this.mnuGenre.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuGenre.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuGenre.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRenameGenre});
             this.mnuGenre.Name = "mnuGenre";
@@ -191,6 +193,7 @@
             // mnuArtist
             // 
             this.mnuArtist.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuArtist.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuArtist.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRenameArtist});
             this.mnuArtist.Name = "mnuGenre";
@@ -205,22 +208,23 @@
             // mnuAlbum
             // 
             this.mnuAlbum.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuAlbum.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuAlbum.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRenameAlbum,
             this.mnuUpdateAlbumArtist});
             this.mnuAlbum.Name = "mnuGenre";
-            this.mnuAlbum.Size = new System.Drawing.Size(224, 52);
+            this.mnuAlbum.Size = new System.Drawing.Size(230, 56);
             // 
             // mnuRenameAlbum
             // 
             this.mnuRenameAlbum.Name = "mnuRenameAlbum";
-            this.mnuRenameAlbum.Size = new System.Drawing.Size(223, 24);
+            this.mnuRenameAlbum.Size = new System.Drawing.Size(229, 26);
             this.mnuRenameAlbum.Text = "&Rename Album...";
             // 
             // mnuUpdateAlbumArtist
             // 
             this.mnuUpdateAlbumArtist.Name = "mnuUpdateAlbumArtist";
-            this.mnuUpdateAlbumArtist.Size = new System.Drawing.Size(223, 24);
+            this.mnuUpdateAlbumArtist.Size = new System.Drawing.Size(229, 26);
             this.mnuUpdateAlbumArtist.Text = "Update Album A&rtist...";
             // 
             // imlAlbumArt
@@ -232,6 +236,7 @@
             // mnuTrack
             // 
             this.mnuTrack.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuTrack.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuTrack.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuPlay,
             this.mnuQueue,
@@ -255,107 +260,107 @@
             this.mnuAddToSampler,
             this.mnuEditSamples});
             this.mnuTrack.Name = "mnuTrack";
-            this.mnuTrack.Size = new System.Drawing.Size(242, 440);
+            this.mnuTrack.Size = new System.Drawing.Size(248, 450);
             // 
             // mnuPlay
             // 
             this.mnuPlay.Name = "mnuPlay";
-            this.mnuPlay.Size = new System.Drawing.Size(241, 24);
+            this.mnuPlay.Size = new System.Drawing.Size(247, 26);
             this.mnuPlay.Text = "&Play";
             // 
             // mnuQueue
             // 
             this.mnuQueue.Name = "mnuQueue";
-            this.mnuQueue.Size = new System.Drawing.Size(241, 24);
+            this.mnuQueue.Size = new System.Drawing.Size(247, 26);
             this.mnuQueue.Text = "&Queue";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuAddTrackToPlaylist
             // 
             this.mnuAddTrackToPlaylist.Name = "mnuAddTrackToPlaylist";
-            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(241, 24);
+            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(247, 26);
             this.mnuAddTrackToPlaylist.Text = "A&dd To Playlist";
             // 
             // mnuRemoveTrackFromPlaylist
             // 
             this.mnuRemoveTrackFromPlaylist.Name = "mnuRemoveTrackFromPlaylist";
-            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(247, 26);
             this.mnuRemoveTrackFromPlaylist.Text = "&Remove From Playlist";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuOpenFileLocation
             // 
             this.mnuOpenFileLocation.Name = "mnuOpenFileLocation";
-            this.mnuOpenFileLocation.Size = new System.Drawing.Size(241, 24);
+            this.mnuOpenFileLocation.Size = new System.Drawing.Size(247, 26);
             this.mnuOpenFileLocation.Text = "Open File &Location";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuUpdateTrackDetails
             // 
             this.mnuUpdateTrackDetails.Name = "mnuUpdateTrackDetails";
-            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateTrackDetails.Text = "Update &Track Details";
             // 
             // mnuUpdateArtist
             // 
             this.mnuUpdateArtist.Name = "mnuUpdateArtist";
-            this.mnuUpdateArtist.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateArtist.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateArtist.Text = "Update A&rtist...";
             // 
             // mnuUpdateAlbum
             // 
             this.mnuUpdateAlbum.Name = "mnuUpdateAlbum";
-            this.mnuUpdateAlbum.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateAlbum.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateAlbum.Text = "Update &Album...";
             // 
             // mnuUpdateGenre
             // 
             this.mnuUpdateGenre.Name = "mnuUpdateGenre";
-            this.mnuUpdateGenre.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateGenre.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateGenre.Text = "Update &Genre...";
             // 
             // mnuUpdateShufflerDetails
             // 
             this.mnuUpdateShufflerDetails.Name = "mnuUpdateShufflerDetails";
-            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateShufflerDetails.Text = "Update &Shuffler Details...";
             // 
             // mnuRemoveShufflerDetails
             // 
             this.mnuRemoveShufflerDetails.Name = "mnuRemoveShufflerDetails";
-            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(247, 26);
             this.mnuRemoveShufflerDetails.Text = "&Remove Shuffer Details";
             // 
             // mnuReloadMetadata
             // 
             this.mnuReloadMetadata.Name = "mnuReloadMetadata";
-            this.mnuReloadMetadata.Size = new System.Drawing.Size(241, 24);
+            this.mnuReloadMetadata.Size = new System.Drawing.Size(247, 26);
             this.mnuReloadMetadata.Text = "Reload &Metadata";
             this.mnuReloadMetadata.Click += new System.EventHandler(this.mnuReloadMetadata_Click);
             // 
             // mnuCalculateKey
             // 
             this.mnuCalculateKey.Name = "mnuCalculateKey";
-            this.mnuCalculateKey.Size = new System.Drawing.Size(241, 24);
+            this.mnuCalculateKey.Size = new System.Drawing.Size(247, 26);
             this.mnuCalculateKey.Text = "Calculate &Key";
             this.mnuCalculateKey.Click += new System.EventHandler(this.mnuCalculateKey_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuRank
             // 
@@ -367,55 +372,67 @@
             this.toolStripMenuItem5,
             this.toolStripMenuItem6});
             this.mnuRank.Name = "mnuRank";
-            this.mnuRank.Size = new System.Drawing.Size(241, 24);
+            this.mnuRank.Size = new System.Drawing.Size(247, 26);
             this.mnuRank.Text = "Track Rating";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem1.Text = "toolStripMenuItem1";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem2.Text = "toolStripMenuItem2";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem3.Text = "toolStripMenuItem3";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem4.Text = "toolStripMenuItem4";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem5.Text = "toolStripMenuItem5";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem6.Text = "toolStripMenuItem6";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // sepOpenFileLocation
             // 
             this.sepOpenFileLocation.Name = "sepOpenFileLocation";
-            this.sepOpenFileLocation.Size = new System.Drawing.Size(238, 6);
+            this.sepOpenFileLocation.Size = new System.Drawing.Size(244, 6);
+            // 
+            // mnuAddToSampler
+            // 
+            this.mnuAddToSampler.Name = "mnuAddToSampler";
+            this.mnuAddToSampler.Size = new System.Drawing.Size(247, 26);
+            // 
+            // mnuEditSamples
+            // 
+            this.mnuEditSamples.Name = "mnuEditSamples";
+            this.mnuEditSamples.Size = new System.Drawing.Size(247, 26);
+            this.mnuEditSamples.Text = "Edit Samples";
+            this.mnuEditSamples.Click += new System.EventHandler(this.mnuEditSamples_Click);
             // 
             // pnlBackground2
             // 
@@ -423,8 +440,9 @@
             this.pnlBackground2.Controls.Add(this.splLibraryMixable);
             this.pnlBackground2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlBackground2.Location = new System.Drawing.Point(0, 0);
+            this.pnlBackground2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pnlBackground2.Name = "pnlBackground2";
-            this.pnlBackground2.Padding = new System.Windows.Forms.Padding(5);
+            this.pnlBackground2.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pnlBackground2.Size = new System.Drawing.Size(1357, 727);
             this.pnlBackground2.TabIndex = 12;
             // 
@@ -432,6 +450,7 @@
             // 
             this.splLibraryMixable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splLibraryMixable.Location = new System.Drawing.Point(5, 5);
+            this.splLibraryMixable.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.splLibraryMixable.Name = "splLibraryMixable";
             this.splLibraryMixable.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -443,7 +462,7 @@
             // 
             this.splLibraryMixable.Panel2.Controls.Add(this.mixableTracks);
             this.splLibraryMixable.Size = new System.Drawing.Size(1347, 717);
-            this.splLibraryMixable.SplitterDistance = 550;
+            this.splLibraryMixable.SplitterDistance = 549;
             this.splLibraryMixable.TabIndex = 0;
             // 
             // pnlLibraryDetails
@@ -454,9 +473,9 @@
             this.pnlLibraryDetails.Controls.Add(this.pnlDivider);
             this.pnlLibraryDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlLibraryDetails.Location = new System.Drawing.Point(0, 0);
-            this.pnlLibraryDetails.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlLibraryDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlLibraryDetails.Name = "pnlLibraryDetails";
-            this.pnlLibraryDetails.Size = new System.Drawing.Size(1347, 550);
+            this.pnlLibraryDetails.Size = new System.Drawing.Size(1347, 549);
             this.pnlLibraryDetails.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlLibraryDetails.TabIndex = 11;
             // 
@@ -465,7 +484,7 @@
             this.splLibrary.Cursor = System.Windows.Forms.Cursors.Default;
             this.splLibrary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splLibrary.Location = new System.Drawing.Point(0, 37);
-            this.splLibrary.Margin = new System.Windows.Forms.Padding(4);
+            this.splLibrary.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splLibrary.Name = "splLibrary";
             this.splLibrary.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -477,9 +496,8 @@
             // splLibrary.Panel2
             // 
             this.splLibrary.Panel2.Controls.Add(this.pnlTrack);
-            this.splLibrary.Panel2.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.splLibrary.Size = new System.Drawing.Size(1347, 440);
-            this.splLibrary.SplitterDistance = 188;
+            this.splLibrary.Size = new System.Drawing.Size(1067, 512);
+            this.splLibrary.SplitterDistance = 217;
             this.splLibrary.TabIndex = 55;
             // 
             // splLeftRight
@@ -487,7 +505,7 @@
             this.splLeftRight.Cursor = System.Windows.Forms.Cursors.Default;
             this.splLeftRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splLeftRight.Location = new System.Drawing.Point(0, 6);
-            this.splLeftRight.Margin = new System.Windows.Forms.Padding(4);
+            this.splLeftRight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splLeftRight.Name = "splLeftRight";
             // 
             // splLeftRight.Panel1
@@ -497,8 +515,8 @@
             // splLeftRight.Panel2
             // 
             this.splLeftRight.Panel2.Controls.Add(this.pnlAlbum);
-            this.splLeftRight.Size = new System.Drawing.Size(1347, 182);
-            this.splLeftRight.SplitterDistance = 520;
+            this.splLeftRight.Size = new System.Drawing.Size(1067, 211);
+            this.splLeftRight.SplitterDistance = 409;
             this.splLeftRight.TabIndex = 0;
             // 
             // splLeftMiddle
@@ -506,7 +524,7 @@
             this.splLeftMiddle.Cursor = System.Windows.Forms.Cursors.Default;
             this.splLeftMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splLeftMiddle.Location = new System.Drawing.Point(0, 0);
-            this.splLeftMiddle.Margin = new System.Windows.Forms.Padding(4);
+            this.splLeftMiddle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splLeftMiddle.Name = "splLeftMiddle";
             // 
             // splLeftMiddle.Panel1
@@ -516,8 +534,8 @@
             // splLeftMiddle.Panel2
             // 
             this.splLeftMiddle.Panel2.Controls.Add(this.pnlArtist);
-            this.splLeftMiddle.Size = new System.Drawing.Size(520, 182);
-            this.splLeftMiddle.SplitterDistance = 241;
+            this.splLeftMiddle.Size = new System.Drawing.Size(409, 211);
+            this.splLeftMiddle.SplitterDistance = 188;
             this.splLeftMiddle.TabIndex = 0;
             // 
             // pnlGenre
@@ -527,10 +545,10 @@
             this.pnlGenre.Controls.Add(this.grdGenre);
             this.pnlGenre.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlGenre.Location = new System.Drawing.Point(0, 0);
-            this.pnlGenre.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlGenre.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlGenre.Name = "pnlGenre";
             this.pnlGenre.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlGenre.Size = new System.Drawing.Size(241, 182);
+            this.pnlGenre.Size = new System.Drawing.Size(188, 211);
             this.pnlGenre.TabIndex = 2;
             // 
             // grdGenre
@@ -549,21 +567,21 @@
             this.grdGenre.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellSheet;
             this.grdGenre.HideOuterBorders = true;
             this.grdGenre.Location = new System.Drawing.Point(1, 1);
-            this.grdGenre.Margin = new System.Windows.Forms.Padding(4);
+            this.grdGenre.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grdGenre.MergeColor = System.Drawing.Color.Gainsboro;
             this.grdGenre.Name = "grdGenre";
             this.grdGenre.ReadOnly = true;
             this.grdGenre.RowHeadersVisible = false;
             this.grdGenre.RowTemplate.Height = 24;
             this.grdGenre.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdGenre.Size = new System.Drawing.Size(239, 180);
+            this.grdGenre.Size = new System.Drawing.Size(186, 209);
             this.grdGenre.SortColumnIndex = 0;
             this.grdGenre.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdGenre.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellSheet;
             this.grdGenre.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdGenre.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdGenre.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
             this.grdGenre.TabIndex = 0;
             // 
             // colGenre
@@ -581,10 +599,10 @@
             this.pnlArtist.Controls.Add(this.grdArtist);
             this.pnlArtist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlArtist.Location = new System.Drawing.Point(0, 0);
-            this.pnlArtist.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlArtist.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlArtist.Name = "pnlArtist";
             this.pnlArtist.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlArtist.Size = new System.Drawing.Size(274, 182);
+            this.pnlArtist.Size = new System.Drawing.Size(216, 211);
             this.pnlArtist.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlArtist.TabIndex = 3;
             // 
@@ -604,21 +622,21 @@
             this.grdArtist.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellCustom1;
             this.grdArtist.HideOuterBorders = true;
             this.grdArtist.Location = new System.Drawing.Point(1, 1);
-            this.grdArtist.Margin = new System.Windows.Forms.Padding(4);
+            this.grdArtist.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grdArtist.MergeColor = System.Drawing.Color.Gainsboro;
             this.grdArtist.Name = "grdArtist";
             this.grdArtist.ReadOnly = true;
             this.grdArtist.RowHeadersVisible = false;
             this.grdArtist.RowTemplate.Height = 24;
             this.grdArtist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdArtist.Size = new System.Drawing.Size(272, 180);
+            this.grdArtist.Size = new System.Drawing.Size(214, 209);
             this.grdArtist.SortColumnIndex = 0;
             this.grdArtist.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdArtist.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellCustom1;
             this.grdArtist.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdArtist.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdArtist.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
             this.grdArtist.TabIndex = 0;
             // 
             // colArtist
@@ -638,10 +656,10 @@
             this.pnlAlbum.Controls.Add(this.pnlAlbumHeader);
             this.pnlAlbum.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlAlbum.Location = new System.Drawing.Point(0, 0);
-            this.pnlAlbum.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlAlbum.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlAlbum.Name = "pnlAlbum";
             this.pnlAlbum.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlAlbum.Size = new System.Drawing.Size(822, 182);
+            this.pnlAlbum.Size = new System.Drawing.Size(653, 211);
             this.pnlAlbum.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlAlbum.TabIndex = 4;
             // 
@@ -658,9 +676,9 @@
             this.lstAlbum.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstAlbum.LargeImageList = this.imlAlbumArt;
             this.lstAlbum.Location = new System.Drawing.Point(1, 29);
-            this.lstAlbum.Margin = new System.Windows.Forms.Padding(4);
+            this.lstAlbum.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstAlbum.Name = "lstAlbum";
-            this.lstAlbum.Size = new System.Drawing.Size(820, 152);
+            this.lstAlbum.Size = new System.Drawing.Size(651, 181);
             this.lstAlbum.TabIndex = 3;
             this.lstAlbum.UseCompatibleStateImageBehavior = false;
             // 
@@ -678,9 +696,9 @@
             // 
             this.linAlbumHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.linAlbumHeader.Location = new System.Drawing.Point(1, 28);
-            this.linAlbumHeader.Margin = new System.Windows.Forms.Padding(4);
+            this.linAlbumHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.linAlbumHeader.Name = "linAlbumHeader";
-            this.linAlbumHeader.Size = new System.Drawing.Size(820, 1);
+            this.linAlbumHeader.Size = new System.Drawing.Size(651, 1);
             this.linAlbumHeader.Text = "kryptonBorderEdge1";
             // 
             // pnlAlbumHeader
@@ -688,10 +706,10 @@
             this.pnlAlbumHeader.Controls.Add(this.lblAlbumHeader);
             this.pnlAlbumHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlAlbumHeader.Location = new System.Drawing.Point(1, 1);
-            this.pnlAlbumHeader.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlAlbumHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlAlbumHeader.Name = "pnlAlbumHeader";
             this.pnlAlbumHeader.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridHeaderColumnCustom1;
-            this.pnlAlbumHeader.Size = new System.Drawing.Size(820, 27);
+            this.pnlAlbumHeader.Size = new System.Drawing.Size(651, 27);
             this.pnlAlbumHeader.TabIndex = 1;
             // 
             // lblAlbumHeader
@@ -699,7 +717,7 @@
             this.lblAlbumHeader.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblAlbumHeader.LabelStyle = ComponentFactory.Krypton.Toolkit.LabelStyle.NormalPanel;
             this.lblAlbumHeader.Location = new System.Drawing.Point(0, 0);
-            this.lblAlbumHeader.Margin = new System.Windows.Forms.Padding(4);
+            this.lblAlbumHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lblAlbumHeader.Name = "lblAlbumHeader";
             this.lblAlbumHeader.Size = new System.Drawing.Size(56, 27);
             this.lblAlbumHeader.TabIndex = 0;
@@ -712,10 +730,10 @@
             this.pnlTrack.Controls.Add(this.grdTracks);
             this.pnlTrack.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTrack.Location = new System.Drawing.Point(0, 0);
-            this.pnlTrack.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlTrack.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlTrack.Name = "pnlTrack";
             this.pnlTrack.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlTrack.Size = new System.Drawing.Size(1347, 242);
+            this.pnlTrack.Size = new System.Drawing.Size(1067, 290);
             this.pnlTrack.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlTrack.TabIndex = 5;
             // 
@@ -747,7 +765,7 @@
             this.grdTracks.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
             this.grdTracks.HideOuterBorders = true;
             this.grdTracks.Location = new System.Drawing.Point(1, 1);
-            this.grdTracks.Margin = new System.Windows.Forms.Padding(4);
+            this.grdTracks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grdTracks.MergeColor = System.Drawing.Color.Gainsboro;
             this.grdTracks.Name = "grdTracks";
             this.grdTracks.ReadOnly = true;
@@ -755,14 +773,14 @@
             this.grdTracks.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grdTracks.RowTemplate.Height = 24;
             this.grdTracks.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdTracks.Size = new System.Drawing.Size(1345, 240);
+            this.grdTracks.Size = new System.Drawing.Size(1065, 288);
             this.grdTracks.SortColumnIndex = 0;
             this.grdTracks.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdTracks.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
             this.grdTracks.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdTracks.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdTracks.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
             this.grdTracks.TabIndex = 53;
             // 
             // colTrackDescription
@@ -792,7 +810,7 @@
             this.colTrackGenre.Name = "colTrackGenre";
             this.colTrackGenre.ReadOnly = true;
             this.colTrackGenre.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackGenre.Width = 75;
+            this.colTrackGenre.Width = 81;
             // 
             // colTrackLength
             // 
@@ -804,7 +822,7 @@
             this.colTrackLength.Name = "colTrackLength";
             this.colTrackLength.ReadOnly = true;
             this.colTrackLength.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackLength.Width = 81;
+            this.colTrackLength.Width = 87;
             // 
             // colTrackStartBPM
             // 
@@ -818,7 +836,7 @@
             this.colTrackStartBPM.Name = "colTrackStartBPM";
             this.colTrackStartBPM.ReadOnly = true;
             this.colTrackStartBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackStartBPM.Width = 101;
+            this.colTrackStartBPM.Width = 107;
             // 
             // colTrackEndBPM
             // 
@@ -832,7 +850,7 @@
             this.colTrackEndBPM.Name = "colTrackEndBPM";
             this.colTrackEndBPM.ReadOnly = true;
             this.colTrackEndBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackEndBPM.Width = 95;
+            this.colTrackEndBPM.Width = 101;
             // 
             // colTrackNumber
             // 
@@ -844,7 +862,7 @@
             this.colTrackNumber.Name = "colTrackNumber";
             this.colTrackNumber.ReadOnly = true;
             this.colTrackNumber.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackNumber.Width = 45;
+            this.colTrackNumber.Width = 51;
             // 
             // colInCount
             // 
@@ -856,7 +874,7 @@
             this.colInCount.Name = "colInCount";
             this.colInCount.ReadOnly = true;
             this.colInCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colInCount.Width = 48;
+            this.colInCount.Width = 54;
             // 
             // colOutCount
             // 
@@ -868,7 +886,7 @@
             this.colOutCount.Name = "colOutCount";
             this.colOutCount.ReadOnly = true;
             this.colOutCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colOutCount.Width = 60;
+            this.colOutCount.Width = 66;
             // 
             // colUnrankedCount
             // 
@@ -880,7 +898,7 @@
             this.colUnrankedCount.Name = "colUnrankedCount";
             this.colUnrankedCount.ReadOnly = true;
             this.colUnrankedCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colUnrankedCount.Width = 56;
+            this.colUnrankedCount.Width = 62;
             // 
             // colTrackRank
             // 
@@ -890,7 +908,7 @@
             this.colTrackRank.Name = "colTrackRank";
             this.colTrackRank.ReadOnly = true;
             this.colTrackRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackRank.Width = 68;
+            this.colTrackRank.Width = 74;
             // 
             // colTrackKey
             // 
@@ -900,14 +918,15 @@
             this.colTrackKey.Name = "colTrackKey";
             this.colTrackKey.ReadOnly = true;
             this.colTrackKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackKey.Width = 60;
+            this.colTrackKey.Width = 66;
             // 
             // trackDetails
             // 
-            this.trackDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackDetails.Location = new System.Drawing.Point(0, 477);
+            this.trackDetails.Dock = System.Windows.Forms.DockStyle.Right;
+            this.trackDetails.Location = new System.Drawing.Point(1067, 37);
+            this.trackDetails.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.trackDetails.Name = "trackDetails";
-            this.trackDetails.Size = new System.Drawing.Size(1347, 73);
+            this.trackDetails.Size = new System.Drawing.Size(280, 512);
             this.trackDetails.TabIndex = 54;
             // 
             // pnlDivider
@@ -917,8 +936,9 @@
             this.pnlDivider.Controls.Add(this.flpToolbarRight);
             this.pnlDivider.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlDivider.Location = new System.Drawing.Point(0, 0);
+            this.pnlDivider.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pnlDivider.Name = "pnlDivider";
-            this.pnlDivider.Padding = new System.Windows.Forms.Padding(5, 3, 5, 5);
+            this.pnlDivider.Padding = new System.Windows.Forms.Padding(5, 2, 5, 5);
             this.pnlDivider.Size = new System.Drawing.Size(1347, 37);
             this.pnlDivider.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlDivider.TabIndex = 52;
@@ -943,10 +963,10 @@
             this.flpToolbarRight.Controls.Add(this.label3);
             this.flpToolbarRight.Controls.Add(this.cmbShufflerFilter);
             this.flpToolbarRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpToolbarRight.Location = new System.Drawing.Point(5, 3);
+            this.flpToolbarRight.Location = new System.Drawing.Point(5, 2);
             this.flpToolbarRight.Margin = new System.Windows.Forms.Padding(0);
             this.flpToolbarRight.Name = "flpToolbarRight";
-            this.flpToolbarRight.Size = new System.Drawing.Size(1337, 29);
+            this.flpToolbarRight.Size = new System.Drawing.Size(1337, 30);
             this.flpToolbarRight.TabIndex = 0;
             // 
             // lblFilter
@@ -967,11 +987,11 @@
             // 
             this.txtSearch.ErrorProvider = null;
             this.txtSearch.Location = new System.Drawing.Point(60, 4);
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(4);
-            this.txtSearch.MaximumValue = 2147483647;
-            this.txtSearch.MinimumValue = -2147483648;
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSearch.MaximumValue = 2147483647D;
+            this.txtSearch.MinimumValue = -2147483648D;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(116, 24);
+            this.txtSearch.Size = new System.Drawing.Size(116, 27);
             this.txtSearch.TabIndex = 1;
             // 
             // label5
@@ -993,11 +1013,11 @@
             this.txtMinBPM.EntryType = Halloumi.Common.Windows.Controls.TextBox.TextEntryType.Integer;
             this.txtMinBPM.ErrorProvider = null;
             this.txtMinBPM.Location = new System.Drawing.Point(221, 4);
-            this.txtMinBPM.Margin = new System.Windows.Forms.Padding(4);
-            this.txtMinBPM.MaximumValue = 2147483647;
-            this.txtMinBPM.MinimumValue = -2147483648;
+            this.txtMinBPM.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtMinBPM.MaximumValue = 2147483647D;
+            this.txtMinBPM.MinimumValue = -2147483648D;
             this.txtMinBPM.Name = "txtMinBPM";
-            this.txtMinBPM.Size = new System.Drawing.Size(35, 24);
+            this.txtMinBPM.Size = new System.Drawing.Size(35, 27);
             this.txtMinBPM.TabIndex = 12;
             // 
             // label4
@@ -1019,11 +1039,11 @@
             this.txtMaxBPM.EntryType = Halloumi.Common.Windows.Controls.TextBox.TextEntryType.Integer;
             this.txtMaxBPM.ErrorProvider = null;
             this.txtMaxBPM.Location = new System.Drawing.Point(304, 4);
-            this.txtMaxBPM.Margin = new System.Windows.Forms.Padding(4);
-            this.txtMaxBPM.MaximumValue = 2147483647;
-            this.txtMaxBPM.MinimumValue = -2147483648;
+            this.txtMaxBPM.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtMaxBPM.MaximumValue = 2147483647D;
+            this.txtMaxBPM.MinimumValue = -2147483648D;
             this.txtMaxBPM.Name = "txtMaxBPM";
-            this.txtMaxBPM.Size = new System.Drawing.Size(35, 24);
+            this.txtMaxBPM.Size = new System.Drawing.Size(35, 27);
             this.txtMaxBPM.TabIndex = 10;
             // 
             // label1
@@ -1046,7 +1066,7 @@
             this.cmbPlaylist.DropDownWidth = 121;
             this.cmbPlaylist.ErrorProvider = null;
             this.cmbPlaylist.Location = new System.Drawing.Point(405, 4);
-            this.cmbPlaylist.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbPlaylist.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbPlaylist.Name = "cmbPlaylist";
             this.cmbPlaylist.Size = new System.Drawing.Size(137, 25);
             this.cmbPlaylist.TabIndex = 3;
@@ -1071,7 +1091,7 @@
             this.cmbExcludedPlaylist.DropDownWidth = 121;
             this.cmbExcludedPlaylist.ErrorProvider = null;
             this.cmbExcludedPlaylist.Location = new System.Drawing.Point(613, 4);
-            this.cmbExcludedPlaylist.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbExcludedPlaylist.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbExcludedPlaylist.Name = "cmbExcludedPlaylist";
             this.cmbExcludedPlaylist.Size = new System.Drawing.Size(137, 25);
             this.cmbExcludedPlaylist.TabIndex = 16;
@@ -1102,7 +1122,7 @@
             "Unranked",
             "Forbidden"});
             this.cmbTrackRankFilter.Location = new System.Drawing.Point(802, 4);
-            this.cmbTrackRankFilter.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbTrackRankFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbTrackRankFilter.Name = "cmbTrackRankFilter";
             this.cmbTrackRankFilter.Size = new System.Drawing.Size(100, 25);
             this.cmbTrackRankFilter.TabIndex = 15;
@@ -1131,7 +1151,7 @@
             "Yes",
             "No"});
             this.cmbQueued.Location = new System.Drawing.Point(974, 4);
-            this.cmbQueued.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbQueued.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbQueued.Name = "cmbQueued";
             this.cmbQueued.Size = new System.Drawing.Size(52, 25);
             this.cmbQueued.TabIndex = 8;
@@ -1160,7 +1180,7 @@
             "Yes",
             "No"});
             this.cmbShufflerFilter.Location = new System.Drawing.Point(1097, 4);
-            this.cmbShufflerFilter.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbShufflerFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbShufflerFilter.Name = "cmbShufflerFilter";
             this.cmbShufflerFilter.Size = new System.Drawing.Size(52, 25);
             this.cmbShufflerFilter.TabIndex = 6;
@@ -1169,26 +1189,19 @@
             // 
             this.mixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mixableTracks.Location = new System.Drawing.Point(0, 0);
-            this.mixableTracks.Margin = new System.Windows.Forms.Padding(4);
+            this.mixableTracks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.mixableTracks.Name = "mixableTracks";
             this.mixableTracks.PlaylistControl = null;
-            this.mixableTracks.Size = new System.Drawing.Size(1347, 163);
+            this.mixableTracks.Size = new System.Drawing.Size(1347, 164);
             this.mixableTracks.TabIndex = 0;
             // 
-            // mnuEditSamples
-            // 
-            this.mnuEditSamples.Name = "mnuEditSamples";
-            this.mnuEditSamples.Size = new System.Drawing.Size(241, 24);
-            this.mnuEditSamples.Text = "Edit Samples";
-            this.mnuEditSamples.Click += new System.EventHandler(this.mnuEditSamples_Click);
-            // 
-            // LibraryControl
+            // TrackLibraryControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlBackground2);
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "LibraryControl";
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Name = "TrackLibraryControl";
             this.Size = new System.Drawing.Size(1357, 727);
             this.mnuGenre.ResumeLayout(false);
             this.mnuArtist.ResumeLayout(false);
@@ -1197,6 +1210,7 @@
             this.pnlBackground2.ResumeLayout(false);
             this.splLibraryMixable.Panel1.ResumeLayout(false);
             this.splLibraryMixable.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splLibraryMixable)).EndInit();
             this.splLibraryMixable.ResumeLayout(false);
             this.pnlLibraryDetails.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splLibrary.Panel1)).EndInit();

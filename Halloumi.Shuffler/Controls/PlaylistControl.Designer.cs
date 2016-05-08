@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.mnuTrack = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuPlay = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep1 = new System.Windows.Forms.ToolStripSeparator();
@@ -119,70 +119,70 @@
             this.mnuMixRank,
             this.mnuPreviewMix});
             this.mnuTrack.Name = "mnuTrack";
-            this.mnuTrack.Size = new System.Drawing.Size(242, 268);
+            this.mnuTrack.Size = new System.Drawing.Size(248, 288);
             // 
             // mnuPlay
             // 
             this.mnuPlay.Name = "mnuPlay";
-            this.mnuPlay.Size = new System.Drawing.Size(241, 24);
+            this.mnuPlay.Size = new System.Drawing.Size(247, 26);
             this.mnuPlay.Text = "&Play";
             // 
             // mnuSep1
             // 
             this.mnuSep1.Name = "mnuSep1";
-            this.mnuSep1.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep1.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuAddTrackToPlaylist
             // 
             this.mnuAddTrackToPlaylist.Name = "mnuAddTrackToPlaylist";
-            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(241, 24);
+            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(247, 26);
             this.mnuAddTrackToPlaylist.Text = "A&dd To Playlist";
             // 
             // mnuRemoveTrackFromPlaylist
             // 
             this.mnuRemoveTrackFromPlaylist.Name = "mnuRemoveTrackFromPlaylist";
-            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(247, 26);
             this.mnuRemoveTrackFromPlaylist.Text = "&Remove From Playlist";
             // 
             // mnuSep2
             // 
             this.mnuSep2.Name = "mnuSep2";
-            this.mnuSep2.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep2.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuOpenFileLocation
             // 
             this.mnuOpenFileLocation.Name = "mnuOpenFileLocation";
-            this.mnuOpenFileLocation.Size = new System.Drawing.Size(241, 24);
+            this.mnuOpenFileLocation.Size = new System.Drawing.Size(247, 26);
             this.mnuOpenFileLocation.Text = "Open File &Location";
             // 
             // mnuSep3
             // 
             this.mnuSep3.Name = "mnuSep3";
-            this.mnuSep3.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep3.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuUpdateTrackDetails
             // 
             this.mnuUpdateTrackDetails.Name = "mnuUpdateTrackDetails";
-            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateTrackDetails.Text = "Update &Track Details";
             // 
             // mnuUpdateShufflerDetails
             // 
             this.mnuUpdateShufflerDetails.Name = "mnuUpdateShufflerDetails";
-            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdateShufflerDetails.Text = "Update &Shuffler Details...";
             // 
             // mnuRemoveShufflerDetails
             // 
             this.mnuRemoveShufflerDetails.Name = "mnuRemoveShufflerDetails";
-            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(247, 26);
             this.mnuRemoveShufflerDetails.Text = "&Remove Shuffler Details";
             this.mnuRemoveShufflerDetails.Click += new System.EventHandler(this.mnuRemoveShufflerDetails_Click);
             // 
             // mnuSep4
             // 
             this.mnuSep4.Name = "mnuSep4";
-            this.mnuSep4.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep4.Size = new System.Drawing.Size(244, 6);
             // 
             // mnuTrackRank
             // 
@@ -194,48 +194,48 @@
             this.toolStripMenuItem5,
             this.toolStripMenuItem6});
             this.mnuTrackRank.Name = "mnuTrackRank";
-            this.mnuTrackRank.Size = new System.Drawing.Size(241, 24);
+            this.mnuTrackRank.Size = new System.Drawing.Size(247, 26);
             this.mnuTrackRank.Text = "Trac&k Rating";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem1.Text = "toolStripMenuItem1";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem2.Text = "toolStripMenuItem2";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem3.Text = "toolStripMenuItem3";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem4.Text = "toolStripMenuItem4";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem5.Text = "toolStripMenuItem5";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem6.Text = "toolStripMenuItem6";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
@@ -249,55 +249,55 @@
             this.toolStripMenuItem11,
             this.toolStripMenuItem12});
             this.mnuMixRank.Name = "mnuMixRank";
-            this.mnuMixRank.Size = new System.Drawing.Size(241, 24);
+            this.mnuMixRank.Size = new System.Drawing.Size(247, 26);
             this.mnuMixRank.Text = "Mi&x Rating";
             // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(225, 26);
             this.toolStripMenuItem7.Text = "toolStripMenuItem7";
             this.toolStripMenuItem7.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(225, 26);
             this.toolStripMenuItem8.Text = "toolStripMenuItem8";
             this.toolStripMenuItem8.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(225, 26);
             this.toolStripMenuItem9.Text = "toolStripMenuItem9";
             this.toolStripMenuItem9.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem10
             // 
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(225, 26);
             this.toolStripMenuItem10.Text = "toolStripMenuItem10";
             this.toolStripMenuItem10.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem11
             // 
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(225, 26);
             this.toolStripMenuItem11.Text = "toolStripMenuItem11";
             this.toolStripMenuItem11.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem12
             // 
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem12.Size = new System.Drawing.Size(225, 26);
             this.toolStripMenuItem12.Text = "toolStripMenuItem12";
             this.toolStripMenuItem12.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // mnuPreviewMix
             // 
             this.mnuPreviewMix.Name = "mnuPreviewMix";
-            this.mnuPreviewMix.Size = new System.Drawing.Size(241, 24);
+            this.mnuPreviewMix.Size = new System.Drawing.Size(247, 26);
             this.mnuPreviewMix.Text = "Pre&view Mix";
             // 
             // pnlContentBackground
@@ -306,9 +306,9 @@
             this.pnlContentBackground.Controls.Add(this.splTopBottom);
             this.pnlContentBackground.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContentBackground.Location = new System.Drawing.Point(0, 0);
-            this.pnlContentBackground.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlContentBackground.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlContentBackground.Name = "pnlContentBackground";
-            this.pnlContentBackground.Padding = new System.Windows.Forms.Padding(5);
+            this.pnlContentBackground.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pnlContentBackground.Size = new System.Drawing.Size(881, 455);
             this.pnlContentBackground.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlContentBackground.TabIndex = 12;
@@ -318,6 +318,7 @@
             this.splTopBottom.Cursor = System.Windows.Forms.Cursors.Default;
             this.splTopBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splTopBottom.Location = new System.Drawing.Point(5, 5);
+            this.splTopBottom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.splTopBottom.Name = "splTopBottom";
             this.splTopBottom.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -329,7 +330,7 @@
             // 
             this.splTopBottom.Panel2.Controls.Add(this.mixableTracks);
             this.splTopBottom.Size = new System.Drawing.Size(871, 445);
-            this.splTopBottom.SplitterDistance = 323;
+            this.splTopBottom.SplitterDistance = 322;
             this.splTopBottom.TabIndex = 0;
             // 
             // pnlTop
@@ -340,9 +341,9 @@
             this.pnlTop.Controls.Add(this.trackDetails);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlTop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(871, 323);
+            this.pnlTop.Size = new System.Drawing.Size(871, 322);
             this.pnlTop.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlTop.TabIndex = 11;
             // 
@@ -358,7 +359,7 @@
             this.pnlGrid.Margin = new System.Windows.Forms.Padding(0);
             this.pnlGrid.Name = "pnlGrid";
             this.pnlGrid.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlGrid.Size = new System.Drawing.Size(871, 245);
+            this.pnlGrid.Size = new System.Drawing.Size(591, 317);
             this.pnlGrid.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlGrid.TabIndex = 15;
             // 
@@ -384,7 +385,7 @@
             this.grdPlaylist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdPlaylist.HideOuterBorders = true;
             this.grdPlaylist.Location = new System.Drawing.Point(1, 1);
-            this.grdPlaylist.Margin = new System.Windows.Forms.Padding(4);
+            this.grdPlaylist.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grdPlaylist.MergeColor = System.Drawing.Color.Gainsboro;
             this.grdPlaylist.Name = "grdPlaylist";
             this.grdPlaylist.ReadOnly = true;
@@ -392,7 +393,7 @@
             this.grdPlaylist.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grdPlaylist.RowTemplate.Height = 24;
             this.grdPlaylist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdPlaylist.Size = new System.Drawing.Size(869, 189);
+            this.grdPlaylist.Size = new System.Drawing.Size(589, 261);
             this.grdPlaylist.SortColumnIndex = -1;
             this.grdPlaylist.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdPlaylist.StateCommon.Background.Color1 = System.Drawing.Color.White;
@@ -422,7 +423,7 @@
             this.colLength.Name = "colLength";
             this.colLength.ReadOnly = true;
             this.colLength.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.colLength.Width = 62;
+            this.colLength.Width = 64;
             // 
             // colEndBPM
             // 
@@ -436,7 +437,7 @@
             this.colEndBPM.Name = "colEndBPM";
             this.colEndBPM.ReadOnly = true;
             this.colEndBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.colEndBPM.Width = 47;
+            this.colEndBPM.Width = 49;
             // 
             // colMix
             // 
@@ -452,7 +453,7 @@
             this.colTrackRank.HeaderText = "Rank";
             this.colTrackRank.Name = "colTrackRank";
             this.colTrackRank.ReadOnly = true;
-            this.colTrackRank.Width = 68;
+            this.colTrackRank.Width = 74;
             // 
             // colTrackKey
             // 
@@ -461,7 +462,7 @@
             this.colTrackKey.HeaderText = "Key";
             this.colTrackKey.Name = "colTrackKey";
             this.colTrackKey.ReadOnly = true;
-            this.colTrackKey.Width = 60;
+            this.colTrackKey.Width = 66;
             // 
             // colKeyDiff
             // 
@@ -470,15 +471,15 @@
             this.colKeyDiff.HeaderText = "Key Rank";
             this.colKeyDiff.Name = "colKeyDiff";
             this.colKeyDiff.ReadOnly = true;
-            this.colKeyDiff.Width = 96;
+            this.colKeyDiff.Width = 102;
             // 
             // linLine
             // 
             this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.linLine.Location = new System.Drawing.Point(1, 190);
-            this.linLine.Margin = new System.Windows.Forms.Padding(4);
+            this.linLine.Location = new System.Drawing.Point(1, 262);
+            this.linLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.linLine.Name = "linLine";
-            this.linLine.Size = new System.Drawing.Size(869, 2);
+            this.linLine.Size = new System.Drawing.Size(589, 2);
             this.linLine.TabIndex = 48;
             // 
             // pnlButtons
@@ -487,10 +488,10 @@
             this.pnlButtons.Controls.Add(this.flpLeft);
             this.pnlButtons.Controls.Add(this.flpButtons);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(1, 192);
-            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlButtons.Location = new System.Drawing.Point(1, 264);
+            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(869, 52);
+            this.pnlButtons.Size = new System.Drawing.Size(589, 52);
             this.pnlButtons.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlButtons.TabIndex = 47;
             // 
@@ -500,7 +501,7 @@
             this.flpLeft.Controls.Add(this.lblCount);
             this.flpLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.flpLeft.Location = new System.Drawing.Point(0, 0);
-            this.flpLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.flpLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.flpLeft.Name = "flpLeft";
             this.flpLeft.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
             this.flpLeft.Size = new System.Drawing.Size(132, 52);
@@ -529,8 +530,8 @@
             this.flpButtons.Controls.Add(this.btnOpen);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(489, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
+            this.flpButtons.Location = new System.Drawing.Point(209, 0);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
             this.flpButtons.Size = new System.Drawing.Size(380, 52);
@@ -539,7 +540,7 @@
             // btnRemove
             // 
             this.btnRemove.Location = new System.Drawing.Point(284, 7);
-            this.btnRemove.Margin = new System.Windows.Forms.Padding(5);
+            this.btnRemove.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(81, 38);
             this.btnRemove.TabIndex = 10;
@@ -548,7 +549,7 @@
             // btnClear
             // 
             this.btnClear.Location = new System.Drawing.Point(193, 7);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(5);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(81, 38);
             this.btnClear.TabIndex = 11;
@@ -557,7 +558,7 @@
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(102, 7);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(5);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(81, 38);
             this.btnSave.TabIndex = 12;
@@ -566,7 +567,7 @@
             // btnOpen
             // 
             this.btnOpen.Location = new System.Drawing.Point(11, 7);
-            this.btnOpen.Margin = new System.Windows.Forms.Padding(5);
+            this.btnOpen.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(81, 38);
             this.btnOpen.TabIndex = 13;
@@ -576,27 +577,29 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 245);
+            this.panel1.Location = new System.Drawing.Point(0, 317);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(871, 5);
+            this.panel1.Size = new System.Drawing.Size(591, 5);
             this.panel1.TabIndex = 14;
             // 
             // trackDetails
             // 
-            this.trackDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackDetails.Location = new System.Drawing.Point(0, 250);
+            this.trackDetails.Dock = System.Windows.Forms.DockStyle.Right;
+            this.trackDetails.Location = new System.Drawing.Point(591, 0);
+            this.trackDetails.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.trackDetails.Name = "trackDetails";
-            this.trackDetails.Size = new System.Drawing.Size(871, 73);
+            this.trackDetails.Size = new System.Drawing.Size(280, 322);
             this.trackDetails.TabIndex = 12;
             // 
             // mixableTracks
             // 
             this.mixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mixableTracks.Location = new System.Drawing.Point(0, 0);
-            this.mixableTracks.Margin = new System.Windows.Forms.Padding(4);
+            this.mixableTracks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.mixableTracks.Name = "mixableTracks";
             this.mixableTracks.PlaylistControl = null;
-            this.mixableTracks.Size = new System.Drawing.Size(871, 117);
+            this.mixableTracks.Size = new System.Drawing.Size(871, 118);
             this.mixableTracks.TabIndex = 0;
             // 
             // PlaylistControl
@@ -604,7 +607,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlContentBackground);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "PlaylistControl";
             this.Size = new System.Drawing.Size(881, 455);
             this.mnuTrack.ResumeLayout(false);
