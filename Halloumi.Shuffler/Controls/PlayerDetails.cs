@@ -175,7 +175,7 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                picCover.Image = Library.GetAlbumCover(new Album(track.Album));
+                picCover.Image = Library.GetAlbumCover(track.Album);
                 CurrentTrackDescription = track.Description;
             }
             else

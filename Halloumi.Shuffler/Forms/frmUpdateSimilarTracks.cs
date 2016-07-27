@@ -55,7 +55,7 @@ namespace Halloumi.Shuffler.Forms
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
             {
-                Library.ReloadTrack(GetSelectedTrack().Filename);
+                Library.LoadTrack(GetSelectedTrack().Filename);
                 BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
                 BindData();
             }

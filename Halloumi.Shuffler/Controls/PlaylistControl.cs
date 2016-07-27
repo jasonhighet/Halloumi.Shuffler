@@ -747,7 +747,7 @@ namespace Halloumi.Shuffler.Controls
 
             var result = form.ShowDialog();
             if (result != DialogResult.OK) return;
-            Library.ReloadTrack(GetSelectedTrack().Filename);
+            Library.LoadTrack(GetSelectedTrack().Filename);
             BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
             BindData();
         }

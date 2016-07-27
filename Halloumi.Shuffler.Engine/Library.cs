@@ -12,13 +12,15 @@ using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using IdSharp.Tagging.ID3v2;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
+using Halloumi.Shuffler.AudioLibrary.Helpers;
+using TrackHelper = Halloumi.Shuffler.AudioLibrary.Helpers.TrackHelper;
 
 namespace Halloumi.Shuffler.AudioLibrary
 {
     /// <summary>
     ///     Represents a cache-able library of mp3 tracks.
     /// </summary>
-    public class Library
+    public class Library : ILibrary
     {
         /// <summary>
         ///     Shuffler filter settings
@@ -60,8 +62,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public Library(BassPlayer bassPlayer)
         {
             Tracks = new List<Track>();
-            AlbumCovers = new Dictionary<string, Image>();
-            BassPlayer = bassPlayer;
+            TrackHelper.BassPlayer = bassPlayer;
             Playlists = new List<Playlist>();
         }
 
@@ -72,11 +73,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             : this(null)
         {
         }
-
-        /// <summary>
-        ///     Gets or sets the bass player.
-        /// </summary>
-        private BassPlayer BassPlayer { get; }
 
         /// <summary>
         ///     Gets or sets the tracks in the library
@@ -109,10 +105,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         private static string LibraryCacheFilename
             => Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Library.xml");
 
-        /// <summary>
-        ///     Gets or sets the a cached collection of album covers.
-        /// </summary>
-        private Dictionary<string, Image> AlbumCovers { get; }
 
         public Track GetTrack(string artist, string title, decimal length)
         {
@@ -611,34 +603,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-        /// <summary>
-        ///     Gets the album cover.
-        /// </summary>
-        /// <param name="album">The album.</param>
-        /// <returns>The associated (small) album cover</returns>
-        public Image GetAlbumCover(Album album)
-        {
-            return album == null ? null : GetAlbumCover(album.Name);
-        }
 
-        /// <summary>
-        ///     Gets a album cover.
-        /// </summary>
-        /// <param name="albumName">Name of the album.</param>
-        /// <returns>The album cover</returns>
-        public Image GetAlbumCover(string albumName)
-        {
-            if (albumName == AllFilter) return null;
-
-            if (AlbumCovers.ContainsKey(albumName)) return AlbumCovers[albumName];
-
-            var tracks = GetAllTracksForAlbum(albumName);
-            if (tracks.Count == 0) return null;
-
-            LoadAlbumCover(tracks[0]);
-
-            return AlbumCovers.ContainsKey(albumName) ? AlbumCovers[albumName] : null;
-        }
 
         /// <summary>
         ///     Loads the library from the cache.
@@ -661,85 +626,40 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-        public void ReloadTrackMetaData(string filename)
-        {
-            if (!File.Exists(filename)) return;
-            if (!filename.ToLower().EndsWith(".mp3")) return;
-
-            var track = GetTrackByFilename(filename);
-            if (track == null)
-                track = LoadNewTrack(filename);
-            else
-            {
-                var dateModified = GetTrackLastModified(filename);
-                LoadTrackDetails(track, dateModified);
-            }
-
-            track.OriginalDescription = track.Description;
-
-            if (track.EndBpm == 0 || track.EndBpm == 100) track.EndBpm = track.Bpm;
-            if (track.StartBpm == 0 || track.StartBpm == 100) track.StartBpm = track.Bpm;
-        }
-
-        /// <summary>
-        ///     Imports a track.
-        /// </summary>
-        /// <param name="filename">The filename of the track.</param>
-        public void ImportTrack(string filename)
-        {
-            if (!File.Exists(filename)) return;
-            if (!filename.ToLower().EndsWith(".mp3")) return;
-
-            var track = GetTrackByFilename(filename);
-            if (track == null)
-            {
-                track = LoadNewTrack(filename);
-            }
-            else
-            {
-                var dateModified = GetTrackLastModified(filename);
-                if (track.LastModified != dateModified || track.IsShufflerTrack)
-                {
-                    LoadTrackDetails(track, dateModified);
-                }
-            }
-            track.OriginalDescription = track.Description;
-            if (track.EndBpm == 0 || track.EndBpm == 100) track.EndBpm = track.Bpm;
-            if (track.StartBpm == 0 || track.StartBpm == 100) track.StartBpm = track.Bpm;
-        }
-
-        private DateTime GetTrackLastModified(string filename)
-        {
-            var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(filename);
-            var shufflerFile = GetShufflerAttributeFile(trackDetails.Artist + " - " + trackDetails.Title);
-            var shufflerDate = DateTime.MinValue;
-            if (File.Exists(shufflerFile))
-            {
-                shufflerDate = File.GetLastWriteTime(shufflerFile);
-                //shufflerDate = DateTime.Now;
-            }
-
-            var dateModified = File.GetLastWriteTime(filename);
-            return shufflerDate > dateModified ? shufflerDate : dateModified;
-        }
-
         /// <summary>
         ///     Reloads a track.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <returns></returns>
-        public Track ReloadTrack(string filename)
+        public Track LoadTrack(string filename)
         {
-            if (!File.Exists(filename)) return null;
             var track = GetTrackByFilename(filename);
-            if (track == null) return null;
 
-            GuessTrackDetailsFromFileName(track);
-            var dateModified = File.GetLastWriteTime(filename);
-            LoadTrackDetails(track, dateModified);
+            if (track == null)
+                track = LoadNewTrack(filename);
+            else
+                TrackHelper.LoadTrack(track);
 
             return track;
         }
+
+        public void SaveRank(Track track)
+        {
+            TrackHelper.UpdateRank(track);
+        }
+
+        private Track LoadNewTrack(string filename)
+        {
+            var track = TrackHelper.LoadTrack(filename);
+            if (track == null) return null;
+
+            lock (Tracks)
+            {
+                Tracks.Add(track);
+            }
+            return track;
+        }
+
 
         /// <summary>
         ///     Imports the tracks.
@@ -771,7 +691,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 }
             }
 
-            ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), ImportTrack);
+            ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), file => { LoadTrack(file); });
 
             SaveCache();
         }
@@ -949,7 +869,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (!track.IsShufflerTrack) return;
             File.Delete(track.ShufflerAttribuesFile);
-            ReloadTrack(track.Filename);
+            LoadTrack(track.Filename);
         }
 
         /// <summary>
@@ -995,11 +915,11 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             UpdateTrackDetails(destinationTrack, artist, title, album, albumArtist, genre, trackNumber, false);
 
-            var albumCover = GetAlbumCover(destinationTrack.Album);
-            if (albumCover != null) SetTrackAlbumCover(destinationTrack, albumCover);
+            var albumCover = AlbumCoverHelper.GetAlbumCover(destinationTrack.Album);
+            if (albumCover != null) AlbumCoverHelper.SetTrackAlbumCover(destinationTrack, albumCover);
             File.Delete(destinationTrack.Filename + ".old");
 
-            ReloadTrack(destinationTrack.Filename);
+            LoadTrack(destinationTrack.Filename);
         }
 
         /// <summary>
@@ -1092,73 +1012,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 }
             }
 
-            CleanSpecialShufflerAlbumTracks();
-
             SaveCache();
-
-            DeleteSurpusSystemFilesInLibrary();
-        }
-
-        private void CleanSpecialShufflerAlbumTracks()
-        {
-            var shufflerAlbumPath = Path.Combine(LibraryFolder, "#Shuffler");
-            var shufflerAlbumTracks = Tracks.Where(t => t.Filename.StartsWith(shufflerAlbumPath)).ToList();
-            var otherTracks = Tracks.Except(shufflerAlbumTracks).ToList();
-            var duplicatedTracks =
-                shufflerAlbumTracks.Where(
-                    t => otherTracks.Count(ot => StringHelper.FuzzyCompare(t.Description, ot.Description)) != 0)
-                    .ToList();
-
-            foreach (var track in duplicatedTracks)
-            {
-                try
-                {
-                    Tracks.Remove(track);
-                    File.Delete(track.Filename);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-        }
-
-        private void DeleteSurpusSystemFilesInLibrary()
-        {
-            // delete annoying WMV files
-            var wmvFiles = FileSystemHelper.SearchFiles(LibraryFolder, "AlbumArt_*.jpg", true);
-            foreach (var wmvFile in wmvFiles)
-            {
-                try
-                {
-                    File.Delete(wmvFile);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            // delete annoying thumbnail files
-            var thumbnails = FileSystemHelper.SearchFiles(LibraryFolder, "thumbs.db", true);
-            foreach (var thumbnail in thumbnails)
-            {
-                try
-                {
-                    File.Delete(thumbnail);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            var folderFiles = FileSystemHelper.SearchFiles(LibraryFolder, "folder.jpg", true);
-            foreach (var folderFile in folderFiles)
-            {
-                var attributes = File.GetAttributes(folderFile);
-                if (attributes == FileAttributes.Hidden) File.SetAttributes(folderFile, FileAttributes.Normal);
-            }
         }
 
         /// <summary>
@@ -1206,9 +1060,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (tracks == null || playlist == null) return;
 
-            foreach (var track in tracks)
+            foreach (var track in tracks.Where(track => !playlist.Tracks.Contains(track)))
             {
-                if (!playlist.Tracks.Contains(track)) playlist.Tracks.Add(track);
+                playlist.Tracks.Add(track);
             }
             SavePlaylist(playlist);
         }
@@ -1222,9 +1076,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (tracks == null || playlist == null) return;
 
-            foreach (var track in tracks)
+            foreach (var track in tracks.Where(track => playlist.Tracks.Contains(track)))
             {
-                if (playlist.Tracks.Contains(track)) playlist.Tracks.Remove(track);
+                playlist.Tracks.Remove(track);
             }
             SavePlaylist(playlist);
         }
@@ -1235,13 +1089,10 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="track">The track.</param>
         public void RemoveTrackFromAllPlaylists(Track track)
         {
-            foreach (var playlist in Playlists)
+            foreach (var playlist in Playlists.Where(playlist => playlist.Tracks.Contains(track)))
             {
-                if (playlist.Tracks.Contains(track))
-                {
-                    playlist.Tracks.Remove(track);
-                    SavePlaylist(playlist);
-                }
+                playlist.Tracks.Remove(track);
+                SavePlaylist(playlist);
             }
         }
 
@@ -1386,242 +1237,17 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
         public void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
         {
-            if (!Directory.Exists(importFolder)) return;
-            var importFiles = FileSystemHelper.SearchFiles(importFolder,
-                "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
-            foreach (var importFile in importFiles)
-            {
-                var fileName = Path.GetFileName(importFile);
-                if (fileName == null) continue;
-
-                var existingFile = Path.Combine(ShufflerFolder, fileName);
-                if (!File.Exists(existingFile))
-                {
-                    FileSystemHelper.Copy(importFile, existingFile);
-                }
-                else
-                {
-                    var existingFileDate = File.GetLastWriteTime(existingFile);
-                    var importFileDate = File.GetLastWriteTime(importFile);
-
-                    if (existingFileDate < importFileDate)
-                    {
-                        FileSystemHelper.Copy(importFile, existingFile);
-                        File.SetLastWriteTime(existingFile, importFileDate);
-                    }
-                    else if (!deleteAfterImport && existingFileDate != importFileDate)
-                    {
-                        FileSystemHelper.Copy(existingFile, importFile);
-                        File.SetLastWriteTime(importFile, existingFileDate);
-                    }
-                }
-                if (deleteAfterImport) File.Delete(importFile);
-            }
-
-            if (!deleteAfterImport)
-            {
-                var existingFiles = FileSystemHelper.SearchFiles(ShufflerFolder,
-                    "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
-                foreach (var existingFile in existingFiles)
-                {
-                    var fileName = Path.GetFileName(existingFile);
-                    if (fileName == null) continue;
-
-                    var importFile = Path.Combine(importFolder, fileName);
-
-                    if (File.Exists(importFile)) continue;
-
-                    var existingFileDate = File.GetLastWriteTime(existingFile);
-                    FileSystemHelper.Copy(existingFile, importFile);
-                    File.SetLastWriteTime(importFile, existingFileDate);
-                }
-            }
-
-            AutomationAttributes.ClearCache();
+            ShufflerHelper.ImportShufflerDetails(importFolder, deleteAfterImport);
         }
 
-        public void SaveRank(Track track)
-        {
-            var bassTrack = BassPlayer.LoadTrack(track.Filename);
-            bassTrack.Rank = track.Rank;
-            ExtenedAttributesHelper.SaveExtendedAttributes(bassTrack);
-        }
-
-
-        /// <summary>
-        ///     Calculates the length track and saves it in the tag data
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private void CalculateAndSaveTrackLength(Track track)
-        {
-            var length = decimal.Round(Convert.ToDecimal(AudioStreamHelper.GetLength(track.Filename)), 3);
-
-            if (length == decimal.Round(track.FullLength, 3)) return;
-
-            track.Length = length;
-            track.FullLength = length;
-            SaveTrack(track);
-        }
-
-        /// <summary>
-        ///     Loads a new track from a file and adds it to the library
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        private Track LoadNewTrack(string filename)
-        {
-            if (!File.Exists(filename)) return null;
-            var track = new Track {Filename = filename};
-
-            GuessTrackDetailsFromFileName(track);
-
-            var dateModified = GetTrackLastModified(filename);
-            LoadTrackDetails(track, dateModified);
-
-            lock (Tracks)
-            {
-                Tracks.Add(track);
-            }
-
-            return track;
-        }
-
-        /// <summary>
-        ///     Guesses the artist and title of a track from its filename.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private static void GuessTrackDetailsFromFileName(Track track)
-        {
-            var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(track.Filename);
-            track.Title = trackDetails.Title;
-            track.Artist = trackDetails.Artist;
-            track.AlbumArtist = trackDetails.AlbumArtist;
-
-            track.TrackNumber = trackDetails.TrackNumber != "" ? track.TrackNumber : 0;
-        }
-
-        /// <summary>
-        ///     Loads the track details from the tags in the associate mp3
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns></returns>
         public Track LoadNonLibraryTrack(string filename)
         {
-            if (!File.Exists(filename)) return null;
-            var track = new Track
-            {
-                Filename = filename,
-                LastModified = File.GetLastAccessTime(filename)
-            };
-            LoadTrackDetails(track, track.LastModified);
-            return track;
+            return TrackHelper.LoadTrack(filename);
         }
-
-        /// <summary>
-        ///     Loads the track details from the tags in the associate mp3
-        /// </summary>
-        /// <param name="track">The track to load the details of.</param>
-        /// <param name="dateLastModified">The date the file was last modified (passed in here to avoid loading it twice).</param>
-        private void LoadTrackDetails(Track track, DateTime dateLastModified)
-        {
-            DebugHelper.WriteLine("Library - LoadTrackDetails - " + track.Description);
-
-            track.LastModified = dateLastModified;
-
-            var tagKey = "";
-            if (ID3v2Tag.DoesTagExist(track.Filename))
-            {
-                var tags = new ID3v2Tag(track.Filename);
-
-                if (!string.IsNullOrEmpty(tags.Artist)) track.Artist = tags.Artist.Trim();
-                if (!string.IsNullOrEmpty(tags.Artist)) track.AlbumArtist = tags.Artist.Trim();
-                if (!string.IsNullOrEmpty(tags.Title)) track.Title = tags.Title.Trim();
-                if (!string.IsNullOrEmpty(tags.Album)) track.Album = tags.Album.Trim();
-                if (!string.IsNullOrEmpty(tags.Genre)) track.Genre = tags.Genre.Trim();
-                if (!string.IsNullOrEmpty(tags.InitialKey))
-                {
-                    tagKey = tags.InitialKey.Trim();
-                    track.Key = tagKey;
-                }
-
-                LoadArtistAndAlbumArtist(track);
-
-                if (tags.LengthMilliseconds.HasValue) track.Length = (decimal) tags.LengthMilliseconds/1000M;
-
-                decimal bpm;
-                if (decimal.TryParse(tags.BPM, out bpm)) track.Bpm = bpm;
-
-                track.Bpm = BpmHelper.NormaliseBpm(track.Bpm);
-                track.EndBpm = track.Bpm;
-                track.StartBpm = track.Bpm;
-                track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
-
-                int trackNumber;
-                var trackNumberTag = (tags.TrackNumber + "/").Split('/')[0].Trim();
-                if (int.TryParse(trackNumberTag, out trackNumber)) track.TrackNumber = trackNumber;
-
-                if (GenreCode.IsGenreCode(track.Genre)) track.Genre = GenreCode.GetGenre(track.Genre);
-                if (track.Artist == "") track.Artist = NoValue;
-                if (track.AlbumArtist == "") track.AlbumArtist = NoValue;
-                if (track.Title == "") track.Title = NoValue;
-                if (track.Album == "") track.Album = NoValue;
-                if (track.Genre == "") track.Genre = NoValue;
-            }
-
-            track.OriginalDescription = track.Description;
-            track.FullLength = track.Length;
-
-            CalculateAndSaveTrackLength(track);
-            var attributes = LoadShufflerDetails(track);
-
-            UpdateKey(track, attributes, tagKey);
-
-            if (attributes == null) return;
-
-            track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
-        }
-
-        private void UpdateKey(Track track, Dictionary<string, string> attributes, string tagKey)
-        {
-            var attributeKey = (attributes == null) ? "" : attributes.ContainsKey("Key") ? attributes["Key"] : "";
-
-            if (tagKey != "" && attributeKey == "" && track.IsShufflerTrack)
-            {
-                if (attributes != null && !attributes.ContainsKey("Key"))
-                {
-                    attributes.Add("Key", tagKey);
-                }
-                else
-                {
-                    if (attributes != null) attributes["Key"] = tagKey;
-                }
-                ExtenedAttributesHelper.SaveExtendedAttributes(attributes, GetShufflerAttributeFile(track.Description));
-            }
-            else if (tagKey == "" && attributeKey != "")
-            {
-                SaveTrack(track);
-            }
-
-            track.Key = string.IsNullOrEmpty(attributeKey) ? tagKey : attributeKey;
-        }
-
-        /// <summary>
-        ///     Loads the artist and album artist for a track
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private static void LoadArtistAndAlbumArtist(Track track)
-        {
-            if (track.Title.Contains("/"))
-            {
-                var data = track.Title.Split('/').ToList();
-                track.Artist = data[0].Trim();
-                track.Title = data[1].Trim();
-            }
-        }
-
 
         public bool SaveNonLibraryTrack(Track track)
         {
-            return SaveTrack(track, false);
+            return TrackHelper.SaveTrack(track);
         }
 
         /// <summary>
@@ -1632,308 +1258,50 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns></returns>
         public bool SaveTrack(Track track, bool updateAxillaryFiles = true)
         {
-            var tags = new ID3v2Tag(track.Filename)
-            {
-                Genre = track.Genre.Replace(NoValue, ""),
-                Album = track.Album.Replace(NoValue, ""),
-                TrackNumber = track.TrackNumber.ToString(),
-                LengthMilliseconds = Convert.ToInt32(track.FullLength*1000M),
-                BPM = track.Bpm.ToString("0.00"),
-                InitialKey = track.Key
-            };
+            if (!TrackHelper.SaveTrack(track)) return false;
+            if (!TrackHelper.RenameTrack(track)) return false;
 
-            if (track.Artist == track.AlbumArtist)
-            {
-                tags.Artist = track.Artist.Replace(NoValue, "");
-                tags.Title = track.Title.Replace(NoValue, "");
-            }
-            else
-            {
-                tags.Artist = track.AlbumArtist.Replace(NoValue, "");
-                tags.Title = track.Artist.Replace(NoValue, "") + " / " + track.Title.Replace(NoValue, "");
-            }
+            if (!updateAxillaryFiles) return true;
             try
             {
-                tags.Save(track.Filename);
-            }
-            catch
-            {
-                return false;
-            }
+                if (track.IsShufflerTrack) ShufflerHelper.RenameShufferFiles(track);
 
-            // attempt to rename the file based on the track details
-            var filename = GetFileNameFromTrackDetails(track);
-            if (filename != Path.GetFileName(track.Filename))
-            {
-                try
+                // if filename changed, save any associated play-list files
+                foreach (var playlist in Playlists.Where(playlist => playlist.Tracks.Contains(track)))
                 {
-                    var directoryName = Path.GetDirectoryName(track.Filename);
-                    if (directoryName != null)
-                    {
-                        filename = Path.Combine(directoryName, filename);
-                        File.Move(track.Filename, filename);
-                        track.Filename = filename;
-                    }
+                    SavePlaylist(playlist);
                 }
-                catch
-                {
-                    return false;
-                }
-
-                if (updateAxillaryFiles)
-                {
-                    try
-                    {
-                        if (track.IsShufflerTrack) RenameShufferFiles(track);
-
-                        // if filename changed, save any associated play-list files
-                        foreach (var playlist in Playlists.Where(playlist => playlist.Tracks.Contains(track)))
-                        {
-                            SavePlaylist(playlist);
-                        }
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-            }
-
-            track.OriginalDescription = track.Description;
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Updates the Shuffler files after a track has been changed.
-        ///     Assumes the OriginalDescription is the old description,
-        ///     and that the ShufflerAttribuesFile/ShufflerMixesFile properties
-        ///     point to the old files
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private void RenameShufferFiles(Track track)
-        {
-            try
-            {
-                var newAttributesFile = GetShufflerAttributeFile(track.Description);
-                var newMixesFile = GetShufflerMixesFile(track);
-
-                File.Move(track.ShufflerAttribuesFile, newAttributesFile);
-                File.Move(track.ShufflerMixesFile, newMixesFile);
-
-                track.ShufflerAttribuesFile = newAttributesFile;
-                track.ShufflerMixesFile = newMixesFile;
-
-                var replacer = new TextReplacer(track.OriginalDescription + ",", track.Description + ",", false, false,
-                    false, false);
-
-                replacer.Replace(ShufflerFolder, "*.Mixes.txt", false);
             }
             catch
             {
                 // ignored
             }
+
+            return true;
         }
 
         /// <summary>
-        ///     Gets the file name from track details.
+        ///     Gets a album cover.
         /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>The generated filename</returns>
-        private string GetFileNameFromTrackDetails(Track track)
+        /// <param name="albumName">Name of the album.</param>
+        /// <returns>The album cover</returns>
+        public Image GetAlbumCover(string albumName)
         {
-            var filename = "";
-            if (track.TrackNumber > 0) filename += track.TrackNumber.ToString("D2") + " - ";
-            filename += track.AlbumArtist + " - ";
-            if (track.Artist == track.AlbumArtist) filename += track.Title;
-            else filename += track.Artist + " / " + track.Title;
-            filename += ".mp3";
-            filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            return filename;
+            if (albumName == AllFilter) return null;
+
+            var cover = AlbumCoverHelper.GetAlbumCover(albumName);
+            if (cover != null) return cover;
+
+            var tracks = GetAllTracksForAlbum(albumName);
+            if (tracks.Count == 0) return null;
+
+            AlbumCoverHelper.LoadAlbumCover(tracks[0]);
+            return AlbumCoverHelper.GetAlbumCover(tracks[0].Album);
         }
 
-        /// <summary>
-        ///     Loads and caches an album cover.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private void LoadAlbumCover(Track track)
-        {
-            try
-            {
-                var path = Path.GetDirectoryName(track.Filename);
-                if (path == null) return;
-
-                var albumArtImagePath = Path.Combine(path, "AlbumArtSmall.jpg");
-                var folderImagePath = Path.Combine(path, "folder.jpg");
-
-                var albumArtImageDate = DateTime.MinValue;
-                if (File.Exists(albumArtImagePath)) albumArtImageDate = File.GetLastWriteTime(albumArtImagePath);
-
-                var folderImageDate = DateTime.MinValue;
-                if (File.Exists(folderImagePath)) folderImageDate = File.GetLastWriteTime(folderImagePath);
-
-                if (!File.Exists(folderImagePath))
-                {
-                    if (ID3v2Tag.DoesTagExist(track.Filename))
-                    {
-                        var tags = new ID3v2Tag(track.Filename);
-                        if (tags.PictureList.Count > 0)
-                        {
-                            using (Image folderImage = new Bitmap(tags.PictureList[0].Picture))
-                            {
-                                ImageHelper.SaveJpg(folderImagePath, folderImage);
-                            }
-                        }
-                    }
-                }
-
-                if (!File.Exists(albumArtImagePath) || albumArtImageDate < folderImageDate)
-                {
-                    if (File.Exists(folderImagePath))
-                    {
-                        using (Image image = new Bitmap(folderImagePath))
-                        {
-                            using (var smallImage = ImageHelper.Resize(image, new Size(150, 150)))
-                            {
-                                ImageHelper.SaveJpg(albumArtImagePath, smallImage);
-                                File.SetAttributes(albumArtImagePath, FileAttributes.Hidden);
-                            }
-                        }
-                    }
-                }
-
-                if (File.Exists(albumArtImagePath))
-                {
-                    Image image = new Bitmap(albumArtImagePath);
-                    AlbumCovers.Add(track.Album, image);
-                }
-            }
-            catch (Exception e)
-            {
-                DebugHelper.WriteLine(e.ToString());
-            }
-        }
-
-        /// <summary>
-        ///     Sets the track album cover.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="image">The image.</param>
         public void SetTrackAlbumCover(Track track, Image image)
         {
-            if (track == null) return;
-            if (image == null) return;
-            if (!ID3v2Tag.DoesTagExist(track.Filename)) return;
-
-            var tags = new ID3v2Tag(track.Filename);
-            if (tags.PictureList.Count > 0) tags.PictureList.Clear();
-
-            var picture = tags.PictureList.AddNew();
-
-            if (picture != null)
-            {
-                picture.PictureType = PictureType.CoverFront;
-                picture.MimeType = "image/jpeg";
-
-                using (var stream = new MemoryStream())
-                {
-                    ImageHelper.SaveJpg(stream, image);
-                    picture.PictureData = stream.ToArray();
-                }
-            }
-            tags.Save(track.Filename);
-        }
-
-        /// <summary>
-        ///     Loads the shuffler details for a track
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private Dictionary<string, string> LoadShufflerDetails(Track track)
-        {
-            var shufflerAttribuesFile = GetShufflerAttributeFile(track.Description);
-            track.IsShufflerTrack = File.Exists(shufflerAttribuesFile);
-
-            if (!track.IsShufflerTrack) return null;
-
-            track.ShufflerAttribuesFile = shufflerAttribuesFile;
-            track.ShufflerMixesFile = GetShufflerMixesFile(track);
-
-            var attributes = PlaylistHelper.GetShufflerAttributes(track.ShufflerAttribuesFile);
-
-            if (attributes.ContainsKey("StartBPM"))
-                track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
-            if (attributes.ContainsKey("EndBPM"))
-                track.EndBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
-
-            if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
-
-            decimal start = 0;
-            if (attributes.ContainsKey("FadeIn")) start = ConversionHelper.ToDecimal(attributes["FadeIn"], start);
-            var end = track.Length;
-            if (attributes.ContainsKey("FadeOut")) end = ConversionHelper.ToDecimal(attributes["FadeOut"], end);
-            var length = end - start;
-
-            var inLoopCount = 0;
-            if (attributes.ContainsKey("StartLoopCount"))
-                inLoopCount = ConversionHelper.ToInt(attributes["StartLoopCount"], inLoopCount);
-
-            decimal inLoopLength = 0;
-            if (attributes.ContainsKey("FadeInLengthInSeconds"))
-                inLoopLength = ConversionHelper.ToDecimal(attributes["FadeInLengthInSeconds"]);
-            if (inLoopLength > 0) track.StartBpm = BpmHelper.GetBpmFromLoopLength(Convert.ToDouble(inLoopLength));
-
-            inLoopCount = inLoopCount - 1;
-            if (inLoopCount > 0) length = length + (inLoopCount*inLoopLength);
-
-            decimal skipLength = 0;
-            if (attributes.ContainsKey("SkipLengthInSeconds"))
-                skipLength = ConversionHelper.ToDecimal(attributes["SkipLengthInSeconds"]);
-            if (skipLength > 0) length = length - skipLength;
-
-            track.PowerDown = false;
-            if (attributes.ContainsKey("PowerDown"))
-                track.PowerDown = ConversionHelper.ToBoolean(attributes["PowerDown"]);
-
-            if (attributes.ContainsKey("Key")) track.Key = attributes["Key"];
-
-            decimal outLoopLength = 0;
-            if (attributes.ContainsKey("FadeOutLengthInSeconds"))
-                outLoopLength = ConversionHelper.ToDecimal(attributes["FadeOutLengthInSeconds"], 0);
-            if (outLoopLength > 0) track.EndBpm = BpmHelper.GetBpmFromLoopLength(Convert.ToDouble(outLoopLength));
-
-            track.Length = length;
-
-            return attributes;
-        }
-
-        /// <summary>
-        ///     Gets the shuffler attribute file for a track
-        /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        /// <returns>
-        ///     The shuffler attribute file
-        /// </returns>
-        private string GetShufflerAttributeFile(string trackDescription)
-        {
-            var filename = $"{trackDescription}.ExtendedAttributes.txt";
-            filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            filename = Path.Combine(ShufflerFolder, filename);
-            return filename;
-        }
-
-        /// <summary>
-        ///     Gets the shuffler mixes file for a track
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>
-        ///     The shuffler mixes file
-        /// </returns>
-        private string GetShufflerMixesFile(Track track)
-        {
-            var filename = $"{track.Description}.Mixes.txt";
-            filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            filename = Path.Combine(ShufflerFolder, filename);
-            return filename;
+            AlbumCoverHelper.SetTrackAlbumCover(track, image);
         }
     }
 }

@@ -297,7 +297,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (track == null) return;
 
             KeyHelper.CalculateKey(track.Filename);
-            TrackLibrary.ReloadTrackMetaData(track.Filename);
+            TrackLibrary.LoadTrack(track.Filename);
 
             var samples = GetTrackSamples(track);
 

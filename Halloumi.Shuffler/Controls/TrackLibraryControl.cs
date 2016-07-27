@@ -81,7 +81,7 @@ namespace Halloumi.Shuffler.Controls
                 try
                 {
                     KeyHelper.CalculateKey(track.Filename);
-                    Library.ImportTrack(track.Filename);
+                    Library.LoadTrack(track.Filename);
                 }
                 catch
                 {
@@ -105,7 +105,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 try
                 {
-                    Library.ReloadTrackMetaData(track.Filename);
+                    Library.LoadTrack(track.Filename);
                 }
                 catch
                 {
@@ -895,7 +895,7 @@ namespace Halloumi.Shuffler.Controls
 
                 if (!imlAlbumArt.Images.ContainsKey(album.Name))
                 {
-                    var image = Library.GetAlbumCover(album);
+                    var image = Library.GetAlbumCover(album.Name);
                     if (image == null) continue;
 
                     using (var graphics = Graphics.FromImage(image))
@@ -1068,7 +1068,7 @@ namespace Halloumi.Shuffler.Controls
 
             var result = form.ShowDialog();
             if (result != DialogResult.OK) return;
-            Library.ReloadTrack(GetSelectedTrack().Filename);
+            Library.LoadTrack(GetSelectedTrack().Filename);
             BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
             BindData();
         }

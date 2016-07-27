@@ -88,6 +88,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\AlbumCoverHelper.cs" />
+    <Compile Include="Helpers\ShufflerHelper.cs" />
+    <Compile Include="Helpers\TrackHelper.cs" />
+    <Compile Include="ILibrary.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\Genre.cs" />
