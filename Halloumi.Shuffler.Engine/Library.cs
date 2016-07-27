@@ -5,14 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Halloumi.Common.Helpers;
-using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Shuffler.AudioLibrary.Models;
-using IdSharp.Tagging.ID3v2;
-using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using TrackHelper = Halloumi.Shuffler.AudioLibrary.Helpers.TrackHelper;
 
 namespace Halloumi.Shuffler.AudioLibrary
@@ -85,6 +81,12 @@ namespace Halloumi.Shuffler.AudioLibrary
         private List<Playlist> Playlists { get; set; }
 
         /// <summary>
+        ///     Gets the name of the file where the track data is cached.
+        /// </summary>
+        private static string LibraryCacheFilename
+            => Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Library.xml");
+
+        /// <summary>
         ///     Gets or sets the folder where the mp3 files for the library are kept
         /// </summary>
         public string LibraryFolder { get; set; }
@@ -98,12 +100,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         ///     Gets or sets the folder where the shuffler extended attribute files for the library are kept
         /// </summary>
         public string ShufflerFolder => ExtenedAttributesHelper.ExtendedAttributeFolder;
-
-        /// <summary>
-        ///     Gets the name of the file where the track data is cached.
-        /// </summary>
-        private static string LibraryCacheFilename
-            => Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Library.xml");
 
 
         public Track GetTrack(string artist, string title, decimal length)
@@ -604,7 +600,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
 
-
         /// <summary>
         ///     Loads the library from the cache.
         /// </summary>
@@ -646,18 +641,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         public void SaveRank(Track track)
         {
             TrackHelper.UpdateRank(track);
-        }
-
-        private Track LoadNewTrack(string filename)
-        {
-            var track = TrackHelper.LoadTrack(filename);
-            if (track == null) return null;
-
-            lock (Tracks)
-            {
-                Tracks.Add(track);
-            }
-            return track;
         }
 
 
@@ -1302,6 +1285,18 @@ namespace Halloumi.Shuffler.AudioLibrary
         public void SetTrackAlbumCover(Track track, Image image)
         {
             AlbumCoverHelper.SetTrackAlbumCover(track, image);
+        }
+
+        private Track LoadNewTrack(string filename)
+        {
+            var track = TrackHelper.LoadTrack(filename);
+            if (track == null) return null;
+
+            lock (Tracks)
+            {
+                Tracks.Add(track);
+            }
+            return track;
         }
     }
 }
