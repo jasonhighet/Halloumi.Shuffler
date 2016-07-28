@@ -57,7 +57,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.ShufflerAttribuesFile = shufflerAttribuesFile;
             track.ShufflerMixesFile = GetShufflerMixesFile(track);
 
-            var attributes = PlaylistHelper.GetShufflerAttributes(track.ShufflerAttribuesFile);
+            var attributes = AudioEngine.Helpers.PlaylistHelper.GetShufflerAttributes(track.ShufflerAttribuesFile);
 
             if (attributes.ContainsKey("StartBPM"))
                 track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));

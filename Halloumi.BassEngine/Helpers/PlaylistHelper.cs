@@ -9,7 +9,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     public static class PlaylistHelper
     {
         /// <summary>
-        /// Gets a list of all files in an M3U playlist
+        ///     Gets a list of all files in an M3U playlist
         /// </summary>
         /// <param name="playlistFile">The playlist file.</param>
         /// <returns>A list of file names contained in the playlist</returns>
@@ -18,59 +18,60 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var playlistEntries = new List<PlaylistEntry>();
             using (var reader = new StreamReader(playlistFile, Encoding.UTF7))
             {
-                var currentLine = string.Empty;
+                string currentLine;
                 while ((currentLine = reader.ReadLine()) != null)
                 {
-                    if (currentLine.Length > 0 && currentLine != "#EXTM3U")
+                    if (currentLine.Length <= 0 || currentLine == "#EXTM3U") continue;
+
+                    var playlistEntry = new PlaylistEntry();
+                    if (currentLine.StartsWith("#"))
                     {
-                        var playlistEntry = new PlaylistEntry();
-                        if (currentLine.StartsWith("#"))
+                        var elements = currentLine.Split(',').ToList();
+                        if (elements.Count > 0)
                         {
-                            var elements = currentLine.Split(',').ToList();
-                            if (elements.Count > 0)
+                            elements = currentLine.Substring(currentLine.IndexOf(',') + 1).Split('-').ToList();
+                            if (elements.Count == 2)
                             {
-                                elements = currentLine.Substring(currentLine.IndexOf(',') + 1).Split('-').ToList();
-                                if (elements.Count == 2)
-                                {
-                                    playlistEntry.Artist = elements[0].Trim();
-                                    playlistEntry.Title = elements[1].Trim();
-                                }
-                                else
-                                {
-                                    playlistEntry.Title = string.Join("-", elements.ToArray());
-                                    playlistEntry.Artist = "";
-                                }
+                                playlistEntry.Artist = elements[0].Trim();
+                                playlistEntry.Title = elements[1].Trim();
                             }
-                            currentLine = reader.ReadLine();
+                            else
+                            {
+                                playlistEntry.Title = string.Join("-", elements.ToArray());
+                                playlistEntry.Artist = "";
+                            }
                         }
+                        currentLine = reader.ReadLine();
+                    }
 
-                        var path = "";
-                        if (currentLine.StartsWith(@"\"))
-                        {
-                            path = Path.GetPathRoot(playlistFile) + currentLine;
-                            playlistEntry.Path = path;
-                            playlistEntry.Path = playlistEntry.Path.Replace(@"\\", @"\");
-                        }
-                        else if (currentLine.Contains(":"))
-                        {
-                            path = currentLine;
-                        }
-                        else
-                        {
-                            path = Path.Combine(Path.GetDirectoryName(playlistFile), currentLine);
-                        }
+                    if(currentLine == null) continue;
+                    
+                    string path;
+                    if (currentLine.StartsWith(@"\"))
+                    {
+                        path = Path.GetPathRoot(playlistFile) + currentLine;
+                        playlistEntry.Path = path;
+                        playlistEntry.Path = playlistEntry.Path.Replace(@"\\", @"\");
+                    }
+                    else if (currentLine.Contains(":"))
+                    {
+                        path = currentLine;
+                    }
+                    else
+                    {
+                        path = Path.Combine(Path.GetDirectoryName(playlistFile) + "", currentLine);
+                    }
 
-                        var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(path.Trim());
-                        if (playlistEntry.Title == "") playlistEntry.Title = trackDetails.Title;
-                        if (playlistEntry.Artist == "") playlistEntry.Artist = trackDetails.Artist;
-                        playlistEntry.Description = trackDetails.Description;
+                    var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(path.Trim());
+                    if (playlistEntry.Title == "") playlistEntry.Title = trackDetails.Title;
+                    if (playlistEntry.Artist == "") playlistEntry.Artist = trackDetails.Artist;
+                    playlistEntry.Description = trackDetails.Description;
 
-                        playlistEntry.Path = path.Trim();
+                    playlistEntry.Path = path.Trim();
 
-                        if (playlistEntry.Path != "")
-                        {
-                            playlistEntries.Add(playlistEntry);
-                        }
+                    if (playlistEntry.Path != "")
+                    {
+                        playlistEntries.Add(playlistEntry);
                     }
                 }
                 reader.Close();
@@ -79,43 +80,21 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        /// Represents an entry in a m3u playlist
-        /// </summary>
-        public class PlaylistEntry
-        {
-            public string Path { get; set; }
-
-            public string Artist { get; set; }
-
-            public string Title { get; set; }
-
-            public string Description { get; set; }
-
-            public PlaylistEntry()
-            {
-                Path = "";
-                Artist = "";
-                Title = "";
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of all files in an M3U playlist
+        ///     Gets a list of all files in an M3U playlist
         /// </summary>
         /// <param name="playlistFile">The playlist file.</param>
         /// <returns>A list of file names contained in the playlist</returns>
         public static List<string> GetFilesInPlaylist(string playlistFile)
         {
-            var files = new List<string>();
-            foreach (var playlistEntry in GetPlaylistEntries(playlistFile))
-            {
-                if (playlistEntry.Path != "") files.Add(playlistEntry.Path);
-            }
-            return files;
+            return (from playlistEntry 
+                    in GetPlaylistEntries(playlistFile)
+                    where playlistEntry.Path != ""
+                    select playlistEntry.Path)
+                    .ToList();
         }
 
         /// <summary>
-        /// Saves a list of tracks as a playlist.
+        ///     Saves a list of tracks as a playlist.
         /// </summary>
         /// <param name="filename">The filename of the playlist.</param>
         /// <param name="tracks">The tracks to write to the playlist.</param>
@@ -126,11 +105,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             foreach (var track in tracks)
             {
                 content.AppendLine("#EXTINF:"
-                    + track.LengthSeconds.ToString("0")
-                    + ","
-                    + track.Artist
-                    + " - "
-                    + track.Title);
+                                   + track.LengthSeconds.ToString("0")
+                                   + ","
+                                   + track.Artist
+                                   + " - "
+                                   + track.Title);
 
                 content.AppendLine(track.Filename);
             }
@@ -139,27 +118,48 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        /// Gets the shuffler attributes.
+        ///     Gets the shuffler attributes.
         /// </summary>
         /// <param name="extendedAttributeFile">The shuffler attributes file</param>
         /// <returns>
-        /// A collection of shuffler attributes
+        ///     A collection of shuffler attributes
         /// </returns>
         public static Dictionary<string, string> GetShufflerAttributes(string extendedAttributeFile)
         {
             var attributes = new Dictionary<string, string>();
-            if (File.Exists(extendedAttributeFile))
+            if (!File.Exists(extendedAttributeFile)) return attributes;
+
+            var elements = File.ReadAllText(extendedAttributeFile)
+                .Split(';')
+                .Select(element => element.Split('=').ToList())
+                .Where(items => items.Count > 1 && !attributes.ContainsKey(items[0].Trim()));
+
+            foreach (var element in elements)
             {
-                foreach (var element in File.ReadAllText(extendedAttributeFile).Split(';').ToList())
-                {
-                    var items = element.Split('=').ToList();
-                    if (items.Count > 1 && !attributes.ContainsKey(items[0].Trim()))
-                    {
-                        attributes.Add(items[0].Trim(), items[1].Trim());
-                    }
-                }
+                attributes.Add(element[0].Trim(), element[1].Trim());
             }
             return attributes;
+        }
+
+        /// <summary>
+        ///     Represents an entry in a m3u playlist
+        /// </summary>
+        public class PlaylistEntry
+        {
+            public PlaylistEntry()
+            {
+                Path = "";
+                Artist = "";
+                Title = "";
+            }
+
+            public string Path { get; set; }
+
+            public string Artist { get; set; }
+
+            public string Title { get; set; }
+
+            public string Description { get; set; }
         }
     }
 }

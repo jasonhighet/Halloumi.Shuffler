@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using PlaylistHelper = Halloumi.Shuffler.AudioLibrary.Helpers.PlaylistHelper;
 using TrackHelper = Halloumi.Shuffler.AudioLibrary.Helpers.TrackHelper;
 
 namespace Halloumi.Shuffler.AudioLibrary
@@ -59,7 +59,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             Tracks = new List<Track>();
             TrackHelper.BassPlayer = bassPlayer;
-            Playlists = new List<Playlist>();
         }
 
         /// <summary>
@@ -75,10 +74,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         private List<Track> Tracks { get; }
 
-        /// <summary>
-        ///     Gets or sets the play-lists in the library
-        /// </summary>
-        private List<Playlist> Playlists { get; set; }
 
         /// <summary>
         ///     Gets the name of the file where the track data is cached.
@@ -91,10 +86,11 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public string LibraryFolder { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the folder where the m3u play-list files for the library are kept
-        /// </summary>
-        public string PlaylistFolder { get; set; }
+        public string PlaylistFolder
+        {
+            get { return PlaylistHelper.PlaylistFolder; }
+            set { PlaylistHelper.PlaylistFolder = value; }
+        }
 
         /// <summary>
         ///     Gets or sets the folder where the shuffler extended attribute files for the library are kept
@@ -102,7 +98,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public string ShufflerFolder => ExtenedAttributesHelper.ExtendedAttributeFolder;
 
 
-        public Track GetTrack(string artist, string title, decimal length)
+        public Track GetTrack(string artist, string title, decimal length = 0)
         {
             artist = artist.ToLower();
             title = title.ToLower();
@@ -868,6 +864,61 @@ namespace Halloumi.Shuffler.AudioLibrary
             SaveCache();
         }
 
+        public List<Playlist> GetAllPlaylists()
+        {
+            return PlaylistHelper.GetAllPlaylists();
+        }
+
+        public Playlist GetPlaylistByName(string name)
+        {
+            return PlaylistHelper.GetPlaylistByName(name);
+        }
+
+        public void LoadPlaylists()
+        {
+            PlaylistHelper.LoadPlaylists(this);
+        }
+
+        public void AddTracksToPlaylist(Playlist playlist, List<Track> tracks)
+        {
+            PlaylistHelper.AddTracksToPlaylist(playlist, tracks);
+        }
+
+        public void RemoveTracksFromPlaylist(Playlist playlist, List<Track> tracks)
+        {
+            PlaylistHelper.RemoveTracksFromPlaylist(playlist, tracks);
+        }
+
+        public void RemoveTrackFromAllPlaylists(Track track)
+        {
+            PlaylistHelper.RemoveTrackFromAllPlaylists(track);
+        }
+
+        public List<Playlist> GetPlaylistsForTrack(Track track)
+        {
+            return PlaylistHelper.GetPlaylistsForTrack(track);
+        }
+
+        public List<Playlist> GetPlaylistsForTracks(List<Track> tracks)
+        {
+            return PlaylistHelper.GetPlaylistsForTracks(tracks);
+        }
+
+        public Playlist CreateNewPlaylist(string playlistName)
+        {
+            return PlaylistHelper.CreateNewPlaylist(playlistName);
+        }
+
+        public Playlist LoadPlaylist(string playlistFile)
+        {
+            return PlaylistHelper.LoadPlaylist(playlistFile, this);
+        }
+
+        public void SavePlaylist(Playlist playlist)
+        {
+            PlaylistHelper.SavePlaylist(playlist);
+        }
+
         public void CopyAudioFromAnotherTrack(Track destinationTrack, Track sourceTrack)
         {
             File.Move(destinationTrack.Filename, destinationTrack.Filename + ".old");
@@ -998,220 +1049,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             SaveCache();
         }
 
-        /// <summary>
-        ///     Gets all play-lists.
-        /// </summary>
-        /// <returns>A list of all play-lists</returns>
-        public List<Playlist> GetAllPlaylists()
-        {
-            return Playlists.OrderBy(p => p.Name).ToList();
-        }
-
-        /// <summary>
-        ///     Gets a play-list by name
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>
-        ///     A play-list matching the specified name, or null if not found
-        /// </returns>
-        public Playlist GetPlaylistByName(string name)
-        {
-            name = name.ToLower();
-            return Playlists.FirstOrDefault(p => p.Name.ToLower() == name);
-        }
-
-        /// <summary>
-        ///     Loads all the play-lists in the play-list folder
-        /// </summary>
-        public void LoadPlaylists()
-        {
-            var playlistFiles = FileSystemHelper.SearchFiles(PlaylistFolder, "*.m3u", false);
-
-            Playlists = new List<Playlist>();
-            foreach (var playlist in playlistFiles.Select(LoadPlaylist))
-            {
-                Playlists.Add(playlist);
-            }
-        }
-
-        /// <summary>
-        ///     Adds tracks to play-list.
-        /// </summary>
-        /// <param name="playlist">The play-list.</param>
-        /// <param name="tracks">The tracks.</param>
-        public void AddTracksToPlaylist(Playlist playlist, List<Track> tracks)
-        {
-            if (tracks == null || playlist == null) return;
-
-            foreach (var track in tracks.Where(track => !playlist.Tracks.Contains(track)))
-            {
-                playlist.Tracks.Add(track);
-            }
-            SavePlaylist(playlist);
-        }
-
-        /// <summary>
-        ///     Removes tracks from a play-list.
-        /// </summary>
-        /// <param name="playlist">The play-list.</param>
-        /// <param name="tracks">The tracks to remove.</param>
-        public void RemoveTracksFromPlaylist(Playlist playlist, List<Track> tracks)
-        {
-            if (tracks == null || playlist == null) return;
-
-            foreach (var track in tracks.Where(track => playlist.Tracks.Contains(track)))
-            {
-                playlist.Tracks.Remove(track);
-            }
-            SavePlaylist(playlist);
-        }
-
-        /// <summary>
-        ///     Removes a track from all play-lists.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void RemoveTrackFromAllPlaylists(Track track)
-        {
-            foreach (var playlist in Playlists.Where(playlist => playlist.Tracks.Contains(track)))
-            {
-                playlist.Tracks.Remove(track);
-                SavePlaylist(playlist);
-            }
-        }
-
-        /// <summary>
-        ///     Gets all the play-lists that contain a specific track.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>A list of play-lists that contain the track</returns>
-        public List<Playlist> GetPlaylistsForTrack(Track track)
-        {
-            return GetAllPlaylists().Where(p => p.Tracks.Contains(track)).Distinct().ToList();
-        }
-
-        /// <summary>
-        ///     Gets a distinct list of all play-lists that the specified tracks are in
-        /// </summary>
-        /// <param name="tracks">The tracks.</param>
-        /// <returns>A distinct list of all play-lists that the specified tracks are in.</returns>
-        public List<Playlist> GetPlaylistsForTracks(List<Track> tracks)
-        {
-            var playlists = new List<Playlist>();
-            foreach (var track in tracks)
-            {
-                playlists.AddRange(GetPlaylistsForTrack(track));
-            }
-            return playlists.Distinct().OrderBy(p => p.Name).ToList();
-        }
-
-        /// <summary>
-        ///     Creates the new play-list.
-        /// </summary>
-        /// <param name="playlistName">Name of the play-list.</param>
-        /// <returns></returns>
-        public Playlist CreateNewPlaylist(string playlistName)
-        {
-            playlistName = FileSystemHelper.StripInvalidFileNameChars(playlistName.Trim());
-
-            var playlist = Playlists.FirstOrDefault(p => p.Name.ToLower() == playlistName.ToLower());
-            if (playlist != null) return playlist;
-
-            playlist = new Playlist {Name = playlistName};
-            playlist.Filename = Path.Combine(PlaylistFolder, playlist.Name) + ".m3u";
-            playlist.Tracks = new List<Track>();
-
-            Playlists.Add(playlist);
-
-            return playlist;
-        }
-
-        /// <summary>
-        ///     Loads a play-list.
-        /// </summary>
-        /// <param name="playlistFile">The play-list file.</param>
-        /// <returns>A play-list object</returns>
-        public Playlist LoadPlaylist(string playlistFile)
-        {
-            var playlist = new Playlist
-            {
-                Filename = playlistFile,
-                Name = Path.GetFileNameWithoutExtension(playlistFile)
-            };
-            playlist.Name = StringHelper.TitleCase(playlist.Name);
-
-            var modified = false;
-
-            foreach (var entry in PlaylistHelper.GetPlaylistEntries(playlistFile))
-            {
-                var entryFile = Path.GetFileName(entry.Path);
-                var entryTitle = entry.Title.ToLower();
-                var entryArtist = entry.Artist.ToLower();
-
-                var track = Tracks.FirstOrDefault(t => t.Filename == entry.Path);
-
-                if (track == null)
-                {
-                    if (entry.Path.StartsWith(LibraryFolder))
-                    {
-                        track = LoadNewTrack(entry.Path);
-                    }
-
-                    if (track == null)
-                        track = Tracks.FirstOrDefault(t => Path.GetFileName(t.Filename) == entryFile);
-
-                    if (track == null)
-                        track =
-                            Tracks.FirstOrDefault(
-                                t => t.Artist.ToLower() == entryArtist && t.Title.ToLower() == entryTitle);
-
-                    if (track == null)
-                        track =
-                            Tracks.FirstOrDefault(
-                                t => t.AlbumArtist.ToLower() == entryArtist && t.Title.ToLower() == entryTitle);
-
-                    modified = true;
-                }
-
-                if (track != null) playlist.Tracks.Add(track);
-            }
-
-            if (modified) SavePlaylist(playlist);
-
-            return playlist;
-        }
-
-        /// <summary>
-        ///     Saves the play-list.
-        /// </summary>
-        /// <param name="playlist">The play-list.</param>
-        public void SavePlaylist(Playlist playlist)
-        {
-            if (playlist == null) return;
-            if (playlist.Tracks.Count == 0)
-            {
-                try
-                {
-                    File.Delete(playlist.Filename);
-                }
-                catch
-                {
-                    // ignored
-                }
-                return;
-            }
-
-            var content = new StringBuilder();
-            content.AppendLine("#EXTM3U");
-            foreach (var track in playlist.Tracks)
-            {
-                content.AppendLine("#EXTINF:" + track.FullLength.ToString("0") + "," + track.Artist + " - " +
-                                   track.Title);
-
-                content.AppendLine(track.Filename);
-            }
-
-            File.WriteAllText(playlist.Filename, content.ToString(), Encoding.UTF8);
-        }
 
         /// <summary>
         ///     Imports the shuffler details.
@@ -1250,9 +1087,10 @@ namespace Halloumi.Shuffler.AudioLibrary
                 if (track.IsShufflerTrack) ShufflerHelper.RenameShufferFiles(track);
 
                 // if filename changed, save any associated play-list files
-                foreach (var playlist in Playlists.Where(playlist => playlist.Tracks.Contains(track)))
+                foreach (
+                    var playlist in PlaylistHelper.GetAllPlaylists().Where(playlist => playlist.Tracks.Contains(track)))
                 {
-                    SavePlaylist(playlist);
+                    PlaylistHelper.SavePlaylist(playlist);
                 }
             }
             catch
