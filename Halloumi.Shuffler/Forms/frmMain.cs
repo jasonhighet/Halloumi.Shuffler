@@ -111,7 +111,7 @@ namespace Halloumi.Shuffler.Forms
             mixerControl.BassPlayer = BassPlayer;
             mixerControl.PlaylistControl = playlistControl;
 
-            Library.LoadFromCache();
+            Library.LoadFromDatabase();
 
             if (Library.GetTracks().Count > 0)
                 Library.LoadPlaylists();
@@ -748,7 +748,7 @@ namespace Halloumi.Shuffler.Forms
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             mixerControl.Unload();
-            Library.SaveCache();
+            Library.SaveToDatabase();
             BassPlayer.Dispose();
             _midiManager.Dispose();
         }

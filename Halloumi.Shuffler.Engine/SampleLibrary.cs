@@ -309,6 +309,18 @@ namespace Halloumi.Shuffler.AudioLibrary
             return Samples.Where(x => x.TrackArtist == track.Artist && x.TrackTitle == track.Title).ToList();
         }
 
+        public List<Track> GetAllTracks()
+        {
+            var tracks = new List<Track>();
+
+            foreach (var track in Samples.Select(GetTrackFromSample).Where(track => !tracks.Contains(track)))
+            {
+                tracks.Add(track);
+            }
+
+            return tracks;
+        }
+
         public class SampleCriteria
         {
             public string SearchText { get; set; }

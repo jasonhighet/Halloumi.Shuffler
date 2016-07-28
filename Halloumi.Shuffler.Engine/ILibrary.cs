@@ -261,7 +261,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Loads the library from the cache.
         /// </summary>
-        void LoadFromCache();
+        void LoadFromDatabase();
 
         /// <summary>
         ///     Imports the tracks.
@@ -282,7 +282,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Saves the track details to a cache file
         /// </summary>
-        void SaveCache();
+        void SaveToDatabase();
 
         /// <summary>
         ///     Cleans the folder images.

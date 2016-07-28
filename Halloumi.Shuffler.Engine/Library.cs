@@ -597,27 +597,6 @@ namespace Halloumi.Shuffler.AudioLibrary
 
 
         /// <summary>
-        ///     Loads the library from the cache.
-        /// </summary>
-        public void LoadFromCache()
-        {
-            if (!File.Exists(LibraryCacheFilename)) return;
-            try
-            {
-                var tracks = SerializationHelper<List<Track>>.FromXmlFile(LibraryCacheFilename);
-                lock (Tracks)
-                {
-                    Tracks.Clear();
-                    Tracks.AddRange(tracks.ToArray());
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        /// <summary>
         ///     Reloads a track.
         /// </summary>
         /// <param name="filename">The filename.</param>
@@ -672,7 +651,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), file => { LoadTrack(file); });
 
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -720,7 +699,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 SaveTrack(track);
             }
 
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -752,7 +731,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 SaveTrack(track);
             }
 
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -780,7 +759,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 SaveTrack(track);
             }
 
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -807,7 +786,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 SaveTrack(track);
             }
 
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -825,7 +804,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 SaveTrack(track);
             }
 
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -837,7 +816,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             track.TrackNumber = trackNumber;
             SaveTrack(track);
-            SaveCache();
+            SaveToDatabase();
         }
 
         /// <summary>
@@ -861,7 +840,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             track.Title = title;
             SaveTrack(track, updateAxillaryFiles);
-            SaveCache();
+            SaveToDatabase();
         }
 
         public List<Playlist> GetAllPlaylists()
@@ -989,7 +968,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (result)
             {
-                SaveCache();
+                SaveToDatabase();
             }
             else
             {
@@ -1006,11 +985,31 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Saves the track details to a cache file
         /// </summary>
-        public void SaveCache()
+        public void SaveToDatabase()
         {
             SerializationHelper<List<Track>>.ToXmlFile(Tracks, LibraryCacheFilename);
         }
 
+        /// <summary>
+        ///     Loads the library from the cache.
+        /// </summary>
+        public void LoadFromDatabase()
+        {
+            if (!File.Exists(LibraryCacheFilename)) return;
+            try
+            {
+                var tracks = SerializationHelper<List<Track>>.FromXmlFile(LibraryCacheFilename);
+                lock (Tracks)
+                {
+                    Tracks.Clear();
+                    Tracks.AddRange(tracks.ToArray());
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+        }
 
         /// <summary>
         ///     Cleans the folder images.
@@ -1046,7 +1045,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 }
             }
 
-            SaveCache();
+            SaveToDatabase();
         }
 
 
@@ -1087,8 +1086,8 @@ namespace Halloumi.Shuffler.AudioLibrary
                 if (track.IsShufflerTrack) ShufflerHelper.RenameShufferFiles(track);
 
                 // if filename changed, save any associated play-list files
-                foreach (
-                    var playlist in PlaylistHelper.GetAllPlaylists().Where(playlist => playlist.Tracks.Contains(track)))
+                var playlists = PlaylistHelper.GetAllPlaylists().Where(playlist => playlist.Tracks.Contains(track));
+                foreach (var playlist in playlists)
                 {
                     PlaylistHelper.SavePlaylist(playlist);
                 }
