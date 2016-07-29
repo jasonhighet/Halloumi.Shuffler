@@ -86,7 +86,8 @@ namespace Halloumi.Shuffler.Forms
                 destinationFolder = Path.Combine(destinationFolder,
                     FileSystemHelper.StripInvalidFileNameChars("Library"));
 
-                if (!Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
+                if (!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
             }
 
             try
@@ -103,12 +104,21 @@ namespace Halloumi.Shuffler.Forms
                 progressDialog.Text = "Exporting " + track.Description;
                 progressDialog.Details += "Copying track " + track.Description + "...";
 
-                var destination = track.Filename.Replace(Library.LibraryFolder, destinationFolder);
+                var destinationFile = track.Filename.Replace(Library.LibraryFolder, destinationFolder);
+                var destinationSubFolder = Path.GetDirectoryName(destinationFile) + "";
+
+                var albumArt = Path.GetDirectoryName(track.Filename) + @"\folder.jpg";
+                var destinationAlbumArt = Path.GetDirectoryName(track.Filename) + @"\folder.jpg";
+
                 try
                 {
+                    if (!Directory.Exists(destinationSubFolder))
+                        Directory.CreateDirectory(destinationSubFolder);
 
+                    if (!File.Exists(destinationAlbumArt) && File.Exists(albumArt))
+                        FileSystemHelper.Copy(albumArt, destinationAlbumArt);
 
-                    FileSystemHelper.Copy(track.Filename, destination);
+                    FileSystemHelper.Copy(track.Filename, destinationFile);
                     if (progressDialog.Cancelled) break;
 
                     progressDialog.Details += "Done" + Environment.NewLine;
@@ -123,11 +133,11 @@ namespace Halloumi.Shuffler.Forms
 
                     progressDialog.Details += message;
 
-                    if (File.Exists(destination))
+                    if (File.Exists(destinationFile))
                     {
                         try
                         {
-                            File.Delete(destination);
+                            File.Delete(destinationFile);
                         }
                         catch
                         {
