@@ -313,7 +313,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             var tracks = new List<Track>();
 
-            foreach (var track in Samples.Select(GetTrackFromSample).Where(track => !tracks.Contains(track)))
+            foreach (var track in Samples.Select(GetTrackFromSample).Where(track => !tracks.Contains(track)).Where(track => track != null))
             {
                 tracks.Add(track);
             }

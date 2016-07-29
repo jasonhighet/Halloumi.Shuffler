@@ -4,15 +4,16 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Controls;
-using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
+using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Midi;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Plugins;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.Controls;
+using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
@@ -30,13 +31,11 @@ namespace Halloumi.Shuffler.Forms
 
         private FrmGeneratePlaylist _generatePlaylist;
 
+        private MidiManager _midiManager;
+
         private FrmMonitorSettings _monitorSettings;
 
         private FrmPlugin _pluginForm;
-
-        private AE.Midi.MidiManager _midiManager;
-
-        private AE.Midi.BassPlayerMidiMapper _midiMapper;
 
 
         /// <summary>
@@ -136,6 +135,8 @@ namespace Halloumi.Shuffler.Forms
             SetView(PlayerDetails.SelectedView.Library);
         }
 
+        public BassPlayerMidiMapper MidiMapper { get; private set; }
+
         private MixLibrary MixLibrary { get; }
 
         private Library Library { get; }
@@ -169,7 +170,7 @@ namespace Halloumi.Shuffler.Forms
             var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
 
             var track = playlistControl.GetCurrentTrack();
-            track.Rank = (int)mixRank;
+            track.Rank = (int) mixRank;
             Library.SaveRank(track);
         }
 
@@ -423,7 +424,8 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin2, settings.MainMixerVstPlugin2Parameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin2,
+                        settings.MainMixerVstPlugin2Parameters);
                 }
                 catch
                 {
@@ -471,7 +473,8 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2, settings.SamplerVstPlugin2Parameters);
+                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2,
+                        settings.SamplerVstPlugin2Parameters);
                 }
                 catch
                 {
@@ -585,8 +588,8 @@ namespace Halloumi.Shuffler.Forms
             fileMenuController.RecentFiles = settings.RecentFiles;
 
 
-            _midiManager = new AE.Midi.MidiManager();
-            _midiMapper = new AE.Midi.BassPlayerMidiMapper(BassPlayer, _midiManager);
+            _midiManager = new MidiManager();
+            MidiMapper = new BassPlayerMidiMapper(BassPlayer, _midiManager);
         }
 
         /// <summary>
@@ -1010,7 +1013,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 var mixRankDescription = toolStripDropDownItem.Text;
                 var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
-                playerDetails.SetCurrentMixRank((int)mixRank);
+                playerDetails.SetCurrentMixRank((int) mixRank);
             }
             playerDetails.DisplayCurrentTrackDetails();
 
@@ -1073,10 +1076,12 @@ namespace Halloumi.Shuffler.Forms
 
         private void ExportTracks(List<Track> tracks, string playlistName)
         {
-            var exportPlaylist = new FrmExportPlaylist();
-            exportPlaylist.Library = Library;
-            exportPlaylist.Tracks = tracks;
-            exportPlaylist.PlaylistName = playlistName;
+            var exportPlaylist = new FrmExportPlaylist
+            {
+                Library = Library,
+                Tracks = tracks,
+                PlaylistName = playlistName
+            };
             exportPlaylist.ShowDialog();
         }
 
@@ -1150,13 +1155,22 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_monitorSettings == null || _monitorSettings.IsDisposed)
             {
-                _monitorSettings = new FrmMonitorSettings();
-                _monitorSettings.BassPlayer = BassPlayer;
+                _monitorSettings = new FrmMonitorSettings {BassPlayer = BassPlayer};
             }
             if (!_monitorSettings.Visible)
             {
                 WindowHelper.ShowDialog(this, _monitorSettings);
             }
+        }
+
+        private void mnuExportShufflerTracks_Click(object sender, EventArgs e)
+        {
+            var exportPlaylist = new FrmExportShufflerTracks
+            {
+                Library = Library,
+                SampleLibrary = SampleLibrary
+            };
+            exportPlaylist.ShowDialog();
         }
     }
 }

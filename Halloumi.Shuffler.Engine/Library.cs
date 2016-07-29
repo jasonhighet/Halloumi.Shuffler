@@ -16,7 +16,7 @@ namespace Halloumi.Shuffler.AudioLibrary
     /// <summary>
     ///     Represents a cache-able library of mp3 tracks.
     /// </summary>
-    public class Library : ILibrary
+    public class Library
     {
         /// <summary>
         ///     Shuffler filter settings
@@ -343,16 +343,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             return GetArtists("", "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
         }
 
-        /// <summary>
-        ///     Gets a list of tracks.
-        /// </summary>
-        /// <returns>
-        ///     A list tracks
-        /// </returns>
-        public List<Track> GetTracks()
-        {
-            return GetTracks(null, null, null, "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
-        }
+
 
         /// <summary>
         ///     Gets a filtered list of tracks.
@@ -452,17 +443,17 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>
         ///     A list tracks matching the criteria.
         /// </returns>
-        public List<Track> GetTracks(string genreFilter,
-            string artistFilter,
-            string albumArtistFilter,
-            string albumFilter,
-            string searchFilter,
-            string playlistFilter,
-            ShufflerFilter shufflerFilter,
-            int minBpm,
-            int maxBpm,
-            TrackRankFilter trackRankFilter,
-            string excludePlaylistFilter)
+        public List<Track> GetTracks(string genreFilter = "",
+            string artistFilter = "",
+            string albumArtistFilter = "",
+            string albumFilter = "",
+            string searchFilter = "",
+            string playlistFilter = "",
+            ShufflerFilter shufflerFilter = ShufflerFilter.None,
+            int minBpm = 0,
+            int maxBpm = 200,
+            TrackRankFilter trackRankFilter = TrackRankFilter.None,
+            string excludePlaylistFilter = "")
         {
             genreFilter = genreFilter.Replace(AllFilter, "").ToLower().Trim();
             albumFilter = albumFilter.Replace(AllFilter, "").ToLower().Trim();

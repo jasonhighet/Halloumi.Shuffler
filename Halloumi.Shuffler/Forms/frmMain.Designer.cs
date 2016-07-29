@@ -69,6 +69,8 @@
             this.mnuViewAlbumArt = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuTracker = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMonitorSettings = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,8 +87,6 @@
             this.mnuConservativeFadeOut = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuTracker = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.formStateController = new Halloumi.Common.Windows.Contollers.FormStateController(this.components);
             this.notificationContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuPlayPause = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,6 +123,7 @@
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
+            this.mnuExportShufflerTracks = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
             this.pnlMenuBar.SuspendLayout();
@@ -289,7 +290,8 @@
             this.mnuSyncShufflerFiles,
             this.mnuUpdateDuplicateTracks,
             this.toolStripSeparator10,
-            this.mnuExportLibraryTracks});
+            this.mnuExportLibraryTracks,
+            this.mnuExportShufflerTracks});
             this.mnuLibrary.Name = "mnuLibrary";
             this.mnuLibrary.Size = new System.Drawing.Size(66, 33);
             this.mnuLibrary.Text = "&Library";
@@ -382,69 +384,84 @@
             this.mnuViewPlaylist.Checked = true;
             this.mnuViewPlaylist.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuViewPlaylist.Name = "mnuViewPlaylist";
-            this.mnuViewPlaylist.Size = new System.Drawing.Size(196, 26);
+            this.mnuViewPlaylist.Size = new System.Drawing.Size(198, 26);
             this.mnuViewPlaylist.Text = "&Playlist";
             // 
             // mnuViewLibrary
             // 
             this.mnuViewLibrary.Name = "mnuViewLibrary";
-            this.mnuViewLibrary.Size = new System.Drawing.Size(196, 26);
+            this.mnuViewLibrary.Size = new System.Drawing.Size(198, 26);
             this.mnuViewLibrary.Text = "Library";
             // 
             // mnuViewMixer
             // 
             this.mnuViewMixer.Name = "mnuViewMixer";
-            this.mnuViewMixer.Size = new System.Drawing.Size(196, 26);
+            this.mnuViewMixer.Size = new System.Drawing.Size(198, 26);
             this.mnuViewMixer.Text = "Mixer";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(195, 6);
             // 
             // mnuFadeNow
             // 
             this.mnuFadeNow.Name = "mnuFadeNow";
-            this.mnuFadeNow.Size = new System.Drawing.Size(196, 26);
+            this.mnuFadeNow.Size = new System.Drawing.Size(198, 26);
             this.mnuFadeNow.Text = "Fade &Now";
             this.mnuFadeNow.Click += new System.EventHandler(this.mnuFadeNow_Click);
             // 
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(195, 6);
             // 
             // mnuShowMixableTracks
             // 
             this.mnuShowMixableTracks.Name = "mnuShowMixableTracks";
-            this.mnuShowMixableTracks.Size = new System.Drawing.Size(196, 26);
+            this.mnuShowMixableTracks.Size = new System.Drawing.Size(198, 26);
             this.mnuShowMixableTracks.Text = "&Mixable Tracks";
             this.mnuShowMixableTracks.Click += new System.EventHandler(this.mnuShowMixableTracks_Click);
             // 
             // mnuViewVisuals
             // 
             this.mnuViewVisuals.Name = "mnuViewVisuals";
-            this.mnuViewVisuals.Size = new System.Drawing.Size(196, 26);
+            this.mnuViewVisuals.Size = new System.Drawing.Size(198, 26);
             this.mnuViewVisuals.Text = "&Visuals";
             this.mnuViewVisuals.Click += new System.EventHandler(this.mnuViewVisuals_Click);
             // 
             // mnuViewAlbumArt
             // 
             this.mnuViewAlbumArt.Name = "mnuViewAlbumArt";
-            this.mnuViewAlbumArt.Size = new System.Drawing.Size(196, 26);
+            this.mnuViewAlbumArt.Size = new System.Drawing.Size(198, 26);
             this.mnuViewAlbumArt.Text = "&Album Art";
             this.mnuViewAlbumArt.Click += new System.EventHandler(this.mnuViewAlbumArt_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(195, 6);
             // 
             // mnuMinimizeToTray
             // 
             this.mnuMinimizeToTray.Name = "mnuMinimizeToTray";
-            this.mnuMinimizeToTray.Size = new System.Drawing.Size(196, 26);
+            this.mnuMinimizeToTray.Size = new System.Drawing.Size(198, 26);
             this.mnuMinimizeToTray.Text = "Minimi&ze To Tray";
+            // 
+            // mnuTracker
+            // 
+            this.mnuTracker.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSampleLibrary});
+            this.mnuTracker.Name = "mnuTracker";
+            this.mnuTracker.Size = new System.Drawing.Size(76, 33);
+            this.mnuTracker.Text = "&Sampler";
+            // 
+            // mnuSampleLibrary
+            // 
+            this.mnuSampleLibrary.Name = "mnuSampleLibrary";
+            this.mnuSampleLibrary.Size = new System.Drawing.Size(183, 26);
+            this.mnuSampleLibrary.Text = "Sample Library";
+            this.mnuSampleLibrary.Click += new System.EventHandler(this.mnuSampleLibrary_Click);
             // 
             // mnuOptions
             // 
@@ -469,78 +486,78 @@
             // mnuSettings
             // 
             this.mnuSettings.Name = "mnuSettings";
-            this.mnuSettings.Size = new System.Drawing.Size(302, 26);
+            this.mnuSettings.Size = new System.Drawing.Size(304, 26);
             this.mnuSettings.Text = "&Settings...";
             // 
             // mnuMonitorSettings
             // 
             this.mnuMonitorSettings.Name = "mnuMonitorSettings";
-            this.mnuMonitorSettings.Size = new System.Drawing.Size(302, 26);
+            this.mnuMonitorSettings.Size = new System.Drawing.Size(304, 26);
             this.mnuMonitorSettings.Text = "&Monitor Settings";
             this.mnuMonitorSettings.Click += new System.EventHandler(this.mnuMonitorSettings_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(299, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(301, 6);
             // 
             // mnuPlugins
             // 
             this.mnuPlugins.Name = "mnuPlugins";
-            this.mnuPlugins.Size = new System.Drawing.Size(302, 26);
+            this.mnuPlugins.Size = new System.Drawing.Size(304, 26);
             this.mnuPlugins.Text = "&Effects Settings...";
             // 
             // mnuWinampDSPConfig
             // 
             this.mnuWinampDSPConfig.Name = "mnuWinampDSPConfig";
-            this.mnuWinampDSPConfig.Size = new System.Drawing.Size(302, 26);
+            this.mnuWinampDSPConfig.Size = new System.Drawing.Size(304, 26);
             this.mnuWinampDSPConfig.Text = "Main Mixer &DSP Effect Settings...";
             // 
             // mnuVSTPluginConfig
             // 
             this.mnuVSTPluginConfig.Name = "mnuVSTPluginConfig";
-            this.mnuVSTPluginConfig.Size = new System.Drawing.Size(302, 26);
+            this.mnuVSTPluginConfig.Size = new System.Drawing.Size(304, 26);
             this.mnuVSTPluginConfig.Text = "Main Mixer &VST Effect Settings...";
             // 
             // mnuTrackVSTPluginConfig
             // 
             this.mnuTrackVSTPluginConfig.Name = "mnuTrackVSTPluginConfig";
-            this.mnuTrackVSTPluginConfig.Size = new System.Drawing.Size(302, 26);
+            this.mnuTrackVSTPluginConfig.Size = new System.Drawing.Size(304, 26);
             this.mnuTrackVSTPluginConfig.Text = "&Track Mixer VST Effect Settings...";
             // 
             // mnuTrackFXVSTPluginConfig
             // 
             this.mnuTrackFXVSTPluginConfig.Name = "mnuTrackFXVSTPluginConfig";
-            this.mnuTrackFXVSTPluginConfig.Size = new System.Drawing.Size(302, 26);
+            this.mnuTrackFXVSTPluginConfig.Size = new System.Drawing.Size(304, 26);
             this.mnuTrackFXVSTPluginConfig.Text = "Track &FX VST Effect Settings...";
             // 
             // mnuTrackFXVSTPluginConfig2
             // 
             this.mnuTrackFXVSTPluginConfig2.Name = "mnuTrackFXVSTPluginConfig2";
-            this.mnuTrackFXVSTPluginConfig2.Size = new System.Drawing.Size(302, 26);
+            this.mnuTrackFXVSTPluginConfig2.Size = new System.Drawing.Size(304, 26);
             this.mnuTrackFXVSTPluginConfig2.Text = "Track FX VST Effect #2 Settings...";
             // 
             // mnuSamplerVSTPluginConfig
             // 
             this.mnuSamplerVSTPluginConfig.Name = "mnuSamplerVSTPluginConfig";
-            this.mnuSamplerVSTPluginConfig.Size = new System.Drawing.Size(302, 26);
+            this.mnuSamplerVSTPluginConfig.Size = new System.Drawing.Size(304, 26);
             this.mnuSamplerVSTPluginConfig.Text = "&Sampler VST Effect Settings...";
             // 
             // mnuSamplerVSTPluginConfig2
             // 
             this.mnuSamplerVSTPluginConfig2.Name = "mnuSamplerVSTPluginConfig2";
-            this.mnuSamplerVSTPluginConfig2.Size = new System.Drawing.Size(302, 26);
+            this.mnuSamplerVSTPluginConfig2.Size = new System.Drawing.Size(304, 26);
             this.mnuSamplerVSTPluginConfig2.Text = "&Sampler VST Effect #&2 Settings...";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(299, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(301, 6);
             // 
             // mnuConservativeFadeOut
             // 
             this.mnuConservativeFadeOut.Name = "mnuConservativeFadeOut";
-            this.mnuConservativeFadeOut.Size = new System.Drawing.Size(302, 26);
+            this.mnuConservativeFadeOut.Size = new System.Drawing.Size(304, 26);
             this.mnuConservativeFadeOut.Text = "&Conservative Fade On Poor Mixes";
             // 
             // mnuHelp
@@ -556,21 +573,6 @@
             this.mnuAbout.Name = "mnuAbout";
             this.mnuAbout.Size = new System.Drawing.Size(134, 26);
             this.mnuAbout.Text = "&About...";
-            // 
-            // mnuTracker
-            // 
-            this.mnuTracker.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuSampleLibrary});
-            this.mnuTracker.Name = "mnuTracker";
-            this.mnuTracker.Size = new System.Drawing.Size(76, 33);
-            this.mnuTracker.Text = "&Sampler";
-            // 
-            // mnuSampleLibrary
-            // 
-            this.mnuSampleLibrary.Name = "mnuSampleLibrary";
-            this.mnuSampleLibrary.Size = new System.Drawing.Size(183, 26);
-            this.mnuSampleLibrary.Text = "Sample Library";
-            this.mnuSampleLibrary.Click += new System.EventHandler(this.mnuSampleLibrary_Click);
             // 
             // formStateController
             // 
@@ -858,6 +860,13 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
+            // mnuExportShufflerTracks
+            // 
+            this.mnuExportShufflerTracks.Name = "mnuExportShufflerTracks";
+            this.mnuExportShufflerTracks.Size = new System.Drawing.Size(263, 26);
+            this.mnuExportShufflerTracks.Text = "Export Shuffler Tracks...";
+            this.mnuExportShufflerTracks.Click += new System.EventHandler(this.mnuExportShufflerTracks_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -985,5 +994,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuTracker;
         private System.Windows.Forms.ToolStripMenuItem mnuSampleLibrary;
+        private System.Windows.Forms.ToolStripMenuItem mnuExportShufflerTracks;
     }
 }

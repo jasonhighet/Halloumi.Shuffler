@@ -12,20 +12,19 @@ using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class FrmExportPlaylist : BaseForm
+    public partial class FrmExportShufflerTracks : BaseForm
     {
-        public FrmExportPlaylist()
+        public FrmExportShufflerTracks()
         {
             InitializeComponent();
         }
 
+        private List<Track> _tracks;
+
 
         public Library Library { get; set; }
-        public List<Track> Tracks { get; set; }
-        public string PlaylistName { get; set; }
 
-        private Image AlbumImage { get; set; }
-
+        public SampleLibrary SampleLibrary { get; set; }
 
         /// <summary>
         ///     Handles the Load event of the frmSettings control.
@@ -40,23 +39,11 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            var albumArtists = Tracks.Select(t => t.Artist)
-                .Union(Tracks.Select(t => t.AlbumArtist))
-                .Distinct()
-                .Where(aa => aa != "Various")
-                .OrderBy(aa => Tracks.Count(t => t.Artist == aa) + Tracks.Count(t => t.AlbumArtist == aa))
-                .ToList();
+            _tracks = Library.GetTracks(shufflerFilter: Library.ShufflerFilter.ShuflerTracks);
+            var sampleTracks = SampleLibrary.GetAllTracks().Where(track => _tracks.All(x => x.Filename != track.Filename));
+            _tracks.AddRange(sampleTracks);
 
-            if (albumArtists.Count > 1) albumArtists.Insert(0, "Various");
-
-            cmbAlbumArtist.DataSource = albumArtists;
-
-            txtAlbumName.Text = PlaylistName;
-            if (txtAlbumName.Text == "" && albumArtists.Count == 1) txtAlbumName.Text = albumArtists[0];
-
-            btnOK.Enabled = Tracks.Count > 0;
-
-
+            btnOK.Enabled = _tracks.Count > 0;
             var settings = Settings.Default;
             txtOutputFolder.Text = settings.ExportPlaylistFolder;
         }
@@ -68,12 +55,8 @@ namespace Halloumi.Shuffler.Forms
         private bool ValidateData()
         {
             txtOutputFolder.IsValid();
-            txtAlbumName.IsValid();
-            cmbAlbumArtist.IsValid();
 
-            return txtOutputFolder.IsValid()
-                   && txtAlbumName.IsValid()
-                   && cmbAlbumArtist.IsValid();
+            return txtOutputFolder.IsValid();
         }
 
 
@@ -81,8 +64,8 @@ namespace Halloumi.Shuffler.Forms
         {
             if (!ValidateData()) return;
 
-            progressDialog.Maximum = Tracks.Count;
-            progressDialog.Title = "Exporting Playlist";
+            progressDialog.Maximum = _tracks.Count;
+            progressDialog.Title = "Exporting Shuffler Files";
             progressDialog.CloseOnComplete = false;
             progressDialog.CloseOnCancel = true;
             progressDialog.Start();
@@ -95,55 +78,37 @@ namespace Halloumi.Shuffler.Forms
 
         private void progressDialog_PerformProcessing(object sender, EventArgs e)
         {
-            var albumArtist = "";
-            Invoke((MethodInvoker) delegate { albumArtist = cmbAlbumArtist.Text; });
 
             var destinationFolder = txtOutputFolder.Text;
 
             if (chkCreateSubfolder.Checked)
             {
                 destinationFolder = Path.Combine(destinationFolder,
-                    FileSystemHelper.StripInvalidFileNameChars(txtAlbumName.Text));
+                    FileSystemHelper.StripInvalidFileNameChars("Library"));
+
                 if (!Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
             }
 
-
             try
             {
-                FileSystemHelper.DeleteFiles(destinationFolder, "*.mp3;*.jpg", false);
+                FileSystemHelper.DeleteFiles(destinationFolder, "*.mp3;*.jpg", true);
             }
             catch
             {
                 // ignored
             }
 
-            foreach (var track in Tracks.TakeWhile(track => !progressDialog.Cancelled))
+            foreach (var track in _tracks.TakeWhile(track => !progressDialog.Cancelled))
             {
                 progressDialog.Text = "Exporting " + track.Description;
                 progressDialog.Details += "Copying track " + track.Description + "...";
 
-                var destination = Path.Combine(destinationFolder, Path.GetFileName(track.Filename));
+                var destination = track.Filename.Replace(Library.LibraryFolder, destinationFolder);
                 try
                 {
+
+
                     FileSystemHelper.Copy(track.Filename, destination);
-                    if (progressDialog.Cancelled) break;
-
-
-                    var destinationTrack = Library.LoadNonLibraryTrack(destination);
-
-                    destinationTrack.AlbumArtist = albumArtist;
-                    destinationTrack.Album = txtAlbumName.Text;
-                    if (chkTrackNumbers.Checked)
-                        destinationTrack.TrackNumber = Tracks.IndexOf(track) + 1;
-                    else
-                        destinationTrack.TrackNumber = 0;
-
-                    Library.SaveNonLibraryTrack(destinationTrack);
-
-                    if (AlbumImage != null)
-                        Library.SetTrackAlbumCover(destinationTrack, AlbumImage);
-
-
                     if (progressDialog.Cancelled) break;
 
                     progressDialog.Details += "Done" + Environment.NewLine;
@@ -173,8 +138,6 @@ namespace Halloumi.Shuffler.Forms
                 progressDialog.Value++;
             }
 
-            if (AlbumImage != null)
-                ImageHelper.SaveJpg(Path.Combine(destinationFolder, "folder.jpg"), AlbumImage);
 
             progressDialog.Text = "Export completed.";
 
@@ -187,33 +150,5 @@ namespace Halloumi.Shuffler.Forms
         {
         }
 
-        private void txtAlbumImage_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                var oldImage = AlbumImage;
-                oldImage?.Dispose();
-
-                var newImage = Image.FromFile(txtAlbumImage.Text);
-                var isSmall = newImage.Width <= 750/2;
-
-                var resizedImage = ImageHelper.ScaleAndCropImageToFit(newImage, new Size(750, 750));
-                newImage.Dispose();
-
-                if (isSmall)
-                {
-                    oldImage = resizedImage;
-                    resizedImage = ImageHelper.MedianFilter(resizedImage, 2);
-                    oldImage.Dispose();
-                }
-
-                AlbumImage = resizedImage;
-            }
-            catch
-            {
-                txtAlbumImage.Text = "";
-                AlbumImage = null;
-            }
-        }
     }
 }
