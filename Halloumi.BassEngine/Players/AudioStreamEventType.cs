@@ -8,6 +8,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 {
     public enum AudioStreamEventType
     {
-        PlayAnotherStream
+        PlayStream,
+        PauseStream,
     }
 }

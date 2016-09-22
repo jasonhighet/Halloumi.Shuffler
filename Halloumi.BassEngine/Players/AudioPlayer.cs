@@ -285,20 +285,12 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             audioSection.TargetBpm = targetBpm;
         }
 
-
-        public void AddPlayEvent(string streamKey, double position, string playStreamKey, string playSectionKey)
+        public void AddPlayEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey)
         {
-            AddAudioStreamEvent(streamKey, 
-                position, 
-                new AudioStreamEvent
-                {
-                    StreamKey = playStreamKey,
-                    SectionKey = playSectionKey,
-                    StreamEventType = AudioStreamEventType.PlayAnotherStream
-                });
+            AddEvent(streamKey, position, targetStreamKey, targetSectionKey, AudioStreamEventType.PlayStream);
         }
 
-        public void AddAudioStreamEvent(string streamKey, double position, AudioStreamEvent audioStreamEvent)
+        public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, AudioStreamEventType eventType)
         {
             var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
@@ -307,12 +299,21 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             var audioSync = GetAudioSync(audioStream, position)
                             ?? AddSync(audioStream, SyncType.AudioStreamEvent, position);
-            audioStreamEvent.SyncId = audioSync.Id;
+
+            var audioStreamEvent = new AudioStreamEvent
+            {
+                SyncId = audioSync.Id,
+                StreamKey = targetStreamKey,
+                SectionKey = targetSectionKey,
+                StreamEventType = eventType
+            };
+
             lock (_audioStreamEvents)
             {
                 _audioStreamEvents.Add(audioStreamEvent);
             }
         }
+        
 
         private static AudioSync GetAudioSync(AudioStream audioStream, double position)
         {
@@ -448,15 +449,19 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             DebugHelper.WriteLine("start event sycn");
 
-            var playEvents = audioStreamEvents
-                .Where(x => x.StreamEventType == AudioStreamEventType.PlayAnotherStream)
-                .ToList();
-
-            foreach (var playEvent in playEvents)
+            foreach (var audioEvent in audioStreamEvents)
             {
-                QueueSection(playEvent.StreamKey, playEvent.SectionKey);
-                Play(playEvent.StreamKey);
+                if (audioEvent.StreamEventType == AudioStreamEventType.PlayStream)
+                {
+                    QueueSection(audioEvent.StreamKey, audioEvent.SectionKey);
+                    Play(audioEvent.StreamKey);
+                }
+                else if (audioEvent.StreamEventType == AudioStreamEventType.PauseStream)
+                {
+                    Pause(audioEvent.StreamKey);
+                }
             }
+
 
             DebugHelper.WriteLine("end event sync");
         }
