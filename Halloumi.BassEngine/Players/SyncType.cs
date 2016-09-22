@@ -8,6 +8,6 @@
         Start,
         Offset,
         End,
-        Custom
+        AudioStreamEvent
     }
 }

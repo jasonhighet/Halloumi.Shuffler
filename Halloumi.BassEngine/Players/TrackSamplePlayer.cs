@@ -68,9 +68,13 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             sample.Bpm = trackSample.CalculateBpm(track);
             sample.Description = trackSample.Description;
 
-            _audioPlayer.AddSection(sampleId, sampleId, trackSample.IsLooped);
-            _audioPlayer.SetSectionPositions(sampleId, sampleId, trackSample.Start, trackSample.Length);
-            _audioPlayer.SetSectionBpm(sampleId, sampleId, sample.Bpm);
+            _audioPlayer.AddSection(sampleId, 
+                sampleId, 
+                start: trackSample.Start, 
+                length: trackSample.Length, 
+                bpm: sample.Bpm, 
+                loopIndefinitely: trackSample.IsLooped);
+
             _audioPlayer.QueueSection(sampleId, sampleId);
         }
 

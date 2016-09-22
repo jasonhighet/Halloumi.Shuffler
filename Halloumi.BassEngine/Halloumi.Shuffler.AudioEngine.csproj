@@ -118,6 +118,8 @@
     <Compile Include="Models\AudioData.cs" />
     <Compile Include="Models\AudioStream.cs" />
     <Compile Include="Models\PlayState.cs" />
+    <Compile Include="Players\AudioStreamEvent.cs" />
+    <Compile Include="Players\AudioStreamEventType.cs" />
     <Compile Include="Players\AudioPlayer.cs" />
     <Compile Include="Players\AudioSection.cs" />
     <Compile Include="Players\AudioSync.cs" />

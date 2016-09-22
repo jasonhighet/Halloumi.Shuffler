@@ -67,7 +67,6 @@ namespace Halloumi.Shuffler.Controls
             var speakers = new SpeakerOutputChannel();
             _player = new AudioPlayer();
             speakers.AddInputChannel(_player.Output);
-            _player.OnCustomSync += Player_OnCustomSync;
         }
 
         private string SearchFilter { get; set; }
@@ -110,8 +109,11 @@ namespace Halloumi.Shuffler.Controls
 
         private void StopCurrentSample()
         {
-            _player.Pause();
-            _player.UnloadAll();
+            lock (_player)
+            {
+                _player.Pause();
+                _player.UnloadAll();
+            }
         }
 
         public List<Sample> GetDisplayedSamples()
@@ -167,14 +169,13 @@ namespace Halloumi.Shuffler.Controls
 
             var selectedSamples = GetSelectedSamples();
 
-            BindSamples(selectedSamples);
+            BindSamples();
         }
 
         /// <summary>
         ///     Binds the samples.
         /// </summary>
-        /// <param name="selectedSamples">The selected samples.</param>
-        private void BindSamples(List<Sample> selectedSamples)
+        private void BindSamples()
         {
             _binding = true;
 
@@ -347,21 +348,25 @@ namespace Halloumi.Shuffler.Controls
 
             lock (_player)
             {
-
                 _player.Pause();
                 _player.UnloadAll();
 
-                var targetBpm = decimal.MinValue;
+                var filenames = new List<string>();
                 foreach (var sample in samples)
                 {
                     SampleLibrary.EnsureSampleExists(sample);
-
                     var filename = SampleLibrary.GetSampleFileName(sample);
                     if (!File.Exists(filename))
                         return;
+                    filenames.Add(filename);
+                }
 
+                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
+                var targetBpm = decimal.MinValue;
+                foreach (var filename in filenames)
+                {
                     _player.Load(filename, filename);
-                    var section = _player.AddSection(filename, filename, true);
+                    var section = _player.AddSection(filename, filename);
                     _player.SetSectionPositions(filename, filename);
 
                     if (targetBpm == decimal.MinValue)
@@ -375,33 +380,18 @@ namespace Halloumi.Shuffler.Controls
                     }
 
                     _player.QueueSection(filename, filename);
+                    _player.AddPlayEvent("Silence", 0, filename, filename);
                 }
 
                 var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);
-
-                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
-                _player.AddSection("Silence", "Silence", true);
-                _player.SetSectionPositions("Silence", "Silence", 0, loopLength);
-                _player.SetSectionBpm("Silence", "Silence", calculateBpmFromLength: true, targetBpm: targetBpm);
-                _player.AddCustomSync("Silence", 0);
+                _player.AddSection("Silence", "Silence", 0, loopLength, bpm: targetBpm);
                 _player.QueueSection("Silence", "Silence");
 
                 _player.Pause();
                 _player.Play("Silence");
             }
-            
         }
 
-        private void Player_OnCustomSync(object sender, CustomSyncEventArgs e)
-        {
-            lock (_player)
-            {
-                if (e.StreamKey != "Silence") return;
-                var streamKeys = _player.GetStreamKeys().Where(x => x != "Silence").ToList();
-                _player.Play(streamKeys);
-
-            }
-        }
 
         /// <summary>
         ///     Handles the KeyPress event of the txtSearch control.
@@ -504,7 +494,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
-            var multiSamplesSelected = (GetSelectedSamples().Count > 1);
+            var multiSamplesSelected = GetSelectedSamples().Count > 1;
 
             mnEditSample.Visible = !multiSamplesSelected;
             mnuCalculateKey.Visible = !multiSamplesSelected;
