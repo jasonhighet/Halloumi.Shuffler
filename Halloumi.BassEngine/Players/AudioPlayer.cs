@@ -470,7 +470,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private void OnSectionEnd(AudioSection audioSection, AudioStreamSection streamSection)
         {
             if (audioSection.LoopIndefinitely)
+            {
                 AudioStreamHelper.SetPosition(streamSection.AudioStream, audioSection.Start.Position);
+                var startSync = streamSection.AudioStream.AudioSyncs.FirstOrDefault(x => x.SyncType == SyncType.Start);
+                if (startSync != null) OnEventSync(startSync.Id);
+            }
             else
                 PlayNextSection(audioSection, streamSection);
         }
