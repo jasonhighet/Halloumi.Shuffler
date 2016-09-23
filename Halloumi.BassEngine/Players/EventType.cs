@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace Halloumi.Shuffler.AudioEngine.Players
 {
-    public enum AudioStreamEventType
+    public enum EventType
     {
-        PlayStream,
-        PauseStream,
+        Play,
+        Pause,
+        //TooglePlay,
+        FadeIn,
+        FadeOut
     }
 }

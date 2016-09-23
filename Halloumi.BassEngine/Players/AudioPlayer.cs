@@ -287,10 +287,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public void AddPlayEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey)
         {
-            AddEvent(streamKey, position, targetStreamKey, targetSectionKey, AudioStreamEventType.PlayStream);
+            AddEvent(streamKey, position, targetStreamKey, targetSectionKey, EventType.Play);
         }
 
-        public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, AudioStreamEventType eventType)
+        public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, EventType eventType)
         {
             var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
@@ -300,7 +300,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             var audioSync = GetAudioSync(audioStream, position)
                             ?? AddSync(audioStream, SyncType.AudioStreamEvent, position);
 
-            var audioStreamEvent = new AudioStreamEvent
+            var audioStreamEvent = new Event
             {
                 SyncId = audioSync.Id,
                 StreamKey = targetStreamKey,
@@ -323,9 +323,9 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 .FirstOrDefault(x => x.Position == samplePosition);
         }
 
-        private readonly List<AudioStreamEvent> _audioStreamEvents = new List<AudioStreamEvent>();
+        private readonly List<Event> _audioStreamEvents = new List<Event>();
 
-        private List<AudioStreamEvent> GetAudioStreamEvents(int syncId)
+        private List<Event> GetAudioStreamEvents(int syncId)
         {
             lock (_audioStreamEvents)
             {
@@ -451,14 +451,20 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             foreach (var audioEvent in audioStreamEvents)
             {
-                if (audioEvent.StreamEventType == AudioStreamEventType.PlayStream)
+                if (audioEvent.StreamEventType == EventType.Play)
                 {
                     QueueSection(audioEvent.StreamKey, audioEvent.SectionKey);
                     Play(audioEvent.StreamKey);
                 }
-                else if (audioEvent.StreamEventType == AudioStreamEventType.PauseStream)
+                else if (audioEvent.StreamEventType == EventType.Pause)
                 {
                     Pause(audioEvent.StreamKey);
+                }
+                else if (audioEvent.StreamEventType == EventType.Play)
+                {
+                    Pause();
+                    QueueSection(audioEvent.StreamKey, audioEvent.SectionKey);
+                    Play(audioEvent.StreamKey);
                 }
             }
 

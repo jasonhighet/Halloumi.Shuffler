@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Halloumi.Shuffler.AudioEngine.Players
 {
-    public class AudioStreamEvent
+    public class Event
     {
-        public AudioStreamEventType StreamEventType { get; set; }
+        public EventType StreamEventType { get; set; }
 
         public string StreamKey { get; set; }
 

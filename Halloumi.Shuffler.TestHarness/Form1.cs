@@ -17,6 +17,9 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
+
+
             var targetBpm = 97M;
 
             ChannelHelper.InitialiseAudioEngine(Handle);
@@ -68,43 +71,43 @@ namespace Halloumi.Shuffler.TestHarness
 
 
 
-            _player.AddEvent("Silence", position, "Chorus3", "Chorus3", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "Chorus3", "Chorus3", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado1", "Loop1");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(0.5, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado1", "Loop1", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado1", "Loop1", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado2", "Loop2");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(1, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado2", "Loop2", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado2", "Loop2", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado3", "Loop3");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(1.5, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado3", "Loop3", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado3", "Loop3", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado2", "Loop2");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
 
             position = GetLoopPosition(2, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado2", "Loop2", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado2", "Loop2", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado4", "Loop4");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(2.5, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado4", "Loop4", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado4", "Loop4", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado5", "Loop5");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(3, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado5", "Loop5", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado5", "Loop5", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado4", "Loop4");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(3.5, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado4", "Loop4", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado4", "Loop4", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "VivaTirado6", "Loop6");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
@@ -112,22 +115,22 @@ namespace Halloumi.Shuffler.TestHarness
 
 
             position = GetLoopPosition(4, targetBpm);
-            _player.AddEvent("Silence", position, "VivaTirado6", "Loop6", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "VivaTirado6", "Loop6", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "Chorus1", "Chorus1");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(4.5, targetBpm);
-            _player.AddEvent("Silence", position, "Chorus1", "Chorus1", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "Chorus1", "Chorus1", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "Chorus2", "Chorus2");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(5, targetBpm);
-            _player.AddEvent("Silence", position, "Chorus2", "Chorus2", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "Chorus2", "Chorus2", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "Chorus1", "Chorus1");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
             position = GetLoopPosition(5.5, targetBpm);
-            _player.AddEvent("Silence", position, "Chorus1", "Chorus1", AudioStreamEventType.PauseStream);
+            _player.AddEvent("Silence", position, "Chorus1", "Chorus1", EventType.Pause);
             _player.AddPlayEvent("Silence", position, "Chorus3", "Chorus3");
             _player.AddPlayEvent("Silence", position, "JawBreaks05", "MainBreak");
 
