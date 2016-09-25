@@ -5,7 +5,7 @@
     {
       "key": "VivaTirado",
       "path": "E:\\Music\\Library\\100% Dynamite!\\300% Dynamite!\\14 - Various - Augustus Pablo  Viva Tirado.mp3",
-      "sections": [
+      "samples": [
         {
           "key": "MainLoopCrash",
           "start": 1.730,
@@ -57,10 +57,9 @@
     {
       "key": "JawBreaks05",
       "path": "E:\\Music\\Library\\Samples\\DrumLoops.Breaks\\Jaw Breaks\\05 - DrumLoops.Breaks - Jaw Breaks 05.mp3",
-      "sections": [
+      "samples": [
         {
           "key": "MainBreak",
-          "audioFile": "JawBreaks05",
           "start": 6.35,
           "end": 1.19
         }
@@ -69,50 +68,55 @@
   ],
   "channels": [
     {
-      "title": "MainLoops",
-      "loops": [
-        {
-          "key": "StartMainLoop",
-          "sections": [ "MainLoopCrash", "MainLoop1" ]
-        },
-        {
-          "key": "EndMainLoop",
-          "sections": ["MainLoop1","MainLoop2"]
-        },
-        {
-          "key": "StartKeysLoop",
-          "sections": [ "MainLoopKeysPart1", "MainLoopKeysPart2" ]
-        },
-        {
-          "key": "EndKeysLoop",
-          "sections": [ "MainLoopKeysPart1", "MainLoopKeysEnd" ]
-        },
-        {
-          "key": "StartChorusLoop",
-          "sections": [ "ChorusLoopPart1", "ChorusLoopPart2" ]
-        },
-        {
-          "key": "EndChorusLoop",
-          "sections": [ "ChorusLoopPart1", "ChorusLoopEnd" ]
-        }
-      ]
+      "key": "MainLoops"
     },
     {
-      "key": "Drums",
-      "loops": [
-        {
-          "key": "MainBreak",
-          "sections": ["MainBreak"]
-        }
-      ]
+      "key": "Drums"
     }
   ],
   "patterns": [
-    [ "StartMainLoop", "MainBreak" ],
-    [ "EndMainLoop", "MainBreak" ],
-    [ "StartKeysLoop", "MainBreak" ],
-    [ "EndKeysLoop", "MainBreak" ],
-    [ "StartChorusLoop", "MainBreak" ],
-    [ "EndChorusLoop", "MainBreak" ]
-  ] 
+    {
+      "key": "StartMainLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopCrash", "VivaTirado.MainLoop1" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndMainLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoop1", "VivaTirado.MainLoop2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "StartKeysLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopKeysPart1", "VivaTirado.MainLoopKeysPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndKeysLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopKeysPart1", "VivaTirado.MainLoopKeysEnd" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "StartChorusLoop",
+      "sequence": [
+        [ "VivaTirado.ChorusLoopPart1", "VivaTirado.ChorusLoopPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndChorusLoop",
+      "sequence": [
+        [ "VivaTirado.ChorusLoopPart1", "VivaTirado.ChorusLoopEnd" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    }
+  ],
+  "sequence": [ "StartMainLoop", "EndMainLoop", "StartKeysLoop", "EndKeysLoop", "StartChorusLoop", "EndChorusLoop" ]
 }
