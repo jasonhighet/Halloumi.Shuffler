@@ -324,9 +324,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
             if (samplePosition < 0 || samplePosition > audioStream.Length) return;
 
-            DebugHelper.WriteLine($"SetTrackPosition {audioStream.Description} {audioStream.Channel} {samplePosition} {audioStream.Length}...");
+            var secondPosition = TimeFormatHelper.GetFormattedSeconds(audioStream.SamplesToSeconds(samplePosition));
+            DebugHelper.WriteLine($"SetPosition {audioStream.Description} {secondPosition} {samplePosition}");
             Bass.BASS_ChannelSetPosition(audioStream.Channel, samplePosition);
-            DebugHelper.WriteLine("done");
         }
 
         /// <summary>

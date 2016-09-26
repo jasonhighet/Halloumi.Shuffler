@@ -38,12 +38,12 @@ namespace Halloumi.Shuffler.TestHarness
 
                 foreach (var audioFile in module.AudioFiles)
                 {
-                    channelPlayer.Load(audioFile.Key, audioFile.Path);
-
                     foreach (var sample in audioFile.Samples)
                     {
-                        channelPlayer.AddSection(audioFile.Key, 
-                            sample.Key,
+                        var fullSampleKey = audioFile.Key + "." + sample.Key;
+                        channelPlayer.Load(fullSampleKey, audioFile.Path);
+                        channelPlayer.AddSection(fullSampleKey,
+                            fullSampleKey,
                             sample.Start,
                             sample.End,
                             sample.Offset ?? 0,
@@ -67,16 +67,13 @@ namespace Halloumi.Shuffler.TestHarness
                     var rowIndex = 0;
                     foreach (var row in column)
                     {
-                        var audioFileKey = row.Split('.')[0];
-                        var sampleKey = row.Split('.')[1];
-
                         var loopPosition = 0.0;
                         if (rowIndex > 0 )
                             loopPosition = rowIndex / (double)column.Count;
 
                         var position = GetLoopPosition(loopPosition, targetBpm);
 
-                        player.AddPlayEvent(columnControlKey, position, audioFileKey, sampleKey);
+                        player.AddPlayEvent(columnControlKey, position, row, row);
 
                         rowIndex++;
                     }

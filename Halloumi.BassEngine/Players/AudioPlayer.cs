@@ -45,6 +45,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                     audioStream.Gain = tags.Gain.Value;
                 if (tags.Bpm.HasValue)
                     audioStream.Bpm = tags.Bpm.Value;
+
+                audioStream.Description = TrackHelper.GuessTrackDescription(filename, tags.Artist, tags.Title);
             }
 
             AudioStreamHelper.LoadAudio(audioStream);
@@ -458,10 +460,9 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (audioStreamEvents == null || audioStreamEvents.Count == 0)
                 return;
 
-            DebugHelper.WriteLine("start event sycn");
-
             foreach (var audioEvent in audioStreamEvents)
             {
+                DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType);
                 var player = audioEvent.Player;
                 switch (audioEvent.StreamEventType)
                 {
@@ -479,10 +480,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                     default:
                         throw new Exception("Invalid Event Type");
                 }
+                DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType);
             }
 
 
-            DebugHelper.WriteLine("end event sync");
+
         }
 
         private void OnSectionOffset(AudioSection audioSection, AudioStreamSection streamSection)
