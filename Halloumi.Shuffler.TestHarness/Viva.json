@@ -76,12 +76,47 @@
   ],
   "patterns": [
     {
+      "key": "StartMainLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopCrash", "VivaTirado.MainLoopPart1" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
       "key": "EndMainLoop",
       "sequence": [
-        [ "VivaTirado.MainLoopPart2", "VivaTirado.MainLoopPart2" ],
-        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+        [ "VivaTirado.MainLoopPart1", "VivaTirado.MainLoopPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "StartKeysLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopKeysPart1", "VivaTirado.MainLoopKeysPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndKeysLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopKeysPart1", "VivaTirado.MainLoopKeysEnd" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "StartChorusLoop",
+      "sequence": [
+        [ "VivaTirado.ChorusLoopPart1", "VivaTirado.ChorusLoopPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndChorusLoop",
+      "sequence": [
+        [ "VivaTirado.ChorusLoopPart1", "VivaTirado.ChorusLoopEnd" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
       ]
     }
   ],
-  "sequence": [ "EndMainLoop" ]
+  "sequence": [ "StartMainLoop", "EndMainLoop", "StartKeysLoop", "EndKeysLoop", "StartChorusLoop", "EndChorusLoop" ]
 }

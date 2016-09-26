@@ -12,7 +12,7 @@ namespace Halloumi.Shuffler.TestHarness
 {
     public partial class Form1 : Form
     {
-        private AudioPlayer _player;
+        //private AudioPlayer _player;
 
         public Form1()
         {
@@ -30,7 +30,7 @@ namespace Halloumi.Shuffler.TestHarness
 
 
             var channelPlayers = new List<AudioPlayer>();
-            foreach (var channel in module.Channels)
+            for (var channelIndex  = 0; channelIndex < module.Channels.Count; channelIndex++)
             {
                 var channelPlayer = new AudioPlayer();
                 speakers.AddInputChannel(channelPlayer.Output);
@@ -46,7 +46,7 @@ namespace Halloumi.Shuffler.TestHarness
                             sample.Key,
                             sample.Start,
                             sample.End,
-                            sample.Offset.HasValue ? sample.Offset.Value :0,
+                            sample.Offset ?? 0,
                             targetBpm: module.Bpm);
                     }
                 }
@@ -56,7 +56,10 @@ namespace Halloumi.Shuffler.TestHarness
                 var columnIndex = 0;
                 foreach (var column in pattern.Sequence)
                 {
-                    var player = channelPlayers.Where(x => channelPlayers.IndexOf(x) == columnIndex).FirstOrDefault();
+                    var player = channelPlayers.FirstOrDefault(x => channelPlayers.IndexOf(x) == columnIndex);
+                    if(player == null)
+                        continue;
+
                     var columnControlKey = pattern.Key + columnIndex;
                     player.Load(columnControlKey, SilenceHelper.GetSilenceAudioFile());
                     player.AddSection(columnControlKey, columnControlKey, 0, loopLength, bpm: targetBpm);
@@ -81,6 +84,8 @@ namespace Halloumi.Shuffler.TestHarness
                     columnIndex++;
                 }
             }
+           
+
             var mainPlayer = new AudioPlayer();
             speakers.AddInputChannel(mainPlayer.Output);
             mainPlayer.Load("Song", SilenceHelper.GetSilenceAudioFile());
@@ -91,20 +96,22 @@ namespace Halloumi.Shuffler.TestHarness
             foreach (var patternKey in module.Sequence)
             {
                 var position = GetLoopPosition(patternIndex, targetBpm);
-                var pattern = module.Patterns.Where(x => x.Key == patternKey).FirstOrDefault();
+                var pattern = module.Patterns.FirstOrDefault(x => x.Key == patternKey);
+                if (pattern == null)
+                    continue;
 
-                var columnIndex = 0;
-                foreach (var column in pattern.Sequence)
+                for (var columnIndex = 0; columnIndex < pattern.Sequence.Count; columnIndex++)
                 {
+                    var player = channelPlayers[columnIndex];
                     var columnControlKey = patternKey + columnIndex;
-                    mainPlayer.AddPlayEvent(columnControlKey, position, columnControlKey, columnControlKey);
-                    columnIndex++;
+                    mainPlayer.AddEvent(player, "Song", position, columnControlKey, columnControlKey, EventType.Play);
                 }
-
                 patternIndex++;
             }
 
 
+
+            mainPlayer.Play("Song");
 
 
 

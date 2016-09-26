@@ -15,5 +15,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         public string SectionKey { get; set; }
 
         internal int SyncId { get; set; }
+
+        internal AudioPlayer Player { get; set; }
     }
 }

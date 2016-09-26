@@ -34,6 +34,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         /// </summary>
         public bool LoopIndefinitely { get; set; }
 
+        public bool AutoPlayNextSection { get; set; }
+
         /// <summary>
         ///     Gets the BPM.
         /// </summary>
