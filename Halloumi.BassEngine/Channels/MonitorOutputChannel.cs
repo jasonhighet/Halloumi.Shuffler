@@ -14,18 +14,18 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                 ChannelHelper.InitialiseMonitorDevice(monitorDeviceId);
 
                 // create monitor mixer channel
-                InternalChannel = ChannelHelper.IntialiseOutputChannel();
+                ChannelId = ChannelHelper.IntialiseOutputChannel();
 
                 // set to use monitor sound card
-                Bass.BASS_ChannelSetDevice(InternalChannel, monitorDeviceId);
+                Bass.BASS_ChannelSetDevice(ChannelId, monitorDeviceId);
 
-                Bass.BASS_ChannelPlay(InternalChannel, false);
+                Bass.BASS_ChannelPlay(ChannelId, false);
             }
             else
             {
                 // create monitor channel on main speaker output
-                InternalChannel = ChannelHelper.IntialiseOutputChannel();
-                Bass.BASS_ChannelPlay(InternalChannel, false);
+                ChannelId = ChannelHelper.IntialiseOutputChannel();
+                Bass.BASS_ChannelPlay(ChannelId, false);
             }
         }
     }

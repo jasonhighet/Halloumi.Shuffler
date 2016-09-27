@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         public IBmpProvider BpmProvider { get; }
 
-        internal int InternalChannel { get; set; }
+        public int ChannelId { get; internal set; }
 
         public VstPlugin VstPlugin1 { get; internal set; }
 
@@ -68,11 +68,11 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             switch (inputChannel.OutputType)
             {
                 case MixerChannelOutputType.SingleOutput:
-                    ChannelHelper.AddChannelToDecoderMixer(InternalChannel, inputChannel.InternalChannel);
+                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, inputChannel.ChannelId);
                     break;
                 case MixerChannelOutputType.MultipleOutputs:
-                    var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.InternalChannel);
-                    ChannelHelper.AddChannelToDecoderMixer(InternalChannel, splitOutputChannel);
+                    var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.ChannelId);
+                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, splitOutputChannel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -85,7 +85,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         /// <param name="volume">A value between 0 and 100</param>
         public void SetVolume(decimal volume)
         {
-            AudioStreamHelper.SetVolume(InternalChannel, volume);
+            AudioStreamHelper.SetVolume(ChannelId, volume);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         /// <returns>A value between 0 and 100</returns>
         public decimal GetVolume()
         {
-            return AudioStreamHelper.GetVolume(InternalChannel);
+            return AudioStreamHelper.GetVolume(ChannelId);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public VolumeLevels GetVolumeLevels()
         {
             var levels = new VolumeLevels();
-            var level = Bass.BASS_ChannelGetLevel(InternalChannel);
+            var level = Bass.BASS_ChannelGetLevel(ChannelId);
             levels.Left = Utils.LowWord32(level);
             levels.Right = Utils.HighWord32(level);
             return levels;
@@ -159,7 +159,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                 }
             }
 
-            BassVst.BASS_VST_ChannelRemoveDSP(InternalChannel, plugin.Id);
+            BassVst.BASS_VST_ChannelRemoveDSP(ChannelId, plugin.Id);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             var plugin = new VstPlugin
             {
-                Id = BassVst.BASS_VST_ChannelSetDSP(InternalChannel, location, BASSVSTDsp.BASS_VST_DEFAULT, priority)
+                Id = BassVst.BASS_VST_ChannelSetDSP(ChannelId, location, BASSVSTDsp.BASS_VST_DEFAULT, priority)
             };
 
             if (plugin.Id == 0)
@@ -353,7 +353,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             if (!File.Exists(location)) return null;
 
-            BassMix.BASS_Mixer_ChannelPause(InternalChannel);
+            BassMix.BASS_Mixer_ChannelPause(ChannelId);
 
             if (!_waDspLoaded) StartWaDspEngine();
 
@@ -367,12 +367,12 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             plugin.Name = BassWaDsp.BASS_WADSP_GetName(plugin.Id);
             plugin.Location = location;
-            BassWaDsp.BASS_WADSP_Start(plugin.Id, plugin.Module, InternalChannel);
-            BassWaDsp.BASS_WADSP_ChannelSetDSP(plugin.Id, InternalChannel, 1);
+            BassWaDsp.BASS_WADSP_Start(plugin.Id, plugin.Module, ChannelId);
+            BassWaDsp.BASS_WADSP_ChannelSetDSP(plugin.Id, ChannelId, 1);
 
             WaPlugin = plugin;
 
-            BassMix.BASS_Mixer_ChannelPlay(InternalChannel);
+            BassMix.BASS_Mixer_ChannelPlay(ChannelId);
 
             return plugin;
         }

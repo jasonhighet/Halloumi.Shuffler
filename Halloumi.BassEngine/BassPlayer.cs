@@ -103,7 +103,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public Track CurrentTrack { get; private set; }
 
-        public int MixerChanel => _speakerOutput.InternalChannel;
+        public SpeakerOutputChannel SpeakerOutput => _speakerOutput;
 
         /// <summary>
         ///     Gets the preloaded track.
@@ -665,7 +665,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             DebugHelper.WriteLine("Unloading track Audio Data " + track.Description);
 
-            AudioStreamHelper.RemoveFromMixer(track, _trackMixer.InternalChannel);
+            AudioStreamHelper.RemoveFromMixer(track, _trackMixer.ChannelId);
 
             AudioStreamHelper.UnloadAudio(track);
             track.SyncProc = null;
@@ -1135,7 +1135,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 lock (MixerLock)
                 {
                     // add the new track to the mixer (in paused mode)
-                    AudioStreamHelper.AddToMixer(track, _trackMixer.InternalChannel);
+                    AudioStreamHelper.AddToMixer(track, _trackMixer.ChannelId);
 
                     // set track sync event
                     track.SyncProc = OnTrackSync;

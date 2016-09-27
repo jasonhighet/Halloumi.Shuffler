@@ -37,6 +37,18 @@
     <Reference Include="Bass.Net">
       <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>
+    <Reference Include="ComponentFactory.Krypton.Toolkit, Version=4.3.2.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\ComponentFactory.Krypton.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Halloumi.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\Halloumi.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Halloumi.Common.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\Halloumi.Common.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -97,6 +109,14 @@
     <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj">
       <Project>{b2b7650c-8209-4d48-aadf-5a1e76928b7e}</Project>
       <Name>Halloumi.Shuffler.AudioEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.AudioLibrary.csproj">
+      <Project>{744EC40E-007A-4D10-BBE1-FC084A9DB425}</Project>
+      <Name>Halloumi.Shuffler.AudioLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Halloumi.Shuffler\Halloumi.Shuffler.csproj">
+      <Project>{96A9FFAC-90BB-4D8F-B237-8DC09024B043}</Project>
+      <Name>Halloumi.Shuffler</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

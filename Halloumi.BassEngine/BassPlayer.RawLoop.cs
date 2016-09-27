@@ -73,7 +73,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             DebugHelper.WriteLine("Loading raw loop track " + track.Description);
 
-            AudioStreamHelper.AddToMixer(track, _rawLoopMixer.InternalChannel);
+            AudioStreamHelper.AddToMixer(track, _rawLoopMixer.ChannelId);
             RawLoopTrack = track;
 
             SetRawLoopPositions(0, track.Length, 0);

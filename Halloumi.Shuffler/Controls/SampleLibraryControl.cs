@@ -380,7 +380,7 @@ namespace Halloumi.Shuffler.Controls
                     }
 
                     _player.QueueSection(filename, filename);
-                    _player.AddEvent("Silence", 0, filename, filename, EventType.Play);
+                    _player.AddEvent("Silence", 0, filename, filename, EventType.Play, _player);
                 }
 
                 var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);

@@ -1,22 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.Controls;
+using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
+using Track = Halloumi.Shuffler.AudioEngine.Models.Track;
+
 
 namespace Halloumi.Shuffler.Forms
 {
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public partial class FrmEditTrackSamples : BaseForm
     {
-        #region Constructors
+        private bool _bindingData;
+
+        private bool _updateSampleLibrary;
+
+        public FrmEditTrackSamples()
+        {
+            InitializeComponent();
+
+            trackWave.PositionsChanged += trackWave_PositionsChanged;
+            cmbSampleLength.TextChanged += cmbSampleLength_TextChanged;
+        }
+
 
         public AE.BassPlayer BassPlayer { get; set; }
 
@@ -26,14 +41,82 @@ namespace Halloumi.Shuffler.Forms
 
         public Library Library { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="frmTrack"/> class.
-        /// </summary>
-        public FrmEditTrackSamples()
-        {
-            InitializeComponent();
+        private Sample CurrentSample { get; set; }
 
-            trackWave.PositionsChanged += new EventHandler(trackWave_PositionsChanged);
+        public List<Sample> Samples { get; set; }
+
+        public Track Track { get; private set; }
+
+        public AudioLibrary.Models.Track LibraryTrack { get; private set; }
+
+        /// <summary>
+        ///     Handles the SelectedIndexChanged event of the lstSamples control.
+        /// </summary>
+        private void lstSamples_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_bindingData) return;
+
+            trackWave.Stop();
+
+            UpdateCurrentSample();
+            if (lstSamples.SelectedItems.Count == 0)
+            {
+                CurrentSample = null;
+                trackWave.CurrentSample = null;
+            }
+            else
+            {
+                var description = lstSamples.SelectedItems[0].Text;
+                CurrentSample = Samples.FirstOrDefault(s => s.Description == description);
+                trackWave.CurrentSample = CurrentSample;
+            }
+            trackWave.RefreshPositions();
+            BindSample();
+            ZoomToSample();
+        }
+
+        private void btnAddSample_Click(object sender, EventArgs e)
+        {
+            AddSample();
+        }
+
+        private void btnRemoveSample_Click(object sender, EventArgs e)
+        {
+            RemoveSample();
+        }
+
+        private void btnRenameSample_Click(object sender, EventArgs e)
+        {
+            RenameSample();
+        }
+
+        //private void btnCalculateKey_Click(object sender, EventArgs e)
+        //{
+        //    KeyHelper.CalculateKey(trackWave.Filename);
+        //}
+
+        private void txtSampleOffsetPosition_TextChanged(object sender, EventArgs e)
+        {
+            RefreshTrackWavePositions();
+        }
+
+        private void cmbSampleLength_TextUpdate(object sender, EventArgs e)
+        {
+            RefreshTrackWavePositions();
+        }
+
+        private void cmbLoopMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetSampleBpmLabel();
+        }
+
+        private void btnImportSamplesFromMix_Click(object sender, EventArgs e)
+        {
+            var mixSamples = SampleLibrary.GetMixSectionsAsSamples(LibraryTrack);
+            Samples.AddRange(mixSamples);
+
+            UpdateCurrentSample();
+            BindSamples();
         }
 
         private void Initialise()
@@ -41,28 +124,37 @@ namespace Halloumi.Shuffler.Forms
             trackWave.Mode = TrackWave.TrackWaveMode.Sampler;
             trackWave.BassPlayer = BassPlayer;
             Track = trackWave.LoadTrack(Filename);
-            LibraryTrack = Library.GetTrackByFilename(Filename);
+            LibraryTrack = Library.GetTrackByFilename(Filename) ?? Library.LoadNonLibraryTrack(Filename);
 
             cmbOutput.SelectedIndex = 0;
 
-            Samples = new List<Sample>();
-            var samples = SampleLibrary.GetSamples(LibraryTrack);
-
-            foreach (var sample in samples)
+            if ((Samples == null || (Samples != null && Samples.Count == 0)) && LibraryTrack != null)
             {
-                Samples.Add(sample.Clone());
+                _updateSampleLibrary = true;
+                Samples = SampleLibrary
+                    .GetSamples(LibraryTrack)
+                    .Select(sample => sample.Clone())
+                    .ToList();
             }
+            else
+            {
+                if (LibraryTrack != null && Samples != null)
+                    foreach (var sample in Samples)
+                    {
+                        SampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
+                    }
+            }
+
+
             trackWave.Samples = Samples;
+
+            btnImportSamplesFromMix.Visible = LibraryTrack != null && LibraryTrack.IsShufflerTrack;
 
             BindData();
         }
 
-        #endregion
-
-        #region Private Methods
-
         /// <summary>
-        /// Loads the settings.
+        ///     Loads the settings.
         /// </summary>
         public void LoadSettings()
         {
@@ -70,16 +162,18 @@ namespace Halloumi.Shuffler.Forms
             {
                 var settings = Settings.Default;
                 BassPlayer.RawLoopOutput = settings.RawLoopOutput;
-                if (settings.RawLoopOutput == AE.Channels.SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.RawLoopOutput == AE.Channels.SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.RawLoopOutput == AE.Channels.SoundOutput.Both) cmbOutput.SelectedIndex = 2;
+                if (settings.RawLoopOutput == SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
+                if (settings.RawLoopOutput == SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
+                if (settings.RawLoopOutput == SoundOutput.Both) cmbOutput.SelectedIndex = 2;
             }
             catch
-            { }
+            {
+                // ignored
+            }
         }
 
         /// <summary>
-        /// Binds the data.
+        ///     Binds the data.
         /// </summary>
         private void BindData()
         {
@@ -95,7 +189,7 @@ namespace Halloumi.Shuffler.Forms
         private void BindTrack()
         {
             lblTrackBPM.Text = Track.Bpm.ToString("0.00");
-            Text = "Halloumi : Shuffler : Sample Details : " + Track.Description;
+            Text = @"Halloumi : Shuffler : Sample Details : " + Track.Description;
 
             lblTrackArtist.Text = LibraryTrack.Artist;
             lblTrackTitle.Text = LibraryTrack.Title;
@@ -103,10 +197,8 @@ namespace Halloumi.Shuffler.Forms
             lblTrackKey.Text = KeyHelper.GetDisplayKey(LibraryTrack.Key);
         }
 
-        private bool _bindingData = false;
-
         /// <summary>
-        /// Saves the track.
+        ///     Saves the track.
         /// </summary>
         private void SaveSamples()
         {
@@ -120,20 +212,18 @@ namespace Halloumi.Shuffler.Forms
                 sample.Gain = trackWave.GetNormalizationGain(sample.Start, sample.Length);
             }
 
-            SampleLibrary.UpdateTrackSamples(LibraryTrack, Samples);
-            SampleLibrary.SaveCache();
-
-            SampleLibrary.SaveSampleFiles(LibraryTrack);
-
-            //_saved = true;
+            if (_updateSampleLibrary)
+            {
+                SampleLibrary.UpdateTrackSamples(LibraryTrack, Samples);
+                SampleLibrary.SaveCache();
+                SampleLibrary.SaveSampleFiles(LibraryTrack);
+            }
 
             Close();
         }
 
-        //private bool _saved = false;
-
         /// <summary>
-        /// Updates the track from the controls
+        ///     Updates the track from the controls
         /// </summary>
         private void RefreshTrackWavePositions()
         {
@@ -141,18 +231,6 @@ namespace Halloumi.Shuffler.Forms
 
             trackWave.RefreshPositions();
             CalculateSampleBpm();
-        }
-
-        private Sample CurrentSample
-        {
-            get;
-            set;
-        }
-
-        private List<Sample> Samples
-        {
-            get;
-            set;
         }
 
         private void BindSamples()
@@ -163,7 +241,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 var item = new ListViewItem(sample.Description);
                 lstSamples.Items.Add(item);
-                item.Selected = (sample == CurrentSample);
+                item.Selected = sample == CurrentSample;
             }
             lstSamples.ResumeLayout();
             trackWave.RefreshPositions();
@@ -171,7 +249,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindSample()
         {
-            List<double> loopLengths = null;
+            List<double> loopLengths;
             if (CurrentSample == null)
             {
                 txtSampleStartPosition.Seconds = 0;
@@ -181,7 +259,7 @@ namespace Halloumi.Shuffler.Forms
                 SetLoopModeOnDropdown(LoopMode.FullLoop);
                 chkAtonal.Checked = false;
                 chkPrimaryLoop.Checked = false;
-                lblSampleBPM.Text = "100.00";
+                lblSampleBPM.Text = @"100.00";
                 txtTags.Text = "";
             }
             else
@@ -191,7 +269,7 @@ namespace Halloumi.Shuffler.Forms
                 txtSampleStartPosition.Seconds = CurrentSample.Start;
                 txtSampleOffsetPosition.Seconds = CurrentSample.Offset;
 
-                lblSampleBPM.Text = string.Format("0.00", CurrentSample.Bpm);
+                lblSampleBPM.Text = CurrentSample.Bpm.ToString("0.00");
 
                 cmbSampleLength.Seconds = CurrentSample.Length;
                 SetLoopModeOnDropdown(CurrentSample.LoopMode);
@@ -226,7 +304,10 @@ namespace Halloumi.Shuffler.Forms
 
         private LoopMode GetLoopModeFromDropdown()
         {
-            return (LoopMode)Enum.Parse(typeof(LoopMode), StringHelper.GetAlphabeticCharactersOnly(cmbLoopMode.GetTextThreadSafe()));
+            return
+                (LoopMode)
+                    Enum.Parse(typeof(LoopMode),
+                        StringHelper.GetAlphabeticCharactersOnly(cmbLoopMode.GetTextThreadSafe()));
         }
 
         private decimal CalculateSampleBpm()
@@ -242,39 +323,40 @@ namespace Halloumi.Shuffler.Forms
             var samples = Samples.Where(x => x.LoopMode == LoopMode.FullLoop).ToList();
             samples.Remove(CurrentSample);
 
-            if (samples.Count() == 0) return Track.Bpm;
+            if (!samples.Any()) return Track.Bpm;
 
-            return samples
+            var firstSample = samples
                 .OrderByDescending(x => Math.Abs(start - x.Start))
-                .FirstOrDefault()
-                .Bpm;
+                .FirstOrDefault();
+
+            return firstSample?.Bpm ?? 100M;
         }
 
         private void AddSample()
         {
             var sampleName = UserInputHelper.GetUserInput("Sample Name", "", this);
-            if (sampleName != "")
-            {
-                var sample = new Sample()
-                {
-                    Description = sampleName,
-                };
+            if (sampleName == "") return;
 
+            var sample = new Sample
+            {
+                Description = sampleName
+            };
+
+            if (LibraryTrack != null)
                 SampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
 
-                Samples.Add(sample);
-                CurrentSample = sample;
-                trackWave.CurrentSample = sample;
-                trackWave.Samples = Samples;
+            Samples.Add(sample);
+            CurrentSample = sample;
+            trackWave.CurrentSample = sample;
+            trackWave.Samples = Samples;
 
-                sample.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
-                sample.Length = Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
-                sample.Bpm = BpmHelper.GetBpmFromLoopLength(sample.Length);
+            sample.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
+            sample.Length = Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
+            sample.Bpm = BpmHelper.GetBpmFromLoopLength(sample.Length);
 
-                RefreshTrackWavePositions();
+            RefreshTrackWavePositions();
 
-                BindData();
-            }
+            BindData();
         }
 
         private void RemoveSample()
@@ -325,20 +407,8 @@ namespace Halloumi.Shuffler.Forms
                 .ToList();
         }
 
-        #endregion
-
-        #region Properties
-
-        public AudioEngine.Models.Track Track { get; private set; }
-
-        public Track LibraryTrack { get; private set; }
-
-        #endregion
-
-        #region Event Handlers
-
         /// <summary>
-        /// Handles the Click event of the btnOK control.
+        ///     Handles the Click event of the btnOK control.
         /// </summary>
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -346,7 +416,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the Click event of the btnCancel control.
+        ///     Handles the Click event of the btnCancel control.
         /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -354,7 +424,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the FormClosed event of the frmTrack control.
+        ///     Handles the FormClosed event of the frmTrack control.
         /// </summary>
         private void frmSamples_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -362,15 +432,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the TextChanged event of the txtFadeOutStartPosition control.
-        /// </summary>
-        private void txtFadeOutStartPosition_TextChanged(object sender, EventArgs e)
-        {
-            RefreshTrackWavePositions();
-        }
-
-        /// <summary>
-        /// Handles the TextChanged event of the trackWave control.
+        ///     Handles the TextChanged event of the trackWave control.
         /// </summary>
         private void trackWave_PositionsChanged(object sender, EventArgs e)
         {
@@ -410,13 +472,8 @@ namespace Halloumi.Shuffler.Forms
             RefreshTrackWavePositions();
         }
 
-        private void chkLoopSample_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshTrackWavePositions();
-        }
-
         /// <summary>
-        /// Handles the Load event of the frmSamples control.
+        ///     Handles the Load event of the frmSamples control.
         /// </summary>
         private void frmSamples_Load(object sender, EventArgs e)
         {
@@ -424,84 +481,12 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the SelectedIndexChanged event of the cmbOutput control.
+        ///     Handles the SelectedIndexChanged event of the cmbOutput control.
         /// </summary>
         private void cmbOutput_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var outputType = cmbOutput.ParseEnum<AE.Channels.SoundOutput>();
+            var outputType = cmbOutput.ParseEnum<SoundOutput>();
             BassPlayer.RawLoopOutput = outputType;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Handles the SelectedIndexChanged event of the lstSamples control.
-        /// </summary>
-        private void lstSamples_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_bindingData) return;
-
-            trackWave.Stop();
-
-            UpdateCurrentSample();
-            if (lstSamples.SelectedItems.Count == 0)
-            {
-                CurrentSample = null;
-                trackWave.CurrentSample = null;
-            }
-            else
-            {
-                var description = lstSamples.SelectedItems[0].Text;
-                CurrentSample = Samples.Where(s => s.Description == description).FirstOrDefault();
-                trackWave.CurrentSample = CurrentSample;
-            }
-            trackWave.RefreshPositions();
-            BindSample();
-            ZoomToSample();
-        }
-
-        private void btnAddSample_Click(object sender, EventArgs e)
-        {
-            AddSample();
-        }
-
-        private void btnRemoveSample_Click(object sender, EventArgs e)
-        {
-            RemoveSample();
-        }
-
-        private void btnRenameSample_Click(object sender, EventArgs e)
-        {
-            RenameSample();
-        }
-
-        private void btnCalculateKey_Click(object sender, EventArgs e)
-        {
-            KeyHelper.CalculateKey(trackWave.Filename);
-        }
-
-        private void txtSampleOffsetPosition_TextChanged(object sender, EventArgs e)
-        {
-            RefreshTrackWavePositions();
-        }
-
-        private void cmbSampleLength_TextUpdate(object sender, EventArgs e)
-        {
-            RefreshTrackWavePositions();
-        }
-
-        private void cmbLoopMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetSampleBpmLabel();
-        }
-
-        private void btnImportSamplesFromMix_Click(object sender, EventArgs e)
-        {
-            var mixSamples = SampleLibrary.GetMixSectionsAsSamples(LibraryTrack);
-            Samples.AddRange(mixSamples);
-
-            UpdateCurrentSample();
-            BindSamples();
         }
     }
 }

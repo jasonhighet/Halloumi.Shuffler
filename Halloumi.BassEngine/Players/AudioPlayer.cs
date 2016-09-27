@@ -52,7 +52,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AudioStreamHelper.LoadAudio(audioStream);
 
             audioStream.SyncProc = OnSync;
-            AudioStreamHelper.AddToMixer(audioStream, Output.InternalChannel);
+            AudioStreamHelper.AddToMixer(audioStream, Output.ChannelId);
             AudioStreamHelper.SetPosition(audioStream, 0);
 
             lock (_streamSections)
@@ -92,7 +92,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 streamSection.AudioStream.AudioSyncs.Clear();
             }
 
-            AudioStreamHelper.RemoveFromMixer(streamSection.AudioStream, Output.InternalChannel);
+            AudioStreamHelper.RemoveFromMixer(streamSection.AudioStream, Output.ChannelId);
             AudioStreamHelper.UnloadAudio(streamSection.AudioStream);
 
             streamSection.AudioStream.SyncProc = null;
@@ -299,15 +299,18 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public void AddPlayEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey)
         {
-            AddEvent(this, streamKey, position, targetStreamKey, targetSectionKey, EventType.Play);
+            AddEvent(streamKey, position, targetStreamKey, targetSectionKey, EventType.Play, this);
         }
 
-        public void AddEvent(AudioPlayer player, string streamKey, double position, string targetStreamKey, string targetSectionKey, EventType eventType)
+        public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, EventType eventType, AudioPlayer player = null)
         {
             var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
                 return;
             if (position == double.MinValue) return;
+
+            if (player == null)
+                player = this;
 
             var audioSync = GetAudioSync(audioStream, position)
                             ?? AddSync(audioStream, SyncType.AudioStreamEvent, position);

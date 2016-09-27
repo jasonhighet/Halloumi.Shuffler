@@ -17,7 +17,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         public static TagDetails LoadTags(string filename)
         {
-            if (Path.GetExtension(filename).ToLower() != ".mp3")
+            var extension = Path.GetExtension(filename);
+            if (extension == null ) return null;
+            if (extension.ToLower() != ".mp3")
                 return null;
 
             lock (_tagDetails)
@@ -31,14 +33,16 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var tags = BassTags.BASS_TAG_GetFromFile(filename);
             if (tags == null) throw new Exception("Cannot load tags for file " + filename);
 
-            var tagDetails = new TagDetails();
-            tagDetails.Title = tags.title;
-            tagDetails.Artist = tags.artist;
-            tagDetails.Album = tags.album;
-            tagDetails.AlbumArtist = tags.albumartist;
-            tagDetails.Genre = tags.genre;
+            var tagDetails = new TagDetails
+            {
+                Title = tags.title,
+                Artist = tags.artist,
+                Album = tags.album,
+                AlbumArtist = tags.albumartist,
+                Genre = tags.genre,
+                Gain = tags.replaygain_track_peak
+            };
 
-            tagDetails.Gain = tags.replaygain_track_peak;
 
             var key = tags.NativeTag("InitialKey");
             if (key != "") tagDetails.Key = key;

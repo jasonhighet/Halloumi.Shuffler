@@ -8,8 +8,8 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public SpeakerOutputChannel()
             : base(null)
         {
-            InternalChannel = ChannelHelper.IntialiseOutputChannel();
-            Bass.BASS_ChannelPlay(InternalChannel, false);
+            ChannelId = ChannelHelper.IntialiseOutputChannel();
+            Bass.BASS_ChannelPlay(ChannelId, false);
         }
     }
 }

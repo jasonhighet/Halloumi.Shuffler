@@ -12,7 +12,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public MixerChannel(IBmpProvider bpmProvider = null, MixerChannelOutputType outputType = MixerChannelOutputType.SingleOutput)
             : base(bpmProvider)
         {
-            InternalChannel = ChannelHelper.IntialiseMixerChannel();
+            ChannelId = ChannelHelper.IntialiseMixerChannel();
             OutputType = outputType;
             SetVolume(100);
         }
@@ -35,7 +35,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         private void InitialiseMixerEq()
         {
-            _eqChannel = Bass.BASS_ChannelSetFX(InternalChannel, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
+            _eqChannel = Bass.BASS_ChannelSetFX(ChannelId, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
         }
 
         private bool IsMixerEqIntialised()
