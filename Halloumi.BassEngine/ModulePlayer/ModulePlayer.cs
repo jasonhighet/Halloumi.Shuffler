@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
@@ -150,24 +151,46 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             }
         }
 
+        public void UpdateSamples(Module.AudioFile audioFile, List<Module.Sample> updatedSamples)
+        {
+            Pause();
+            audioFile.Samples = updatedSamples;
+            foreach (var channelPlayer in _channelPlayers)
+            {
+                var existingSampleKeys = channelPlayer.GetStreamKeys().Where(x => x.StartsWith(audioFile.Key + ".")).ToList();
+                foreach (var sampleKey in existingSampleKeys)
+                {
+                    channelPlayer.Unload(sampleKey);
+                }
+
+                LoadSamples(Module, channelPlayer, audioFile);
+            }
+        }
+
+
         private void LoadAudioFiles(Module module)
         {
             foreach (var channelPlayer in _channelPlayers)
             {
                 foreach (var audioFile in module.AudioFiles)
                 {
-                    foreach (var sample in audioFile.Samples)
-                    {
-                        var fullSampleKey = audioFile.Key + "." + sample.Key;
-                        channelPlayer.Load(fullSampleKey, audioFile.Path);
-                        channelPlayer.AddSection(fullSampleKey,
-                            fullSampleKey,
-                            sample.Start,
-                            sample.Length,
-                            sample.Offset ?? 0,
-                            targetBpm: module.Bpm);
-                    }
+                    LoadSamples(module, channelPlayer, audioFile);
                 }
+            }
+        }
+
+        private static void LoadSamples(Module module, AudioPlayer channelPlayer, Module.AudioFile audioFile)
+        {
+            foreach (var sample in audioFile.Samples)
+            {
+                var fullSampleKey = audioFile.Key + "." + sample.Key;
+                channelPlayer.Load(fullSampleKey, audioFile.Path);
+                channelPlayer.AddSection(fullSampleKey,
+                    fullSampleKey,
+                    sample.Start,
+                    sample.Length,
+                    sample.Offset ?? 0,
+                    targetBpm: module.Bpm);
             }
         }
 

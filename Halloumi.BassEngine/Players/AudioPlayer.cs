@@ -75,6 +75,12 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 return;
 
             AudioStreamHelper.Pause(streamSection.AudioStream);
+
+            lock (_audioStreamEvents)
+            {
+                _audioStreamEvents.RemoveAll(x => x.StreamKey == streamKey);
+            }
+
             lock (streamSection)
             {
                 foreach (var sync in streamSection.AudioSections.SelectMany(section => section.AudioSyncs))
@@ -318,8 +324,9 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             var audioStreamEvent = new Event
             {
                 SyncId = audioSync.Id,
-                StreamKey = targetStreamKey,
-                SectionKey = targetSectionKey,
+                StreamKey = streamKey,
+                TargetStreamKey = targetStreamKey,
+                TargetSectionKey = targetSectionKey,
                 StreamEventType = eventType,
                 Player = player
             };
@@ -328,6 +335,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             {
                 _audioStreamEvents.Add(audioStreamEvent);
             }
+
+            DebugHelper.WriteLine("Added event sync id " + audioSync.Id + " as " + eventType + " on " + streamKey + " to " + targetStreamKey);
         }
         
 
@@ -354,14 +363,14 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
-                return;
+                throw new Exception("Cannot find stream " + streamKey);
 
             var audioSection = GetAudioSection(streamKey, sectionKey);
             if (audioSection == null)
-                return;
+                throw new Exception("Cannot find section " + sectionKey + " for stream " + streamKey);
 
             if (!audioSection.HasStartAndEnd)
-                return;
+                throw new Exception("Cannot find start and end for section " + sectionKey + " for stream " + streamKey);
 
             var startPosition = audioSection.HasOffset
                 ? audioSection.Offset.Position + 500
@@ -462,19 +471,19 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             var audioStreamEvents = GetAudioStreamEvents(syncId);
             if (audioStreamEvents == null || audioStreamEvents.Count == 0)
                 return;
-
+            
             foreach (var audioEvent in audioStreamEvents)
             {
-                DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType);
+                DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
                 var player = audioEvent.Player;
                 switch (audioEvent.StreamEventType)
                 {
                     case EventType.Play:
-                        player.QueueSection(audioEvent.StreamKey, audioEvent.SectionKey);
-                        player.Play(audioEvent.StreamKey);
+                        player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
+                        player.Play(audioEvent.TargetStreamKey);
                         break;
                     case EventType.Pause:
-                        player.Pause(audioEvent.StreamKey);
+                        player.Pause(audioEvent.TargetStreamKey);
                         break;
                     case EventType.FadeIn:
                         break;
@@ -483,7 +492,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                     default:
                         throw new Exception("Invalid Event Type");
                 }
-                DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType);
+                DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType + " " + syncId);
             }
 
 

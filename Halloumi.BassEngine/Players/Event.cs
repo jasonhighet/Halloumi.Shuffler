@@ -10,12 +10,13 @@ namespace Halloumi.Shuffler.AudioEngine.Players
     {
         public EventType StreamEventType { get; set; }
 
-        public string StreamKey { get; set; }
+        public string TargetStreamKey { get; set; }
 
-        public string SectionKey { get; set; }
+        public string TargetSectionKey { get; set; }
 
         internal int SyncId { get; set; }
 
         internal AudioPlayer Player { get; set; }
+        public string StreamKey { get; internal set; }
     }
 }

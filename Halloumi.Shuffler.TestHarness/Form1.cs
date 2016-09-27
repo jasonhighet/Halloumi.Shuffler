@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine;
-using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;
@@ -14,9 +13,9 @@ namespace Halloumi.Shuffler.TestHarness
 {
     public partial class Form1 : Form
     {
-        private ModulePlayer _player;
         private BassPlayer _bassPlayer;
         private Library _library;
+        private ModulePlayer _player;
         private SampleLibrary _sampleLibrary;
 
         public Form1()
@@ -26,13 +25,15 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            DebugHelper.DebugMode = false;
+
             _bassPlayer = new BassPlayer(Handle);
             ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
             _library = new Library(_bassPlayer)
             {
-                LibraryFolder = @"E:\Music\Library",
+                LibraryFolder = @"E:\Music\Library"
             };
-            
+
 
             _library.LoadFromDatabase();
             _sampleLibrary = new SampleLibrary(_bassPlayer, _library);
@@ -49,11 +50,11 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var samples = _player
-                .Module
-                .AudioFiles[0]
+            var audioFile = _player.Module.AudioFiles[1];
+
+            var samples = audioFile
                 .Samples
-                .Select(x => new Sample()
+                .Select(x => new Sample
                 {
                     Start = x.Start,
                     Description = x.Key,
@@ -65,15 +66,25 @@ namespace Halloumi.Shuffler.TestHarness
             var form = new FrmEditTrackSamples
             {
                 BassPlayer = _bassPlayer,
-                Filename = _player.Module.AudioFiles[0].Path,
+                Filename = audioFile.Path,
                 SampleLibrary = _sampleLibrary,
                 Library = _library,
                 Samples = samples
             };
 
-            
+            if (form.ShowDialog() != DialogResult.OK) return;
 
-            form.ShowDialog();
+            var newSamples = form.Samples.Select(x => new Module.Sample
+            {
+                Start = x.Start,
+                Length = x.Length,
+                Offset = x.Offset,
+                Key = x.Description
+            }).ToList();
+
+            _player.UpdateSamples(audioFile, newSamples);
+
+            _player.PlayModuleLooped();
         }
     }
 }

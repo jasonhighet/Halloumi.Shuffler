@@ -319,7 +319,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             var currentTrack = currentPath.Tracks.Last();
 
-            //DebugHelper.WriteLine("Start GeneratePaths " + currentTrack.Description);
+            DebugHelper.WriteLine("Start GeneratePaths " + currentTrack.Description);
 
             var excludeTrackDescriptions = GetDistinctTrackDescriptions(currentPath.Tracks);
 
@@ -403,7 +403,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 if (IsGenerationHalted()) break;
             }
 
-            //DebugHelper.WriteLine("End GeneratePaths " + currentTrack.Description);
+            DebugHelper.WriteLine("End GeneratePaths " + currentTrack.Description);
         }
 
         private List<Track> FilterTracksForVariety(Track currentTrack, List<Track> mixTracks)
