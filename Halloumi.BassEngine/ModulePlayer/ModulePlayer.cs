@@ -52,6 +52,11 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             _mainPlayer.Pause();
         }
 
+        public void SaveModule(string modulePath)
+        {
+            File.WriteAllText(modulePath, JsonConvert.SerializeObject(Module));
+        }
+
         public void LoadModule(string modulePath)
         {
             var module = JsonConvert.DeserializeObject<Module>(File.ReadAllText(modulePath));

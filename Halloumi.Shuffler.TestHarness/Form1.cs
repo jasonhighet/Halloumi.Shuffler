@@ -83,8 +83,21 @@ namespace Halloumi.Shuffler.TestHarness
             }).ToList();
 
             _player.UpdateSamples(audioFile, newSamples);
+        }
 
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            _player.SaveModule("song.json");
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
             _player.PlayModuleLooped();
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            _player.Pause();
         }
     }
 }
