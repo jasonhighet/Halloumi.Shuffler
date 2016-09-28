@@ -28,6 +28,7 @@ namespace Halloumi.Shuffler.Forms
         private bool _bassPlayerOnTrackChange;
         private FrmFadeNow _frmFadeNow;
         private FrmSampleLibrary _frmSampleLibrary;
+        private frmModuleEditor _frmModuleEditor;
 
         private FrmGeneratePlaylist _generatePlaylist;
 
@@ -1171,6 +1172,20 @@ namespace Halloumi.Shuffler.Forms
                 SampleLibrary = SampleLibrary
             };
             exportPlaylist.ShowDialog();
+        }
+
+        private void mnuModuleEditor_Click(object sender, EventArgs e)
+        {
+            if (_frmModuleEditor == null || _frmModuleEditor.IsDisposed)
+            {
+                _frmModuleEditor = new frmModuleEditor();
+                _frmModuleEditor.Initialize(BassPlayer, SampleLibrary);
+            }
+
+            if (!_frmModuleEditor.Visible)
+            {
+                WindowHelper.ShowDialog(this, _frmModuleEditor);
+            }
         }
     }
 }

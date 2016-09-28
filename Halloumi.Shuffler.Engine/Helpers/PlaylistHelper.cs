@@ -51,9 +51,10 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// </summary>
         public static void LoadPlaylists(Library libary)
         {
-            var playlistFiles = FileSystemHelper.SearchFiles(PlaylistFolder, "*.m3u", false);
+            //var playlistFiles = FileSystemHelper.SearchFiles(PlaylistFolder, "*.m3u", false);
 
-            Playlists = playlistFiles.Select(playlistFile => LoadPlaylist(playlistFile, libary)).ToList();
+            //Playlists = playlistFiles.Select(playlistFile => LoadPlaylist(playlistFile, libary)).ToList();
+            Playlists = new List<Playlist>();
         }
 
         /// <summary>

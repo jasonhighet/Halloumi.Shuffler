@@ -7,7 +7,6 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
-using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.TestHarness
 {
@@ -50,39 +49,39 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var audioFile = _player.Module.AudioFiles[1];
+        //    var audioFile = _player.Module.AudioFiles[1];
 
-            var samples = audioFile
-                .Samples
-                .Select(x => new Sample
-                {
-                    Start = x.Start,
-                    Description = x.Key,
-                    Length = x.Length,
-                    Offset = x.Offset ?? 0
-                }).ToList();
+        //    var samples = audioFile
+        //        .Samples
+        //        .Select(x => new Sample
+        //        {
+        //            Start = x.Start,
+        //            Description = x.Key,
+        //            Length = x.Length,
+        //            Offset = x.Offset ?? 0
+        //        }).ToList();
 
 
-            var form = new FrmEditTrackSamples
-            {
-                BassPlayer = _bassPlayer,
-                Filename = audioFile.Path,
-                SampleLibrary = _sampleLibrary,
-                Library = _library,
-                Samples = samples
-            };
+        //    //var form = new FrmEditTrackSamples
+        //    //{
+        //    //    BassPlayer = _bassPlayer,
+        //    //    Filename = audioFile.Path,
+        //    //    SampleLibrary = _sampleLibrary,
+        //    //    Library = _library,
+        //    //    Samples = samples
+        //    //};
 
-            if (form.ShowDialog() != DialogResult.OK) return;
+        //    if (form.ShowDialog() != DialogResult.OK) return;
 
-            var newSamples = form.Samples.Select(x => new Module.Sample
-            {
-                Start = x.Start,
-                Length = x.Length,
-                Offset = x.Offset,
-                Key = x.Description
-            }).ToList();
+        //    var newSamples = form.Samples.Select(x => new Module.Sample
+        //    {
+        //        Start = x.Start,
+        //        Length = x.Length,
+        //        Offset = x.Offset,
+        //        Key = x.Description
+        //    }).ToList();
 
-            _player.UpdateSamples(audioFile, newSamples);
+        //    _player.UpdateSamples(audioFile, newSamples);
         }
 
         private void btnSave_Click(object sender, EventArgs e)

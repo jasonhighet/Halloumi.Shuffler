@@ -110,12 +110,8 @@
       <Name>Halloumi.Shuffler.AudioEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.AudioLibrary.csproj">
-      <Project>{744EC40E-007A-4D10-BBE1-FC084A9DB425}</Project>
+      <Project>{744ec40e-007a-4d10-bbe1-fc084a9db425}</Project>
       <Name>Halloumi.Shuffler.AudioLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Halloumi.Shuffler\Halloumi.Shuffler.csproj">
-      <Project>{96A9FFAC-90BB-4D8F-B237-8DC09024B043}</Project>
-      <Name>Halloumi.Shuffler</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

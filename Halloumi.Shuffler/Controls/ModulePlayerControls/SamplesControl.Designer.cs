@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel3 = new Halloumi.Common.Windows.Controls.Panel();
-            this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
-            this.grdSamples = new Halloumi.Common.Windows.Controls.DataGridView();
-            this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button1 = new Halloumi.Common.Windows.Controls.Button();
             this.button2 = new Halloumi.Common.Windows.Controls.Button();
@@ -40,10 +38,13 @@
             this.button5 = new Halloumi.Common.Windows.Controls.Button();
             this.button6 = new Halloumi.Common.Windows.Controls.Button();
             this.button7 = new Halloumi.Common.Windows.Controls.Button();
+            this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
+            this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
+            this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).BeginInit();
-            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel3
@@ -56,43 +57,6 @@
             this.panel3.Size = new System.Drawing.Size(109, 362);
             this.panel3.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.panel3.TabIndex = 4;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.SystemColors.Control;
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.grdSamples);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Padding = new System.Windows.Forms.Padding(1);
-            this.panel2.Size = new System.Drawing.Size(524, 362);
-            this.panel2.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
-            this.panel2.TabIndex = 5;
-            // 
-            // grdSamples
-            // 
-            this.grdSamples.AllowUserToAddRows = false;
-            this.grdSamples.AllowUserToDeleteRows = false;
-            this.grdSamples.AllowUserToResizeRows = false;
-            this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colSampleName});
-            this.grdSamples.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdSamples.Location = new System.Drawing.Point(1, 1);
-            this.grdSamples.MergeColor = System.Drawing.Color.Gainsboro;
-            this.grdSamples.Name = "grdSamples";
-            this.grdSamples.ReadOnly = true;
-            this.grdSamples.RowHeadersVisible = false;
-            this.grdSamples.RowTemplate.Height = 24;
-            this.grdSamples.Size = new System.Drawing.Size(522, 360);
-            this.grdSamples.TabIndex = 1;
-            // 
-            // colSampleName
-            // 
-            this.colSampleName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colSampleName.HeaderText = "Sample";
-            this.colSampleName.Name = "colSampleName";
-            this.colSampleName.ReadOnly = true;
             // 
             // flowLayoutPanel1
             // 
@@ -172,6 +136,53 @@
             this.button7.TabIndex = 6;
             this.button7.Text = "Import";
             // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.grdSamples);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Padding = new System.Windows.Forms.Padding(1);
+            this.panel2.Size = new System.Drawing.Size(524, 362);
+            this.panel2.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
+            this.panel2.TabIndex = 5;
+            // 
+            // grdSamples
+            // 
+            this.grdSamples.AllowUserToAddRows = false;
+            this.grdSamples.AllowUserToDeleteRows = false;
+            this.grdSamples.AllowUserToResizeColumns = false;
+            this.grdSamples.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.grdSamples.ColumnHeadersHeight = 26;
+            this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colSampleName});
+            this.grdSamples.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grdSamples.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
+            this.grdSamples.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
+            this.grdSamples.Location = new System.Drawing.Point(1, 1);
+            this.grdSamples.MergeColor = System.Drawing.Color.Gainsboro;
+            this.grdSamples.Name = "grdSamples";
+            this.grdSamples.ReadOnly = true;
+            this.grdSamples.RowHeadersVisible = false;
+            this.grdSamples.RowTemplate.Height = 24;
+            this.grdSamples.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.grdSamples.Size = new System.Drawing.Size(522, 360);
+            this.grdSamples.SortColumnIndex = -1;
+            this.grdSamples.SortOrder = System.Windows.Forms.SortOrder.None;
+            this.grdSamples.TabIndex = 1;
+            this.grdSamples.VirtualMode = true;
+            // 
+            // colSampleName
+            // 
+            this.colSampleName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colSampleName.HeaderText = "Sample";
+            this.colSampleName.Name = "colSampleName";
+            this.colSampleName.ReadOnly = true;
+            // 
             // SamplesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -181,9 +192,9 @@
             this.Name = "SamplesControl";
             this.Size = new System.Drawing.Size(633, 362);
             this.panel3.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).EndInit();
-            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -200,7 +211,7 @@
         private Common.Windows.Controls.Button button6;
         private Common.Windows.Controls.Button button7;
         private Common.Windows.Controls.Panel panel2;
-        private Common.Windows.Controls.DataGridView grdSamples;
+        private Halloumi.Shuffler.Controls.DataGridView grdSamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSampleName;
     }
 }

@@ -14,6 +14,7 @@ namespace Halloumi.Shuffler
         [STAThread]
         private static void Main()
         {
+            DebugHelper.DebugMode = false;
             WindowsApplicationHelper.InitialiseWindowsApplication();
 
             CommonFunctions.SetDefaultSettings();
@@ -26,7 +27,6 @@ namespace Halloumi.Shuffler
             {
 #if DEBUG
                 Application.Run(new FrmMain());
-                DebugHelper.DebugMode = false;
 #else
                 try
                 {

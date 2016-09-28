@@ -1,0 +1,122 @@
+﻿{
+  "title": "Viva Tirado",
+  "bpm": 97,
+  "audioFiles": [
+    {
+      "key": "VivaTirado",
+      "path": "E:\\Music\\Library\\100% Dynamite!\\300% Dynamite!\\14 - Various - Augustus Pablo  Viva Tirado.mp3",
+      "samples": [
+        {
+          "key": "MainLoopCrash",
+          "start": 1.730,
+          "length": 5.09
+        },
+        {
+          "key": "MainLoopPart1",
+          "start": 2.718,
+          "length": 5.107,
+          "offset": 6.820
+        },
+        {
+          "key": "MainLoopPart2",
+          "start": 6.810,
+          "length": 5.041
+        },
+        {
+          "key": "MainLoopKeysPart1",
+          "start": 11.851,
+          "length": 5.021
+        },
+        {
+          "key": "MainLoopKeysPart2",
+          "start": 16.872,
+          "length": 5.005
+        },
+        {
+          "key": "MainLoopKeysEnd",
+          "start": 26.911,
+          "length": 5.006
+        },
+        {
+          "key": "ChorusLoopPart1",
+          "start": 31.875,
+          "length": 4.975
+        },
+        {
+          "key": "ChorusLoopPart2",
+          "start": 36.83,
+          "length": 4.975
+        },
+        {
+          "key": "ChorusLoopEnd",
+          "start": 46.77,
+          "length": 4.9
+        }
+      ]
+    },
+    {
+      "key": "JawBreaks05",
+      "path": "E:\\Music\\Library\\Samples\\DrumLoops.Breaks\\Jaw Breaks\\05 - DrumLoops.Breaks - Jaw Breaks 05.mp3",
+      "samples": [
+        {
+          "key": "MainBreak",
+          "start": 6.35,
+          "length": 1.19
+        }
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "key": "MainLoops"
+    },
+    {
+      "key": "Drums"
+    }
+  ],
+ "patterns": [
+    {
+      "key": "StartMainLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopCrash", "VivaTirado.MainLoopPart1" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndMainLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopPart1", "VivaTirado.MainLoopPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "StartKeysLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopKeysPart1", "VivaTirado.MainLoopKeysPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndKeysLoop",
+      "sequence": [
+        [ "VivaTirado.MainLoopKeysPart1", "VivaTirado.MainLoopKeysEnd" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "StartChorusLoop",
+      "sequence": [
+        [ "VivaTirado.ChorusLoopPart1", "VivaTirado.ChorusLoopPart2" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    },
+    {
+      "key": "EndChorusLoop",
+      "sequence": [
+        [ "VivaTirado.ChorusLoopPart1", "VivaTirado.ChorusLoopEnd" ],
+        [ "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak", "JawBreaks05.MainBreak" ]
+      ]
+    }
+  ],
+  "sequence": [ "StartMainLoop", "EndMainLoop", "StartKeysLoop", "EndKeysLoop", "StartChorusLoop", "EndChorusLoop", "StartMainLoop", "EndMainLoop", "StartKeysLoop", "EndKeysLoop", "StartChorusLoop", "EndChorusLoop" ]
+}

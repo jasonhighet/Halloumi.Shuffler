@@ -234,6 +234,12 @@
     <Compile Include="Forms\frmGeneratePlaylist.Designer.cs">
       <DependentUpon>frmGeneratePlaylist.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmModuleEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmModuleEditor.Designer.cs">
+      <DependentUpon>frmModuleEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmMonitorSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -413,6 +419,9 @@
       <DependentUpon>frmGeneratePlaylist.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmModuleEditor.resx">
+      <DependentUpon>frmModuleEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMonitorSettings.resx">
       <DependentUpon>frmMonitorSettings.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -505,6 +514,9 @@
     <None Include="Resources\player_stop.png" />
     <None Include="Resources\player_play.png" />
     <None Include="Resources\player_pause.png" />
+    <None Include="song.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj">
