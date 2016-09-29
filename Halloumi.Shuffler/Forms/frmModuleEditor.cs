@@ -14,25 +14,28 @@ using System.Windows.Forms;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class frmModuleEditor : BaseForm
+    public partial class FrmModuleEditor : BaseForm
     {
-        public frmModuleEditor()
+        public FrmModuleEditor()
         {
             InitializeComponent();
         }
 
-        private SampleLibrary _sampleLibrary { get; set; }
+        private SampleLibrary SampleLibrary { get; set; }
 
-        private BassPlayer _bassPlayer { get; set; }
+        private BassPlayer BassPlayer { get; set; }
+
+        private Library Library { get; set; }
 
 
-        public void Initialize(BassPlayer bassPlayer, SampleLibrary sampleLibrary)
+        public void Initialize(BassPlayer bassPlayer, SampleLibrary sampleLibrary, Library library)
         {
-            _bassPlayer = bassPlayer;
-            _sampleLibrary = sampleLibrary;
+            BassPlayer = bassPlayer;
+            SampleLibrary = sampleLibrary;
 
-            samplesControl.BassPlayer = _bassPlayer;
-            samplesControl.SampleLibrary = _sampleLibrary;
+            samplesControl.BassPlayer = BassPlayer;
+            samplesControl.SampleLibrary = SampleLibrary;
+            samplesControl.Library = Library;
             samplesControl.ModulePlayer = new ModulePlayer();
             samplesControl.ModulePlayer.LoadModule("song.json");
 

@@ -4,7 +4,7 @@ using Halloumi.Shuffler.AudioLibrary;
 
 namespace Halloumi.Shuffler.Forms
 {
-    partial class frmModuleEditor
+    partial class FrmModuleEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -52,7 +52,7 @@ namespace Halloumi.Shuffler.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(833, 566);
             this.Controls.Add(this.samplesControl);
-            this.Name = "frmModuleEditor";
+            this.Name = "FrmModuleEditor";
             this.Text = "frmModulePlayer";
             this.ResumeLayout(false);
 

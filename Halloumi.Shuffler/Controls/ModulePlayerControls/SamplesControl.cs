@@ -94,16 +94,13 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             var sampleModels = new List<SampleModel>();
             foreach (var audioFile in ModulePlayer.Module.AudioFiles)
             {
-                foreach (var sample in audioFile.Samples)
-                {
-                    sampleModels.Add(new SampleModel(sample, audioFile));
-                }
+                sampleModels.AddRange(audioFile.Samples.Select(sample => new SampleModel(sample, audioFile)));
             }
 
             return sampleModels;
         }
 
-        private void PlayCurrentSamples()
+        private void PlaySamples()
         {
             var sampleModels = GetSelectedSampleModels();
             if (sampleModels == null || sampleModels.Count == 0) return;
@@ -118,7 +115,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 _player.AddSection("Silence", "Silence", 0, loopLength, bpm: ModulePlayer.Module.Bpm);
                 _player.QueueSection("Silence", "Silence");
 
-                var filenames = new List<string>();
                 foreach (var sampleModel in sampleModels)
                 {
                     _player.Load(sampleModel.Description, sampleModel.AudioFile.Path);
@@ -126,7 +122,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                         sampleModel.Description,
                         sampleModel.Sample.Start,
                         sampleModel.Sample.Length,
-                        sampleModel.Sample.Offset.HasValue ? sampleModel.Sample.Offset.Value : 0,
+                        sampleModel.Sample.Offset ?? 0,
                         calculateBpmFromLength:true,
                         targetBpm: ModulePlayer.Module.Bpm,
                         loopIndefinitely:true);
@@ -156,33 +152,55 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void grdSamples_SelectionChanged(object sender, EventArgs e)
         {
-            PlayCurrentSamples();
+            PlaySamples();
         }
 
 
         private void EditSample()
         {
-            //var sample = GetSelectedSample();
-            //if (sample == null) return;
+            var sampleModel = GetSelectedSampleModel();
+            if (sampleModel == null) return;
 
-            //var track = SampleLibrary.GetTrackFromSample(sample);
-            //if (track == null) return;
+            PauseSamples();
 
-            //StopCurrentSample();
+            var audioFile = sampleModel.AudioFile;
 
-            //var form = new FrmEditTrackSamples
-            //{
-            //    BassPlayer = BassPlayer,
-            //    Filename = track.Filename,
-            //    SampleLibrary = SampleLibrary,
-            //    Library = SampleLibrary.TrackLibrary
-            //};
+            var samples = audioFile
+                .Samples
+                .Select(x => new AudioLibrary.Models.Sample
+                {
+                    Start = x.Start,
+                    Description = x.Key,
+                    Length = x.Length,
+                    Offset = x.Offset ?? 0
+                }).ToList();
 
-            //var result = form.ShowDialog();
-            //if (result == DialogResult.OK)
-            //{
-            //    BindData();
-            //}
+
+            var initialSample = sampleModel.Description;
+
+            var form = new FrmEditTrackSamples
+            {
+                BassPlayer = BassPlayer,
+                Filename = audioFile.Path,
+                SampleLibrary = SampleLibrary,
+                Library = Library,
+                Samples = samples,
+                InitialSample = initialSample
+            };
+
+            if (form.ShowDialog() != DialogResult.OK) return;
+
+            var newSamples = form.Samples.Select(x => new Module.Sample
+            {
+                Start = x.Start,
+                Length = x.Length,
+                Offset = x.Offset,
+                Key = x.Description
+            }).ToList();
+
+            ModulePlayer.UpdateSamples(audioFile, newSamples);
+
+            BindData();
         }
 
 
@@ -249,6 +267,49 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             public string Description { get; }
             public Module.Sample Sample { get; }
             public Module.AudioFile AudioFile { get; }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            EditSample();
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            PlaySamples();
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            PauseSamples();
+        }
+
+        private void PauseSamples()
+        {
+            lock (_player)
+            {
+                _player.Pause();
+            }
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

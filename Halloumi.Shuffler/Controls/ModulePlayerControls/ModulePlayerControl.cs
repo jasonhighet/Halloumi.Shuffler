@@ -28,5 +28,12 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public BassPlayer BassPlayer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Library Library { get; set; }
     }
 }

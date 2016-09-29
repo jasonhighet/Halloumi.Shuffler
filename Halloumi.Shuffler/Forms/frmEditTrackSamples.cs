@@ -49,6 +49,8 @@ namespace Halloumi.Shuffler.Forms
 
         public AudioLibrary.Models.Track LibraryTrack { get; private set; }
 
+        public string InitialSample { get; set; }
+
         /// <summary>
         ///     Handles the SelectedIndexChanged event of the lstSamples control.
         /// </summary>
@@ -151,6 +153,12 @@ namespace Halloumi.Shuffler.Forms
             btnImportSamplesFromMix.Visible = LibraryTrack != null && LibraryTrack.IsShufflerTrack;
 
             BindData();
+
+            for (var i = 0; i < lstSamples.Items.Count; i++)
+            {
+                lstSamples.Items[i].Selected = lstSamples.Items[i].Text == InitialSample;
+            }
+
         }
 
         /// <summary>
@@ -364,26 +372,24 @@ namespace Halloumi.Shuffler.Forms
             if (CurrentSample == null) return;
 
             var message = "Are you sure you wish to delete sample '" + CurrentSample.Description + "'?";
-            if (MessageBoxHelper.Confirm(message))
-            {
-                Samples.Remove(CurrentSample);
-                CurrentSample = null;
-                trackWave.CurrentSample = null;
-                trackWave.RefreshPositions();
+            if (!MessageBoxHelper.Confirm(message)) return;
 
-                BindData();
-            }
+            Samples.Remove(CurrentSample);
+            CurrentSample = null;
+            trackWave.CurrentSample = null;
+            trackWave.RefreshPositions();
+
+            BindData();
         }
 
         private void RenameSample()
         {
             if (CurrentSample == null) return;
             var sampleName = UserInputHelper.GetUserInput("Rename Sample", CurrentSample.Description, this);
-            if (sampleName != CurrentSample.Description)
-            {
-                CurrentSample.Description = sampleName;
-                BindData();
-            }
+            if (sampleName == CurrentSample.Description) return;
+
+            CurrentSample.Description = sampleName;
+            BindData();
         }
 
         private void UpdateCurrentSample()

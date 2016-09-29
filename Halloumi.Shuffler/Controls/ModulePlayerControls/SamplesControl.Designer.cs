@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel3 = new Halloumi.Common.Windows.Controls.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.button1 = new Halloumi.Common.Windows.Controls.Button();
-            this.button2 = new Halloumi.Common.Windows.Controls.Button();
-            this.button4 = new Halloumi.Common.Windows.Controls.Button();
-            this.button3 = new Halloumi.Common.Windows.Controls.Button();
-            this.button5 = new Halloumi.Common.Windows.Controls.Button();
-            this.button6 = new Halloumi.Common.Windows.Controls.Button();
-            this.button7 = new Halloumi.Common.Windows.Controls.Button();
+            this.btnEdit = new Halloumi.Common.Windows.Controls.Button();
+            this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
+            this.btnStop = new Halloumi.Common.Windows.Controls.Button();
+            this.btnExport = new Halloumi.Common.Windows.Controls.Button();
+            this.btnAdd = new Halloumi.Common.Windows.Controls.Button();
+            this.btnRemove = new Halloumi.Common.Windows.Controls.Button();
+            this.btnImport = new Halloumi.Common.Windows.Controls.Button();
             this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
             this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,81 +60,88 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.button1);
-            this.flowLayoutPanel1.Controls.Add(this.button2);
-            this.flowLayoutPanel1.Controls.Add(this.button4);
-            this.flowLayoutPanel1.Controls.Add(this.button3);
-            this.flowLayoutPanel1.Controls.Add(this.button5);
-            this.flowLayoutPanel1.Controls.Add(this.button6);
-            this.flowLayoutPanel1.Controls.Add(this.button7);
+            this.flowLayoutPanel1.Controls.Add(this.btnEdit);
+            this.flowLayoutPanel1.Controls.Add(this.btnPlay);
+            this.flowLayoutPanel1.Controls.Add(this.btnStop);
+            this.flowLayoutPanel1.Controls.Add(this.btnExport);
+            this.flowLayoutPanel1.Controls.Add(this.btnAdd);
+            this.flowLayoutPanel1.Controls.Add(this.btnRemove);
+            this.flowLayoutPanel1.Controls.Add(this.btnImport);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(109, 362);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
-            // button1
+            // btnEdit
             // 
-            this.button1.Location = new System.Drawing.Point(4, 4);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 31);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Edit";
+            this.btnEdit.Location = new System.Drawing.Point(4, 4);
+            this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(100, 31);
+            this.btnEdit.TabIndex = 0;
+            this.btnEdit.Text = "Edit";
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
-            // button2
+            // btnPlay
             // 
-            this.button2.Location = new System.Drawing.Point(4, 43);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 31);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Play";
+            this.btnPlay.Location = new System.Drawing.Point(4, 43);
+            this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(100, 31);
+            this.btnPlay.TabIndex = 1;
+            this.btnPlay.Text = "Play";
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
-            // button4
+            // btnStop
             // 
-            this.button4.Location = new System.Drawing.Point(4, 82);
-            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(100, 31);
-            this.button4.TabIndex = 2;
-            this.button4.Text = "Stop";
+            this.btnStop.Location = new System.Drawing.Point(4, 82);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(100, 31);
+            this.btnStop.TabIndex = 2;
+            this.btnStop.Text = "Stop";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // button3
+            // btnExport
             // 
-            this.button3.Location = new System.Drawing.Point(4, 121);
-            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(100, 31);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "Export";
+            this.btnExport.Location = new System.Drawing.Point(4, 121);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(100, 31);
+            this.btnExport.TabIndex = 3;
+            this.btnExport.Text = "Export";
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // button5
+            // btnAdd
             // 
-            this.button5.Location = new System.Drawing.Point(4, 160);
-            this.button5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(100, 31);
-            this.button5.TabIndex = 4;
-            this.button5.Text = "Add";
+            this.btnAdd.Location = new System.Drawing.Point(4, 160);
+            this.btnAdd.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(100, 31);
+            this.btnAdd.TabIndex = 4;
+            this.btnAdd.Text = "Add";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
-            // button6
+            // btnRemove
             // 
-            this.button6.Location = new System.Drawing.Point(4, 199);
-            this.button6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(100, 31);
-            this.button6.TabIndex = 5;
-            this.button6.Text = "Remove";
+            this.btnRemove.Location = new System.Drawing.Point(4, 199);
+            this.btnRemove.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(100, 31);
+            this.btnRemove.TabIndex = 5;
+            this.btnRemove.Text = "Remove";
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
-            // button7
+            // btnImport
             // 
-            this.button7.Location = new System.Drawing.Point(4, 238);
-            this.button7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(100, 31);
-            this.button7.TabIndex = 6;
-            this.button7.Text = "Import";
+            this.btnImport.Location = new System.Drawing.Point(4, 238);
+            this.btnImport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(100, 31);
+            this.btnImport.TabIndex = 6;
+            this.btnImport.Text = "Import";
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // panel2
             // 
@@ -155,8 +162,8 @@
             this.grdSamples.AllowUserToDeleteRows = false;
             this.grdSamples.AllowUserToResizeColumns = false;
             this.grdSamples.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             this.grdSamples.ColumnHeadersHeight = 26;
             this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSampleName});
@@ -203,13 +210,13 @@
 
         private Common.Windows.Controls.Panel panel3;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private Common.Windows.Controls.Button button1;
-        private Common.Windows.Controls.Button button2;
-        private Common.Windows.Controls.Button button4;
-        private Common.Windows.Controls.Button button3;
-        private Common.Windows.Controls.Button button5;
-        private Common.Windows.Controls.Button button6;
-        private Common.Windows.Controls.Button button7;
+        private Common.Windows.Controls.Button btnEdit;
+        private Common.Windows.Controls.Button btnPlay;
+        private Common.Windows.Controls.Button btnStop;
+        private Common.Windows.Controls.Button btnExport;
+        private Common.Windows.Controls.Button btnAdd;
+        private Common.Windows.Controls.Button btnRemove;
+        private Common.Windows.Controls.Button btnImport;
         private Common.Windows.Controls.Panel panel2;
         private Halloumi.Shuffler.Controls.DataGridView grdSamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSampleName;

@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler.Forms
         private bool _bassPlayerOnTrackChange;
         private FrmFadeNow _frmFadeNow;
         private FrmSampleLibrary _frmSampleLibrary;
-        private frmModuleEditor _frmModuleEditor;
+        private FrmModuleEditor _frmModuleEditor;
 
         private FrmGeneratePlaylist _generatePlaylist;
 
@@ -1178,8 +1178,8 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_frmModuleEditor == null || _frmModuleEditor.IsDisposed)
             {
-                _frmModuleEditor = new frmModuleEditor();
-                _frmModuleEditor.Initialize(BassPlayer, SampleLibrary);
+                _frmModuleEditor = new FrmModuleEditor();
+                _frmModuleEditor.Initialize(BassPlayer, SampleLibrary, Library);
             }
 
             if (!_frmModuleEditor.Visible)
