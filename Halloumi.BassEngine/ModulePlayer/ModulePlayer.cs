@@ -21,6 +21,9 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         public ModulePlayer()
         {
             Output = new MixerChannel(this);
+            _mainPlayer = new AudioPlayer();
+
+            Output.AddInputChannel(_mainPlayer.Output);
         }
 
         public MixerChannel Output { get; }
@@ -65,6 +68,8 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         public void LoadModule(Module module)
         {
+            _mainPlayer.UnloadAll();
+
             _targetBpm = module.Bpm;
             _loopLength = BpmHelper.GetDefaultLoopLength(_targetBpm);
 
@@ -100,10 +105,6 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         private void LoadPatternSequencePlayer(Module module)
         {
-            _mainPlayer = new AudioPlayer();
-
-            Output.AddInputChannel(_mainPlayer.Output);
-
             _mainPlayer.Load(SongKey, SilenceHelper.GetSilenceAudioFile());
 
             var songLength = _loopLength*module.Sequence.Count;
@@ -195,6 +196,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     sample.Start,
                     sample.Length,
                     sample.Offset ?? 0,
+                    calculateBpmFromLength:true,
                     targetBpm: module.Bpm);
             }
         }
@@ -207,6 +209,21 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         public void PlayPattern(string patternKey)
         {
             //throw new NotImplementedException();
+        }
+
+        public void CreateModule()
+        {
+            _mainPlayer.UnloadAll();
+
+            Module = new Module()
+            {
+                Bpm = 100,
+                AudioFiles = new List<Module.AudioFile>(),
+                Channels = new List<Module.Channel>(),
+                Patterns = new List<Module.Pattern>(),
+                Sequence = new List<string>(),
+                Title = ""
+            };
         }
     }
 }

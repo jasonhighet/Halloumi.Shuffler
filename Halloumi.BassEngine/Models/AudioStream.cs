@@ -42,6 +42,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// </summary>
         public int Channel => Channels.Count == 0 ? int.MinValue : Channels[0];
 
+        public int InitialChannel => Channels.Count == 0 ? int.MinValue : Channels[Channels.Count -1];
+
         /// <summary>
         ///     Gets the BPM.
         /// </summary>

@@ -272,8 +272,8 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             if (audioStream == null || audioStream.Channel == int.MinValue) return;
 
-            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
-            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
+            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm)) * 1.01F;
+            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange) ;
         }
 
 

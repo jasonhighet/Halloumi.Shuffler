@@ -189,7 +189,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 }).ToList();
 
 
-            var initialSample = sampleModel.Description;
+            var initialSample = sampleModel.Sample.Key;
 
             var form = new FrmEditTrackSamples
             {
