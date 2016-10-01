@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel3 = new Halloumi.Common.Windows.Controls.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnEdit = new Halloumi.Common.Windows.Controls.Button();
@@ -41,6 +42,7 @@
             this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
             this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBPM = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -162,11 +164,12 @@
             this.grdSamples.AllowUserToDeleteRows = false;
             this.grdSamples.AllowUserToResizeColumns = false;
             this.grdSamples.AllowUserToResizeRows = false;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.grdSamples.ColumnHeadersHeight = 26;
             this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colSampleName});
+            this.colSampleName,
+            this.colBPM});
             this.grdSamples.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdSamples.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
             this.grdSamples.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
@@ -186,9 +189,21 @@
             // colSampleName
             // 
             this.colSampleName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colSampleName.DataPropertyName = "Description";
             this.colSampleName.HeaderText = "Sample";
             this.colSampleName.Name = "colSampleName";
             this.colSampleName.ReadOnly = true;
+            // 
+            // colBPM
+            // 
+            this.colBPM.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colBPM.DataPropertyName = "BPM";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            this.colBPM.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colBPM.HeaderText = "BPM";
+            this.colBPM.Name = "colBPM";
+            this.colBPM.ReadOnly = true;
+            this.colBPM.Width = 72;
             // 
             // SamplesControl
             // 
@@ -220,5 +235,6 @@
         private Common.Windows.Controls.Panel panel2;
         private Halloumi.Shuffler.Controls.DataGridView grdSamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSampleName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colBPM;
     }
 }

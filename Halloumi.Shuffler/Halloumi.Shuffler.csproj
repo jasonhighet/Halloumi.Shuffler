@@ -109,6 +109,12 @@
     <Compile Include="Controls\ModulePlayerControls\SamplesControl.Designer.cs">
       <DependentUpon>SamplesControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ModulePlayerControls\SongControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModulePlayerControls\SongControl.Designer.cs">
+      <DependentUpon>SongControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SecondsComboBox.cs" />
     <Compile Include="Controls\SkipBack.cs">
       <SubType>UserControl</SubType>

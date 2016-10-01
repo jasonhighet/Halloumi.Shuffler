@@ -73,6 +73,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             {
                 var sortField = grdSamples.SortedColumn.DataPropertyName;
                 if (sortField == "Description") sampleModels = sampleModels.OrderBy(t => t.Description).ToList();
+                if (sortField == "BPM") sampleModels = sampleModels.OrderBy(t => t.Bpm).ToList();
                 if (grdSamples.SortOrder == SortOrder.Descending) sampleModels.Reverse();
             }
             SampleModels = sampleModels;
@@ -142,6 +143,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
             if (sampleModel == null) e.Value = "";
             else if (e.ColumnIndex == 0) e.Value = sampleModel.Description;
+            else if (e.ColumnIndex == 1) e.Value = sampleModel.Bpm.ToString("0.00");
         }
 
         private void grdSamples_SortOrderChanged(object sender, EventArgs e)
@@ -262,8 +264,10 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 Description = audioFile.Key + "." + sample.Key;
                 Sample = sample;
                 AudioFile = audioFile;
+                Bpm = BpmHelper.GetBpmFromLoopLength(sample.Length);
             }
 
+            public decimal Bpm { get; }
             public string Description { get; }
             public Module.Sample Sample { get; }
             public Module.AudioFile AudioFile { get; }
