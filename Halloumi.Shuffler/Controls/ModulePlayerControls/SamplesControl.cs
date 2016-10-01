@@ -112,12 +112,15 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 _player.UnloadAll();
 
                 var loopLength = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm);
-                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
-                _player.AddSection("Silence", "Silence", 0, loopLength, bpm: ModulePlayer.Module.Bpm);
-                _player.QueueSection("Silence", "Silence");
+                _player.Load("Loop", SilenceHelper.GetSilenceAudioFile());
+                _player.AddSection("Loop", "Loop", 0, loopLength, bpm: ModulePlayer.Module.Bpm);
+                _player.QueueSection("Loop", "Loop");
 
                 foreach (var sampleModel in sampleModels)
                 {
+                    var sampleLoopLength = BpmHelper.GetDefaultLoopLength(sampleModel.Bpm);
+                    var samplesPerLoop = Math.Round(sampleModel.Sample.Length / sampleLoopLength, 0); 
+
                     _player.Load(sampleModel.Description, sampleModel.AudioFile.Path);
                     _player.AddSection(sampleModel.Description,
                         sampleModel.Description,
@@ -128,10 +131,18 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                         targetBpm: ModulePlayer.Module.Bpm,
                         loopIndefinitely:true);
 
-                    _player.AddEvent("Silence", 0, sampleModel.Description, sampleModel.Description, EventType.Play);
+                    var sampleStep = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm) / samplesPerLoop;
+                    var position = 0D;
+                    for (int i = 0; i < samplesPerLoop; i++)
+                    {
+                        _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.Play);
+                        position += sampleStep;
+                    }
+
+                    
                 }
                 _player.Pause();
-                _player.Play("Silence");
+                _player.Play("Loop");
             }
         }
 
