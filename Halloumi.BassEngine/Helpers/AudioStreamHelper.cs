@@ -272,10 +272,15 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             if (audioStream == null || audioStream.Channel == int.MinValue) return;
 
-            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm)) * 1.01F;
-            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange) ;
+            SetTempoToMatchBpm(audioStream.Channel, streamBpm, matchBpm);
         }
 
+        internal static void SetTempoToMatchBpm(int channel, decimal streamBpm, decimal matchBpm)
+        {
+            if (channel == int.MinValue) return;
+            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm)) * 1.01F;
+            Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
+        }
 
         /// <summary>
         ///     Sets the audio stream pitch to match another BPM

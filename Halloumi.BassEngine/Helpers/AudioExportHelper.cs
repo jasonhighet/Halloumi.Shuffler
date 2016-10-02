@@ -2,8 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Mix;
@@ -15,112 +15,53 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     public static class AudioExportHelper
     {
         /// <summary>
-        ///     Saves a portion of a track as a wave file
+        /// Saves the partial as wave.
         /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="start">The start position in samples.</param>
-        /// <param name="length">The length in samples.</param>
-        public static void SavePartialAsWave(Track track, string outFilename, long start, long length)
+        /// <param name="inFilename">The in filename.</param>
+        /// <param name="outFilename">The out filename.</param>
+        /// <param name="start">The start position in seconds.</param>
+        /// <param name="length">The length in seconds.</param>
+        /// <param name="offset">The offset position in seconds.</param>
+        /// <param name="gain">The gain.</param>
+        /// <param name="bpm">The BPM.</param>
+        /// <param name="targetBpm">The target BPM.</param>
+        public static void SavePartialAsWave(string inFilename, 
+            string outFilename, 
+            double start,
+            double length,
+            double offset = 0, 
+            float gain = 0, 
+            decimal bpm = 0, 
+            decimal targetBpm = 0)
         {
-            SavePartialAsWave(track, outFilename, start, length, 0M);
-        }
+            DebugHelper.WriteLine("Saving portion of track as wave with offset - " + inFilename);
 
-        /// <summary>
-        ///     Saves a portion of an audio file as a wave file
-        /// </summary>
-        /// <param name="inFilename">The input filename.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="start">The start position in samples.</param>
-        /// <param name="length">The length in samples.</param>
-        public static void SavePartialAsWave(string inFilename, string outFilename, long start, long length)
-        {
-            var encoder = new EncoderWAV(0) {WAV_BitsPerSample = 16};
-            BaseEncoder.EncodeFile(inFilename, outFilename, encoder, null, true, false, false, start, start + length);
-        }
-
-        /// <summary>
-        ///     Saves a portion of a track as a wave file
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="outFilename">The output filename.</param>
-        /// <param name="start">The start position in samples.</param>
-        /// <param name="length">The length in samples.</param>
-        /// <param name="bmpAdjustPercent">The BMP adjustment percent.</param>
-        private static void SavePartialAsWave(Track track, string outFilename, long start, long length,
-            decimal bmpAdjustPercent)
-        {
-            DebugHelper.WriteLine("Saving portion of track as wave - " + track.Description);
-
-            var channel = Bass.BASS_StreamCreateFile(track.Filename, 0L, 0L,
+            var channel = Bass.BASS_StreamCreateFile(inFilename, 0L, 0L,
                 BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load track " + track.Filename);
-
-            if (bmpAdjustPercent != 0)
-            {
-                Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO, (float) bmpAdjustPercent);
-            }
-
-            const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
-
-            var startByte = start;
-            var endByte = start + length;
-
-            TransferBytes(channel, startByte, endByte);
-            BassEnc.BASS_Encode_Stop(channel);
-
-            Bass.BASS_StreamFree(channel);
-        }
-
-        private static void TransferBytes(int channel, long startByte, long endByte)
-        {
-            var totalTransferLength = endByte - startByte;
-
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
-            while (totalTransferLength > 0)
-            {
-                var buffer = new byte[65536];
-
-                var transferLength = totalTransferLength;
-                if (transferLength > buffer.Length) transferLength = buffer.Length;
-
-                // get the decoded sample data
-                var transferred = Bass.BASS_ChannelGetData(channel, buffer, (int) transferLength);
-
-                if (transferred < 1) break; // error or the end
-                totalTransferLength -= transferred;
-            }
-        }
-
-        public static void SavePartialAsWave(Track track, string outFilename, long start, long length, long offset,
-            float gain)
-        {
-            DebugHelper.WriteLine("Saving portion of track as wave with offset - " + track.Description);
-
-            var channel = Bass.BASS_StreamCreateFile(track.Filename, 0L, 0L,
-                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load track " + track.Filename);
+            if (channel == 0) throw new Exception("Cannot load track " + inFilename);
 
             if (gain > 0)
                 AudioStreamHelper.SetReplayGain(channel, gain);
 
+            if (targetBpm != 0 && bpm != 0)
+                AudioStreamHelper.SetTempoToMatchBpm(channel, bpm, targetBpm);
+            
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
             BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
 
-            var startByte = start;
-            var endByte = start + length;
+            var startByte = Bass.BASS_ChannelSeconds2Bytes(channel, start); 
+            var endByte = Bass.BASS_ChannelSeconds2Bytes(channel, start + length);
             if (offset == 0 || offset == start)
             {
                 TransferBytes(channel, startByte, endByte);
             }
             else
             {
-                startByte = offset;
+                startByte = Bass.BASS_ChannelSeconds2Bytes(channel, offset);
                 TransferBytes(channel, startByte, endByte);
 
-                startByte = start;
-                endByte = offset;
+                startByte = Bass.BASS_ChannelSeconds2Bytes(channel, start);
+                endByte = Bass.BASS_ChannelSeconds2Bytes(channel, offset);
                 TransferBytes(channel, startByte, endByte);
             }
 
@@ -279,14 +220,24 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             BaseEncoder.EncodeFile(inFilename, outFilename, encoder, null, true, false);
         }
 
-        /// <summary>
-        ///     Saves a track as wave file.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="outFilename">The output filename.</param>
-        public static void SaveAsWave(Track track, string outFilename)
+        private static void TransferBytes(int channel, long startByte, long endByte)
         {
-            SaveAsWave(track.Filename, outFilename);
+            var totalTransferLength = endByte - startByte;
+
+            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
+            while (totalTransferLength > 0)
+            {
+                var buffer = new byte[65536];
+
+                var transferLength = totalTransferLength;
+                if (transferLength > buffer.Length) transferLength = buffer.Length;
+
+                // get the decoded sample data
+                var transferred = Bass.BASS_ChannelGetData(channel, buffer, (int)transferLength);
+
+                if (transferred < 1) break; // error or the end
+                totalTransferLength -= transferred;
+            }
         }
     }
 }

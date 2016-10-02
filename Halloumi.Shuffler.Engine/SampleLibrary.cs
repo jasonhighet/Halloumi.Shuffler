@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
+using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Sample = Halloumi.Shuffler.AudioLibrary.Models.Sample;
@@ -192,7 +193,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             BassPlayer.UnloadTrackAudioData(bassTrack);
         }
 
-        private void SaveSampleFile(AE.Models.Track bassTrack, Sample sample)
+        private void SaveSampleFile(AudioStream audioStream, Sample sample)
         {
             var sampleFolder = GetSampleFolder(sample);
 
@@ -201,11 +202,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             var sampleFile = GetSampleFileName(sample);
 
-            var start = bassTrack.SecondsToSamples(sample.Start);
-            var offset = bassTrack.SecondsToSamples(sample.Offset);
-            var length = bassTrack.SecondsToSamples(sample.Length);
-
-            AudioExportHelper.SavePartialAsWave(bassTrack, sampleFile, start, length, offset, sample.Gain);
+            AudioExportHelper.SavePartialAsWave(audioStream.Filename, sampleFile, sample.Start, sample.Length, sample.Offset, sample.Gain);
         }
 
         private void CreateSampleFolder(Sample sample)

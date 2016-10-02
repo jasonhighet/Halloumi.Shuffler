@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioEngine.Helpers;
@@ -67,7 +69,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
             grdSamples.SaveSelectedRows();
 
-            var sampleModels = GetDisplayedSampleModels();
+            var sampleModels = GetSampleModelsFromModule();
 
             if (grdSamples.SortedColumn != null)
             {
@@ -90,7 +92,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
           //  _binding = false;
         }
 
-        private List<SampleModel> GetDisplayedSampleModels()
+        private List<SampleModel> GetSampleModelsFromModule()
         {
             var sampleModels = new List<SampleModel>();
             foreach (var audioFile in ModulePlayer.Module.AudioFiles)
@@ -119,7 +121,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 foreach (var sampleModel in sampleModels)
                 {
                     var sampleLoopLength = BpmHelper.GetDefaultLoopLength(sampleModel.Bpm);
-                    var samplesPerLoop = Math.Round(sampleModel.Sample.Length / sampleLoopLength, 0); 
+                    var samplesPerLoop = Math.Round(sampleLoopLength / sampleModel.Sample.Length, 0); 
 
                     _player.Load(sampleModel.Description, sampleModel.AudioFile.Path);
                     _player.AddSection(sampleModel.Description,
@@ -133,7 +135,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
                     var sampleStep = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm) / samplesPerLoop;
                     var position = 0D;
-                    for (int i = 0; i < samplesPerLoop; i++)
+                    for (var i = 0; i < samplesPerLoop; i++)
                     {
                         _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.Play);
                         position += sampleStep;
@@ -153,8 +155,14 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             var sampleModel = GetSampleModelByIndex(e.RowIndex);
 
             if (sampleModel == null) e.Value = "";
-            else if (e.ColumnIndex == 0) e.Value = sampleModel.Description;
-            else if (e.ColumnIndex == 1) e.Value = sampleModel.Bpm.ToString("0.00");
+            else if (e.ColumnIndex == 0)
+            {
+                e.Value = sampleModel.Description;
+            }
+            else if (e.ColumnIndex == 1)
+            {
+                e.Value = sampleModel.Bpm.ToString("0.00");
+            }
         }
 
         private void grdSamples_SortOrderChanged(object sender, EventArgs e)
@@ -255,17 +263,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             return SampleModels[index];
         }
 
-        /// <summary>
-        ///     Gets a sample by its index
-        /// </summary>
-        /// <param name="index">The index.</param>
-        /// <returns>The sample at the index</returns>
-        private Module.Sample GetSampleByIndex(int index)
-        {
-            var sampleModel = GetSampleModelByIndex(index);
-            return sampleModel?.Sample;
-        }
-
         private delegate void BindDataHandler();
 
         private class SampleModel
@@ -309,17 +306,20 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void btnExport_Click(object sender, EventArgs e)
         {
+            var destinationFolder = FileDialogHelper.OpenFolder();
+            foreach (var sampleModel in GetSelectedSampleModels())
+            {
+                var exportFileName = Path.Combine(destinationFolder, sampleModel.Description + ".wav");
+                AudioExportHelper.SavePartialAsWave(sampleModel.AudioFile.Path,
+                    exportFileName,
+                    sampleModel.Sample.Start,
+                    sampleModel.Sample.Length,
+                    sampleModel.Sample.Offset ?? 0,
+                    gain: 0,
+                    bpm: sampleModel.Bpm,
+                    targetBpm: ModulePlayer.Module.Bpm);
 
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnRemove_Click(object sender, EventArgs e)
-        {
-
+            }
         }
 
         private void btnImport_Click(object sender, EventArgs e)
