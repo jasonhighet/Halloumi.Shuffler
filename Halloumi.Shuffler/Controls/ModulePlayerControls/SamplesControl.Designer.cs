@@ -36,8 +36,6 @@
             this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
             this.btnStop = new Halloumi.Common.Windows.Controls.Button();
             this.btnExport = new Halloumi.Common.Windows.Controls.Button();
-            this.btnAdd = new Halloumi.Common.Windows.Controls.Button();
-            this.btnRemove = new Halloumi.Common.Windows.Controls.Button();
             this.btnImport = new Halloumi.Common.Windows.Controls.Button();
             this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
             this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
@@ -62,13 +60,11 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.btnEdit);
             this.flowLayoutPanel1.Controls.Add(this.btnPlay);
             this.flowLayoutPanel1.Controls.Add(this.btnStop);
-            this.flowLayoutPanel1.Controls.Add(this.btnExport);
-            this.flowLayoutPanel1.Controls.Add(this.btnAdd);
-            this.flowLayoutPanel1.Controls.Add(this.btnRemove);
+            this.flowLayoutPanel1.Controls.Add(this.btnEdit);
             this.flowLayoutPanel1.Controls.Add(this.btnImport);
+            this.flowLayoutPanel1.Controls.Add(this.btnExport);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -77,7 +73,7 @@
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(4, 4);
+            this.btnEdit.Location = new System.Drawing.Point(4, 82);
             this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(100, 31);
@@ -87,7 +83,7 @@
             // 
             // btnPlay
             // 
-            this.btnPlay.Location = new System.Drawing.Point(4, 43);
+            this.btnPlay.Location = new System.Drawing.Point(4, 4);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(100, 31);
@@ -97,7 +93,7 @@
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(4, 82);
+            this.btnStop.Location = new System.Drawing.Point(4, 43);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(100, 31);
@@ -107,7 +103,7 @@
             // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(4, 121);
+            this.btnExport.Location = new System.Drawing.Point(4, 160);
             this.btnExport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(100, 31);
@@ -115,29 +111,9 @@
             this.btnExport.Text = "Export";
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // btnAdd
-            // 
-            this.btnAdd.Location = new System.Drawing.Point(4, 160);
-            this.btnAdd.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(100, 31);
-            this.btnAdd.TabIndex = 4;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnRemove
-            // 
-            this.btnRemove.Location = new System.Drawing.Point(4, 199);
-            this.btnRemove.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(100, 31);
-            this.btnRemove.TabIndex = 5;
-            this.btnRemove.Text = "Remove";
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
-            // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(4, 238);
+            this.btnImport.Location = new System.Drawing.Point(4, 121);
             this.btnImport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(100, 31);
@@ -229,8 +205,6 @@
         private Common.Windows.Controls.Button btnPlay;
         private Common.Windows.Controls.Button btnStop;
         private Common.Windows.Controls.Button btnExport;
-        private Common.Windows.Controls.Button btnAdd;
-        private Common.Windows.Controls.Button btnRemove;
         private Common.Windows.Controls.Button btnImport;
         private Common.Windows.Controls.Panel panel2;
         private Halloumi.Shuffler.Controls.DataGridView grdSamples;
