@@ -16,7 +16,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             public string Key { get; set; }
             public double Start { get; set; }
             public double Length { get; set; }
-            public double? Offset { get; set; }
+            public double Offset { get; set; }
         }
 
         public class AudioFile

@@ -53,7 +53,7 @@ namespace Halloumi.Shuffler.Forms
         private void fileMenuController_LoadDocument(object sender, FileMenuControllerEventArgs e)
         {
             ModulePlayer.Pause();
-            samplesControl.ModulePlayer.LoadModule(e.FileName);
+            ModulePlayer.LoadModule(e.FileName);
             BindData();
         }
 
@@ -65,7 +65,7 @@ namespace Halloumi.Shuffler.Forms
         private void fileMenuController_NewDocument(object sender, FileMenuControllerEventArgs e)
         {
             ModulePlayer.Pause();
-            samplesControl.ModulePlayer.CreateModule();
+            ModulePlayer.CreateModule();
             BindData();
         }
 

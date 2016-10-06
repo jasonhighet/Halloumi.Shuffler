@@ -97,6 +97,8 @@ namespace Halloumi.Shuffler.Controls
 
         private List<SampleModel> SampleModels { get; set; }
 
+        public ISampleRecipient SampleRecipient { get; set; }
+
         public void Initialize()
         {
             BindData();
@@ -104,10 +106,10 @@ namespace Halloumi.Shuffler.Controls
 
         public void Close()
         {
-            StopCurrentSample();
+            StopSamples();
         }
 
-        private void StopCurrentSample()
+        private void StopSamples()
         {
             lock (_player)
             {
@@ -457,14 +459,16 @@ namespace Halloumi.Shuffler.Controls
             var track = SampleLibrary.GetTrackFromSample(sample);
             if (track == null) return;
 
-            StopCurrentSample();
+            StopSamples();
 
+            var initialSample = sample.Description;
             var form = new FrmEditTrackSamples
             {
                 BassPlayer = BassPlayer,
                 Filename = track.Filename,
                 SampleLibrary = SampleLibrary,
-                Library = SampleLibrary.TrackLibrary
+                Library = SampleLibrary.TrackLibrary,
+                InitialSample = initialSample
             };
 
             var result = form.ShowDialog();
@@ -480,7 +484,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void mnuCalculateKey_Click(object sender, EventArgs e)
         {
-            StopCurrentSample();
+            StopSamples();
 
             foreach (var sample in GetSelectedSamples().Where(sample => sample.Key == ""))
             {
@@ -498,6 +502,8 @@ namespace Halloumi.Shuffler.Controls
 
             mnEditSample.Visible = !multiSamplesSelected;
             mnuCalculateKey.Visible = !multiSamplesSelected;
+
+            mnuImportSamples.Visible = (SampleRecipient != null);
         }
 
         private void mnuCopySample_Click(object sender, EventArgs e)
@@ -557,5 +563,16 @@ namespace Halloumi.Shuffler.Controls
         ///     Binds the data.
         /// </summary>
         private delegate void BindDataHandler();
+
+        private void mnuImportSamples_Click(object sender, EventArgs e)
+        {
+            SampleRecipient?.ImportLibrarySamples(GetSelectedSamples());
+        }
     }
+
+    public interface ISampleRecipient
+    {
+        void ImportLibrarySamples(List<Sample> librarySamples);
+    }
+
 }

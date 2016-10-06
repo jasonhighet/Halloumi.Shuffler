@@ -34,8 +34,8 @@ namespace Halloumi.Shuffler.Forms
         {
             this.components = new System.ComponentModel.Container();
             this.fileMenuController = new Halloumi.Common.Windows.Controllers.FileMenuController(this.components);
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.kryptonCheckSet1 = new ComponentFactory.Krypton.Toolkit.KryptonCheckSet(this.components);
             this.beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.pnlHeader = new Halloumi.Common.Windows.Controls.Panel();
@@ -58,30 +58,30 @@ namespace Halloumi.Shuffler.Forms
             this.fileMenuController.LoadDocument += new Halloumi.Common.Windows.Controllers.FileMenuControllerEventHandler(this.fileMenuController_LoadDocument);
             this.fileMenuController.NewDocument += new Halloumi.Common.Windows.Controllers.FileMenuControllerEventHandler(this.fileMenuController_NewDocument);
             // 
-            // menuStrip
-            // 
-            this.menuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuFile});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(833, 28);
-            this.menuStrip.TabIndex = 1;
-            this.menuStrip.Text = "menuStrip1";
-            // 
             // mnuFile
             // 
             this.mnuFile.Name = "mnuFile";
             this.mnuFile.Size = new System.Drawing.Size(44, 24);
             this.mnuFile.Text = "&File";
             // 
+            // menuStrip
+            // 
+            this.menuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuFile});
+            this.menuStrip.Location = new System.Drawing.Point(5, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(823, 28);
+            this.menuStrip.TabIndex = 1;
+            this.menuStrip.Text = "menuStrip1";
+            // 
             // beveledLine1
             // 
             this.beveledLine1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.beveledLine1.Location = new System.Drawing.Point(0, 28);
+            this.beveledLine1.Location = new System.Drawing.Point(5, 28);
             this.beveledLine1.Name = "beveledLine1";
-            this.beveledLine1.Size = new System.Drawing.Size(833, 2);
+            this.beveledLine1.Size = new System.Drawing.Size(823, 2);
             this.beveledLine1.TabIndex = 4;
             // 
             // pnlHeader
@@ -89,9 +89,9 @@ namespace Halloumi.Shuffler.Forms
             this.pnlHeader.BackColor = System.Drawing.SystemColors.Control;
             this.pnlHeader.Controls.Add(this.flowLayoutPanel1);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(0, 30);
+            this.pnlHeader.Location = new System.Drawing.Point(5, 30);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(833, 44);
+            this.pnlHeader.Size = new System.Drawing.Size(823, 44);
             this.pnlHeader.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlHeader.TabIndex = 5;
             // 
@@ -103,7 +103,7 @@ namespace Halloumi.Shuffler.Forms
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(833, 44);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(823, 44);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // btnSamples
@@ -133,9 +133,9 @@ namespace Halloumi.Shuffler.Forms
             // samplesControl
             // 
             this.samplesControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.samplesControl.Location = new System.Drawing.Point(0, 74);
+            this.samplesControl.Location = new System.Drawing.Point(5, 74);
             this.samplesControl.Name = "samplesControl";
-            this.samplesControl.Size = new System.Drawing.Size(833, 492);
+            this.samplesControl.Size = new System.Drawing.Size(823, 487);
             this.samplesControl.TabIndex = 6;
             // 
             // FrmModuleEditor
@@ -149,6 +149,7 @@ namespace Halloumi.Shuffler.Forms
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "FrmModuleEditor";
+            this.Padding = new System.Windows.Forms.Padding(5, 0, 5, 5);
             this.Text = "frmModulePlayer";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmModuleEditor_FormClosed);
             this.Load += new System.EventHandler(this.FrmModuleEditor_Load);

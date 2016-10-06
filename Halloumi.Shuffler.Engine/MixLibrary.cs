@@ -70,7 +70,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>The description of the mix ranking</returns>
         public string GetRankDescription(int ranking)
         {
-            switch ((MixRank)ranking)
+            switch ((MixRank) ranking)
             {
                 case MixRank.Forbidden:
                     return "Forbidden";
@@ -444,7 +444,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public string GetExtendedMixDescription(Track track1, Track track2)
         {
             var description = GetRankDescription(GetMixLevel(track1, track2));
-            return (HasExtendedMix(track1, track2)) 
+            return HasExtendedMix(track1, track2)
                 ? description + "*"
                 : description;
         }
@@ -476,7 +476,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (track1 == null || track2 == null) return false;
 
             var attributes = GetExtendedMixAttributes(track1.Description, track2.Description);
-            return (attributes != null);
+            return attributes != null;
         }
 
         /// <summary>
@@ -675,18 +675,20 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </returns>
         private List<MixRanking> GetToMixes(string fromTrackDescription)
         {
-            if (!_loadedTracks.Contains(fromTrackDescription))
+            lock (_toMixes)
             {
-                LoadMixRankings(fromTrackDescription);
-            }
+                if (!_loadedTracks.Contains(fromTrackDescription))
+                {
+                    LoadMixRankings(fromTrackDescription);
+                }
 
-            if (!_toMixes.ContainsKey(fromTrackDescription))
-            {
-                _toMixes.Add(fromTrackDescription, new List<MixRanking>());
+                if (!_toMixes.ContainsKey(fromTrackDescription))
+                {
+                    _toMixes.Add(fromTrackDescription, new List<MixRanking>());
+                }
+                return _toMixes[fromTrackDescription];
             }
-            return _toMixes[fromTrackDescription];
         }
-
 
         private void SaveMixRankings(string trackDescription)
         {
@@ -703,7 +705,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 content.AppendLine(toTrack.ToString());
             }
 
-            var blank = (content.Length == 0 || content.ToString().Trim().Replace(Environment.NewLine, "") == "");
+            var blank = content.Length == 0 || content.ToString().Trim().Replace(Environment.NewLine, "") == "";
             if (blank && File.Exists(filename))
             {
                 File.Delete(filename);
@@ -720,11 +722,17 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="trackDescription">The track description.</param>
         private void LoadMixRankings(string trackDescription)
         {
-            if (_loadedTracks.Contains(trackDescription)) return;
+            lock (_toMixes)
+            {
+                if (_loadedTracks.Contains(trackDescription)) return;
+            }
 
             DebugHelper.WriteLine("LoadMixRankings - " + trackDescription);
 
-            _loadedTracks.Add(trackDescription);
+            lock (_toMixes)
+            {
+                _loadedTracks.Add(trackDescription);
+            }
 
             var filename = GetMixRankingFileName(trackDescription);
 
@@ -744,10 +752,17 @@ namespace Halloumi.Shuffler.AudioLibrary
         private void FuzzyUncacheMixRanking(string trackDescription)
         {
             trackDescription = StringHelper.GetAlphaNumericCharactersOnly(trackDescription).ToLower();
-            var trackDescriptions = _loadedTracks
-                .Where(
-                    loadedTrack => StringHelper.GetAlphaNumericCharactersOnly(loadedTrack).ToLower() == trackDescription)
-                .ToList();
+
+            List<string> trackDescriptions;
+            lock (_toMixes)
+            {
+                trackDescriptions =
+                    _loadedTracks
+                        .Where(
+                            loadedTrack =>
+                                StringHelper.GetAlphaNumericCharactersOnly(loadedTrack).ToLower() == trackDescription)
+                        .ToList();
+            }
 
             foreach (var description in trackDescriptions)
             {
@@ -810,9 +825,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="trackDescription">The track description.</param>
         private void UncacheMixRanking(string trackDescription)
         {
-            if (!_loadedTracks.Contains(trackDescription)) return;
             lock (_loadedTracks)
             {
+                if (!_loadedTracks.Contains(trackDescription)) return;
                 _loadedTracks.Remove(trackDescription);
             }
         }
@@ -866,7 +881,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 else
                 {
                     mixRank.ToTrack = value;
-                    mixRank.MixLevel = (int)MixRank.Unranked;
+                    mixRank.MixLevel = (int) MixRank.Unranked;
                 }
 
                 return mixRank;

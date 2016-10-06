@@ -12,9 +12,9 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
     public class ModulePlayer : IBmpProvider
     {
         private const string SongKey = "Song";
-        private List<AudioPlayer> _channelPlayers;
+        private List<AudioPlayer> _channelPlayers = new List<AudioPlayer>();
         private double _loopLength;
-        private AudioPlayer _mainPlayer;
+        private readonly AudioPlayer _mainPlayer;
         private decimal _targetBpm = 100;
         public Module Module { get; internal set; }
 
@@ -206,7 +206,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     fullSampleKey,
                     sample.Start,
                     sample.Length,
-                    sample.Offset ?? 0,
+                    sample.Offset,
                     calculateBpmFromLength:true,
                     targetBpm: module.Bpm);
             }

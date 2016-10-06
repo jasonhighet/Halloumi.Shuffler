@@ -70,6 +70,7 @@
             this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTags = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mnuImportSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlBackground2.SuspendLayout();
             this.pnlLibraryDetails.SuspendLayout();
             this.pnlTrack.SuspendLayout();
@@ -181,7 +182,7 @@
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             this.dataGridViewTextBoxColumn2.ReadOnly = true;
             this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn2.Width = 70;
+            this.dataGridViewTextBoxColumn2.Width = 72;
             // 
             // dataGridViewTextBoxColumn3
             // 
@@ -191,7 +192,7 @@
             this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
             this.dataGridViewTextBoxColumn3.ReadOnly = true;
             this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn3.Width = 64;
+            this.dataGridViewTextBoxColumn3.Width = 66;
             // 
             // dataGridViewTextBoxColumn4
             // 
@@ -203,7 +204,7 @@
             this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
             this.dataGridViewTextBoxColumn4.ReadOnly = true;
             this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn4.Width = 85;
+            this.dataGridViewTextBoxColumn4.Width = 87;
             // 
             // dataGridViewTextBoxColumn5
             // 
@@ -220,39 +221,40 @@
             this.contextMenuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.contextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuImportSamples,
             this.mnEditSample,
             this.mnuEditTags,
             this.mnuCalculateKey,
             this.mnuCopySample});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(183, 100);
+            this.contextMenuStrip.Size = new System.Drawing.Size(190, 162);
             this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
             // 
             // mnEditSample
             // 
             this.mnEditSample.Name = "mnEditSample";
-            this.mnEditSample.Size = new System.Drawing.Size(182, 24);
+            this.mnEditSample.Size = new System.Drawing.Size(189, 26);
             this.mnEditSample.Text = "Edit &Sample";
             this.mnEditSample.Click += new System.EventHandler(this.mnEditSample_Click);
             // 
             // mnuEditTags
             // 
             this.mnuEditTags.Name = "mnuEditTags";
-            this.mnuEditTags.Size = new System.Drawing.Size(182, 24);
+            this.mnuEditTags.Size = new System.Drawing.Size(189, 26);
             this.mnuEditTags.Text = "Edit &Tags";
             this.mnuEditTags.Click += new System.EventHandler(this.mnuEditTags_Click);
             // 
             // mnuCalculateKey
             // 
             this.mnuCalculateKey.Name = "mnuCalculateKey";
-            this.mnuCalculateKey.Size = new System.Drawing.Size(182, 24);
+            this.mnuCalculateKey.Size = new System.Drawing.Size(189, 26);
             this.mnuCalculateKey.Text = "Calculate &Key";
             this.mnuCalculateKey.Click += new System.EventHandler(this.mnuCalculateKey_Click);
             // 
             // mnuCopySample
             // 
             this.mnuCopySample.Name = "mnuCopySample";
-            this.mnuCopySample.Size = new System.Drawing.Size(182, 24);
+            this.mnuCopySample.Size = new System.Drawing.Size(189, 26);
             this.mnuCopySample.Text = "&Copy Sample(s)";
             this.mnuCopySample.Click += new System.EventHandler(this.mnuCopySample_Click);
             // 
@@ -324,7 +326,7 @@
             this.txtSearch.MaximumValue = 2147483647D;
             this.txtSearch.MinimumValue = -2147483648D;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(184, 24);
+            this.txtSearch.Size = new System.Drawing.Size(184, 27);
             this.txtSearch.TabIndex = 1;
             // 
             // label5
@@ -350,7 +352,7 @@
             this.txtMinBPM.MaximumValue = 2147483647D;
             this.txtMinBPM.MinimumValue = -2147483648D;
             this.txtMinBPM.Name = "txtMinBPM";
-            this.txtMinBPM.Size = new System.Drawing.Size(35, 24);
+            this.txtMinBPM.Size = new System.Drawing.Size(35, 27);
             this.txtMinBPM.TabIndex = 12;
             // 
             // label4
@@ -376,7 +378,7 @@
             this.txtMaxBPM.MaximumValue = 2147483647D;
             this.txtMaxBPM.MinimumValue = -2147483648D;
             this.txtMaxBPM.Name = "txtMaxBPM";
-            this.txtMaxBPM.Size = new System.Drawing.Size(35, 24);
+            this.txtMaxBPM.Size = new System.Drawing.Size(35, 27);
             this.txtMaxBPM.TabIndex = 10;
             // 
             // label3
@@ -442,7 +444,7 @@
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label1.Size = new System.Drawing.Size(82, 26);
+            this.label1.Size = new System.Drawing.Size(81, 26);
             this.label1.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label1.TabIndex = 15;
             this.label1.Text = "Loop Type:";
@@ -456,7 +458,7 @@
             "",
             "Yes",
             "No"});
-            this.cmbLoopType.Location = new System.Drawing.Point(763, 4);
+            this.cmbLoopType.Location = new System.Drawing.Point(762, 4);
             this.cmbLoopType.Margin = new System.Windows.Forms.Padding(4);
             this.cmbLoopType.Name = "cmbLoopType";
             this.cmbLoopType.Size = new System.Drawing.Size(160, 25);
@@ -468,11 +470,11 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(927, 0);
+            this.label2.Location = new System.Drawing.Point(926, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label2.Size = new System.Drawing.Size(37, 26);
+            this.label2.Size = new System.Drawing.Size(35, 26);
             this.label2.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label2.TabIndex = 17;
             this.label2.Text = "Tag:";
@@ -486,7 +488,7 @@
             "",
             "Yes",
             "No"});
-            this.cmbTag.Location = new System.Drawing.Point(968, 4);
+            this.cmbTag.Location = new System.Drawing.Point(965, 4);
             this.cmbTag.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTag.Name = "cmbTag";
             this.cmbTag.Size = new System.Drawing.Size(147, 25);
@@ -542,6 +544,13 @@
             this.colTags.Name = "colTags";
             this.colTags.ReadOnly = true;
             this.colTags.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // mnuImportSamples
+            // 
+            this.mnuImportSamples.Name = "mnuImportSamples";
+            this.mnuImportSamples.Size = new System.Drawing.Size(189, 26);
+            this.mnuImportSamples.Text = "&Import Samples";
+            this.mnuImportSamples.Click += new System.EventHandler(this.mnuImportSamples_Click);
             // 
             // SampleLibraryControl
             // 
@@ -603,5 +612,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private Common.Windows.Controls.Label label6;
         private Common.Windows.Controls.CheckBox chkIncludeAntonal;
+        private System.Windows.Forms.ToolStripMenuItem mnuImportSamples;
     }
 }
