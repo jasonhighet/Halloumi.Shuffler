@@ -219,7 +219,9 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 Key = x.Description
             }).ToList();
 
-            ModulePlayer.UpdateSamples(audioFile, newSamples);
+            audioFile.Samples = newSamples;
+
+            ModulePlayer.UpdateAudioFile(audioFile);
 
             BindData();
         }

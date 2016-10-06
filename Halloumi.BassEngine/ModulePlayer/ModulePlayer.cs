@@ -157,10 +157,21 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             }
         }
 
-        public void UpdateSamples(Module.AudioFile audioFile, List<Module.Sample> updatedSamples)
+        public void MergeSamples(Module.AudioFile audioFile, List<Module.Sample> samples)
+        {
+            var newSampleKeys = samples.Select(x => x.Key).ToList();
+            audioFile.Samples.RemoveAll(x => newSampleKeys.Contains(x.Key));
+            audioFile.Samples.AddRange(samples);
+            UpdateAudioFile(audioFile);
+        }
+
+
+        public void UpdateAudioFile(Module.AudioFile audioFile)
         {
             Pause();
-            audioFile.Samples = updatedSamples;
+            Module.AudioFiles.RemoveAll(x => x.Key == audioFile.Key);
+            Module.AudioFiles.Add(audioFile);
+
             foreach (var channelPlayer in _channelPlayers)
             {
                 var existingSampleKeys = channelPlayer.GetStreamKeys().Where(x => x.StartsWith(audioFile.Key + ".")).ToList();
