@@ -167,7 +167,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (_binding) return;
 
-            var selectedSamples = GetSelectedSamples();
+            //var selectedSamples = GetSelectedSamples();
 
             BindSamples();
         }

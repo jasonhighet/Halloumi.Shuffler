@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;
@@ -52,6 +53,36 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         public void Close()
         {
             StopCurrentSample();
+        }
+
+        public void AddSamples(List<AudioLibrary.Models.Sample> samples)
+        {
+
+            foreach (var sample in samples)
+            {
+                var track = SampleLibrary.GetTrackFromSample(sample);
+                var audioFilePath = track.Filename;
+                var audioFile = ModulePlayer.Module.AudioFiles.FirstOrDefault(x => x.Path == audioFilePath);
+                if (audioFile == null)
+                {
+                    audioFile = new Module.AudioFile
+                    {
+                        Samples = new List<Module.Sample>(),
+                        Path = audioFilePath,
+                        Key = StringHelper.GetAlphaNumericCharactersOnly(track.Artist)
+                            + "." 
+                            + StringHelper.GetAlphaNumericCharactersOnly(track.Description)
+                    };
+                    ModulePlayer.Module.AudioFiles.Add(audioFile);
+                }
+               // ModulePlayer.UpdateSamples(aud);
+            }
+
+            // for each audio file
+            //   get list of samples that don't exist already
+            //   update audio file, samples
+
+            // bind data
         }
 
         private void StopCurrentSample()
