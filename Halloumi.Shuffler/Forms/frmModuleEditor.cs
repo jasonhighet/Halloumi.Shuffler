@@ -42,8 +42,14 @@ namespace Halloumi.Shuffler.Forms
             songControl.Library = Library;
             songControl.ModulePlayer = ModulePlayer;
 
+            patternsControl.BassPlayer = BassPlayer;
+            patternsControl.SampleLibrary = SampleLibrary;
+            patternsControl.Library = Library;
+            patternsControl.ModulePlayer = ModulePlayer;
+
             samplesControl.Initialize();
             songControl.Initialize();
+            patternsControl.Initialize();
 
             SetVisibleControls();
         }
@@ -52,6 +58,7 @@ namespace Halloumi.Shuffler.Forms
         {
             samplesControl.Visible = btnSamples.Checked;
             songControl.Visible = btnSong.Checked;
+            patternsControl.Visible = btnPatterns.Checked;
         }
 
         private void FrmModuleEditor_FormClosed(object sender, FormClosedEventArgs e)
@@ -74,6 +81,8 @@ namespace Halloumi.Shuffler.Forms
         private void BindData()
         {
             samplesControl.BindData();
+            songControl.BindData();
+            patternsControl.BindData();
         }
 
         private void fileMenuController_NewDocument(object sender, FileMenuControllerEventArgs e)
@@ -97,6 +106,12 @@ namespace Halloumi.Shuffler.Forms
         {
             SetVisibleControls();
             songControl.BindData();
+        }
+
+        private void btnPatterns_Click(object sender, EventArgs e)
+        {
+            SetVisibleControls();
+            patternsControl.BindData();
         }
     }
 }

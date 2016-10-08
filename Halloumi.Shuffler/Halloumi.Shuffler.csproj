@@ -100,14 +100,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\DataGridView.cs" />
-    <Compile Include="Controls\ModulePlayerControls\ModulePlayerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\ModulePlayerControls\SamplesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ModulePlayerControls\SamplesControl.Designer.cs">
       <DependentUpon>SamplesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModulePlayerControls\PatternsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModulePlayerControls\PatternsControl.Designer.cs">
+      <DependentUpon>PatternsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ModulePlayerControls\SongControl.cs">
       <SubType>UserControl</SubType>
@@ -344,6 +347,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\ModulePlayerControls\SamplesControl.resx">
       <DependentUpon>SamplesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ModulePlayerControls\PatternsControl.resx">
+      <DependentUpon>PatternsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ModulePlayerControls\SongControl.resx">
       <DependentUpon>SongControl.cs</DependentUpon>

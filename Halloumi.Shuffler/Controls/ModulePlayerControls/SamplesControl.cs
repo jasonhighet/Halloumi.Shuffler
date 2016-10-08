@@ -12,11 +12,43 @@ using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
+using Halloumi.Common.Windows.Controls;
+using System.ComponentModel;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 {
-    public partial class SamplesControl : ModulePlayerControl, ISampleRecipient
+    public partial class SamplesControl : BaseUserControl, ISampleRecipient
     {
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ModulePlayer ModulePlayer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SampleLibrary SampleLibrary { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public BassPlayer BassPlayer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Library Library { get; set; }
+
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
         private AudioPlayer _player;
         private FrmSampleLibrary _frmSampleLibrary;

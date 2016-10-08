@@ -37,15 +37,16 @@ namespace Halloumi.Shuffler.Forms
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.kryptonCheckSet = new ComponentFactory.Krypton.Toolkit.KryptonCheckSet(this.components);
+            this.btnSamples = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            this.btnSong = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            this.btnPatterns = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
             this.beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.pnlHeader = new Halloumi.Common.Windows.Controls.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnSamples = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            this.btnSong = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            this.btnSequences = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
             this.panel1 = new Halloumi.Common.Windows.Controls.Panel();
-            this.samplesControl = new Halloumi.Shuffler.Controls.ModulePlayerControls.SamplesControl();
+            this.patternsControl = new Halloumi.Shuffler.Controls.ModulePlayerControls.PatternsControl();
             this.songControl = new Halloumi.Shuffler.Controls.ModulePlayerControls.SongControl();
+            this.samplesControl = new Halloumi.Shuffler.Controls.ModulePlayerControls.SamplesControl();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonCheckSet)).BeginInit();
             this.pnlHeader.SuspendLayout();
@@ -83,8 +84,36 @@ namespace Halloumi.Shuffler.Forms
             // 
             this.kryptonCheckSet.CheckButtons.Add(this.btnSamples);
             this.kryptonCheckSet.CheckButtons.Add(this.btnSong);
-            this.kryptonCheckSet.CheckButtons.Add(this.btnSequences);
+            this.kryptonCheckSet.CheckButtons.Add(this.btnPatterns);
             this.kryptonCheckSet.CheckedButton = this.btnSamples;
+            // 
+            // btnSamples
+            // 
+            this.btnSamples.Checked = true;
+            this.btnSamples.Location = new System.Drawing.Point(3, 3);
+            this.btnSamples.Name = "btnSamples";
+            this.btnSamples.Size = new System.Drawing.Size(90, 35);
+            this.btnSamples.TabIndex = 0;
+            this.btnSamples.Values.Text = "Samples";
+            this.btnSamples.Click += new System.EventHandler(this.btnSamples_Click);
+            // 
+            // btnSong
+            // 
+            this.btnSong.Location = new System.Drawing.Point(99, 3);
+            this.btnSong.Name = "btnSong";
+            this.btnSong.Size = new System.Drawing.Size(90, 35);
+            this.btnSong.TabIndex = 1;
+            this.btnSong.Values.Text = "Song";
+            this.btnSong.Click += new System.EventHandler(this.btnSong_Click);
+            // 
+            // btnPatterns
+            // 
+            this.btnPatterns.Location = new System.Drawing.Point(195, 3);
+            this.btnPatterns.Name = "btnPatterns";
+            this.btnPatterns.Size = new System.Drawing.Size(90, 35);
+            this.btnPatterns.TabIndex = 2;
+            this.btnPatterns.Values.Text = "Patterns";
+            this.btnPatterns.Click += new System.EventHandler(this.btnPatterns_Click);
             // 
             // beveledLine1
             // 
@@ -109,43 +138,17 @@ namespace Halloumi.Shuffler.Forms
             // 
             this.flowLayoutPanel1.Controls.Add(this.btnSamples);
             this.flowLayoutPanel1.Controls.Add(this.btnSong);
-            this.flowLayoutPanel1.Controls.Add(this.btnSequences);
+            this.flowLayoutPanel1.Controls.Add(this.btnPatterns);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(833, 44);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
-            // btnSamples
-            // 
-            this.btnSamples.Checked = true;
-            this.btnSamples.Location = new System.Drawing.Point(3, 3);
-            this.btnSamples.Name = "btnSamples";
-            this.btnSamples.Size = new System.Drawing.Size(90, 35);
-            this.btnSamples.TabIndex = 0;
-            this.btnSamples.Values.Text = "Samples";
-            this.btnSamples.Click += new System.EventHandler(this.btnSamples_Click);
-            // 
-            // btnSong
-            // 
-            this.btnSong.Location = new System.Drawing.Point(99, 3);
-            this.btnSong.Name = "btnSong";
-            this.btnSong.Size = new System.Drawing.Size(90, 35);
-            this.btnSong.TabIndex = 1;
-            this.btnSong.Values.Text = "Song";
-            this.btnSong.Click += new System.EventHandler(this.btnSong_Click);
-            // 
-            // btnSequences
-            // 
-            this.btnSequences.Location = new System.Drawing.Point(195, 3);
-            this.btnSequences.Name = "btnSequences";
-            this.btnSequences.Size = new System.Drawing.Size(90, 35);
-            this.btnSequences.TabIndex = 2;
-            this.btnSequences.Values.Text = "Sequences";
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.patternsControl);
             this.panel1.Controls.Add(this.songControl);
             this.panel1.Controls.Add(this.samplesControl);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -156,13 +159,14 @@ namespace Halloumi.Shuffler.Forms
             this.panel1.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
             this.panel1.TabIndex = 7;
             // 
-            // samplesControl
+            // patternsControl
             // 
-            this.samplesControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.samplesControl.Location = new System.Drawing.Point(3, 3);
-            this.samplesControl.Name = "samplesControl";
-            this.samplesControl.Size = new System.Drawing.Size(827, 486);
-            this.samplesControl.TabIndex = 7;
+            this.patternsControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.patternsControl.Location = new System.Drawing.Point(3, 3);
+            this.patternsControl.Name = "patternsControl";
+            this.patternsControl.Size = new System.Drawing.Size(827, 486);
+            this.patternsControl.TabIndex = 9;
+            this.patternsControl.Visible = false;
             // 
             // songControl
             // 
@@ -171,6 +175,14 @@ namespace Halloumi.Shuffler.Forms
             this.songControl.Name = "songControl";
             this.songControl.Size = new System.Drawing.Size(827, 486);
             this.songControl.TabIndex = 8;
+            // 
+            // samplesControl
+            // 
+            this.samplesControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.samplesControl.Location = new System.Drawing.Point(3, 3);
+            this.samplesControl.Name = "samplesControl";
+            this.samplesControl.Size = new System.Drawing.Size(827, 486);
+            this.samplesControl.TabIndex = 7;
             // 
             // FrmModuleEditor
             // 
@@ -207,9 +219,10 @@ namespace Halloumi.Shuffler.Forms
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnSamples;
         private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnSong;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnSequences;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnPatterns;
         private Common.Windows.Controls.Panel panel1;
         private Controls.ModulePlayerControls.SongControl songControl;
         private Controls.ModulePlayerControls.SamplesControl samplesControl;
+        private Controls.ModulePlayerControls.PatternsControl patternsControl;
     }
 }

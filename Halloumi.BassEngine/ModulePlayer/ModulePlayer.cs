@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
@@ -55,15 +56,51 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             _mainPlayer.Pause();
         }
 
+        public void AddPattern(string patternKey)
+        {
+            Pause();
+            var pattern = new Module.Pattern()
+            {
+                Key = patternKey,
+                Sequence = new List<List<string>>()
+            };
+
+            Module.Patterns.Add(pattern);
+            LoadPattern(pattern);
+        }
+
         public void SaveModule(string modulePath)
         {
             File.WriteAllText(modulePath, JsonConvert.SerializeObject(Module));
+        }
+
+        public void AddChannel(string channelKey)
+        {
+            Pause();
+            var channel = new Module.Channel()
+            {
+                Key = channelKey
+            };
+
+            Module.Channels.Add(channel);
+            LoadModule(Module);
         }
 
         public void LoadModule(string modulePath)
         {
             var module = JsonConvert.DeserializeObject<Module>(File.ReadAllText(modulePath));
             LoadModule(module);
+        }
+
+        public void DeletePattern(string patternKey)
+        {
+            Pause();
+
+            var pattern = Module.Patterns.FirstOrDefault(x => x.Key == patternKey);
+            if (pattern == null) return;
+
+            Module.Patterns.RemoveAll(x => x.Key == patternKey);
+            LoadModule(Module);
         }
 
         public void LoadModule(Module module)
@@ -81,6 +118,18 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
             Module = module;
         }
+
+        public void DeleteChannel(string channelKey)
+        {
+            Pause();
+
+            var channel = Module.Channels.FirstOrDefault(x => x.Key == channelKey);
+            if (channel == null) return;
+
+            Module.Channels.RemoveAll(x => x.Key == channelKey);
+            LoadModule(Module);
+        }
+
         public void SetBPM(decimal bpm)
         {
             Module.Bpm = bpm;
@@ -120,34 +169,37 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         private void LoadPatterns(Module module)
         {
             foreach (var pattern in module.Patterns)
+                LoadPattern(pattern);
+        }
+
+        private void LoadPattern(Module.Pattern pattern)
+        {
+            var channelIndex = 0;
+            foreach (var channelSequence in pattern.Sequence)
             {
-                var channelIndex = 0;
-                foreach (var channelSequence in pattern.Sequence)
+                var player = _channelPlayers.FirstOrDefault(x => _channelPlayers.IndexOf(x) == channelIndex);
+                if (player == null)
+                    continue;
+
+                var channelSequenceKey = pattern.Key + channelIndex;
+                player.Load(channelSequenceKey, SilenceHelper.GetSilenceAudioFile());
+                player.AddSection(channelSequenceKey, channelSequenceKey, 0, _loopLength, bpm: _targetBpm);
+
+                var rowIndex = 0;
+                foreach (var row in channelSequence)
                 {
-                    var player = _channelPlayers.FirstOrDefault(x => _channelPlayers.IndexOf(x) == channelIndex);
-                    if (player == null)
-                        continue;
+                    var loopPosition = 0.0;
+                    if (rowIndex > 0)
+                        loopPosition = rowIndex / (double)channelSequence.Count;
 
-                    var channelSequenceKey = pattern.Key + channelIndex;
-                    player.Load(channelSequenceKey, SilenceHelper.GetSilenceAudioFile());
-                    player.AddSection(channelSequenceKey, channelSequenceKey, 0, _loopLength, bpm: _targetBpm);
+                    var position = GetLoopPosition(loopPosition, _targetBpm);
 
-                    var rowIndex = 0;
-                    foreach (var row in channelSequence)
-                    {
-                        var loopPosition = 0.0;
-                        if (rowIndex > 0)
-                            loopPosition = rowIndex/(double) channelSequence.Count;
+                    player.AddPlayEvent(channelSequenceKey, position, row, row);
 
-                        var position = GetLoopPosition(loopPosition, _targetBpm);
-
-                        player.AddPlayEvent(channelSequenceKey, position, row, row);
-
-                        rowIndex++;
-                    }
-
-                    channelIndex++;
+                    rowIndex++;
                 }
+
+                channelIndex++;
             }
         }
 

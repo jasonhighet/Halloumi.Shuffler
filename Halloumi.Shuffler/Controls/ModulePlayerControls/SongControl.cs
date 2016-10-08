@@ -8,11 +8,42 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Controls;
+using Halloumi.Shuffler.AudioEngine.ModulePlayer;
+using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 {
-    public partial class SongControl : ModulePlayerControl
+    public partial class SongControl : BaseUserControl
     {
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ModulePlayer ModulePlayer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SampleLibrary SampleLibrary { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public BassPlayer BassPlayer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Library Library { get; set; }
+
         public SongControl()
         {
             InitializeComponent();
