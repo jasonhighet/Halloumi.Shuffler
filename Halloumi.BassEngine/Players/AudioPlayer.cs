@@ -120,6 +120,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public void UnloadAll()
         {
+            Pause();
             var keys = GetStreamKeys();
             foreach (var streamKey in keys)
             {

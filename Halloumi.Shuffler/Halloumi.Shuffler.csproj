@@ -345,6 +345,9 @@
     <EmbeddedResource Include="Controls\ModulePlayerControls\SamplesControl.resx">
       <DependentUpon>SamplesControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ModulePlayerControls\SongControl.resx">
+      <DependentUpon>SongControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SkipBack.resx">
       <DependentUpon>SkipBack.cs</DependentUpon>
       <SubType>Designer</SubType>

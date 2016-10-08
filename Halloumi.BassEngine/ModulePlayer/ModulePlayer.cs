@@ -81,6 +81,11 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
             Module = module;
         }
+        public void SetBPM(decimal bpm)
+        {
+            Module.Bpm = bpm;
+            LoadModule(Module);
+        }
 
         private void LoadPatternSequence(Module module)
         {
