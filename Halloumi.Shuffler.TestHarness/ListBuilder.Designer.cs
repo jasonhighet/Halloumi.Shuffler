@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lstDestination = new Halloumi.Common.Windows.Controls.ListView();
             this.lstSource = new Halloumi.Common.Windows.Controls.ListView();
+            this.lstDestination = new Halloumi.Common.Windows.Controls.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAdd = new Halloumi.Common.Windows.Controls.Button();
+            this.btnInsert = new Halloumi.Common.Windows.Controls.Button();
             this.btnRemove = new Halloumi.Common.Windows.Controls.Button();
             this.btnClear = new Halloumi.Common.Windows.Controls.Button();
-            this.btnUp = new Halloumi.Common.Windows.Controls.Button();
-            this.btnDown = new Halloumi.Common.Windows.Controls.Button();
-            this.btnInsert = new Halloumi.Common.Windows.Controls.Button();
+            this.colSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colDestination = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -59,24 +59,34 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 413);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
+            // lstSource
+            // 
+            this.lstSource.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colSource});
+            this.lstSource.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstSource.FullRowSelect = true;
+            this.lstSource.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lstSource.Location = new System.Drawing.Point(3, 3);
+            this.lstSource.Name = "lstSource";
+            this.lstSource.Size = new System.Drawing.Size(277, 407);
+            this.lstSource.TabIndex = 1;
+            this.lstSource.UseCompatibleStateImageBehavior = false;
+            this.lstSource.View = System.Windows.Forms.View.Details;
+            // 
             // lstDestination
             // 
+            this.lstDestination.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colDestination});
             this.lstDestination.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstDestination.FullRowSelect = true;
+            this.lstDestination.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstDestination.Location = new System.Drawing.Point(386, 3);
             this.lstDestination.MultiSelect = false;
             this.lstDestination.Name = "lstDestination";
             this.lstDestination.Size = new System.Drawing.Size(278, 407);
             this.lstDestination.TabIndex = 0;
             this.lstDestination.UseCompatibleStateImageBehavior = false;
-            // 
-            // lstSource
-            // 
-            this.lstSource.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstSource.Location = new System.Drawing.Point(3, 3);
-            this.lstSource.Name = "lstSource";
-            this.lstSource.Size = new System.Drawing.Size(277, 407);
-            this.lstSource.TabIndex = 1;
-            this.lstSource.UseCompatibleStateImageBehavior = false;
+            this.lstDestination.View = System.Windows.Forms.View.Details;
             // 
             // flowLayoutPanel1
             // 
@@ -84,8 +94,6 @@
             this.flowLayoutPanel1.Controls.Add(this.btnInsert);
             this.flowLayoutPanel1.Controls.Add(this.btnRemove);
             this.flowLayoutPanel1.Controls.Add(this.btnClear);
-            this.flowLayoutPanel1.Controls.Add(this.btnUp);
-            this.flowLayoutPanel1.Controls.Add(this.btnDown);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(286, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -100,6 +108,17 @@
             this.btnAdd.Size = new System.Drawing.Size(85, 31);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Add";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnInsert
+            // 
+            this.btnInsert.Location = new System.Drawing.Point(4, 43);
+            this.btnInsert.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnInsert.Name = "btnInsert";
+            this.btnInsert.Size = new System.Drawing.Size(85, 31);
+            this.btnInsert.TabIndex = 5;
+            this.btnInsert.Text = "Insert";
+            this.btnInsert.Click += new System.EventHandler(this.btnInsert_Click);
             // 
             // btnRemove
             // 
@@ -109,6 +128,7 @@
             this.btnRemove.Size = new System.Drawing.Size(85, 31);
             this.btnRemove.TabIndex = 1;
             this.btnRemove.Text = "Remove";
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // btnClear
             // 
@@ -120,32 +140,13 @@
             this.btnClear.Text = "Clear";
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // btnUp
+            // colSource
             // 
-            this.btnUp.Location = new System.Drawing.Point(4, 160);
-            this.btnUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnUp.Name = "btnUp";
-            this.btnUp.Size = new System.Drawing.Size(85, 31);
-            this.btnUp.TabIndex = 3;
-            this.btnUp.Text = "Up";
+            this.colSource.Text = "Source";
             // 
-            // btnDown
+            // colDestination
             // 
-            this.btnDown.Location = new System.Drawing.Point(4, 199);
-            this.btnDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnDown.Name = "btnDown";
-            this.btnDown.Size = new System.Drawing.Size(85, 31);
-            this.btnDown.TabIndex = 4;
-            this.btnDown.Text = "Down";
-            // 
-            // btnInsert
-            // 
-            this.btnInsert.Location = new System.Drawing.Point(4, 43);
-            this.btnInsert.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnInsert.Name = "btnInsert";
-            this.btnInsert.Size = new System.Drawing.Size(85, 31);
-            this.btnInsert.TabIndex = 5;
-            this.btnInsert.Text = "Insert";
+            this.colDestination.Text = "Destination";
             // 
             // ListBuilder
             // 
@@ -170,8 +171,8 @@
         private Common.Windows.Controls.Button btnAdd;
         private Common.Windows.Controls.Button btnRemove;
         private Common.Windows.Controls.Button btnClear;
-        private Common.Windows.Controls.Button btnUp;
-        private Common.Windows.Controls.Button btnDown;
         private Common.Windows.Controls.Button btnInsert;
+        private System.Windows.Forms.ColumnHeader colSource;
+        private System.Windows.Forms.ColumnHeader colDestination;
     }
 }
