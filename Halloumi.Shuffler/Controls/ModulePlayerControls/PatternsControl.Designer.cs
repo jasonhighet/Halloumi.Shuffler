@@ -31,6 +31,8 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private void InitializeComponent()
         {
             this.panel1 = new Halloumi.Common.Windows.Controls.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.listBuilder = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbChannel = new Halloumi.Common.Windows.Controls.ComboBox();
@@ -41,14 +43,12 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.cmbPattern = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnAddPattern = new Halloumi.Common.Windows.Controls.Button();
             this.btnDeletePattern = new Halloumi.Common.Windows.Controls.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.listBuilder1 = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbChannel)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbPattern)).BeginInit();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -63,6 +63,26 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.panel1.Size = new System.Drawing.Size(740, 413);
             this.panel1.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
             this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.listBuilder);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 79);
+            this.panel2.Name = "panel2";
+            this.panel2.Padding = new System.Windows.Forms.Padding(5);
+            this.panel2.Size = new System.Drawing.Size(740, 334);
+            this.panel2.TabIndex = 2;
+            // 
+            // listBuilder
+            // 
+            this.listBuilder.AllowMultipleSourceItemsInDestination = false;
+            this.listBuilder.BackColor = System.Drawing.Color.Transparent;
+            this.listBuilder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBuilder.Location = new System.Drawing.Point(5, 5);
+            this.listBuilder.Name = "listBuilder";
+            this.listBuilder.Size = new System.Drawing.Size(730, 324);
+            this.listBuilder.TabIndex = 0;
             // 
             // flowLayoutPanel2
             // 
@@ -182,26 +202,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.btnDeletePattern.Text = "Delete";
             this.btnDeletePattern.Click += new System.EventHandler(this.btnDeletePattern_Click);
             // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.listBuilder1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 79);
-            this.panel2.Name = "panel2";
-            this.panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.panel2.Size = new System.Drawing.Size(740, 334);
-            this.panel2.TabIndex = 2;
-            // 
-            // listBuilder1
-            // 
-            this.listBuilder1.AllowMultipleSourceItemsInDestination = false;
-            this.listBuilder1.BackColor = System.Drawing.Color.Transparent;
-            this.listBuilder1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBuilder1.Location = new System.Drawing.Point(5, 5);
-            this.listBuilder1.Name = "listBuilder1";
-            this.listBuilder1.Size = new System.Drawing.Size(730, 324);
-            this.listBuilder1.TabIndex = 0;
-            // 
             // PatternsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -210,11 +210,11 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.Name = "PatternsControl";
             this.Size = new System.Drawing.Size(740, 413);
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cmbChannel)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cmbPattern)).EndInit();
-            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -233,6 +233,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private Common.Windows.Controls.Button btnAddPattern;
         private Common.Windows.Controls.Button btnDeletePattern;
         private System.Windows.Forms.Panel panel2;
-        private ListBuilder listBuilder1;
+        private ListBuilder listBuilder;
     }
 }

@@ -66,6 +66,12 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             };
 
             Module.Patterns.Add(pattern);
+
+            foreach (var channel in Module.Channels)
+            {
+                pattern.Sequence.Add(new List<string>());
+            }
+
             LoadPattern(pattern);
         }
 
@@ -83,6 +89,11 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             };
 
             Module.Channels.Add(channel);
+            foreach (var patttern in Module.Patterns)
+            {
+                patttern.Sequence.Add(new List<string>());
+            }
+
             LoadModule(Module);
         }
 
@@ -126,7 +137,15 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             var channel = Module.Channels.FirstOrDefault(x => x.Key == channelKey);
             if (channel == null) return;
 
+            var channelIndex = Module.Channels.FindIndex(x => x.Key == channelKey);
+
             Module.Channels.RemoveAll(x => x.Key == channelKey);
+
+            foreach (var patttern in Module.Patterns)
+            {
+                patttern.Sequence.RemoveAt(channelIndex);
+            }
+
             LoadModule(Module);
         }
 

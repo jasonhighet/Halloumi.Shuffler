@@ -60,14 +60,70 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         {
             _binding = true;
 
-            var currentPattern = cmbPattern.GetTextThreadSafe();
-            cmbPattern.Items.Clear();
-            foreach (var pattern in ModulePlayer.Module.Patterns)
-            {
-                cmbPattern.Items.Add(pattern.Key);
-            }
-            cmbPattern.SelectedIndex = cmbPattern.FindString(currentPattern);
+            BindPatterns();
+            BindChannels();
+            BindSequence();
 
+            _binding = false;
+        }
+
+        private void BindSequence()
+        {
+            var sequence = GetSequence();
+            var samples = GetModuleSamples();
+
+            listBuilder.SetSourceList(samples);
+            listBuilder.SetDestinationList(sequence);
+        }
+
+        private List<string> GetSequence()
+        {
+            var currentChannelIndex = GetCurrentChannelIndex();
+            var currentPatternIndex = GetCurrentPatternIndex();
+
+            List<string> sequence;
+            if (currentChannelIndex == -1 || currentPatternIndex == -1)
+            {
+                sequence = new List<string>();
+            }
+            else
+            {
+                sequence = ModulePlayer
+                    .Module
+                    .Patterns
+                    .FirstOrDefault(x => x.Key == cmbPattern.GetTextThreadSafe())
+                    .Sequence[currentChannelIndex];
+            }
+
+            return sequence;
+        }
+
+        private List<string> GetModuleSamples()
+        {
+            var samples = new List<string>();
+            foreach (var audioFile in ModulePlayer.Module.AudioFiles)
+            {
+                foreach (var sample in audioFile.Samples)
+                {
+                    samples.Add(audioFile.Key + "." + sample.Key);
+                }
+            }
+            samples = samples.OrderBy(x => x).ToList();
+            return samples;
+        }
+
+        private int GetCurrentPatternIndex()
+        {
+            return ModulePlayer.Module.Patterns.FindIndex(x => x.Key == cmbPattern.GetTextThreadSafe());
+        }
+
+        private int GetCurrentChannelIndex()
+        {
+            return ModulePlayer.Module.Channels.FindIndex(x => x.Key == cmbChannel.GetTextThreadSafe());
+        }
+
+        private void BindChannels()
+        {
             var currentChannel = cmbChannel.GetTextThreadSafe();
             cmbChannel.Items.Clear();
             foreach (var channel in ModulePlayer.Module.Channels)
@@ -75,18 +131,29 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 cmbChannel.Items.Add(channel.Key);
             }
             cmbChannel.SelectedIndex = cmbChannel.FindString(currentChannel);
+        }
 
-            _binding = false; 
+        private void BindPatterns()
+        {
+            var currentPattern = cmbPattern.GetTextThreadSafe();
+            cmbPattern.Items.Clear();
+            foreach (var pattern in ModulePlayer.Module.Patterns)
+            {
+                cmbPattern.Items.Add(pattern.Key);
+            }
+            cmbPattern.SelectedIndex = cmbPattern.FindString(currentPattern);
         }
 
         private void cmbPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_binding) return;
+            BindSequence();
         }
 
         private void cmbChannel_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_binding) return;
+            BindSequence();
         }
 
         private void btnAddPattern_Click(object sender, EventArgs e)
