@@ -34,14 +34,18 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbBPM = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.listBuilder1 = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbBPM)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.flowLayoutPanel1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -88,6 +92,26 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.cmbBPM.TabIndex = 7;
             this.cmbBPM.SelectedIndexChanged += new System.EventHandler(this.cmbBPM_SelectedIndexChanged);
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.listBuilder1);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 32);
+            this.panel2.Name = "panel2";
+            this.panel2.Padding = new System.Windows.Forms.Padding(5);
+            this.panel2.Size = new System.Drawing.Size(740, 381);
+            this.panel2.TabIndex = 3;
+            // 
+            // listBuilder1
+            // 
+            this.listBuilder1.AllowMultipleSourceItemsInDestination = false;
+            this.listBuilder1.BackColor = System.Drawing.Color.Transparent;
+            this.listBuilder1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBuilder1.Location = new System.Drawing.Point(5, 5);
+            this.listBuilder1.Name = "listBuilder1";
+            this.listBuilder1.Size = new System.Drawing.Size(730, 371);
+            this.listBuilder1.TabIndex = 0;
+            // 
             // SongControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -99,6 +123,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbBPM)).EndInit();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -109,5 +134,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private Common.Windows.Controls.Label label1;
         private Common.Windows.Controls.ComboBox cmbBPM;
+        private System.Windows.Forms.Panel panel2;
+        private ListBuilder listBuilder1;
     }
 }
