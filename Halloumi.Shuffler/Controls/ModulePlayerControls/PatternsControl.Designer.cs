@@ -83,6 +83,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.listBuilder.Name = "listBuilder";
             this.listBuilder.Size = new System.Drawing.Size(730, 324);
             this.listBuilder.TabIndex = 0;
+            this.listBuilder.OnDestinationListChanged += new System.EventHandler(this.listBuilder_OnDestinationListChanged);
             // 
             // flowLayoutPanel2
             // 

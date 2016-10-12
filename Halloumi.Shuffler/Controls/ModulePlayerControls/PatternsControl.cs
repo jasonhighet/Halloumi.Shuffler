@@ -187,5 +187,10 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             ModulePlayer.DeleteChannel(channelKey);
             BindData();
         }
+
+        private void listBuilder_OnDestinationListChanged(object sender, EventArgs e)
+        {
+            ModulePlayer.LoadModule(ModulePlayer.Module);
+        }
     }
 }
