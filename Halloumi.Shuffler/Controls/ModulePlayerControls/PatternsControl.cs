@@ -88,11 +88,10 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             }
             else
             {
-                sequence = ModulePlayer
-                    .Module
-                    .Patterns
-                    .FirstOrDefault(x => x.Key == cmbPattern.GetTextThreadSafe())
-                    .Sequence[currentChannelIndex];
+                var key = cmbPattern.GetTextThreadSafe();
+                var pattern = ModulePlayer.Module.Patterns.FirstOrDefault(x => x.Key == key);
+                if (pattern == null) return null;
+                sequence = pattern.Sequence[currentChannelIndex];
             }
 
             return sequence;
@@ -103,10 +102,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             var samples = new List<string>();
             foreach (var audioFile in ModulePlayer.Module.AudioFiles)
             {
-                foreach (var sample in audioFile.Samples)
-                {
-                    samples.Add(audioFile.Key + "." + sample.Key);
-                }
+                samples.AddRange(audioFile.Samples.Select(sample => audioFile.Key + "." + sample.Key));
             }
             samples = samples.OrderBy(x => x).ToList();
             return samples;
@@ -190,6 +186,18 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void listBuilder_OnDestinationListChanged(object sender, EventArgs e)
         {
+            var channelIndex = GetCurrentChannelIndex();
+
+            var pattern = ModulePlayer
+                .Module
+                .Patterns
+                .FirstOrDefault(x => x.Key == cmbPattern.GetTextThreadSafe());
+
+            if(pattern == null)
+                return;
+            
+            pattern.Sequence[channelIndex] = listBuilder.GetDestinationList();
+
             ModulePlayer.LoadModule(ModulePlayer.Module);
         }
     }

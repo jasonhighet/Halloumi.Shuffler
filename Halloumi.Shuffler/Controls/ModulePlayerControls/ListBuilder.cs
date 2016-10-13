@@ -59,7 +59,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 .ToArray();
 
             lstDestination.Items.AddRange(items);
-            lstSource.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lstDestination.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lstDestination.EndUpdate();
         }
 
