@@ -200,5 +200,18 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
             ModulePlayer.LoadModule(ModulePlayer.Module);
         }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            var patternKey = cmbPattern.GetTextThreadSafe();
+            if (patternKey == "") return;
+            var currentPattern = cmbPattern.GetTextThreadSafe();
+            ModulePlayer.PlayPattern(patternKey);
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            ModulePlayer.Pause();
+        }
     }
 }

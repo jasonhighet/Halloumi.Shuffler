@@ -195,7 +195,8 @@ namespace Halloumi.Shuffler.Forms
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "FrmModuleEditor";
-            this.Text = "frmModulePlayer";
+            this.Text = "Halloumi : Module Editor";
+            this.UseApplicationIcon = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmModuleEditor_FormClosed);
             this.Load += new System.EventHandler(this.FrmModuleEditor_Load);
             this.menuStrip.ResumeLayout(false);

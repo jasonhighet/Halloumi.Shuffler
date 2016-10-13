@@ -32,17 +32,19 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel3 = new Halloumi.Common.Windows.Controls.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnEdit = new Halloumi.Common.Windows.Controls.Button();
             this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
             this.btnStop = new Halloumi.Common.Windows.Controls.Button();
-            this.btnExport = new Halloumi.Common.Windows.Controls.Button();
+            this.btnEdit = new Halloumi.Common.Windows.Controls.Button();
             this.btnImport = new Halloumi.Common.Windows.Controls.Button();
+            this.btnExport = new Halloumi.Common.Windows.Controls.Button();
+            this.panel1 = new Halloumi.Common.Windows.Controls.Panel();
             this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
             this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBPM = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).BeginInit();
             this.SuspendLayout();
@@ -52,10 +54,10 @@
             this.panel3.BackColor = System.Drawing.SystemColors.Control;
             this.panel3.Controls.Add(this.flowLayoutPanel1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(524, 0);
+            this.panel3.Location = new System.Drawing.Point(515, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(109, 362);
-            this.panel3.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
+            this.panel3.Size = new System.Drawing.Size(118, 362);
+            this.panel3.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
             this.panel3.TabIndex = 4;
             // 
             // flowLayoutPanel1
@@ -68,22 +70,13 @@
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(109, 362);
+            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(118, 362);
             this.flowLayoutPanel1.TabIndex = 0;
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Location = new System.Drawing.Point(4, 82);
-            this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(100, 31);
-            this.btnEdit.TabIndex = 0;
-            this.btnEdit.Text = "Edit";
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // btnPlay
             // 
-            this.btnPlay.Location = new System.Drawing.Point(4, 4);
+            this.btnPlay.Location = new System.Drawing.Point(9, 9);
             this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(100, 31);
@@ -93,7 +86,7 @@
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(4, 43);
+            this.btnStop.Location = new System.Drawing.Point(9, 48);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(100, 31);
@@ -101,19 +94,19 @@
             this.btnStop.Text = "Stop";
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // btnExport
+            // btnEdit
             // 
-            this.btnExport.Location = new System.Drawing.Point(4, 160);
-            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(100, 31);
-            this.btnExport.TabIndex = 3;
-            this.btnExport.Text = "Export";
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            this.btnEdit.Location = new System.Drawing.Point(9, 87);
+            this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(100, 31);
+            this.btnEdit.TabIndex = 0;
+            this.btnEdit.Text = "Edit";
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(4, 121);
+            this.btnImport.Location = new System.Drawing.Point(9, 126);
             this.btnImport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(100, 31);
@@ -121,18 +114,40 @@
             this.btnImport.Text = "Import";
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(9, 165);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(100, 31);
+            this.btnExport.TabIndex = 3;
+            this.btnExport.Text = "Export";
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(5);
+            this.panel1.Size = new System.Drawing.Size(515, 362);
+            this.panel1.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
+            this.panel1.TabIndex = 5;
+            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.Control;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.Controls.Add(this.grdSamples);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Location = new System.Drawing.Point(5, 5);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(1);
-            this.panel2.Size = new System.Drawing.Size(524, 362);
+            this.panel2.Size = new System.Drawing.Size(505, 352);
             this.panel2.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
-            this.panel2.TabIndex = 5;
+            this.panel2.TabIndex = 6;
             // 
             // grdSamples
             // 
@@ -156,7 +171,7 @@
             this.grdSamples.RowHeadersVisible = false;
             this.grdSamples.RowTemplate.Height = 24;
             this.grdSamples.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdSamples.Size = new System.Drawing.Size(522, 360);
+            this.grdSamples.Size = new System.Drawing.Size(503, 350);
             this.grdSamples.SortColumnIndex = -1;
             this.grdSamples.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdSamples.TabIndex = 1;
@@ -185,12 +200,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Name = "SamplesControl";
             this.Size = new System.Drawing.Size(633, 362);
             this.panel3.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).EndInit();
             this.ResumeLayout(false);
@@ -206,8 +222,9 @@
         private Common.Windows.Controls.Button btnStop;
         private Common.Windows.Controls.Button btnExport;
         private Common.Windows.Controls.Button btnImport;
+        private Common.Windows.Controls.Panel panel1;
         private Common.Windows.Controls.Panel panel2;
-        private Halloumi.Shuffler.Controls.DataGridView grdSamples;
+        private DataGridView grdSamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSampleName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBPM;
     }

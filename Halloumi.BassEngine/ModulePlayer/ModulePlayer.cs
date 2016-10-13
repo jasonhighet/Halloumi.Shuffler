@@ -116,6 +116,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         public void LoadModule(Module module)
         {
+            Pause();
             _mainPlayer.UnloadAll();
 
             _targetBpm = module.Bpm;
@@ -295,7 +296,10 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         public void PlayPattern(string patternKey)
         {
-            //throw new NotImplementedException();
+            var section = _mainPlayer.GetAudioSection(SongKey, SongKey);
+            section.LoopIndefinitely = true;
+            _mainPlayer.QueueSection(SongKey, SongKey);
+            _mainPlayer.Play(SongKey);
         }
 
         public void CreateModule()
