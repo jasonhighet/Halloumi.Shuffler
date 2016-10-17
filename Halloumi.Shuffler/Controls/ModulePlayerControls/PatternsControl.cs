@@ -205,7 +205,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         {
             var patternKey = cmbPattern.GetTextThreadSafe();
             if (patternKey == "") return;
-            var currentPattern = cmbPattern.GetTextThreadSafe();
             ModulePlayer.PlayPattern(patternKey);
         }
 

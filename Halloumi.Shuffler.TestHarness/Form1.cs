@@ -13,6 +13,11 @@ namespace Halloumi.Shuffler.TestHarness
 {
     public partial class Form1 : Form
     {
+        private BassPlayer _bassPlayer;
+        private Library _library;
+        private ModulePlayer _player;
+        private SampleLibrary _sampleLibrary;
+
         public Form1()
         {
             InitializeComponent();
@@ -20,29 +25,28 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            listBuilder1.OnDestinationListChanged += ListBuilder1_OnDestinationListChanged;
+            DebugHelper.DebugMode = false;
 
-            var items = new List<string>()
+            _bassPlayer = new BassPlayer(Handle);
+            ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
+            _library = new Library(_bassPlayer)
             {
-                "Item1",
-                "Item2",
-                "Item3",
-                "Item4",
-                "Item5"
+                LibraryFolder = @"E:\Music\Library"
             };
 
-            listBuilder1.SetSourceList(items);
 
-            listBuilder1.SetDestinationList(items);
+            _library.LoadFromDatabase();
+            _sampleLibrary = new SampleLibrary(_bassPlayer, _library);
+
+            _player = new ModulePlayer();
+            _bassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
+
+            _player.LoadModule("song.json");
+
+            //_player.PlayModuleLooped();
+
+            _player.PlayPattern("StartMainLoop");
         }
 
-        private void ListBuilder1_OnDestinationListChanged(object sender, EventArgs e)
-        {
-            var items = listBuilder1.GetDestinationList();
-            foreach (var item in items)
-            {
-                DebugHelper.WriteLine(item);
-            }
-        }
     }
 }

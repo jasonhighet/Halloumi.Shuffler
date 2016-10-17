@@ -77,7 +77,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private void SetBPM()
         {
             var bpm = decimal.Parse(cmbBPM.GetTextThreadSafe());
-            ModulePlayer.SetBPM(bpm);
+            ModulePlayer.SetBpm(bpm);
         }
     }
 }

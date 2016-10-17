@@ -190,12 +190,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         public void Pause()
         {
             var streamKeys = GetStreamKeys();
-
-            Parallel.ForEach(streamKeys, streamKey =>
+            foreach(var streamKey in streamKeys)
             {
                 var audioStream = GetAudioStream(streamKey);
                 AudioStreamHelper.Pause(audioStream);
-            });
+            };
         }
 
         public void Pause(string streamKey)
