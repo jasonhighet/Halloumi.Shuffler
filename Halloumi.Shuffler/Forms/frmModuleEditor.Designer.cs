@@ -99,7 +99,7 @@ namespace Halloumi.Shuffler.Forms
             // 
             // btnSong
             // 
-            this.btnSong.Location = new System.Drawing.Point(99, 3);
+            this.btnSong.Location = new System.Drawing.Point(195, 3);
             this.btnSong.Name = "btnSong";
             this.btnSong.Size = new System.Drawing.Size(90, 35);
             this.btnSong.TabIndex = 1;
@@ -108,7 +108,7 @@ namespace Halloumi.Shuffler.Forms
             // 
             // btnPatterns
             // 
-            this.btnPatterns.Location = new System.Drawing.Point(195, 3);
+            this.btnPatterns.Location = new System.Drawing.Point(99, 3);
             this.btnPatterns.Name = "btnPatterns";
             this.btnPatterns.Size = new System.Drawing.Size(90, 35);
             this.btnPatterns.TabIndex = 2;
@@ -137,8 +137,8 @@ namespace Halloumi.Shuffler.Forms
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.btnSamples);
-            this.flowLayoutPanel1.Controls.Add(this.btnSong);
             this.flowLayoutPanel1.Controls.Add(this.btnPatterns);
+            this.flowLayoutPanel1.Controls.Add(this.btnSong);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";

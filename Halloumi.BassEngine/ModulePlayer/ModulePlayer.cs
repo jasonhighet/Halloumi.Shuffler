@@ -119,6 +119,11 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             LoadModule(Module);
         }
 
+        public void ReloadModule()
+        {
+            LoadModule(Module);
+        }
+
         public void LoadModule(Module module)
         {
             Pause();

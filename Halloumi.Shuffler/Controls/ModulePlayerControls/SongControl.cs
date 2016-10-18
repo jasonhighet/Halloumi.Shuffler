@@ -100,7 +100,9 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void listBuilder_OnDestinationListChanged(object sender, EventArgs e)
         {
-
+            var sequence = listBuilder.GetDestinationList();
+            ModulePlayer.Module.Sequence = sequence;
+            ModulePlayer.ReloadModule();
         }
 
         private void btnLoop_Click(object sender, EventArgs e)

@@ -52,6 +52,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
         private AudioPlayer _player;
         private FrmSampleLibrary _frmSampleLibrary;
+        private bool _binding;
 
         public SamplesControl()
         {
@@ -64,8 +65,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
             grdSamples.DefaultCellStyle.Font = _font;
         }
-
-        // private bool _binding;
+        
         private List<SampleModel> SampleModels { get; set; }
 
         public void Initialize()
@@ -160,7 +160,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         public void BindData()
         {
-            //   _binding = true;
+            _binding = true;
 
             grdSamples.SaveSelectedRows();
 
@@ -184,7 +184,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             grdSamples.RestoreSelectedRows();
             grdSamples.InvalidateDisplayedRows();
 
-            //  _binding = false;
+            _binding = false;
         }
 
         private List<SampleModel> GetSampleModelsFromModule()
@@ -267,6 +267,8 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void grdSamples_SelectionChanged(object sender, EventArgs e)
         {
+            if(_binding)
+                return;
             PlaySamples();
         }
 
