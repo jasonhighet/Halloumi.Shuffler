@@ -359,7 +359,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             PauseSamples();
         }
 
-        private void PauseSamples()
+        public void PauseSamples()
         {
             lock (_player)
             {

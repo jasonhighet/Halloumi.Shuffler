@@ -52,7 +52,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         public void Initialize()
         {
             cmbBPM.Items.Clear();
-            for (int i = 68; i <= 136; i++)
+            for (var i = 68; i <= 136; i++)
             {
                 cmbBPM.Items.Add(i);
             }
@@ -61,23 +61,51 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         }
 
         private bool _binding = false;
+
         public void BindData()
         {
             _binding = true;
-            cmbBPM.SelectedIndex = cmbBPM.FindString(ModulePlayer.Module.Bpm.ToString());
+            var bpm = Convert.ToInt32(Math.Round(ModulePlayer.Module.Bpm,0)).ToString();
+            cmbBPM.SelectedIndex = cmbBPM.FindString(bpm);
+
+            var patternKeys = ModulePlayer.Module.Patterns.Select(x=>x.Key).ToList();
+            listBuilder.SetSourceList(patternKeys);
+
+            listBuilder.SetDestinationList(ModulePlayer.Module.Sequence);
+
             _binding = false; 
         }
 
         private void cmbBPM_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_binding) return;
-            SetBPM();
+            SetBpm();
         }
 
-        private void SetBPM()
+        private void SetBpm()
         {
             var bpm = decimal.Parse(cmbBPM.GetTextThreadSafe());
             ModulePlayer.SetBpm(bpm);
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            ModulePlayer.PlayModule();
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            ModulePlayer.Pause();
+        }
+
+        private void listBuilder_OnDestinationListChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLoop_Click(object sender, EventArgs e)
+        {
+            ModulePlayer.PlayModuleLooped();
         }
     }
 }

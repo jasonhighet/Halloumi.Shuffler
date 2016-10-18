@@ -67,7 +67,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void FrmModuleEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ModulePlayer.Pause();
+            PausePlayers();
             samplesControl.Close();
         }
 
@@ -77,7 +77,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void fileMenuController_LoadDocument(object sender, FileMenuControllerEventArgs e)
         {
-            ModulePlayer.Pause();
+            PausePlayers();
             ModulePlayer.LoadModule(e.FileName);
             BindData();
         }
@@ -91,9 +91,15 @@ namespace Halloumi.Shuffler.Forms
 
         private void fileMenuController_NewDocument(object sender, FileMenuControllerEventArgs e)
         {
-            ModulePlayer.Pause();
+            PausePlayers();
             ModulePlayer.CreateModule();
             BindData();
+        }
+
+        private void PausePlayers()
+        {
+            ModulePlayer.Pause();
+            samplesControl.PauseSamples();
         }
 
         private void fileMenuController_SaveDocument(object sender, FileMenuControllerEventArgs e)
@@ -104,17 +110,21 @@ namespace Halloumi.Shuffler.Forms
         private void btnSamples_Click(object sender, EventArgs e)
         {
             SetVisibleControls();
+            PausePlayers();
+            samplesControl.BindData();
         }
 
         private void btnSong_Click(object sender, EventArgs e)
         {
             SetVisibleControls();
+            PausePlayers();
             songControl.BindData();
         }
 
         private void btnPatterns_Click(object sender, EventArgs e)
         {
             SetVisibleControls();
+            PausePlayers();
             patternsControl.BindData();
         }
     }

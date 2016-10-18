@@ -30,23 +30,74 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         /// </summary>
         private void InitializeComponent()
         {
+            this.panel3 = new Halloumi.Common.Windows.Controls.Panel();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnStop = new Halloumi.Common.Windows.Controls.Button();
+            this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
             this.panel1 = new Halloumi.Common.Windows.Controls.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbBPM = new Halloumi.Common.Windows.Controls.ComboBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.listBuilder1 = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
+            this.listBuilder = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
+            this.btnLoop = new Halloumi.Common.Windows.Controls.Button();
+            this.panel3.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbBPM)).BeginInit();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.Control;
+            this.panel3.Controls.Add(this.flowLayoutPanel3);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel3.Location = new System.Drawing.Point(631, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(109, 413);
+            this.panel3.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
+            this.panel3.TabIndex = 6;
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.btnPlay);
+            this.flowLayoutPanel3.Controls.Add(this.btnLoop);
+            this.flowLayoutPanel3.Controls.Add(this.btnStop);
+            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Padding = new System.Windows.Forms.Padding(0, 5, 5, 5);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(109, 413);
+            this.flowLayoutPanel3.TabIndex = 0;
+            // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(4, 87);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(100, 31);
+            this.btnStop.TabIndex = 2;
+            this.btnStop.Text = "Stop";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.Location = new System.Drawing.Point(4, 9);
+            this.btnPlay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(100, 31);
+            this.btnPlay.TabIndex = 1;
+            this.btnPlay.Text = "Play";
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.flowLayoutPanel1);
+            this.panel1.Controls.Add(this.panel3);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -61,8 +112,8 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(740, 32);
-            this.flowLayoutPanel1.TabIndex = 0;
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(631, 32);
+            this.flowLayoutPanel1.TabIndex = 7;
             // 
             // label1
             // 
@@ -94,23 +145,34 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.listBuilder1);
+            this.panel2.Controls.Add(this.listBuilder);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 32);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.panel2.Size = new System.Drawing.Size(740, 381);
-            this.panel2.TabIndex = 3;
+            this.panel2.Size = new System.Drawing.Size(631, 381);
+            this.panel2.TabIndex = 8;
             // 
-            // listBuilder1
+            // listBuilder
             // 
-            this.listBuilder1.AllowMultipleSourceItemsInDestination = false;
-            this.listBuilder1.BackColor = System.Drawing.Color.Transparent;
-            this.listBuilder1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBuilder1.Location = new System.Drawing.Point(5, 5);
-            this.listBuilder1.Name = "listBuilder1";
-            this.listBuilder1.Size = new System.Drawing.Size(730, 371);
-            this.listBuilder1.TabIndex = 0;
+            this.listBuilder.AllowMultipleSourceItemsInDestination = false;
+            this.listBuilder.BackColor = System.Drawing.Color.Transparent;
+            this.listBuilder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBuilder.Location = new System.Drawing.Point(5, 5);
+            this.listBuilder.Name = "listBuilder";
+            this.listBuilder.Size = new System.Drawing.Size(621, 371);
+            this.listBuilder.TabIndex = 0;
+            this.listBuilder.OnDestinationListChanged += new System.EventHandler(this.listBuilder_OnDestinationListChanged);
+            // 
+            // btnLoop
+            // 
+            this.btnLoop.Location = new System.Drawing.Point(4, 48);
+            this.btnLoop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnLoop.Name = "btnLoop";
+            this.btnLoop.Size = new System.Drawing.Size(100, 31);
+            this.btnLoop.TabIndex = 3;
+            this.btnLoop.Text = "Loop";
+            this.btnLoop.Click += new System.EventHandler(this.btnLoop_Click);
             // 
             // SongControl
             // 
@@ -119,6 +181,8 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.Controls.Add(this.panel1);
             this.Name = "SongControl";
             this.Size = new System.Drawing.Size(740, 413);
+            this.panel3.ResumeLayout(false);
+            this.flowLayoutPanel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
@@ -130,11 +194,16 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         #endregion
 
+        private Common.Windows.Controls.Panel panel3;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private Common.Windows.Controls.Button btnPlay;
+        private Common.Windows.Controls.Button btnStop;
         private Common.Windows.Controls.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private ListBuilder listBuilder;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private Common.Windows.Controls.Label label1;
         private Common.Windows.Controls.ComboBox cmbBPM;
-        private System.Windows.Forms.Panel panel2;
-        private ListBuilder listBuilder1;
+        private Common.Windows.Controls.Button btnLoop;
     }
 }
