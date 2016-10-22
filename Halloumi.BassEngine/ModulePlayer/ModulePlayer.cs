@@ -289,6 +289,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         private static void LoadSamples(Module module, AudioPlayer channelPlayer, Module.AudioFile audioFile)
         {
+           // const double fadeLength = 0.005;
             foreach (var sample in audioFile.Samples)
             {
                 var fullSampleKey = audioFile.Key + "." + sample.Key;
@@ -298,8 +299,21 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     sample.Start,
                     sample.Length,
                     sample.Offset,
-                    calculateBpmFromLength:true,
+                    calculateBpmFromLength: true,
                     targetBpm: module.Bpm);
+
+              //  if (sample.Offset == 0)
+             //   {
+             //       channelPlayer.AddEvent(fullSampleKey, sample.Start, fullSampleKey, fullSampleKey, EventType.FadeIn, length: fadeLength);
+             //       var startFadeOut = sample.Start + sample.Length - fadeLength;
+             //       channelPlayer.AddEvent(fullSampleKey, startFadeOut, fullSampleKey, fullSampleKey, EventType.FadeOut, length: fadeLength);
+             ////   }
+                //else
+                //{
+                //    channelPlayer.AddEvent(fullSampleKey, sample.Offset, fullSampleKey, fullSampleKey, EventType.FadeIn, length: fadeLength);
+                //    var startFadeOut = sample.Offset - fadeLength;
+                //    channelPlayer.AddEvent(fullSampleKey, startFadeOut, fullSampleKey, fullSampleKey, EventType.FadeOut, length: fadeLength);
+                //}
             }
         }
 

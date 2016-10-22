@@ -308,7 +308,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AddEvent(streamKey, position, targetStreamKey, targetSectionKey, EventType.Play, this);
         }
 
-        public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, EventType eventType, AudioPlayer player = null)
+        public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, EventType eventType, AudioPlayer player = null, double length = 0)
         {
             var audioStream = GetAudioStream(streamKey);
             if (audioStream == null)
@@ -328,7 +328,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 TargetStreamKey = targetStreamKey,
                 TargetSectionKey = targetSectionKey,
                 StreamEventType = eventType,
-                Player = player
+                Player = player,
+                Length = length
             };
 
             lock (_audioStreamEvents)
@@ -462,7 +463,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
             OnEventSync(syncId);
         }
 
@@ -476,6 +476,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             {
                 DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
                 var player = audioEvent.Player;
+                AudioStream stream;
                 switch (audioEvent.StreamEventType)
                 {
                     case EventType.Play:
@@ -486,17 +487,18 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                         player.Pause(audioEvent.TargetStreamKey);
                         break;
                     case EventType.FadeIn:
+                        stream = player.GetAudioStream(audioEvent.TargetStreamKey);
+                        AudioStreamHelper.SetVolumeSlide(stream, 0f, 1f, audioEvent.Length);
                         break;
                     case EventType.FadeOut:
+                        stream = player.GetAudioStream(audioEvent.TargetStreamKey);
+                        AudioStreamHelper.SetVolumeSlide(stream, 1f, 0f, audioEvent.Length);
                         break;
                     default:
                         throw new Exception("Invalid Event Type");
                 }
                 DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType + " " + syncId);
             }
-
-
-
         }
 
         private void OnSectionOffset(AudioSection audioSection, AudioStreamSection streamSection)
@@ -509,9 +511,15 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             if (audioSection.LoopIndefinitely || audioSection.HasOffset)
             {
-                AudioStreamHelper.SetPosition(streamSection.AudioStream, audioSection.Start.Position);
                 var startSync = streamSection.AudioStream.AudioSyncs.FirstOrDefault(x => x.SyncType == SyncType.Start);
-                if (startSync != null) OnEventSync(startSync.Id);
+                if (startSync != null)
+                {
+                    DebugHelper.WriteLine("Forced Start Sync");
+                    OnEventSync(startSync.Id);
+                }
+
+                var offset = streamSection.AudioStream.SecondsToSamples(0.01);
+                AudioStreamHelper.SetPosition(streamSection.AudioStream, audioSection.Start.Position + offset);
             }
             else 
                 PlayNextSection(audioSection, streamSection);

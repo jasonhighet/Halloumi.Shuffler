@@ -17,6 +17,9 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         internal int SyncId { get; set; }
 
         internal AudioPlayer Player { get; set; }
+
         public string StreamKey { get; internal set; }
+
+        internal double Length { get; set; }
     }
 }

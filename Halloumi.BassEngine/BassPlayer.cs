@@ -725,7 +725,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (CurrentTrack != null)
             {
-                DebugHelper.WriteLine("QueueSection");
+                DebugHelper.WriteLine("Play/resume playing current Track");
 
                 if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
 

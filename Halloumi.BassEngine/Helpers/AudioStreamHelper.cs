@@ -122,8 +122,8 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         ///     Sets the duration and start/end volumes for an audio stream volume slide.
         /// </summary>
         /// <param name="audioStream">The audio stream.</param>
-        /// <param name="startVolume">The start volume.</param>
-        /// <param name="endVolume">The end volume.</param>
+        /// <param name="startVolume">The start volume as a percentage (0 - 1).</param>
+        /// <param name="endVolume">The end volume as a percentage (0 - 1).</param>
         /// <param name="seconds">The seconds.</param>
         public static void SetVolumeSlide(AudioStream audioStream, float startVolume, float endVolume, double seconds)
         {
@@ -278,7 +278,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         internal static void SetTempoToMatchBpm(int channel, decimal streamBpm, decimal matchBpm)
         {
             if (channel == int.MinValue) return;
-            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm)) * 1.01F;
+            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm)); // * 1.01F;
             Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
         }
 
@@ -391,12 +391,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
 
-            lock (Lock)
-            {
-                DebugHelper.WriteLine("QueueSection (" + audioStream.Description + ")");
+            //lock (Lock)
+            //{
+                DebugHelper.WriteLine("Play Audio Stream (" + audioStream.Description + ")");
                 BassMix.BASS_Mixer_ChannelPlay(audioStream.Channel);
-                DebugHelper.WriteLine("Playing (" + audioStream.Description + ")");
-            }
+           // }
         }
 
         /// <summary>
@@ -557,7 +556,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             DebugHelper.WriteLine($"AddChannelToMixer {mixerChannel} {channel}");
             try
             {
-                lock (Lock)
+                //lock (Lock)
                 {
                     BassMix.BASS_Mixer_StreamAddChannel(mixerChannel, channel,
                         BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
@@ -583,7 +582,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
 
-            lock (Lock)
+            //lock (Lock)
             {
                 DebugHelper.WriteLine($"RemoveFromMixer {audioStream.Description} {audioStream.Channel}...");
                 BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);
