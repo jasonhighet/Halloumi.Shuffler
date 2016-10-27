@@ -31,7 +31,7 @@ namespace Halloumi.Shuffler.TestHarness
             ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
             _library = new Library(_bassPlayer)
             {
-                LibraryFolder = @"E:\Music\Library"
+                LibraryFolder = @"D:\Music\Library"
             };
 
 
@@ -42,12 +42,12 @@ namespace Halloumi.Shuffler.TestHarness
             _bassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
 
            // const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\GreenMango.json";
-            const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\StereoFreeze.json";
+            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\StereoFreeze2.json";
             _player.LoadModule(module);
 
             //_player.PlayModuleLooped();
 
-            //_player.PlayPatternChannel ("MainLoop", "Mango");
+            //_player.PlayPatternChannel ("Loop1", "Drums");
             _player.PlayPattern("Loop1");
         }
 
