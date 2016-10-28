@@ -472,8 +472,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (audioStreamEvents == null || audioStreamEvents.Count == 0)
                 return;
 
-            //ParallelHelper.ForEach(audioStreamEvents, audioEvent =>
-             foreach (var audioEvent in audioStreamEvents)
+            Parallel.ForEach(audioStreamEvents, audioEvent =>
+            //foreach (var audioEvent in audioStreamEvents)
             {
                 DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
                 var player = audioEvent.Player;
@@ -499,7 +499,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                         throw new Exception("Invalid Event Type");
                 }
                 DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType + " " + syncId);
-            }//);
+            });
         }
 
         private void OnSectionOffset(AudioSection audioSection, AudioStreamSection streamSection)
