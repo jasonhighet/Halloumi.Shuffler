@@ -137,13 +137,13 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             _targetBpm = module.Bpm;
             _loopLength = (decimal)BpmHelper.GetDefaultLoopLength(_targetBpm);
 
+            Module = module;
+
             LoadChannelPlayers(module);
             LoadAudioFiles(module);
             LoadPatterns(module);
             LoadPatternSequencePlayer(module);
             LoadPatternSequence(module);
-
-            Module = module;
         }
 
         public void DeleteChannel(string channelKey)
@@ -234,21 +234,32 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         {
             var positions = new List<Tuple<string, decimal>>();
 
-            var rowIndex = 0;
+            var currentPosition = 0M;
             foreach (var sampleKey in sequence)
             {
-                var loopPosition = 0.0M;
-                if (rowIndex > 0)
-                    loopPosition = rowIndex / (decimal)sequence.Count;
+                positions.Add(new Tuple<string, decimal>(sampleKey, currentPosition));
 
-                var position = GetLoopPosition(loopPosition, _targetBpm) + offset;
+                var sampleKeys = sampleKey.Split('.');
+                currentPosition += (GetAdjustedSampleRatio(sampleKeys[0], sampleKeys[1]) * _loopLength);
 
-                positions.Add(new Tuple<string, decimal>(sampleKey, position));
-
-                rowIndex++;
+                if (currentPosition > _loopLength)
+                    break;
             }
 
             return positions;
+        }
+
+        private decimal GetAdjustedSampleRatio(string streamKey, string sampleKey)
+        {
+            var audioFile = Module.AudioFiles.FirstOrDefault(x => x.Key == streamKey);
+            var sample = audioFile?.Samples.FirstOrDefault(x => x.Key == sampleKey);
+            if (sample == null)
+                return 0M;
+
+            var bpm = BpmHelper.GetBpmFromLoopLength(sample.Length);
+            var loopLength = (decimal)BpmHelper.GetDefaultLoopLength(bpm);
+
+            return (decimal) sample.Length/loopLength;
         }
 
         private void LoadChannelPlayers(Module module)
@@ -316,14 +327,14 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     calculateBpmFromLength: true,
                     targetBpm: module.Bpm);
 
-                if (sample.Offset == 0)
-                {
+               // if (sample.Offset == 0)
+               // {
                     channelPlayer.AddEvent(fullSampleKey, sample.Start, fullSampleKey, fullSampleKey, EventType.FadeIn,
                         length: fadeLength/2);
                     var startFadeOut = sample.Start + sample.Length - fadeLength;
                     channelPlayer.AddEvent(fullSampleKey, startFadeOut, fullSampleKey, fullSampleKey, EventType.FadeOut,
                         length: fadeLength);
-                }
+               // }
                 //   }
                     //else
                     //{
@@ -341,7 +352,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         public void PlayPattern(string patternKey)
         {
-            const int patternLoopCount = 32;
+            const int patternLoopCount = 64;
 
             _mainPlayer.Pause(PatternPlayer);
             _mainPlayer.Unload(PatternPlayer);
@@ -377,7 +388,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         public void PlayPatternChannel(string patternKey, string channelKey)
         {
-            const int patternLoopCount = 32;
+            const int patternLoopCount = 64;
 
             _mainPlayer.Pause(PatternPlayer);
             _mainPlayer.Unload(PatternPlayer);
