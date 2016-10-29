@@ -47,6 +47,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.cmbPattern = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnAddPattern = new Halloumi.Common.Windows.Controls.Button();
             this.btnDeletePattern = new Halloumi.Common.Windows.Controls.Button();
+            this.btnPlayChannel = new Halloumi.Common.Windows.Controls.Button();
             this.panel3.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -71,6 +72,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.Controls.Add(this.btnPlay);
+            this.flowLayoutPanel3.Controls.Add(this.btnPlayChannel);
             this.flowLayoutPanel3.Controls.Add(this.btnStop);
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
@@ -91,7 +93,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(4, 48);
+            this.btnStop.Location = new System.Drawing.Point(4, 87);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(100, 31);
@@ -251,6 +253,16 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.btnDeletePattern.Text = "Delete";
             this.btnDeletePattern.Click += new System.EventHandler(this.btnDeletePattern_Click);
             // 
+            // btnPlayChannel
+            // 
+            this.btnPlayChannel.Location = new System.Drawing.Point(4, 48);
+            this.btnPlayChannel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPlayChannel.Name = "btnPlayChannel";
+            this.btnPlayChannel.Size = new System.Drawing.Size(100, 31);
+            this.btnPlayChannel.TabIndex = 3;
+            this.btnPlayChannel.Text = "Play Channel";
+            this.btnPlayChannel.Click += new System.EventHandler(this.btnPlayChannel_Click);
+            // 
             // PatternsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -290,5 +302,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private Common.Windows.Controls.ComboBox cmbPattern;
         private Common.Windows.Controls.Button btnAddPattern;
         private Common.Windows.Controls.Button btnDeletePattern;
+        private Common.Windows.Controls.Button btnPlayChannel;
     }
 }

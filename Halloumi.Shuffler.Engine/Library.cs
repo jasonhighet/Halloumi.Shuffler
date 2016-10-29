@@ -541,15 +541,15 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (shufflerFilter != ShufflerFilter.ShuflerTracks)
                 return tracks;
 
-            var distinctTracks = new List<Track>();
-            foreach (
-                var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
-            {
-                distinctTracks.Add(track);
-            }
+            //var distinctTracks = new List<Track>();
+            //foreach (
+            //    var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
+            //{
+            //    distinctTracks.Add(track);
+            //}
 
-            tracks.Clear();
-            tracks.AddRange(distinctTracks);
+            //tracks.Clear();
+            //tracks.AddRange(distinctTracks);
 
             return tracks;
         }

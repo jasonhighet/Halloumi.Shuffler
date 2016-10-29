@@ -1187,5 +1187,10 @@ namespace Halloumi.Shuffler.Forms
                 WindowHelper.ShowDialog(this, _frmModuleEditor);
             }
         }
+
+        private void FrmMain_Shown(object sender, EventArgs e)
+        {
+            trackLibraryControl.InitialBind();
+        }
     }
 }

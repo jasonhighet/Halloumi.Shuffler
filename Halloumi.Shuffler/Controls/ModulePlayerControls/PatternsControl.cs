@@ -212,5 +212,15 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         {
             ModulePlayer.Pause();
         }
+
+        private void btnPlayChannel_Click(object sender, EventArgs e)
+        {
+            var patternKey = cmbPattern.GetTextThreadSafe();
+            if (patternKey == "") return;
+            var channelKey = cmbChannel.GetTextThreadSafe();
+            if (channelKey == "") return;
+
+            ModulePlayer.PlayPatternChannel(patternKey, channelKey);
+        }
     }
 }

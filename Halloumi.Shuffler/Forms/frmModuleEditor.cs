@@ -52,8 +52,7 @@ namespace Halloumi.Shuffler.Forms
             songControl.Initialize();
             patternsControl.Initialize();
 
-            var speakers = new SpeakerOutputChannel();
-            speakers.AddInputChannel(ModulePlayer.Output);
+            bassPlayer.SpeakerOutput.AddInputChannel(ModulePlayer.Output);
 
             SetVisibleControls();
         }

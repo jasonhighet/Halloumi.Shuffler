@@ -41,6 +41,8 @@ namespace Halloumi.Shuffler.Controls
                 track.Rank = (int)mixRank;
                 Library.SaveRank(track);
             }
+
+            DebugHelper.WriteLine("mnuRank");
             BindData();
         }
 
@@ -93,6 +95,7 @@ namespace Halloumi.Shuffler.Controls
             Cursor = Cursors.Default;
             Application.DoEvents();
 
+            DebugHelper.WriteLine("CalcKey");
             BindData(false, false, false);
         }
 
@@ -117,6 +120,7 @@ namespace Halloumi.Shuffler.Controls
             Cursor = Cursors.Default;
             Application.DoEvents();
 
+            DebugHelper.WriteLine("ReloadMeta");
             BindData(false, false, false);
         }
 
@@ -181,6 +185,8 @@ namespace Halloumi.Shuffler.Controls
         #region Private Variables
 
         private bool _binding;
+
+        private bool _neverBind = true;
 
         private string SearchFilter { get; set; }
 
@@ -333,7 +339,8 @@ namespace Halloumi.Shuffler.Controls
 
             trackDetails.DisplayTrackDetails(null);
 
-            BindData();
+            //DebugHelper.WriteLine("Initialise");
+            //BindData();
         }
 
         #endregion
@@ -380,7 +387,9 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="bindTracks">If set to true, binds the tracks.</param>
         private void BindData(bool bindGenres = true, bool bindArtists = true, bool bindAlbums = true, bool bindTracks = true)
         {
-            if (_binding) return;
+            if (_binding || _neverBind) return;
+
+            DebugHelper.WriteLine("BIND LIBRARY");
 
             var selectedGenres = GetSelectedGenres();
             var selectedArtists = GetSelectedArtists();
@@ -393,6 +402,8 @@ namespace Halloumi.Shuffler.Controls
             if (bindArtists) BindArtists(selectedGenres, selectedArtists);
             if (bindAlbums) BindAlbums(selectedGenres, selectedArtists, selectedAlbums);
             if (bindTracks) BindTracks();
+
+            DebugHelper.WriteLine("END BIND LIBRARY");
         }
 
         /// <summary>
@@ -400,7 +411,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindPlaylists()
         {
-            _binding = true;
+            if (_neverBind) return;  _binding = true;
 
             var selectedPlaylist = "";
             if (cmbPlaylist.SelectedItem != null) selectedPlaylist = cmbPlaylist.SelectedItem.ToString();
@@ -423,7 +434,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindExcludedPlaylists()
         {
-            _binding = true;
+            if (_neverBind) return;  _binding = true;
 
             var selectedExcludedPlaylist = "";
             if (cmbExcludedPlaylist.SelectedItem != null)
@@ -457,7 +468,7 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedGenres">The selected genres.</param>
         private void BindGenres(List<string> selectedGenres)
         {
-            _binding = true;
+            if (_neverBind) return;  _binding = true;
 
             var genres = Library.GetGenres(SearchFilter, PlaylistFilter, ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter,
                 ExcludedPlaylistFilter);
@@ -469,6 +480,13 @@ namespace Halloumi.Shuffler.Controls
             _binding = false;
         }
 
+
+        internal void InitialBind()
+        {
+            _neverBind = false;
+            BindData();
+        }
+
         /// <summary>
         ///     Binds the artists.
         /// </summary>
@@ -476,7 +494,7 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedArtists">The selected artists.</param>
         private void BindArtists(List<string> selectedGenres, List<string> selectedArtists)
         {
-            _binding = true;
+            if (_neverBind) return;  _binding = true;
 
             var artists = Library.GetAlbumArtists(selectedGenres, SearchFilter, PlaylistFilter, ShufflerFilter, MinBpm,
                 MaxBpm, TrackRankFilter, ExcludedPlaylistFilter);
@@ -496,7 +514,7 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedAlbums">The selected albums.</param>
         private void BindAlbums(List<string> selectedGenres, List<string> selectedArtists, List<string> selectedAlbums)
         {
-            _binding = true;
+            if (_neverBind) return;  _binding = true;
 
             var albums = Library.GetAlbums(selectedGenres, selectedArtists, SearchFilter, PlaylistFilter, ShufflerFilter,
                 MinBpm, MaxBpm, TrackRankFilter, ExcludedPlaylistFilter);
@@ -528,7 +546,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindTracks()
         {
-            _binding = true;
+            if (_neverBind) return;  _binding = true;
 
             DisplayedTracksChanging?.Invoke(this, EventArgs.Empty);
 
@@ -1114,8 +1132,10 @@ namespace Halloumi.Shuffler.Controls
             if (txtSearch.Text.Trim().Length <= 2 && txtSearch.Text.Trim().Length != 0) return;
 
             SearchFilter = txtSearch.Text.Trim();
-            var bindData = new BindDataHandler(BindData);
-            txtSearch.BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //txtSearch.BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("Search");
+            BindData(true, true, true, true);
         }
 
 
@@ -1181,8 +1201,11 @@ namespace Halloumi.Shuffler.Controls
                     }
                 }
 
-                var bindData = new BindDataHandler(BindData);
-                BeginInvoke(bindData, true, true, true, true);
+                //var bindData = new BindDataHandler(BindData);
+                //BeginInvoke(bindData, true, true, true, true);
+                DebugHelper.WriteLine("LoadUiSettings");
+                BindData();
+
             }
             catch
             {
@@ -1270,8 +1293,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdGenre_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            grdGenre.BeginInvoke(bindData, false, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //grdGenre.BeginInvoke(bindData, false, true, true, true);
+            DebugHelper.WriteLine("GenreRowEnter");
+            BindData(false, true, true, true);
         }
 
         /// <summary>
@@ -1279,8 +1304,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdArtist_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            grdArtist.BeginInvoke(bindData, false, false, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //grdArtist.BeginInvoke(bindData, false, false, true, true);
+            DebugHelper.WriteLine("ArtistRowEnter");
+            BindData(false, false, true, true);
         }
 
         /// <summary>
@@ -1288,8 +1315,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void lstAlbum_MouseClick(object sender, MouseEventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            lstAlbum.BeginInvoke(bindData, false, false, false, true);
+            //var bindData = new BindDataHandler(BindData);
+            //lstAlbum.BeginInvoke(bindData, false, false, false, true);
+            BindData(false, false, false, true);
         }
 
         /// <summary>
@@ -1297,8 +1325,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void lstAlbum_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            lstAlbum.BeginInvoke(bindData, false, false, false, true);
+            //var bindData = new BindDataHandler(BindData);
+            //lstAlbum.BeginInvoke(bindData, false, false, false, true);
+            DebugHelper.WriteLine("lstAlbumChange");
+            BindData(false, false, false, true);
         }
 
         /// <summary>
@@ -1323,8 +1353,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            lstAlbum.BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //lstAlbum.BeginInvoke(bindData, true, true, true, true);
+            BindData();
         }
 
         /// <summary>
@@ -1521,8 +1552,9 @@ namespace Halloumi.Shuffler.Controls
 
             if (GetSelectedPlaylist() == null || GetSelectedPlaylist().Name != playlist.Name) return;
 
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            BindData();
         }
 
         /// <summary>
@@ -1551,8 +1583,9 @@ namespace Halloumi.Shuffler.Controls
             Library.RemoveTracksFromPlaylist(playlist, GetSelectedTracks());
 
             if (GetSelectedPlaylist() == null || GetSelectedPlaylist().Name != playlist.Name) return;
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            BindData();
         }
 
         /// <summary>
@@ -1563,9 +1596,11 @@ namespace Halloumi.Shuffler.Controls
             if (cmbPlaylist.SelectedItem.ToString() == PlaylistFilter) return;
             PlaylistFilter = cmbPlaylist.SelectedItem.ToString();
             SearchFilter = "";
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
-            txtSearch.Text = "";
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("playlistIndexChange");
+            BindData();
+            //txtSearch.Text = "";
         }
 
         /// <summary>
@@ -1576,9 +1611,11 @@ namespace Halloumi.Shuffler.Controls
             if (cmbExcludedPlaylist.SelectedItem.ToString() == ExcludedPlaylistFilter) return;
             ExcludedPlaylistFilter = cmbExcludedPlaylist.SelectedItem.ToString();
             SearchFilter = "";
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
-            txtSearch.Text = "";
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("ExcPlaylistChaneg");
+            BindData();
+            //txtSearch.Text = "";
         }
 
         /// <summary>
@@ -1612,8 +1649,10 @@ namespace Halloumi.Shuffler.Controls
 
             if (shufflerFilter == ShufflerFilter) return;
             ShufflerFilter = shufflerFilter;
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("setShufflerFilter");
+            BindData();
         }
 
         /// <summary>
@@ -1640,8 +1679,10 @@ namespace Halloumi.Shuffler.Controls
 
             if (trackRankFilter == TrackRankFilter) return;
             TrackRankFilter = trackRankFilter;
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("setTrackRankFilter");
+            BindData();
         }
 
         private void SetBpmFilter()
@@ -1656,8 +1697,10 @@ namespace Halloumi.Shuffler.Controls
 
             MinBpm = min;
             MaxBpm = max;
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("BpmFilter");
+            BindData();
         }
 
         /// <summary>
@@ -1665,8 +1708,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbQueued_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, true, true, true, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, true, true, true, true);
+            DebugHelper.WriteLine("QueuedIndexChange");
+            BindData();
         }
 
         /// <summary>
@@ -1719,8 +1764,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdTracks_SortOrderChanged(object sender, EventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData, false, false, false, true);
+            //var bindData = new BindDataHandler(BindData);
+            //BeginInvoke(bindData, false, false, false, true);
+            DebugHelper.WriteLine("SortOrderChanged");
+            BindData(false, false, false, true);
         }
 
         /// <summary>

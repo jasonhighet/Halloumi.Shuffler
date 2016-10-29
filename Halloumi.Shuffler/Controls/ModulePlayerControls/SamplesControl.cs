@@ -70,9 +70,8 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         public void Initialize()
         {
-            var speakers = new SpeakerOutputChannel();
             _player = new AudioPlayer();
-            speakers.AddInputChannel(_player.Output);
+            BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
 
             BindData();
         }
@@ -226,7 +225,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                         sampleModel.Sample.Offset,
                         calculateBpmFromLength: true,
                         targetBpm: ModulePlayer.Module.Bpm,
-                        loopIndefinitely: true);
+                        loopIndefinitely: false);
 
                     var sampleStep = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm)/samplesPerLoop;
                     var position = 0D;

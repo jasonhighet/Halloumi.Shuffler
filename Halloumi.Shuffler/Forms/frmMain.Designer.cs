@@ -72,6 +72,7 @@
             this.mnuMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTracker = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModuleEditor = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMonitorSettings = new System.Windows.Forms.ToolStripMenuItem();
@@ -124,7 +125,6 @@
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
-            this.mnuModuleEditor = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
             this.pnlMenuBar.SuspendLayout();
@@ -471,6 +471,13 @@
             this.mnuSampleLibrary.Size = new System.Drawing.Size(183, 26);
             this.mnuSampleLibrary.Text = "Sample Library";
             this.mnuSampleLibrary.Click += new System.EventHandler(this.mnuSampleLibrary_Click);
+            // 
+            // mnuModuleEditor
+            // 
+            this.mnuModuleEditor.Name = "mnuModuleEditor";
+            this.mnuModuleEditor.Size = new System.Drawing.Size(183, 26);
+            this.mnuModuleEditor.Text = "Module Editor";
+            this.mnuModuleEditor.Click += new System.EventHandler(this.mnuModuleEditor_Click);
             // 
             // mnuOptions
             // 
@@ -869,13 +876,6 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
-            // mnuModuleEditor
-            // 
-            this.mnuModuleEditor.Name = "mnuModuleEditor";
-            this.mnuModuleEditor.Size = new System.Drawing.Size(183, 26);
-            this.mnuModuleEditor.Text = "Module Editor";
-            this.mnuModuleEditor.Click += new System.EventHandler(this.mnuModuleEditor_Click);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -892,6 +892,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
             this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Shown += new System.EventHandler(this.FrmMain_Shown);
             this.Resize += new System.EventHandler(this.frmMain_Resize);
             this.pnlTop.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).EndInit();

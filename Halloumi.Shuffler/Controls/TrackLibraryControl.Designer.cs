@@ -1,4 +1,6 @@
-﻿namespace Halloumi.Shuffler.Controls
+﻿using System;
+
+namespace Halloumi.Shuffler.Controls
 {
     partial class TrackLibraryControl
     {
