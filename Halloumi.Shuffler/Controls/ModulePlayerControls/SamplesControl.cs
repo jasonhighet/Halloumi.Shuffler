@@ -207,16 +207,16 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 _player.Pause();
                 _player.UnloadAll();
 
-                var loopLength = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm);
+                const int loopCount = 32;
+
+                var loopLength = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm) * loopCount;
                 _player.Load("Loop", SilenceHelper.GetSilenceAudioFile());
-                _player.AddSection("Loop", "Loop", 0, loopLength, bpm: ModulePlayer.Module.Bpm);
+                var section = _player.AddSection("Loop", "Loop", 0, loopLength, bpm: ModulePlayer.Module.Bpm);
+                section.LoopIndefinitely = true;
                 _player.QueueSection("Loop", "Loop");
 
                 foreach (var sampleModel in sampleModels)
                 {
-                    var sampleLoopLength = BpmHelper.GetDefaultLoopLength(sampleModel.Bpm);
-                    var samplesPerLoop = Math.Round(sampleLoopLength/sampleModel.Sample.Length, 0);
-
                     _player.Load(sampleModel.Description, sampleModel.AudioFile.Path);
                     _player.AddSection(sampleModel.Description,
                         sampleModel.Description,
@@ -225,20 +225,26 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                         sampleModel.Sample.Offset,
                         calculateBpmFromLength: true,
                         targetBpm: ModulePlayer.Module.Bpm,
-                        loopIndefinitely: false);
+                        loopIndefinitely: true);
 
-                    var sampleStep = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm)/samplesPerLoop;
+                    var adjustedLength = BpmHelper.GetAdjustedAudioLength(sampleModel.Sample.Length, sampleModel.Bpm, ModulePlayer.Module.Bpm);
                     var position = 0D;
-                    for (var i = 0; i < samplesPerLoop; i++)
+                    while(position < loopLength)
                     {
-                        _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description,
-                            EventType.Play);
-                        position += sampleStep;
+                        _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.Play);
+                        position += adjustedLength;
                     }
                 }
                 _player.Pause();
                 _player.Play("Loop");
             }
+        }
+
+        private double GetAdjustedAudioLength(double length, decimal sourceBpm, decimal targetBpm)
+        {
+            var sampleLoopLength = BpmHelper.GetDefaultLoopLength(sourceBpm);
+            var samplesPerLoop = Math.Round(sampleLoopLength / length, 0);
+            return BpmHelper.GetDefaultLoopLength(targetBpm) / samplesPerLoop;
         }
 
         private void grdSamples_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)

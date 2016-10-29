@@ -363,7 +363,7 @@ namespace Halloumi.Shuffler.Controls
                     filenames.Add(filename);
                 }
 
-                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
+                
                 var targetBpm = decimal.MinValue;
                 foreach (var filename in filenames)
                 {
@@ -382,12 +382,30 @@ namespace Halloumi.Shuffler.Controls
                     }
 
                     _player.QueueSection(filename, filename);
-                    _player.AddEvent("Silence", 0, filename, filename, EventType.Play, _player);
                 }
 
+                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
                 var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);
-                _player.AddSection("Silence", "Silence", 0, loopLength, bpm: targetBpm);
+                var section2 = _player.AddSection("Silence", "Silence", 0, loopLength, bpm: targetBpm);
+                section2.LoopIndefinitely = true;
                 _player.QueueSection("Silence", "Silence");
+
+
+                foreach (var filename in filenames)
+                {
+                    var length = _player.GetAudioStream(filename).LengthSeconds;
+                    var bpm = _player.GetAudioSection(filename, filename).Bpm;
+
+                    var adjustedLength = BpmHelper.GetAdjustedAudioLength(length, bpm, targetBpm);
+                    var position = 0D;
+                    while (position < loopLength)
+                    {
+                        _player.AddEvent("Silence", position, filename, filename, EventType.Play, _player);
+                        position += adjustedLength;
+                    }
+                }
+
+
 
                 _player.Pause();
                 _player.Play("Silence");

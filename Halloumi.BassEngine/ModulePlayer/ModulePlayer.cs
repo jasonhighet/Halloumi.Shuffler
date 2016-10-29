@@ -17,7 +17,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         private const string SongPlayer = "Song";
         private const string SongPlayer2 = "Song2";
         private List<AudioPlayer> _channelPlayers = new List<AudioPlayer>();
-        private decimal _loopLength;
+        private double _loopLength;
         private readonly AudioPlayer _mainPlayer;
         private decimal _targetBpm = 100;
         public Module Module { get; internal set; }
@@ -42,13 +42,13 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             _mainPlayer.Pause(SongPlayer2);
             _mainPlayer.Unload(SongPlayer2);
             _mainPlayer.Load(SongPlayer2, SilenceHelper.GetSilenceAudioFile());
-            var songLength = (double)_loopLength * Module.Sequence.Count;
+            var songLength = _loopLength * Module.Sequence.Count;
             _mainPlayer.AddSection(SongPlayer2, SongPlayer2, 0, songLength, bpm: _targetBpm);
 
             var section = _mainPlayer.GetAudioSection(SongPlayer2, SongPlayer2);
             section.LoopIndefinitely = loopIndefinitely;
 
-            var patternOffset = 0M;
+            var patternOffset = 0D;
             foreach (var sequence in Module.Sequence)
             {
                 var pattern = Module.Patterns.FirstOrDefault(x => x.Key == sequence);
@@ -64,7 +64,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     foreach (var position in positions)
                     {
                         var currentPosition = position.Item2 + patternOffset;
-                        _mainPlayer.AddEvent(SongPlayer2, (double)currentPosition, position.Item1, position.Item1, EventType.Play, player);
+                        _mainPlayer.AddEvent(SongPlayer2, currentPosition, position.Item1, position.Item1, EventType.Play, player);
                     }
                 }
 
@@ -160,7 +160,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             }
 
             _targetBpm = module.Bpm;
-            _loopLength = (decimal)BpmHelper.GetDefaultLoopLength(_targetBpm);
+            _loopLength = BpmHelper.GetDefaultLoopLength(_targetBpm);
 
             Module = module;
 
@@ -194,17 +194,17 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         }
 
 
-        private IEnumerable<Tuple<string, decimal>> GetPositions(IEnumerable<string> sequence)
+        private IEnumerable<Tuple<string, double>> GetPositions(IEnumerable<string> sequence)
         {
-            var positions = new List<Tuple<string, decimal>>();
+            var positions = new List<Tuple<string, double>>();
 
-            var currentPosition = 0M;
+            var currentPosition = 0D;
             foreach (var sampleKey in sequence)
             {
-                positions.Add(new Tuple<string, decimal>(sampleKey, currentPosition));
+                positions.Add(new Tuple<string, double>(sampleKey, currentPosition));
 
                 var sampleKeys = sampleKey.Split('.');
-                currentPosition += (GetAdjustedSampleRatio(sampleKeys[0], sampleKeys[1]) * _loopLength);
+                currentPosition += GetAdjustedSampleLenth(sampleKeys[0], sampleKeys[1]);
 
                 if (currentPosition > _loopLength)
                     break;
@@ -213,17 +213,16 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             return positions;
         }
 
-        private decimal GetAdjustedSampleRatio(string streamKey, string sampleKey)
+        private double GetAdjustedSampleLenth(string streamKey, string sampleKey)
         {
             var audioFile = Module.AudioFiles.FirstOrDefault(x => x.Key == streamKey);
             var sample = audioFile?.Samples.FirstOrDefault(x => x.Key == sampleKey);
             if (sample == null)
-                return 0M;
+                return 0;
 
             var bpm = BpmHelper.GetBpmFromLoopLength(sample.Length);
-            var loopLength = (decimal)BpmHelper.GetDefaultLoopLength(bpm);
 
-            return (decimal)sample.Length / loopLength;
+            return BpmHelper.GetAdjustedAudioLength(sample.Length, bpm, Module.Bpm);
         }
 
         private void LoadChannelPlayers(Module module)

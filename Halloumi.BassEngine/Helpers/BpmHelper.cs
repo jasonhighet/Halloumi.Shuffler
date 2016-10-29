@@ -215,6 +215,13 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             return length * ratio;
         }
 
+        public static double GetAdjustedAudioLength(double length, decimal sourceBpm, decimal targetBpm)
+        {
+            var sourceLoopLength = BpmHelper.GetDefaultLoopLength(sourceBpm);
+            var repeatsPerLoop = Math.Round(sourceLoopLength / length, 0);
+            return GetDefaultLoopLength(targetBpm) / repeatsPerLoop;
+        }
+
         /// <summary>
         ///     Gets the track tempo change as a ratio (i.e. 1.02, .97 etc)
         /// </summary>

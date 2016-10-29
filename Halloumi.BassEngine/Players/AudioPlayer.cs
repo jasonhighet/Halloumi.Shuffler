@@ -162,7 +162,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         }
 
 
-        private AudioStream GetAudioStream(string streamKey)
+        public AudioStream GetAudioStream(string streamKey)
         {
             lock (_streamSections)
             {
