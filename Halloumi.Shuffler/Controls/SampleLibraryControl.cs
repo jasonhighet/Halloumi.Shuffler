@@ -400,7 +400,7 @@ namespace Halloumi.Shuffler.Controls
                     var position = 0D;
                     while (position < loopLength)
                     {
-                        _player.AddEvent("Silence", position, filename, filename, EventType.Play, _player);
+                        _player.AddEvent("Silence", position, filename, filename, EventType.PlaySolo, _player);
                         position += adjustedLength;
                     }
                 }

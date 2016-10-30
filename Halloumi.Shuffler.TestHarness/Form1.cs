@@ -25,7 +25,7 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DebugHelper.DebugMode = true;
+            DebugHelper.DebugMode = false;
 
             _bassPlayer = new BassPlayer(Handle);
             ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.TestHarness
             //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Toots2.json";
             _player.LoadModule(module);
 
-            _player.PlayModule();
+            _player.PlayModuleLooped();
 
             //_player.PlayPattern("StartMainLoop");
             //_player.PlayPatternChannel("StartMainLoop", "Drums");

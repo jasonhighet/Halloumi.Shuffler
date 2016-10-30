@@ -8,9 +8,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 {
     public enum EventType
     {
-        Play,
+        PlaySolo,
         Pause,
-        //TooglePlay,
+        Play,
+        PauseAll,
         FadeIn,
         FadeOut
     }

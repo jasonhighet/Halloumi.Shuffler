@@ -231,7 +231,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                     var position = 0D;
                     while(position < loopLength)
                     {
-                        _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.Play);
+                        _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.PlaySolo);
                         _player.AddEvent("Loop", position + adjustedLength, sampleModel.Description, sampleModel.Description, EventType.Pause);
                         position += adjustedLength;
                     }

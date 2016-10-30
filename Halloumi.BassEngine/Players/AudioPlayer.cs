@@ -314,11 +314,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             audioSection.TargetBpm = targetBpm;
         }
 
-        public void AddPlayEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey)
-        {
-            AddEvent(streamKey, position, targetStreamKey, targetSectionKey, EventType.Play, this);
-        }
-
         public void AddEvent(string streamKey, double position, string targetStreamKey, string targetSectionKey, EventType eventType, AudioPlayer player = null, double length = 0)
         {
             var audioStream = GetAudioStream(streamKey);
@@ -508,10 +503,17 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 AudioStream stream;
                 switch (audioEvent.StreamEventType)
                 {
-                    case EventType.Play:
+                    case EventType.PlaySolo:
                         player.Pause();
                         player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
                         player.Play(audioEvent.TargetStreamKey);
+                        break;
+                    case EventType.Play:
+                        player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
+                        player.Play(audioEvent.TargetStreamKey);
+                        break;
+                    case EventType.PauseAll:
+                        player.Pause();
                         break;
                     case EventType.Pause:
                         player.Pause(audioEvent.TargetStreamKey);

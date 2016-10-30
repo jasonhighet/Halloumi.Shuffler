@@ -64,7 +64,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     foreach (var position in positions)
                     {
                         var currentPosition = position.Item2 + patternOffset; 
-                        _mainPlayer.AddEvent(SongPlayer2, currentPosition, position.Item1, position.Item1, EventType.Play, player);
+                        _mainPlayer.AddEvent(SongPlayer2, currentPosition, position.Item1, position.Item1, EventType.PlaySolo, player);
                     }
                 }
 
@@ -320,7 +320,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                 foreach (var position in positions)
                 {
                     var currentPosition = position.Item2;
-                    _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1, EventType.Play, player);
+                    _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1, EventType.PlaySolo, player);
                 }
             }
 
@@ -353,7 +353,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             foreach (var position in positions)
             {
                 var currentPosition = position.Item2;
-                _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1, EventType.Play, player);
+                _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1, EventType.PlaySolo, player);
             }
 
             _mainPlayer.QueueSection(PatternPlayer, PatternPlayer);
