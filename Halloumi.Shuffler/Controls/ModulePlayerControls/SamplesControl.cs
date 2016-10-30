@@ -207,7 +207,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 _player.Pause();
                 _player.UnloadAll();
 
-                const int loopCount = 32;
+                const int loopCount = 1;
 
                 var loopLength = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm) * loopCount;
                 _player.Load("Loop", SilenceHelper.GetSilenceAudioFile());
@@ -232,6 +232,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                     while(position < loopLength)
                     {
                         _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.Play);
+                        _player.AddEvent("Loop", position + adjustedLength, sampleModel.Description, sampleModel.Description, EventType.Pause);
                         position += adjustedLength;
                     }
                 }

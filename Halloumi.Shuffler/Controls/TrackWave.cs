@@ -798,7 +798,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            const string editPath = @"C:\Program Files\coolpro2\coolpro2.exe";
+            const string editPath = @"C:\Program Files (x86)\coolpro2\coolpro2.exe";
             var output = Path.Combine(Path.GetTempPath(), @"Shuffler.wav");
 
             if (!File.Exists(editPath)) return;

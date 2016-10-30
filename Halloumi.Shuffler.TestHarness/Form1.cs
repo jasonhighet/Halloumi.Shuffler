@@ -25,7 +25,7 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DebugHelper.DebugMode = false; //true;
+            DebugHelper.DebugMode = true;
 
             _bassPlayer = new BassPlayer(Handle);
             ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
@@ -41,14 +41,14 @@ namespace Halloumi.Shuffler.TestHarness
             _player = new ModulePlayer();
             _bassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
 
-            // const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\GreenMango.json";
-            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Toots2.json";
+             const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
+            //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Toots2.json";
             _player.LoadModule(module);
 
-            _player.PlayModuleLooped();
+           //_player.PlayModuleLooped();
 
-            //_player.PlayPatternChannel ("Loop1", "Freeze");
-            //_player.PlayPattern("Loop3");
+            _player.PlayPatternChannel("StartMainLoop", "Drums");
+            //_player.PlayPattern("DrumsOnly");
         }
 
     }

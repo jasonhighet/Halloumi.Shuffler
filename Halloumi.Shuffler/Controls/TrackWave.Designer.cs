@@ -76,10 +76,10 @@
             this.lblViewDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblViewDetails.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblViewDetails.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblViewDetails.Location = new System.Drawing.Point(317, 0);
+            this.lblViewDetails.Location = new System.Drawing.Point(345, 0);
             this.lblViewDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblViewDetails.Name = "lblViewDetails";
-            this.lblViewDetails.Size = new System.Drawing.Size(399, 47);
+            this.lblViewDetails.Size = new System.Drawing.Size(371, 47);
             this.lblViewDetails.TabIndex = 27;
             this.lblViewDetails.Text = "View: 1:00 to 2:05 (1:05)      Cursor: 1:00";
             this.lblViewDetails.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -93,7 +93,7 @@
             this.flpPlaybackButtons.Location = new System.Drawing.Point(0, 0);
             this.flpPlaybackButtons.Margin = new System.Windows.Forms.Padding(4);
             this.flpPlaybackButtons.Name = "flpPlaybackButtons";
-            this.flpPlaybackButtons.Size = new System.Drawing.Size(317, 47);
+            this.flpPlaybackButtons.Size = new System.Drawing.Size(345, 47);
             this.flpPlaybackButtons.TabIndex = 26;
             // 
             // btnPlay

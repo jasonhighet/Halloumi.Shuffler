@@ -278,8 +278,13 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         internal static void SetTempoToMatchBpm(int channel, decimal streamBpm, decimal matchBpm)
         {
             if (channel == int.MinValue) return;
-            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm)); // * 1.01F;
+            var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
+
+            if(matchBpm > streamBpm)
+                Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO_OPTION_SEQUENCE_MS, 20);
+            else
+                Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_TEMPO_OPTION_SEQUENCE_MS, 82);
         }
 
         /// <summary>
@@ -332,6 +337,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var secondPosition = TimeFormatHelper.GetFormattedSeconds(audioStream.SamplesToSeconds(samplePosition));
             DebugHelper.WriteLine($"SetPosition {audioStream.Description} {secondPosition} {samplePosition}");
             Bass.BASS_ChannelSetPosition(audioStream.Channel, samplePosition);
+            DebugHelper.WriteLine($"SetPosition END {audioStream.Description} {secondPosition} {samplePosition}");
         }
 
         /// <summary>

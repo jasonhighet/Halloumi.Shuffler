@@ -78,10 +78,10 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static decimal GetBpmPercentChange(decimal bpm1, decimal bpm2)
         {
             if (bpm1 == 0M || bpm2 == 0M) return 100M;
-            var bpmDiff = bpm2 - bpm1;
-            var percentChange = (bpmDiff/bpm2)*100;
+            //var bpmDiff = bpm2 - bpm1;
+            //var percentChange = (bpmDiff/bpm2)*100;
 
-            return percentChange;
+            return ((bpm2 / bpm1) - 1M) * 100M;
         }
 
         /// <summary>
