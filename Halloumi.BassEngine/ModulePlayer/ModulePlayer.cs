@@ -15,7 +15,6 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
     {
         private const string PatternPlayer = "Pattern";
         private const string SongPlayer = "Song";
-        private const string SongPlayer2 = "Song2";
         private List<AudioPlayer> _channelPlayers = new List<AudioPlayer>();
         private double _loopLength;
         private readonly AudioPlayer _mainPlayer;
@@ -39,13 +38,13 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
         public void PlayModule(bool loopIndefinitely = false)
         {
-            _mainPlayer.Pause(SongPlayer2);
-            _mainPlayer.Unload(SongPlayer2);
-            _mainPlayer.Load(SongPlayer2, SilenceHelper.GetSilenceAudioFile());
+            _mainPlayer.Pause(SongPlayer);
+            _mainPlayer.Unload(SongPlayer);
+            _mainPlayer.Load(SongPlayer, SilenceHelper.GetSilenceAudioFile());
             var songLength = _loopLength * Module.Sequence.Count;
-            _mainPlayer.AddSection(SongPlayer2, SongPlayer2, 0, songLength, bpm: _targetBpm);
+            _mainPlayer.AddSection(SongPlayer, SongPlayer, 0, songLength, bpm: _targetBpm);
 
-            var section = _mainPlayer.GetAudioSection(SongPlayer2, SongPlayer2);
+            var section = _mainPlayer.GetAudioSection(SongPlayer, SongPlayer);
             section.LoopIndefinitely = loopIndefinitely;
 
             var patternOffset = 0D;
@@ -61,18 +60,30 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     var positions = GetPositions(channelSequence);
                     var player = _channelPlayers[channelIndex];
 
+                    if(positions.Count() == 0 || positions[0].Item2 != 0D)
+                        _mainPlayer.AddEvent(SongPlayer, patternOffset, "", "", EventType.PauseAll, player);
+
                     foreach (var position in positions)
                     {
                         var currentPosition = position.Item2 + patternOffset; 
-                        _mainPlayer.AddEvent(SongPlayer2, currentPosition, position.Item1, position.Item1, EventType.PlaySolo, player);
+                        _mainPlayer.AddEvent(SongPlayer, currentPosition, position.Item1, position.Item1, EventType.PlaySolo, player);
                     }
                 }
 
                 patternOffset += _loopLength;
             }
 
-            _mainPlayer.QueueSection(SongPlayer2, SongPlayer2);
-            _mainPlayer.Play(SongPlayer2);
+            if (!loopIndefinitely)
+            {
+                for (var channelIndex = 0; channelIndex < Module.Channels.Count; channelIndex++)
+                {
+                    var player = _channelPlayers[channelIndex];
+                    _mainPlayer.AddEvent(SongPlayer, patternOffset, "", "", EventType.PauseAll, player);
+                }
+            }
+
+            _mainPlayer.QueueSection(SongPlayer, SongPlayer);
+            _mainPlayer.Play(SongPlayer);
         }
 
         public void PlayModuleLooped()
@@ -194,7 +205,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         }
 
 
-        private IEnumerable<Tuple<string, double, double>> GetPositions(IEnumerable<string> sequence)
+        private List<Tuple<string, double, double>> GetPositions(IEnumerable<string> sequence)
         {
             var positions = new List<Tuple<string, double, double>>();
 
