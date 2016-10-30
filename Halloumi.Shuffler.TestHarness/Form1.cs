@@ -45,9 +45,10 @@ namespace Halloumi.Shuffler.TestHarness
             //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Toots2.json";
             _player.LoadModule(module);
 
-           //_player.PlayModuleLooped();
+            _player.PlayModule();
 
-            _player.PlayPatternChannel("StartMainLoop", "Drums");
+            //_player.PlayPattern("StartMainLoop");
+            //_player.PlayPatternChannel("StartMainLoop", "Drums");
             //_player.PlayPattern("DrumsOnly");
         }
 

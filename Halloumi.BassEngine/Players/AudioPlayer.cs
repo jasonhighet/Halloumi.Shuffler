@@ -509,6 +509,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 switch (audioEvent.StreamEventType)
                 {
                     case EventType.Play:
+                        player.Pause();
                         player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
                         player.Play(audioEvent.TargetStreamKey);
                         break;
