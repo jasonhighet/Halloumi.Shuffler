@@ -112,7 +112,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadMainVstPlugin(string location)
         {
-            return _speakerOutput.LoadVstPlugin1(location);
+            return _speakerOutput.LoadVstPlugin(location, 0);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadMainVstPlugin2(string location)
         {
-            return _speakerOutput.LoadVstPlugin2(location);
+            return _speakerOutput.LoadVstPlugin(location, 1);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadSamplerVstPlugin(string location)
         {
-            return _samplerMixer.LoadVstPlugin1(location);
+            return _samplerMixer.LoadVstPlugin(location, 0);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadSamplerVstPlugin2(string location)
         {
-            return _samplerMixer.LoadVstPlugin2(location);
+            return _samplerMixer.LoadVstPlugin(location, 0);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadTracksVstPlugin(string location)
         {
-            return _trackMixer.LoadVstPlugin1(location);
+            return _trackMixer.LoadVstPlugin(location, 0);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadTrackSendFxvstPlugin(string location)
         {
-            return _trackSendFxMixer.LoadVstPlugin1(location);
+            return _trackSendFxMixer.LoadVstPlugin(location, 0);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the VST DLL</param>
         public VstPlugin LoadTrackSendFxvstPlugin2(string location)
         {
-            return _trackSendFxMixer.LoadVstPlugin2(location);
+            return _trackSendFxMixer.LoadVstPlugin(location, 1);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearMainVstPlugin()
         {
-            _speakerOutput.ClearVstPlugin1();
+            _speakerOutput.ClearVstPlugin(0);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearMainVstPlugin2()
         {
-            _speakerOutput.ClearVstPlugin2();
+            _speakerOutput.ClearVstPlugin(1);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearSamplerVstPlugin()
         {
-            _samplerMixer.ClearVstPlugin1();
+            _samplerMixer.ClearVstPlugin(0);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearSamplerVstPlugin2()
         {
-            _samplerMixer.ClearVstPlugin2();
+            _samplerMixer.ClearVstPlugin(1);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearTracksVstPlugin()
         {
-            _trackMixer.ClearVstPlugin1();
+            _trackMixer.ClearVstPlugin(0);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearTrackSendFxvstPlugin()
         {
-            _trackSendFxMixer.ClearVstPlugin1();
+            _trackSendFxMixer.ClearVstPlugin(0);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearTrackSendFxvstPlugin2()
         {
-            _trackSendFxMixer.ClearVstPlugin2();
+            _trackSendFxMixer.ClearVstPlugin(1);
         }
 
         /// <summary>

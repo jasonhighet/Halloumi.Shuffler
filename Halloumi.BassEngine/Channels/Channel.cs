@@ -24,15 +24,18 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         protected Channel(IBmpProvider bpmProvider)
         {
             BpmProvider = bpmProvider;
+            VstPlugins = new List<VstPlugin>();
         }
 
         public IBmpProvider BpmProvider { get; }
 
         public int ChannelId { get; internal set; }
 
-        public VstPlugin VstPlugin1 { get; internal set; }
+        public List<VstPlugin> VstPlugins { get; internal set; }
 
-        public VstPlugin VstPlugin2 { get; internal set; }
+        public VstPlugin VstPlugin1 => VstPlugins.Any() ? VstPlugins[0] : null;
+
+        public VstPlugin VstPlugin2 => VstPlugins.Count() > 1 ? VstPlugins[1] : null;
 
         public decimal SyncNotes
         {
@@ -110,39 +113,54 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             return levels;
         }
 
-        public VstPlugin LoadVstPlugin1(string location)
-        {
-            if (VstPlugin1 != null && VstPlugin1.Location == location)
-                return VstPlugin1;
+        //public VstPlugin LoadVstPlugin1(string location)
+        //{
+        //    return LoadVstPlugin(location, 0);
+        //}
 
-            ClearVstPlugin1();
-            VstPlugin1 = LoadVstPlugin(location, 1);
-            SetPluginBpm(VstPlugin1);
-            return VstPlugin1;
+        //public VstPlugin LoadVstPlugin2(string location)
+        //{
+        //    return LoadVstPlugin(location, 1);
+        //}
+
+        public VstPlugin LoadVstPlugin(string location, int index)
+        {
+            if (VstPlugins.Count() > index
+                && VstPlugins[index] != null
+                && VstPlugins[index].Location == location)
+                return VstPlugins[index];
+
+            ClearVstPlugin(index);
+
+            for (var i = VstPlugins.Count(); i < index + 1; i++)
+            {
+                VstPlugins.Add(null);
+            }
+
+            VstPlugins[index] = LoadAndApplyVstPlugin(location, index + 1);
+
+            SetPluginBpm(VstPlugins[index]);
+            return VstPlugins[index];
         }
 
-        public VstPlugin LoadVstPlugin2(string location)
+        public void ClearVstPlugin(int index)
         {
-            if (VstPlugin2 != null && VstPlugin2.Location == location)
-                return VstPlugin1;
+            if (index >= VstPlugins.Count() || VstPlugins[index] == null) return;
 
-            ClearVstPlugin2();
-            VstPlugin2 = LoadVstPlugin(location, 2);
-            SetPluginBpm(VstPlugin2);
-            return VstPlugin1;
+            RemoveVstPlugin(VstPlugins[index]);
+            VstPlugins[index] = null;
         }
 
-        public void ClearVstPlugin1()
-        {
-            RemoveVstPlugin(VstPlugin1);
-            VstPlugin1 = null;
-        }
 
-        public void ClearVstPlugin2()
-        {
-            RemoveVstPlugin(VstPlugin2);
-            VstPlugin2 = null;
-        }
+        //public void ClearVstPlugin1()
+        //{
+        //    ClearVstPlugin(0);
+        //}
+
+        //public void ClearVstPlugin2()
+        //{
+        //    ClearVstPlugin(1);
+        //}
 
         private void RemoveVstPlugin(VstPlugin plugin)
         {
@@ -168,7 +186,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         /// <param name="location">The file location of the VST DLL</param>
         /// <param name="priority">The priority.</param>
         /// <returns>The VST plug-in</returns>
-        private VstPlugin LoadVstPlugin(string location, int priority)
+        private VstPlugin LoadAndApplyVstPlugin(string location, int priority)
         {
             if (location == "") return null;
 
