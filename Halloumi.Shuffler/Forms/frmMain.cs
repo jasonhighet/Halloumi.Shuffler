@@ -220,9 +220,11 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuSyncShufflerFiles_Click(object sender, EventArgs e)
         {
-            var exportShufflerFiles = new FrmImportShufflerFiles();
-            exportShufflerFiles.Library = Library;
-            exportShufflerFiles.MixLibrary = MixLibrary;
+            var exportShufflerFiles = new FrmImportShufflerFiles
+            {
+                Library = Library,
+                MixLibrary = MixLibrary
+            };
             exportShufflerFiles.ShowDialog();
         }
 
@@ -389,7 +391,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin);
+                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin, 0);
                 }
                 catch
                 {
@@ -401,7 +403,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadMainVstPlugin2(settings.MainMixerVstPlugin2);
+                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin2, 1);
                 }
                 catch
                 {
@@ -438,7 +440,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin);
+                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin, 0);
                 }
                 catch
                 {
@@ -462,7 +464,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadSamplerVstPlugin2(settings.SamplerVstPlugin2);
+                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin2, 1);
                 }
                 catch
                 {
@@ -487,7 +489,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadTracksVstPlugin(settings.TrackVstPlugin);
+                    BassPlayer.LoadTracksVstPlugin(settings.TrackVstPlugin, 0);
                 }
                 catch
                 {
@@ -511,7 +513,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin);
+                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin, 0);
                 }
                 catch
                 {
@@ -536,7 +538,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    BassPlayer.LoadTrackSendFxvstPlugin2(settings.TrackFxvstPlugin2);
+                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin2, 1);
                 }
                 catch
                 {
@@ -672,40 +674,10 @@ namespace Halloumi.Shuffler.Forms
             settings.MinimizeToTray = MinimizeToTrayEnabled;
             settings.LimitSongLength = BassPlayer.LimitSongLength;
             settings.FormStateSettings = formStateController.FormStateSettings;
-            //settings.LeftRightSplit = splLeftRight.SplitterDistance;
-            //settings.TrackSplit = splTrack.SplitterDistance;
             settings.Volume = BassPlayer.GetMixerVolume();
-
-            //var effect1 = this.BassPlayer.SamplerVSTPlugin;
-            //if (effect1 != null)
-            //{
-            //    settings.BypassSamplerEffect1 = this.BassPlayer.GetVSTPluginBypass(effect1);
-            //}
-            //else settings.BypassSamplerEffect1 = false;
-
-            //var effect2 = this.BassPlayer.SamplerVSTPlugin2;
-            //if (effect2 != null)
-            //{
-            //    settings.BypassSamplerEffect2 = this.BassPlayer.GetVSTPluginBypass(effect2);
-            //}
-            //else settings.BypassSamplerEffect2 = false;
 
             settings.SamplerDelayNotes = BassPlayer.SamplerDelayNotes;
             settings.SamplerVolume = Convert.ToInt32(BassPlayer.GetSamplerMixerVolume());
-
-            //effect1 = this.BassPlayer.TrackSendFXVSTPlugin;
-            //if (effect1 != null)
-            //{
-            //    settings.BypassTrackFXEffect1 = this.BassPlayer.GetVSTPluginBypass(effect1);
-            //}
-            //else settings.BypassTrackFXEffect1 = false;
-
-            //effect2 = this.BassPlayer.TrackSendFXVSTPlugin2;
-            //if (effect2 != null)
-            //{
-            //    settings.BypassTrackFXEffect2 = this.BassPlayer.GetVSTPluginBypass(effect2);
-            //}
-            //else settings.BypassTrackFXEffect2 = false;
 
             settings.TrackFxDelayNotes = BassPlayer.TrackSendFxDelayNotes;
             settings.TrackFxVolume = Convert.ToInt32(BassPlayer.GetTrackSendFxVolume());

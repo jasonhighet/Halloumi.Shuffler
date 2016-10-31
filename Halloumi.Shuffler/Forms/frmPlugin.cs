@@ -106,8 +106,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == MainVstPluginLocation) return;
-                BassPlayer.ClearMainVstPlugin();
-                if (location != "") BassPlayer.LoadMainVstPlugin(location);
+                BassPlayer.ClearMainVstPlugin(0);
+                if (location != "") BassPlayer.LoadMainVstPlugin(location, 0);
             }
             catch (Exception e)
             {
@@ -120,8 +120,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == MainVstPluginLocation2) return;
-                BassPlayer.ClearMainVstPlugin2();
-                if (location != "") BassPlayer.LoadMainVstPlugin2(location);
+                BassPlayer.ClearMainVstPlugin(1);
+                if (location != "") BassPlayer.LoadMainVstPlugin(location, 1);
             }
             catch (Exception e)
             {
@@ -134,8 +134,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == CurrentSamplerVstPluginLocation) return;
-                BassPlayer.ClearSamplerVstPlugin();
-                if (location != "") BassPlayer.LoadSamplerVstPlugin(location);
+                BassPlayer.ClearSamplerVstPlugin(0);
+                if (location != "") BassPlayer.LoadSamplerVstPlugin(location,0);
             }
             catch (Exception e)
             {
@@ -148,8 +148,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == CurrentSamplerVstPluginLocation2) return;
-                BassPlayer.ClearSamplerVstPlugin2();
-                if (location != "") BassPlayer.LoadSamplerVstPlugin2(location);
+                BassPlayer.ClearSamplerVstPlugin(1);
+                if (location != "") BassPlayer.LoadSamplerVstPlugin(location, 1);
             }
             catch (Exception e)
             {
@@ -162,8 +162,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == CurrentTrackVstPluginLocation) return;
-                BassPlayer.ClearTracksVstPlugin();
-                if (location != "") BassPlayer.LoadTracksVstPlugin(location);
+                BassPlayer.ClearTracksVstPlugin(0);
+                if (location != "") BassPlayer.LoadTracksVstPlugin(location, 0);
             }
             catch (Exception e)
             {
@@ -176,8 +176,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == CurrentTrackFxvstPluginLocation) return;
-                BassPlayer.ClearTrackSendFxvstPlugin();
-                if (location != "") BassPlayer.LoadTrackSendFxvstPlugin(location);
+                BassPlayer.ClearTrackSendFxvstPlugin(0);
+                if (location != "") BassPlayer.LoadTrackSendFxvstPlugin(location, 0);
             }
             catch (Exception e)
             {
@@ -190,8 +190,8 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 if (location == CurrentTrackFxvstPluginLocation2) return;
-                BassPlayer.ClearTrackSendFxvstPlugin2();
-                if (location != "") BassPlayer.LoadTrackSendFxvstPlugin2(location);
+                BassPlayer.ClearTrackSendFxvstPlugin(1);
+                if (location != "") BassPlayer.LoadTrackSendFxvstPlugin(location, 1);
             }
             catch (Exception e)
             {
