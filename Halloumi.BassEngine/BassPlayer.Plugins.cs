@@ -16,37 +16,37 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Returns a collection of all loaded VST plug-ins
         /// </summary>
-        public VstPlugin MainVstPlugin => _speakerOutput.VstPlugin1;
+        public VstPlugin MainVstPlugin => _speakerOutput.GetVstPlugin(0);
 
         /// <summary>
         ///     Returns a collection of all loaded VST plug-ins
         /// </summary>
-        public VstPlugin MainVstPlugin2 => _speakerOutput.VstPlugin2;
+        public VstPlugin MainVstPlugin2 => _speakerOutput.GetVstPlugin(1);
 
         /// <summary>
         ///     Returns a collection of all loaded trackFX VST plug-ins
         /// </summary>
-        public VstPlugin SamplerVstPlugin => _samplerMixer.VstPlugin1;
+        public VstPlugin SamplerVstPlugin => _samplerMixer.GetVstPlugin(0);
 
         /// <summary>
         ///     Returns a collection of all loaded trackFX VST plug-ins
         /// </summary>
-        public VstPlugin SamplerVstPlugin2 => _samplerMixer.VstPlugin2;
+        public VstPlugin SamplerVstPlugin2 => _samplerMixer.GetVstPlugin(1);
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackVstPlugin => _trackMixer.VstPlugin1;
+        public VstPlugin TrackVstPlugin => _trackMixer.GetVstPlugin(0);
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackSendFxvstPlugin => _trackSendFxMixer.VstPlugin1;
+        public VstPlugin TrackSendFxvstPlugin => _trackSendFxMixer.GetVstPlugin(0);
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackSendFxvstPlugin2 => _trackSendFxMixer.VstPlugin2;
+        public VstPlugin TrackSendFxvstPlugin2 => _trackSendFxMixer.GetVstPlugin(1);
 
         public decimal TrackSendFxDelayNotes
         {

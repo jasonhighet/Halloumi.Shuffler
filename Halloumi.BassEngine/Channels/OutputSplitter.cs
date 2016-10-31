@@ -9,11 +9,11 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public OutputSplitter(MixerChannel inputChannel, Channel speakerChannel,
             Channel monitorChannel)
         {
-            SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
+            SpeakerMixerChannel = new MixerChannel(inputChannel.BpmProvider);
             SpeakerMixerChannel.AddInputChannel(inputChannel);
             speakerChannel.AddInputChannel(SpeakerMixerChannel);
 
-            MonitorMixerChannel = new MixerChannel(inputChannel.BpmProvider, MixerChannelOutputType.SingleOutput);
+            MonitorMixerChannel = new MixerChannel(inputChannel.BpmProvider);
             MonitorMixerChannel.AddInputChannel(inputChannel);
             monitorChannel.AddInputChannel(MonitorMixerChannel);
 

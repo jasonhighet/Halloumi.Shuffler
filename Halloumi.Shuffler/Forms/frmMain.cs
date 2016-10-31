@@ -737,7 +737,7 @@ namespace Halloumi.Shuffler.Forms
             //if (!this.IsHandleCreated) return;
             if (InvokeRequired)
             {
-                BeginInvoke(new MethodInvoker(delegate { BassPlayer_OnTrackChange(); }));
+                BeginInvoke(new MethodInvoker(BassPlayer_OnTrackChange));
             }
             else BassPlayer_OnTrackChange();
         }

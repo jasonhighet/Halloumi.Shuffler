@@ -21,7 +21,9 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         private decimal _syncNotes = 0.25M;
 
-        protected Channel(IBmpProvider bpmProvider)
+        private string Description { get; set; }
+
+        protected Channel(IBmpProvider bpmProvider = null)
         {
             BpmProvider = bpmProvider;
             VstPlugins = new List<VstPlugin>();
@@ -33,9 +35,11 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         public List<VstPlugin> VstPlugins { get; internal set; }
 
-        public VstPlugin VstPlugin1 => VstPlugins.Any() ? VstPlugins[0] : null;
 
-        public VstPlugin VstPlugin2 => VstPlugins.Count() > 1 ? VstPlugins[1] : null;
+        public VstPlugin GetVstPlugin(int index)
+        {
+            return index >= VstPlugins.Count() ? null : VstPlugins[index];
+        }
 
         public decimal SyncNotes
         {
@@ -46,8 +50,10 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
                 _syncNotes = value;
 
-                SetPluginSyncNotes(VstPlugin1, _syncNotes);
-                SetPluginSyncNotes(VstPlugin2, _syncNotes);
+                foreach (var plugin in VstPlugins)
+                {
+                    SetPluginSyncNotes(plugin, _syncNotes);
+                }
 
                 SetPluginBpm();
             }
@@ -113,15 +119,54 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             return levels;
         }
 
-        //public VstPlugin LoadVstPlugin1(string location)
-        //{
-        //    return LoadVstPlugin(location, 0);
-        //}
+        public void LoadVstSettings()
+        {
+            var filename = GetChannelVstSettingsFilename();
+            if(!File.Exists(filename)) return;
 
-        //public VstPlugin LoadVstPlugin2(string location)
-        //{
-        //    return LoadVstPlugin(location, 1);
-        //}
+            var vstSettings = SerializationHelper<VstSettings>.FromXmlFile(filename);
+
+            foreach (var plugin in VstPlugins)
+            {
+                ClearVstPlugin(VstPlugins.IndexOf(plugin));
+            }
+
+            foreach (var settings in vstSettings.Plugins)
+            {
+                var index = vstSettings.Plugins.IndexOf(settings);
+                var plugin = LoadVstPlugin(settings.Key, index);
+                PluginHelper.SetVstPluginParameters(plugin, settings.Value);
+            }
+
+        }
+
+        private string GetChannelVstSettingsFilename()
+        {
+            return Path.Combine(ApplicationHelper.GetUserDataPath(), FileSystemHelper.StripInvalidFileNameChars(Description) + "VstSettings.xml");
+        }
+
+        public void SaveVstSettings()
+        {
+            var vstSettings = new VstSettings();
+            foreach (var plugin in VstPlugins)
+            {
+                var settings = new KeyValuePair<string, string>(plugin.Location, 
+                    PluginHelper.GetVstPluginParameters(plugin));
+                vstSettings.Plugins.Add(settings);
+            }
+
+            var filename = GetChannelVstSettingsFilename();
+            SerializationHelper<VstSettings>.ToXmlFile(vstSettings, filename);
+        }
+
+        public class VstSettings
+        {
+            public VstSettings()
+            {
+                Plugins = new List<KeyValuePair<string, string>>();
+            }
+            public List<KeyValuePair<string, string>> Plugins { get; set; }
+        }
 
         public VstPlugin LoadVstPlugin(string location, int index)
         {
@@ -151,16 +196,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             VstPlugins[index] = null;
         }
 
-
-        //public void ClearVstPlugin1()
-        //{
-        //    ClearVstPlugin(0);
-        //}
-
-        //public void ClearVstPlugin2()
-        //{
-        //    ClearVstPlugin(1);
-        //}
 
         private void RemoveVstPlugin(VstPlugin plugin)
         {
@@ -302,8 +337,10 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         {
             lock (this)
             {
-                SetPluginBpm(VstPlugin1);
-                SetPluginBpm(VstPlugin2);
+                foreach (var plugin in VstPlugins)
+                {
+                    SetPluginBpm(plugin);
+                }
             }
         }
 

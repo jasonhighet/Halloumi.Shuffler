@@ -1,28 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.Controls;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
     public partial class FrmGeneratePlaylist : BaseForm
     {
-        private List<Track> _displayedTracks = null;
+        public enum ScreenMode
+        {
+            GeneratePlaylist,
+            AutoGeneratePlaylist,
+            AutoGenerateSettings
+        }
+
+        private bool _cancel;
+        private List<Track> _displayedTracks;
 
         private ScreenMode _screenMode;
 
         /// <summary>
-        /// Initializes a new instance of the frmGeneratePlaylist class.
+        ///     Initializes a new instance of the frmGeneratePlaylist class.
         /// </summary>
         public FrmGeneratePlaylist()
         {
@@ -35,17 +42,34 @@ namespace Halloumi.Shuffler.Forms
             InitialiseControls();
         }
 
+        /// <summary>
+        ///     Gets or sets the library control.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TrackLibraryControl LibraryControl { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library control.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PlaylistControl PlaylistControl { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the track selector.
+        /// </summary>
+        private TrackSelector TrackSelector { get; }
+
         private void frmGeneratePlaylist_Load(object sender, EventArgs e)
         {
-            if (_screenMode == ScreenMode.AutoGeneratePlaylist)
-            {
-                Opacity = 0;
-                StartGeneratingPlaylist();
-            }
+            if (_screenMode != ScreenMode.AutoGeneratePlaylist) return;
+            Opacity = 0;
+            StartGeneratingPlaylist();
         }
 
         /// <summary>
-        /// Initialises the controls.
+        ///     Initialises the controls.
         /// </summary>
         private void InitialiseControls()
         {
@@ -85,7 +109,7 @@ namespace Halloumi.Shuffler.Forms
             PopulateApproxLength();
 
             for (var i = 0; i < 10; i++)
-                cmbTracksToGenerate.Items.Add((i + 1) * 5);
+                cmbTracksToGenerate.Items.Add((i + 1)*5);
             cmbTracksToGenerate.SelectedIndex = 2;
 
             LoadSettings();
@@ -97,9 +121,9 @@ namespace Halloumi.Shuffler.Forms
             cmbApproxLength.Items.Add("No limit");
 
             var i = 10;
-            while (i <= (24 * 60))
+            while (i <= 24*60)
             {
-                cmbApproxLength.Items.Add(i.ToString() + " minutes");
+                cmbApproxLength.Items.Add(i + " minutes");
 
                 if (i < 30)
                     i += 10;
@@ -131,7 +155,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Loads the settings.
+        ///     Loads the settings.
         /// </summary>
         private void LoadSettings()
         {
@@ -155,10 +179,12 @@ namespace Halloumi.Shuffler.Forms
                 cmbKeyMixing.SelectedIndex = settings.CmbKeyMixingSelectedIndex;
             }
             catch
-            { }
+            {
+                // ignored
+            }
         }
 
-        private Settings GetSettings()
+        private static Settings GetSettings()
         {
             var settings = new Settings();
             var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.frmGeneratePlaylist.xml");
@@ -169,57 +195,8 @@ namespace Halloumi.Shuffler.Forms
             return settings;
         }
 
-        public class Settings
-        {
-            public int CmbDirectionSelectedIndex { get; set; }
-
-            public int CmbAllowBearableSelectedIndex { get; set; }
-
-            public int CmbApproxLengthSelectedIndex { get; set; }
-
-            public int CmbModeSelectedIndex { get; set; }
-
-            public string TxtExcludeTracksText { get; set; }
-
-            public int CmbExtendedMixesSelectedIndex { get; set; }
-
-            public bool ChkExlcudeMixesOnlyChecked { get; set; }
-
-            public bool ChkRestrictArtistClumpingChecked { get; set; }
-
-            public bool ChkRestrictGenreClumpingChecked { get; set; }
-
-            public bool ChkRestrictTitleClumpingChecked { get; set; }
-
-            public bool ChkDisplayedTracksOnlyChecked { get; set; }
-
-            public int CmbTracksToGenerateSelectedIndex { get; set; }
-
-            public int CmbContinueMixSelectedIndex { get; set; }
-
-            public int CmbKeyMixingSelectedIndex { get; set; }
-
-            public Settings()
-            {
-                CmbDirectionSelectedIndex = 0;
-                CmbAllowBearableSelectedIndex = 0;
-                CmbApproxLengthSelectedIndex = 0;
-                CmbModeSelectedIndex = 0;
-                TxtExcludeTracksText = "";
-                CmbExtendedMixesSelectedIndex = 0;
-                ChkExlcudeMixesOnlyChecked = false;
-                ChkRestrictArtistClumpingChecked = false;
-                ChkRestrictGenreClumpingChecked = false;
-                ChkDisplayedTracksOnlyChecked = false;
-                ChkRestrictTitleClumpingChecked = false;
-                CmbTracksToGenerateSelectedIndex = 0;
-                CmbContinueMixSelectedIndex = 0;
-                CmbKeyMixingSelectedIndex = 0;
-            }
-        }
-
         /// <summary>
-        /// Saves the settings.
+        ///     Saves the settings.
         /// </summary>
         private void SaveSettings()
         {
@@ -246,7 +223,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Enables the controls.
+        ///     Enables the controls.
         /// </summary>
         private void EnableControls()
         {
@@ -274,7 +251,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void EnableControlsByMode()
         {
-            var enabled = (cmbMode.SelectedIndex == 0 || cmbMode.SelectedIndex == 1 || cmbMode.SelectedIndex == 2);
+            var enabled = cmbMode.SelectedIndex == 0 || cmbMode.SelectedIndex == 1 || cmbMode.SelectedIndex == 2;
 
             chkRestrictArtistClumping.Enabled = enabled;
             chkRestrictGenreClumping.Enabled = enabled;
@@ -286,7 +263,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Disables the controls.
+        ///     Disables the controls.
         /// </summary>
         private void DisableControls()
         {
@@ -310,7 +287,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Queues the tracks.
+        ///     Queues the tracks.
         /// </summary>
         /// <param name="tracks">The tracks.</param>
         private void QueueTracks(List<Track> tracks)
@@ -331,26 +308,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Gets or sets the library control.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public TrackLibraryControl LibraryControl { get; set; }
-
-        /// <summary>
-        /// Gets or sets the library control.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public PlaylistControl PlaylistControl { get; set; }
-
-        /// <summary>
-        /// Gets or sets the track selector.
-        /// </summary>
-        private TrackSelector TrackSelector { get; set; }
-
-        /// <summary>
-        /// Handles the Click event of the btnStop control.
+        ///     Handles the Click event of the btnStop control.
         /// </summary>
         private void btnStop_Click(object sender, EventArgs e)
         {
@@ -358,7 +316,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the Click event of the btnCancel control.
+        ///     Handles the Click event of the btnCancel control.
         /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -374,10 +332,8 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        private bool _cancel = false;
-
         /// <summary>
-        /// Handles the DoWork event of the backgroundWorker control.
+        ///     Handles the DoWork event of the backgroundWorker control.
         /// </summary>
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -395,16 +351,18 @@ namespace Halloumi.Shuffler.Forms
                     .ToList();
             }
 
-            var strategy = (TrackSelector.MixStrategy)Enum.Parse(typeof(TrackSelector.MixStrategy), cmbMode.GetTextThreadSafe().Replace(" ", ""));
+            var strategy =
+                (TrackSelector.MixStrategy)
+                    Enum.Parse(typeof(TrackSelector.MixStrategy), cmbMode.GetTextThreadSafe().Replace(" ", ""));
 
             Dictionary<string, Dictionary<string, Track>> excludedMixes = null;
 
             if (txtExcludeTracks.Text != "" && File.Exists(txtExcludeTracks.Text))
             {
                 var excludeTracks = PlaylistHelper.GetFilesInPlaylist(txtExcludeTracks.Text)
-                                      .Select(f => LibraryControl.Library.GetTrackByFilename(f))
-                                      .Where(t => t != null)
-                                      .ToList();
+                    .Select(f => LibraryControl.Library.GetTrackByFilename(f))
+                    .Where(t => t != null)
+                    .ToList();
 
                 if (chkExlcudeMixesOnly.Checked)
                 {
@@ -420,8 +378,12 @@ namespace Halloumi.Shuffler.Forms
                 }
             }
 
-            var direction = (TrackSelector.Direction)Enum.Parse(typeof(TrackSelector.Direction), cmbDirection.GetTextThreadSafe());
-            var allowBearable = (TrackSelector.AllowBearableMixStrategy)Enum.Parse(typeof(TrackSelector.AllowBearableMixStrategy), cmbAllowBearable.GetTextThreadSafe().Replace(" ", ""));
+            var direction =
+                (TrackSelector.Direction) Enum.Parse(typeof(TrackSelector.Direction), cmbDirection.GetTextThreadSafe());
+            var allowBearable =
+                (TrackSelector.AllowBearableMixStrategy)
+                    Enum.Parse(typeof(TrackSelector.AllowBearableMixStrategy),
+                        cmbAllowBearable.GetTextThreadSafe().Replace(" ", ""));
 
             var approxLength = int.MaxValue;
             if (_screenMode == ScreenMode.GeneratePlaylist)
@@ -431,11 +393,18 @@ namespace Halloumi.Shuffler.Forms
                     approxLength = Convert.ToInt32(comboText);
             }
 
-            var continueMix = (TrackSelector.ContinueMix)Enum.Parse(typeof(TrackSelector.ContinueMix), cmbContinueMix.GetTextThreadSafe().Replace(" ", ""));
+            var continueMix =
+                (TrackSelector.ContinueMix)
+                    Enum.Parse(typeof(TrackSelector.ContinueMix), cmbContinueMix.GetTextThreadSafe().Replace(" ", ""));
 
-            var keyMixStrategy = (TrackSelector.KeyMixStrategy)Enum.Parse(typeof(TrackSelector.KeyMixStrategy), cmbKeyMixing.GetTextThreadSafe().Replace(" ", ""));
+            var keyMixStrategy =
+                (TrackSelector.KeyMixStrategy)
+                    Enum.Parse(typeof(TrackSelector.KeyMixStrategy), cmbKeyMixing.GetTextThreadSafe().Replace(" ", ""));
 
-            var useExtendedMixes = (TrackSelector.UseExtendedMixes)Enum.Parse(typeof(TrackSelector.UseExtendedMixes), cmbExtendedMixes.GetTextThreadSafe().Replace(" ", ""));
+            var useExtendedMixes =
+                (TrackSelector.UseExtendedMixes)
+                    Enum.Parse(typeof(TrackSelector.UseExtendedMixes),
+                        cmbExtendedMixes.GetTextThreadSafe().Replace(" ", ""));
 
             var tracksToAdd = int.MaxValue;
             if (_screenMode == ScreenMode.AutoGeneratePlaylist)
@@ -470,7 +439,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the Tick event of the timer control.
+        ///     Handles the Tick event of the timer control.
         /// </summary>
         private void timer_Tick(object sender, EventArgs e)
         {
@@ -480,7 +449,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the RunWorkerCompleted event of the backgroundWorker control.
+        ///     Handles the RunWorkerCompleted event of the backgroundWorker control.
         /// </summary>
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -490,7 +459,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the Click event of the btnStart control.
+        ///     Handles the Click event of the btnStart control.
         /// </summary>
         private void btnStart_Click(object sender, EventArgs e)
         {
@@ -511,7 +480,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         /// <summary>
-        /// Handles the FormClosing event of the frmGeneratePlaylist control.
+        ///     Handles the FormClosing event of the frmGeneratePlaylist control.
         /// </summary>
         private void frmGeneratePlaylist_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -524,16 +493,58 @@ namespace Halloumi.Shuffler.Forms
             EnableControlsByMode();
         }
 
-        public enum ScreenMode
-        {
-            GeneratePlaylist,
-            AutoGeneratePlaylist,
-            AutoGenerateSettings,
-        }
-
         private void btnOK_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        public class Settings
+        {
+            public Settings()
+            {
+                CmbDirectionSelectedIndex = 0;
+                CmbAllowBearableSelectedIndex = 0;
+                CmbApproxLengthSelectedIndex = 0;
+                CmbModeSelectedIndex = 0;
+                TxtExcludeTracksText = "";
+                CmbExtendedMixesSelectedIndex = 0;
+                ChkExlcudeMixesOnlyChecked = false;
+                ChkRestrictArtistClumpingChecked = false;
+                ChkRestrictGenreClumpingChecked = false;
+                ChkDisplayedTracksOnlyChecked = false;
+                ChkRestrictTitleClumpingChecked = false;
+                CmbTracksToGenerateSelectedIndex = 0;
+                CmbContinueMixSelectedIndex = 0;
+                CmbKeyMixingSelectedIndex = 0;
+            }
+
+            public int CmbDirectionSelectedIndex { get; set; }
+
+            public int CmbAllowBearableSelectedIndex { get; set; }
+
+            public int CmbApproxLengthSelectedIndex { get; set; }
+
+            public int CmbModeSelectedIndex { get; set; }
+
+            public string TxtExcludeTracksText { get; set; }
+
+            public int CmbExtendedMixesSelectedIndex { get; set; }
+
+            public bool ChkExlcudeMixesOnlyChecked { get; set; }
+
+            public bool ChkRestrictArtistClumpingChecked { get; set; }
+
+            public bool ChkRestrictGenreClumpingChecked { get; set; }
+
+            public bool ChkRestrictTitleClumpingChecked { get; set; }
+
+            public bool ChkDisplayedTracksOnlyChecked { get; set; }
+
+            public int CmbTracksToGenerateSelectedIndex { get; set; }
+
+            public int CmbContinueMixSelectedIndex { get; set; }
+
+            public int CmbKeyMixingSelectedIndex { get; set; }
         }
     }
 }
