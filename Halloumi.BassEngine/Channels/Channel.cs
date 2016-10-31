@@ -21,8 +21,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         private decimal _syncNotes = 0.25M;
 
-        private string Description { get; set; }
-
         protected Channel(IBmpProvider bpmProvider = null)
         {
             BpmProvider = bpmProvider;
@@ -119,13 +117,18 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             return levels;
         }
 
-        public void LoadVstSettings()
+        public void LoadVstSettings(string name)
         {
-            var filename = GetChannelVstSettingsFilename();
+            var filename = GetChannelVstSettingsFilename(name);
             if(!File.Exists(filename)) return;
 
             var vstSettings = SerializationHelper<VstSettings>.FromXmlFile(filename);
 
+            ApplyVstSettings(vstSettings);
+        }
+
+        public void ApplyVstSettings(VstSettings vstSettings)
+        {
             foreach (var plugin in VstPlugins)
             {
                 ClearVstPlugin(VstPlugins.IndexOf(plugin));
@@ -137,26 +140,31 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                 var plugin = LoadVstPlugin(settings.Key, index);
                 PluginHelper.SetVstPluginParameters(plugin, settings.Value);
             }
-
         }
 
-        private string GetChannelVstSettingsFilename()
+        private static string GetChannelVstSettingsFilename(string name)
         {
-            return Path.Combine(ApplicationHelper.GetUserDataPath(), FileSystemHelper.StripInvalidFileNameChars(Description) + "VstSettings.xml");
+            return Path.Combine(ApplicationHelper.GetUserDataPath(), FileSystemHelper.StripInvalidFileNameChars(name) + ".VstSettings.xml");
         }
 
-        public void SaveVstSettings()
+        public void SaveVstSettings(string name)
+        {
+            var vstSettings = GetVstSettings();
+
+            var filename = GetChannelVstSettingsFilename(name);
+            SerializationHelper<VstSettings>.ToXmlFile(vstSettings, filename);
+        }
+
+        public VstSettings GetVstSettings()
         {
             var vstSettings = new VstSettings();
             foreach (var plugin in VstPlugins)
             {
-                var settings = new KeyValuePair<string, string>(plugin.Location, 
+                var settings = new KeyValuePair<string, string>(plugin.Location,
                     PluginHelper.GetVstPluginParameters(plugin));
                 vstSettings.Plugins.Add(settings);
             }
-
-            var filename = GetChannelVstSettingsFilename();
-            SerializationHelper<VstSettings>.ToXmlFile(vstSettings, filename);
+            return vstSettings;
         }
 
         public class VstSettings
