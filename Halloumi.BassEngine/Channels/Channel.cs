@@ -213,6 +213,15 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             return VstPlugins[index];
         }
 
+        public void ClearVstPlugins()
+        {
+            for (var i = 0; i < VstPlugins.Count; i++)
+            {
+                ClearVstPlugin(i);
+            }
+        }
+
+
         public void ClearVstPlugin(int index)
         {
             if (index >= VstPlugins.Count() || VstPlugins[index] == null) return;

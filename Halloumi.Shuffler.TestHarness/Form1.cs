@@ -6,6 +6,7 @@ using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
+using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
@@ -45,11 +46,12 @@ namespace Halloumi.Shuffler.TestHarness
             //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Toots2.json";
             _player.LoadModule(module);
 
-            _player.PlayModule();
-
+            //_player.PlayModule();
             //_player.PlayPattern("StartMainLoop");
             //_player.PlayPatternChannel("StartMainLoop", "Drums");
             //_player.PlayPattern("DrumsOnly");
+
+            //PluginHelper.VstPluginsFolder = @"D:\Music\VstPlugins";
         }
 
     }

@@ -36,38 +36,48 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             DebugHelper.WriteLine("Saving portion of track as wave with offset - " + inFilename);
 
-            var channel = Bass.BASS_StreamCreateFile(inFilename, 0L, 0L,
-                BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            if (channel == 0) throw new Exception("Cannot load track " + inFilename);
+            var audioStream = new Sample()
+            {
+                Filename = inFilename,
+                Description = inFilename,
+                Gain = gain,
+                Bpm = bpm
+            };
 
-            if (gain > 0)
-                AudioStreamHelper.SetReplayGain(channel, gain);
+            AudioStreamHelper.LoadAudio(audioStream);
+
+            //var channel = Bass.BASS_StreamCreateFile(inFilename, 0L, 0L,
+            //    BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
+            //if (channel == 0) throw new Exception("Cannot load track " + inFilename);
+
+            //if (gain > 0)
+            //    AudioStreamHelper.SetReplayGain(channel, gain);
 
             if (targetBpm != 0 && bpm != 0)
-                AudioStreamHelper.SetTempoToMatchBpm(channel, bpm, targetBpm);
+                AudioStreamHelper.SetTempoToMatchBpm(audioStream.Channel, bpm, targetBpm);
             
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(channel, outFilename, flags, null, IntPtr.Zero);
+            BassEnc.BASS_Encode_Start(audioStream.Channel, outFilename, flags, null, IntPtr.Zero);
 
-            var startByte = Bass.BASS_ChannelSeconds2Bytes(channel, start); 
-            var endByte = Bass.BASS_ChannelSeconds2Bytes(channel, start + length);
+            var startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start); 
+            var endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start + length);
             if (offset == 0 || offset == start)
             {
-                TransferBytes(channel, startByte, endByte);
+                TransferBytes(audioStream.Channel, startByte, endByte);
             }
             else
             {
-                startByte = Bass.BASS_ChannelSeconds2Bytes(channel, offset);
-                TransferBytes(channel, startByte, endByte);
+                startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, offset);
+                TransferBytes(audioStream.Channel, startByte, endByte);
 
-                startByte = Bass.BASS_ChannelSeconds2Bytes(channel, start);
-                endByte = Bass.BASS_ChannelSeconds2Bytes(channel, offset);
-                TransferBytes(channel, startByte, endByte);
+                startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start);
+                endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, offset);
+                TransferBytes(audioStream.Channel, startByte, endByte);
             }
 
-            BassEnc.BASS_Encode_Stop(channel);
+            BassEnc.BASS_Encode_Stop(audioStream.Channel);
 
-            Bass.BASS_StreamFree(channel);
+            Bass.BASS_StreamFree(audioStream.Channel);
         }
 
         /// <summary>

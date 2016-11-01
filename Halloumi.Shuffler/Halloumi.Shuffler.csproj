@@ -100,10 +100,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\DataGridView.cs" />
-    <Compile Include="Controls\ModulePlayerControls\ListBuilder.cs">
+    <Compile Include="Controls\ListBuilder.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ModulePlayerControls\ListBuilder.Designer.cs">
+    <Compile Include="Controls\ListBuilder.Designer.cs">
       <DependentUpon>ListBuilder.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ModulePlayerControls\SamplesControl.cs">
@@ -339,6 +339,12 @@
     <Compile Include="Forms\frmUpdateSimilarTracks.Designer.cs">
       <DependentUpon>frmUpdateSimilarTracks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmVstChain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmVstChain.Designer.cs">
+      <DependentUpon>frmVstChain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Settings.cs" />
     <Compile Include="Forms\TrackPlayerExtensions\frmFadeNow.cs">
       <SubType>Form</SubType>
@@ -351,7 +357,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\ModulePlayerControls\ListBuilder.resx">
+    <EmbeddedResource Include="Controls\ListBuilder.resx">
       <DependentUpon>ListBuilder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ModulePlayerControls\SamplesControl.resx">
@@ -501,6 +507,9 @@
     <EmbeddedResource Include="Forms\frmUpdateGenre.resx">
       <DependentUpon>frmUpdateGenre.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmVstChain.resx">
+      <DependentUpon>frmVstChain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TrackPlayerExtensions\frmFadeNow.resx">
       <DependentUpon>frmFadeNow.cs</DependentUpon>

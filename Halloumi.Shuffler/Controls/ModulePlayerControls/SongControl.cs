@@ -69,9 +69,9 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             cmbBPM.SelectedIndex = cmbBPM.FindString(bpm);
 
             var patternKeys = ModulePlayer.Module.Patterns.Select(x=>x.Key).ToList();
-            listBuilder.SetSourceList(patternKeys);
+            listBuilder.SetAvailableItems(patternKeys);
 
-            listBuilder.SetDestinationList(ModulePlayer.Module.Sequence);
+            listBuilder.SetSelectedItems(ModulePlayer.Module.Sequence);
 
             _binding = false; 
         }
@@ -100,7 +100,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void listBuilder_OnDestinationListChanged(object sender, EventArgs e)
         {
-            var sequence = listBuilder.GetDestinationList();
+            var sequence = listBuilder.GetSelectedItems();
             ModulePlayer.Module.Sequence = sequence;
             ModulePlayer.ReloadModule();
         }

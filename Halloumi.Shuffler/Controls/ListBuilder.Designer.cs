@@ -1,4 +1,4 @@
-﻿namespace Halloumi.Shuffler.Controls.ModulePlayerControls
+﻿namespace Halloumi.Shuffler.Controls
 {
     partial class ListBuilder
     {
@@ -29,15 +29,16 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lstSource = new Halloumi.Common.Windows.Controls.ListView();
-            this.lstDestination = new Halloumi.Common.Windows.Controls.ListView();
+            this.lstAvailableItems = new Halloumi.Common.Windows.Controls.ListView();
+            this.colSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lstSelectedItems = new Halloumi.Common.Windows.Controls.ListView();
+            this.colDestination = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAdd = new Halloumi.Common.Windows.Controls.Button();
             this.btnInsert = new Halloumi.Common.Windows.Controls.Button();
             this.btnRemove = new Halloumi.Common.Windows.Controls.Button();
             this.btnClear = new Halloumi.Common.Windows.Controls.Button();
-            this.colSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colDestination = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnProperties = new Halloumi.Common.Windows.Controls.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -48,8 +49,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.lstSource, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lstDestination, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lstAvailableItems, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lstSelectedItems, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -59,34 +60,42 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 413);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // lstSource
+            // lstAvailableItems
             // 
-            this.lstSource.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstAvailableItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colSource});
-            this.lstSource.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstSource.FullRowSelect = true;
-            this.lstSource.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lstSource.Location = new System.Drawing.Point(3, 3);
-            this.lstSource.Name = "lstSource";
-            this.lstSource.Size = new System.Drawing.Size(277, 407);
-            this.lstSource.TabIndex = 1;
-            this.lstSource.UseCompatibleStateImageBehavior = false;
-            this.lstSource.View = System.Windows.Forms.View.Details;
+            this.lstAvailableItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstAvailableItems.FullRowSelect = true;
+            this.lstAvailableItems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lstAvailableItems.Location = new System.Drawing.Point(3, 3);
+            this.lstAvailableItems.Name = "lstAvailableItems";
+            this.lstAvailableItems.Size = new System.Drawing.Size(277, 407);
+            this.lstAvailableItems.TabIndex = 1;
+            this.lstAvailableItems.UseCompatibleStateImageBehavior = false;
+            this.lstAvailableItems.View = System.Windows.Forms.View.Details;
             // 
-            // lstDestination
+            // colSource
             // 
-            this.lstDestination.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colSource.Text = "Source";
+            // 
+            // lstSelectedItems
+            // 
+            this.lstSelectedItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colDestination});
-            this.lstDestination.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstDestination.FullRowSelect = true;
-            this.lstDestination.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lstDestination.Location = new System.Drawing.Point(386, 3);
-            this.lstDestination.MultiSelect = false;
-            this.lstDestination.Name = "lstDestination";
-            this.lstDestination.Size = new System.Drawing.Size(278, 407);
-            this.lstDestination.TabIndex = 0;
-            this.lstDestination.UseCompatibleStateImageBehavior = false;
-            this.lstDestination.View = System.Windows.Forms.View.Details;
+            this.lstSelectedItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstSelectedItems.FullRowSelect = true;
+            this.lstSelectedItems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lstSelectedItems.Location = new System.Drawing.Point(386, 3);
+            this.lstSelectedItems.MultiSelect = false;
+            this.lstSelectedItems.Name = "lstSelectedItems";
+            this.lstSelectedItems.Size = new System.Drawing.Size(278, 407);
+            this.lstSelectedItems.TabIndex = 0;
+            this.lstSelectedItems.UseCompatibleStateImageBehavior = false;
+            this.lstSelectedItems.View = System.Windows.Forms.View.Details;
+            // 
+            // colDestination
+            // 
+            this.colDestination.Text = "Destination";
             // 
             // flowLayoutPanel1
             // 
@@ -94,6 +103,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnInsert);
             this.flowLayoutPanel1.Controls.Add(this.btnRemove);
             this.flowLayoutPanel1.Controls.Add(this.btnClear);
+            this.flowLayoutPanel1.Controls.Add(this.btnProperties);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(286, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -140,13 +150,15 @@
             this.btnClear.Text = "Clear";
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // colSource
+            // btnProperties
             // 
-            this.colSource.Text = "Source";
-            // 
-            // colDestination
-            // 
-            this.colDestination.Text = "Destination";
+            this.btnProperties.Location = new System.Drawing.Point(4, 160);
+            this.btnProperties.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnProperties.Name = "btnProperties";
+            this.btnProperties.Size = new System.Drawing.Size(85, 31);
+            this.btnProperties.TabIndex = 6;
+            this.btnProperties.Text = "Properties";
+            this.btnProperties.Click += new System.EventHandler(this.btnProperties_Click);
             // 
             // ListBuilder
             // 
@@ -165,8 +177,8 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private Common.Windows.Controls.ListView lstSource;
-        private Common.Windows.Controls.ListView lstDestination;
+        private Common.Windows.Controls.ListView lstAvailableItems;
+        private Common.Windows.Controls.ListView lstSelectedItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private Common.Windows.Controls.Button btnAdd;
         private Common.Windows.Controls.Button btnRemove;
@@ -174,5 +186,6 @@
         private Common.Windows.Controls.Button btnInsert;
         private System.Windows.Forms.ColumnHeader colSource;
         private System.Windows.Forms.ColumnHeader colDestination;
+        private Common.Windows.Controls.Button btnProperties;
     }
 }

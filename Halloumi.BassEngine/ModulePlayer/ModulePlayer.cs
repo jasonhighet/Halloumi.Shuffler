@@ -281,6 +281,16 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             }
         }
 
+        public AudioPlayer GetChannelPlayer(string channelKey)
+        {
+            var channel = Module.Channels.FirstOrDefault(x => x.Key == channelKey);
+            if (channel == null) return null;
+
+            var channelIndex = Module.Channels.FindIndex(x => x.Key == channelKey);
+
+            return _channelPlayers[channelIndex];
+        }
+
 
         private void LoadAudioFiles(Module module)
         {

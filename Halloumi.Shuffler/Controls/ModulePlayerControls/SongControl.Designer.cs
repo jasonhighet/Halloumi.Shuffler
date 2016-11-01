@@ -39,7 +39,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbBPM = new Halloumi.Common.Windows.Controls.ComboBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.listBuilder = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
+            this.listBuilder = new ListBuilder();
             this.btnLoop = new Halloumi.Common.Windows.Controls.Button();
             this.panel3.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
@@ -155,14 +155,14 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             // 
             // listBuilder
             // 
-            this.listBuilder.AllowMultipleSourceItemsInDestination = false;
+            this.listBuilder.AllowMultipleAvailableItems = false;
             this.listBuilder.BackColor = System.Drawing.Color.Transparent;
             this.listBuilder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBuilder.Location = new System.Drawing.Point(5, 5);
             this.listBuilder.Name = "listBuilder";
             this.listBuilder.Size = new System.Drawing.Size(621, 371);
             this.listBuilder.TabIndex = 0;
-            this.listBuilder.OnDestinationListChanged += new System.EventHandler(this.listBuilder_OnDestinationListChanged);
+            this.listBuilder.SelectedItemsChanged += new System.EventHandler(this.listBuilder_OnDestinationListChanged);
             // 
             // btnLoop
             // 

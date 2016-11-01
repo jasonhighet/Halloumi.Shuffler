@@ -12,6 +12,7 @@ using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 {
@@ -41,9 +42,10 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         /// <summary>
         ///     Gets or sets the library.
         /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)] [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
+
+        private FrmVstChain _frmVstChain;
 
         public PatternsControl()
         {
@@ -72,8 +74,8 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             var sequence = GetSequence();
             var samples = GetModuleSamples();
 
-            listBuilder.SetSourceList(samples);
-            listBuilder.SetDestinationList(sequence);
+            listBuilder.SetAvailableItems(samples);
+            listBuilder.SetSelectedItems(sequence);
         }
 
         private List<string> GetSequence()
@@ -196,7 +198,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             if(pattern == null)
                 return;
             
-            pattern.Sequence[channelIndex] = listBuilder.GetDestinationList();
+            pattern.Sequence[channelIndex] = listBuilder.GetSelectedItems();
 
             ModulePlayer.LoadModule(ModulePlayer.Module);
         }
@@ -221,6 +223,18 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             if (channelKey == "") return;
 
             ModulePlayer.PlayPatternChannel(patternKey, channelKey);
+        }
+
+        private void btnPlugins_Click(object sender, EventArgs e)
+        {
+            var channelKey = cmbChannel.GetTextThreadSafe();
+            if (channelKey == "") return;
+
+            var channelPlayer = ModulePlayer.GetChannelPlayer(channelKey);
+
+            var frmVstChain = new FrmVstChain();
+            frmVstChain.Initialise(channelPlayer.Output);
+            frmVstChain.Show();
         }
     }
 }
