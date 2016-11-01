@@ -86,6 +86,23 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             }
         }
 
+        public void RemoveInputChannel(MixerChannel inputChannel)
+        {
+            switch (inputChannel.OutputType)
+            {
+                case MixerChannelOutputType.SingleOutput:
+                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, inputChannel.ChannelId);
+                    break;
+                case MixerChannelOutputType.MultipleOutputs:
+                    var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.ChannelId);
+                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, splitOutputChannel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+
         /// <summary>
         ///     Sets the volume.
         /// </summary>

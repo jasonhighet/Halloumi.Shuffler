@@ -129,6 +129,7 @@
     <Compile Include="Players\AudioPlayer.cs" />
     <Compile Include="Players\AudioSection.cs" />
     <Compile Include="Players\AudioSync.cs" />
+    <Compile Include="Players\SyncedSamplePlayer.cs" />
     <Compile Include="Players\SyncType.cs" />
     <Compile Include="Players\TrackSamplePlayer.cs" />
     <Compile Include="Plugins\PluginHelper.cs" />

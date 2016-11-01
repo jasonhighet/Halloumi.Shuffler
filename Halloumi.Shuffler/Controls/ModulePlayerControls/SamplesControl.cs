@@ -1,26 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
+using Halloumi.Common.Windows.Controls;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;
+using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
-using Halloumi.Common.Windows.Controls;
-using System.ComponentModel;
-using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 {
     public partial class SamplesControl : BaseUserControl, ISampleRecipient
     {
+        private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
+        private bool _binding;
+        private FrmSampleLibrary _frmSampleLibrary;
+        private SyncedSamplePlayer _player;
+
+        public SamplesControl()
+        {
+            InitializeComponent();
+
+            grdSamples.SelectionChanged += grdSamples_SelectionChanged;
+            grdSamples.SortOrderChanged += grdSamples_SortOrderChanged;
+            grdSamples.CellValueNeeded += grdSamples_CellValueNeeded;
+            grdSamples.SortColumnIndex = -1;
+
+            grdSamples.DefaultCellStyle.Font = _font;
+        }
+
         /// <summary>
         ///     Gets or sets the library.
         /// </summary>
@@ -49,37 +65,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
 
-        private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
-        private AudioPlayer _player;
-        private FrmSampleLibrary _frmSampleLibrary;
-        private bool _binding;
-
-        public SamplesControl()
-        {
-            InitializeComponent();
-
-            grdSamples.SelectionChanged += grdSamples_SelectionChanged;
-            grdSamples.SortOrderChanged += grdSamples_SortOrderChanged;
-            grdSamples.CellValueNeeded += grdSamples_CellValueNeeded;
-            grdSamples.SortColumnIndex = -1;
-
-            grdSamples.DefaultCellStyle.Font = _font;
-        }
-        
         private List<SampleModel> SampleModels { get; set; }
-
-        public void Initialize()
-        {
-            _player = new AudioPlayer();
-            BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
-
-            BindData();
-        }
-
-        public void Close()
-        {
-            StopCurrentSample();
-        }
 
         public void ImportLibrarySamples(List<Sample> librarySamples)
         {
@@ -108,6 +94,19 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             }
 
             BindData();
+        }
+
+        public void Initialize()
+        {
+            _player = new SyncedSamplePlayer();
+            BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
+
+            BindData();
+        }
+
+        public void Close()
+        {
+            Pause();
         }
 
         private static Module.Sample GetNewModuleSample(Sample librarySample)
@@ -148,7 +147,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             };
         }
 
-        private void StopCurrentSample()
+        private void Pause()
         {
             lock (_player)
             {
@@ -207,45 +206,19 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
                 _player.Pause();
                 _player.UnloadAll();
 
-                const int loopCount = 1;
-
-                var loopLength = BpmHelper.GetDefaultLoopLength(ModulePlayer.Module.Bpm) * loopCount;
-                _player.Load("Loop", SilenceHelper.GetSilenceAudioFile());
-                var section = _player.AddSection("Loop", "Loop", 0, loopLength, bpm: ModulePlayer.Module.Bpm);
-                section.LoopIndefinitely = true;
-                _player.QueueSection("Loop", "Loop");
+                _player.SetBpm(ModulePlayer.Module.Bpm);
 
                 foreach (var sampleModel in sampleModels)
                 {
-                    _player.Load(sampleModel.Description, sampleModel.AudioFile.Path);
-                    _player.AddSection(sampleModel.Description,
-                        sampleModel.Description,
+                    _player.AddSample(sampleModel.Description,
+                        sampleModel.AudioFile.Path,
                         sampleModel.Sample.Start,
                         sampleModel.Sample.Length,
-                        sampleModel.Sample.Offset,
-                        calculateBpmFromLength: true,
-                        targetBpm: ModulePlayer.Module.Bpm,
-                        loopIndefinitely: true);
-
-                    var adjustedLength = BpmHelper.GetAdjustedAudioLength(sampleModel.Sample.Length, sampleModel.Bpm, ModulePlayer.Module.Bpm);
-                    var position = 0D;
-                    while(position < loopLength)
-                    {
-                        _player.AddEvent("Loop", position, sampleModel.Description, sampleModel.Description, EventType.PlaySolo);
-                        _player.AddEvent("Loop", position + adjustedLength, sampleModel.Description, sampleModel.Description, EventType.Pause);
-                        position += adjustedLength;
-                    }
+                        sampleModel.Sample.Offset);
                 }
-                _player.Pause();
-                _player.Play("Loop");
-            }
-        }
 
-        private double GetAdjustedAudioLength(double length, decimal sourceBpm, decimal targetBpm)
-        {
-            var sampleLoopLength = BpmHelper.GetDefaultLoopLength(sourceBpm);
-            var samplesPerLoop = Math.Round(sampleLoopLength / length, 0);
-            return BpmHelper.GetDefaultLoopLength(targetBpm) / samplesPerLoop;
+                _player.Play();
+            }
         }
 
         private void grdSamples_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
@@ -273,7 +246,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
         private void grdSamples_SelectionChanged(object sender, EventArgs e)
         {
-            if(_binding)
+            if (_binding)
                 return;
             PlaySamples();
         }
