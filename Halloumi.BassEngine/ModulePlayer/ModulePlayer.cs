@@ -20,10 +20,14 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         private double _loopLength;
         private decimal _targetBpm = 100;
 
-        public ModulePlayer()
+        private readonly string _libraryFolder;
+
+        public ModulePlayer(string libraryFolder = "")
         {
             Output = new MixerChannel(this);
             _mainPlayer = new AudioPlayer();
+
+            _libraryFolder = libraryFolder;
 
             Output.AddInputChannel(_mainPlayer.Output);
         }
@@ -303,8 +307,24 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             }
         }
 
-        private static void LoadSamples(Module module, AudioPlayer channelPlayer, Module.AudioFile audioFile)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="channelPlayer"></param>
+        /// <param name="audioFile"></param>
+        private void LoadSamples(Module module, AudioPlayer channelPlayer, Module.AudioFile audioFile)
         {
+            if (!File.Exists(audioFile.Path)
+                && _libraryFolder != ""
+                && _libraryFolder.EndsWith("Library")
+                && audioFile.Path.Contains("Library"))
+            {
+                var index = audioFile.Path.IndexOf("Library", StringComparison.Ordinal) + "Libary".Length + 1;
+                var path = _libraryFolder + audioFile.Path.Substring(index);
+                audioFile.Path = path;
+            }
+
             foreach (var sample in audioFile.Samples)
             {
                 var fullSampleKey = audioFile.Key + "." + sample.Key;
