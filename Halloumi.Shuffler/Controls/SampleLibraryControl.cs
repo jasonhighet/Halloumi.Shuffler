@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary;
@@ -20,9 +19,7 @@ namespace Halloumi.Shuffler.Controls
     public partial class SampleLibraryControl : UserControl
     {
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
-
-        private readonly AudioPlayer _player;
-        private readonly AudioPlayer _mainPlayer;
+        private SyncedSamplePlayer _player;
         private bool _binding;
 
         public SampleLibraryControl()
@@ -64,12 +61,6 @@ namespace Halloumi.Shuffler.Controls
 
             LoopFilter = "";
             KeyFilter = "";
-
-            var speakers = new SpeakerOutputChannel();
-            _player = new AudioPlayer();
-            _mainPlayer = new AudioPlayer();
-            speakers.AddInputChannel(_player.Output);
-            speakers.AddInputChannel(_mainPlayer.Output);
         }
 
         private string SearchFilter { get; set; }
@@ -104,6 +95,9 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initialize()
         {
+            _player = new SyncedSamplePlayer();
+            BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
+
             BindData();
         }
 
@@ -117,9 +111,6 @@ namespace Halloumi.Shuffler.Controls
             lock (_player)
             {
                 _player.Pause();
-                _player.UnloadAll();
-                _mainPlayer.Pause();
-                _mainPlayer.UnloadAll();
             }
         }
 
@@ -350,72 +341,42 @@ namespace Halloumi.Shuffler.Controls
 
         private void PlayCurrentSamples()
         {
-            var samples = GetSelectedSamples();
-            if (samples == null || samples.Count == 0) return;
-
             lock (_player)
             {
+                var samples = GetSelectedSamples();
+                if (samples == null || samples.Count == 0) return;
+
+                var existingSamples = string.Join(",", _player.GetSampleKeys().OrderBy(x => x).ToArray());
+                var newSamples = string.Join(",", 
+                    samples.Select(GetSampleKey)
+                        .OrderBy(x => x).ToArray());
+
+                if (newSamples == existingSamples)
+                    return;
+
+
+
                 _player.Pause();
                 _player.UnloadAll();
-                _mainPlayer.Pause();
-                _mainPlayer.UnloadAll();
 
-                var filenames = new List<string>();
                 foreach (var sample in samples)
                 {
-                    SampleLibrary.EnsureSampleExists(sample);
-                    var filename = SampleLibrary.GetSampleFileName(sample);
-                    if (!File.Exists(filename))
-                        return;
-                    filenames.Add(filename);
+                    var filename = SampleLibrary.GetTrackFromSample(sample).Filename;
+                    _player.AddSample(GetSampleKey(sample),
+                        filename,
+                        sample.Start,
+                        sample.Length,
+                        sample.Offset);
                 }
 
-                
-                var targetBpm = decimal.MinValue;
-                foreach (var filename in filenames)
-                {
-                    _player.Load(filename, filename);
-                    var section = _player.AddSection(filename, filename);
-                    _player.SetSectionPositions(filename, filename);
+                _player.Play();
 
-                    if (targetBpm == decimal.MinValue)
-                    {
-                        _player.SetSectionBpm(filename, filename, calculateBpmFromLength: true);
-                        targetBpm = section.Bpm;
-                    }
-                    else
-                    {
-                        _player.SetSectionBpm(filename, filename, calculateBpmFromLength: true, targetBpm: targetBpm);
-                    }
-                    section.LoopIndefinitely = true;
-
-                    _player.QueueSection(filename, filename);
-                }
-
-                _mainPlayer.Load("Silence", SilenceHelper.GetSilenceAudioFile());
-                var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);
-                var section2 = _mainPlayer.AddSection("Silence", "Silence", 0, loopLength, bpm: targetBpm);
-                section2.LoopIndefinitely = true;
-                _mainPlayer.QueueSection("Silence", "Silence");
-
-
-                foreach (var filename in filenames)
-                {
-                    var length = _player.GetAudioStream(filename).LengthSeconds;
-                    var bpm = _player.GetAudioSection(filename, filename).Bpm;
-
-                    var adjustedLength = BpmHelper.GetAdjustedAudioLength(length, bpm, targetBpm);
-                    var position = 0D;
-                    while (position < loopLength)
-                    {
-                        _mainPlayer.AddEvent("Silence", position, filename, filename, EventType.Play, _player);
-                        position += adjustedLength;
-                    }
-                }
-
-                _mainPlayer.Pause();
-                _mainPlayer.Play("Silence");
             }
+        }
+
+        private string GetSampleKey(Sample sample)
+        {
+            return SampleLibrary.GetTrackFromSample(sample).Description + "." + sample.Description;
         }
 
 

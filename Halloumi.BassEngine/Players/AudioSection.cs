@@ -45,5 +45,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         ///     Gets the target BPM.
         /// </summary>
         public decimal TargetBpm { get; set; }
+
+        /// <summary>
+        /// Gets or sets the length.
+        /// </summary>
+        public double Length { get; set; }
     }
 }

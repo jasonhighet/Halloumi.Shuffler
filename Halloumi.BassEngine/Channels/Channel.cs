@@ -86,6 +86,23 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             }
         }
 
+        public void RemoveInputChannel(MixerChannel inputChannel)
+        {
+            switch (inputChannel.OutputType)
+            {
+                case MixerChannelOutputType.SingleOutput:
+                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, inputChannel.ChannelId);
+                    break;
+                case MixerChannelOutputType.MultipleOutputs:
+                    var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.ChannelId);
+                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, splitOutputChannel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+
         /// <summary>
         ///     Sets the volume.
         /// </summary>
@@ -195,6 +212,15 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             SetPluginBpm(VstPlugins[index]);
             return VstPlugins[index];
         }
+
+        public void ClearVstPlugins()
+        {
+            for (var i = 0; i < VstPlugins.Count; i++)
+            {
+                ClearVstPlugin(i);
+            }
+        }
+
 
         public void ClearVstPlugin(int index)
         {

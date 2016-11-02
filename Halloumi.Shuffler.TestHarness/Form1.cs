@@ -6,6 +6,7 @@ using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
+using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
@@ -27,29 +28,30 @@ namespace Halloumi.Shuffler.TestHarness
         {
             DebugHelper.DebugMode = false;
 
+            const string libraryFolder = @"D:\Music\Library";
+
             _bassPlayer = new BassPlayer(Handle);
             ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
-            _library = new Library(_bassPlayer)
-            {
-                LibraryFolder = @"D:\Music\Library"
-            };
+
+            _library = new Library(_bassPlayer) { LibraryFolder = libraryFolder };
 
 
             _library.LoadFromDatabase();
             _sampleLibrary = new SampleLibrary(_bassPlayer, _library);
 
-            _player = new ModulePlayer();
+            _player = new ModulePlayer(libraryFolder);
             _bassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
 
-             const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
-            //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Toots2.json";
+             //const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
+            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
             _player.LoadModule(module);
 
             _player.PlayModule();
-
             //_player.PlayPattern("StartMainLoop");
             //_player.PlayPatternChannel("StartMainLoop", "Drums");
             //_player.PlayPattern("DrumsOnly");
+
+            //PluginHelper.VstPluginsFolder = @"D:\Music\VstPlugins";
         }
 
     }

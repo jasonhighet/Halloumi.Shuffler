@@ -33,9 +33,10 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.panel3 = new Halloumi.Common.Windows.Controls.Panel();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
+            this.btnPlayChannel = new Halloumi.Common.Windows.Controls.Button();
             this.btnStop = new Halloumi.Common.Windows.Controls.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.listBuilder = new Halloumi.Shuffler.Controls.ModulePlayerControls.ListBuilder();
+            this.listBuilder = new Halloumi.Shuffler.Controls.ListBuilder();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbChannel = new Halloumi.Common.Windows.Controls.ComboBox();
@@ -47,7 +48,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.cmbPattern = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnAddPattern = new Halloumi.Common.Windows.Controls.Button();
             this.btnDeletePattern = new Halloumi.Common.Windows.Controls.Button();
-            this.btnPlayChannel = new Halloumi.Common.Windows.Controls.Button();
+            this.btnPlugins = new Halloumi.Common.Windows.Controls.Button();
             this.panel3.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -63,7 +64,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.panel3.BackColor = System.Drawing.SystemColors.Control;
             this.panel3.Controls.Add(this.flowLayoutPanel3);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(630, 0);
+            this.panel3.Location = new System.Drawing.Point(775, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(109, 413);
             this.panel3.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
@@ -91,6 +92,16 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.btnPlay.Text = "Play";
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
+            // btnPlayChannel
+            // 
+            this.btnPlayChannel.Location = new System.Drawing.Point(4, 48);
+            this.btnPlayChannel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPlayChannel.Name = "btnPlayChannel";
+            this.btnPlayChannel.Size = new System.Drawing.Size(100, 31);
+            this.btnPlayChannel.TabIndex = 3;
+            this.btnPlayChannel.Text = "Play Channel";
+            this.btnPlayChannel.Click += new System.EventHandler(this.btnPlayChannel_Click);
+            // 
             // btnStop
             // 
             this.btnStop.Location = new System.Drawing.Point(4, 87);
@@ -108,19 +119,20 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.panel2.Location = new System.Drawing.Point(0, 79);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.panel2.Size = new System.Drawing.Size(630, 334);
+            this.panel2.Size = new System.Drawing.Size(775, 334);
             this.panel2.TabIndex = 2;
             // 
             // listBuilder
             // 
-            this.listBuilder.AllowMultipleSourceItemsInDestination = false;
+            this.listBuilder.AllowMultipleAvailableItems = false;
             this.listBuilder.BackColor = System.Drawing.Color.Transparent;
             this.listBuilder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBuilder.Location = new System.Drawing.Point(5, 5);
             this.listBuilder.Name = "listBuilder";
-            this.listBuilder.Size = new System.Drawing.Size(620, 324);
+            this.listBuilder.PropertiesButtonVisible = false;
+            this.listBuilder.Size = new System.Drawing.Size(765, 324);
             this.listBuilder.TabIndex = 0;
-            this.listBuilder.OnDestinationListChanged += new System.EventHandler(this.listBuilder_OnDestinationListChanged);
+            this.listBuilder.SelectedItemsChanged += new System.EventHandler(this.listBuilder_OnDestinationListChanged);
             // 
             // flowLayoutPanel2
             // 
@@ -128,10 +140,11 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.flowLayoutPanel2.Controls.Add(this.cmbChannel);
             this.flowLayoutPanel2.Controls.Add(this.btnAddChannel);
             this.flowLayoutPanel2.Controls.Add(this.btnDeleteChannel);
+            this.flowLayoutPanel2.Controls.Add(this.btnPlugins);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 39);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(630, 40);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(775, 40);
             this.flowLayoutPanel2.TabIndex = 1;
             // 
             // label2
@@ -190,7 +203,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(630, 413);
+            this.panel1.Size = new System.Drawing.Size(775, 413);
             this.panel1.Style = Halloumi.Common.Windows.Controls.PanelStyle.Background;
             this.panel1.TabIndex = 6;
             // 
@@ -203,7 +216,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(630, 39);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(775, 39);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -253,15 +266,15 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.btnDeletePattern.Text = "Delete";
             this.btnDeletePattern.Click += new System.EventHandler(this.btnDeletePattern_Click);
             // 
-            // btnPlayChannel
+            // btnPlugins
             // 
-            this.btnPlayChannel.Location = new System.Drawing.Point(4, 48);
-            this.btnPlayChannel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnPlayChannel.Name = "btnPlayChannel";
-            this.btnPlayChannel.Size = new System.Drawing.Size(100, 31);
-            this.btnPlayChannel.TabIndex = 3;
-            this.btnPlayChannel.Text = "Play Channel";
-            this.btnPlayChannel.Click += new System.EventHandler(this.btnPlayChannel_Click);
+            this.btnPlugins.Location = new System.Drawing.Point(632, 4);
+            this.btnPlugins.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPlugins.Name = "btnPlugins";
+            this.btnPlugins.Size = new System.Drawing.Size(100, 31);
+            this.btnPlugins.TabIndex = 10;
+            this.btnPlugins.Text = "Plugins";
+            this.btnPlugins.Click += new System.EventHandler(this.btnPlugins_Click);
             // 
             // PatternsControl
             // 
@@ -270,7 +283,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Name = "PatternsControl";
-            this.Size = new System.Drawing.Size(739, 413);
+            this.Size = new System.Drawing.Size(884, 413);
             this.panel3.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
@@ -303,5 +316,6 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         private Common.Windows.Controls.Button btnAddPattern;
         private Common.Windows.Controls.Button btnDeletePattern;
         private Common.Windows.Controls.Button btnPlayChannel;
+        private Common.Windows.Controls.Button btnPlugins;
     }
 }

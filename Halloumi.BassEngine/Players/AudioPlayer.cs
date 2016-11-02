@@ -249,7 +249,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             {
                 Key = sectionKey,
                 LoopIndefinitely = loopIndefinitely,
-                AutoPlayNextSection = autoPlayNextSection
+                AutoPlayNextSection = autoPlayNextSection,
             };
 
             lock (streamSection)
@@ -289,6 +289,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             if (offset == 0) offset = double.MinValue;
             SetSync(audioStream, audioSection, SyncType.Offset, offset);
+
+            audioSection.Length = length;
         }
 
         public void SetSectionBpm(string streamKey, string sectionKey, decimal bpm = 0, bool calculateBpmFromLength = false, decimal targetBpm = 0)
