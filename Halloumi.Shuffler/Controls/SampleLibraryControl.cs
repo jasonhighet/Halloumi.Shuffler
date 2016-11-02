@@ -22,6 +22,7 @@ namespace Halloumi.Shuffler.Controls
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
 
         private readonly AudioPlayer _player;
+        private readonly AudioPlayer _mainPlayer;
         private bool _binding;
 
         public SampleLibraryControl()
@@ -66,7 +67,9 @@ namespace Halloumi.Shuffler.Controls
 
             var speakers = new SpeakerOutputChannel();
             _player = new AudioPlayer();
+            _mainPlayer = new AudioPlayer();
             speakers.AddInputChannel(_player.Output);
+            speakers.AddInputChannel(_mainPlayer.Output);
         }
 
         private string SearchFilter { get; set; }
@@ -115,6 +118,8 @@ namespace Halloumi.Shuffler.Controls
             {
                 _player.Pause();
                 _player.UnloadAll();
+                _mainPlayer.Pause();
+                _mainPlayer.UnloadAll();
             }
         }
 
@@ -352,6 +357,8 @@ namespace Halloumi.Shuffler.Controls
             {
                 _player.Pause();
                 _player.UnloadAll();
+                _mainPlayer.Pause();
+                _mainPlayer.UnloadAll();
 
                 var filenames = new List<string>();
                 foreach (var sample in samples)
@@ -380,15 +387,16 @@ namespace Halloumi.Shuffler.Controls
                     {
                         _player.SetSectionBpm(filename, filename, calculateBpmFromLength: true, targetBpm: targetBpm);
                     }
+                    section.LoopIndefinitely = true;
 
                     _player.QueueSection(filename, filename);
                 }
 
-                _player.Load("Silence", SilenceHelper.GetSilenceAudioFile());
+                _mainPlayer.Load("Silence", SilenceHelper.GetSilenceAudioFile());
                 var loopLength = BpmHelper.GetDefaultLoopLength(targetBpm);
-                var section2 = _player.AddSection("Silence", "Silence", 0, loopLength, bpm: targetBpm);
+                var section2 = _mainPlayer.AddSection("Silence", "Silence", 0, loopLength, bpm: targetBpm);
                 section2.LoopIndefinitely = true;
-                _player.QueueSection("Silence", "Silence");
+                _mainPlayer.QueueSection("Silence", "Silence");
 
 
                 foreach (var filename in filenames)
@@ -400,15 +408,13 @@ namespace Halloumi.Shuffler.Controls
                     var position = 0D;
                     while (position < loopLength)
                     {
-                        _player.AddEvent("Silence", position, filename, filename, EventType.PlaySolo, _player);
+                        _mainPlayer.AddEvent("Silence", position, filename, filename, EventType.Play, _player);
                         position += adjustedLength;
                     }
                 }
 
-
-
-                _player.Pause();
-                _player.Play("Silence");
+                _mainPlayer.Pause();
+                _mainPlayer.Play("Silence");
             }
         }
 
