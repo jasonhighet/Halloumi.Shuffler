@@ -526,8 +526,6 @@ namespace Halloumi.Shuffler.Controls
                 var item = new ListViewItem(album.Name) {Tag = album};
                 item.SubItems.Add(album.AlbumArtist);
                 items.Add(item);
-
-                Application.DoEvents();
             }
 
             lstAlbum.BeginUpdate();
@@ -901,7 +899,7 @@ namespace Halloumi.Shuffler.Controls
             var itemCount = lstAlbum.Items.Count;
             for (var i = startIndex; i < endIndex; i++)
             {
-                Application.DoEvents();
+                //Application.DoEvents();
 
                 if (itemCount != lstAlbum.Items.Count) break;
 
@@ -1511,7 +1509,7 @@ namespace Halloumi.Shuffler.Controls
                 {
                     mnuAddTrackToPlaylist.DropDownItems.Add(playlist.Name, null, mnuAddTrackToPlaylist_Click);
                 }
-                Application.DoEvents();
+                //Application.DoEvents();
             }
             mnuAddTrackToPlaylist.DropDownItems.Add("(New Playlist)", null, mnuAddNewPlaylist_Click);
             mnuAddTrackToPlaylist.Visible = (mnuAddTrackToPlaylist.DropDownItems.Count > 0);
@@ -1525,7 +1523,7 @@ namespace Halloumi.Shuffler.Controls
             foreach (var playlist in selectedPlaylists)
             {
                 mnuRemoveTrackFromPlaylist.DropDownItems.Add(playlist.Name, null, mnuRemoveTrackFromPlaylist_Click);
-                Application.DoEvents();
+                //Application.DoEvents();
             }
             mnuRemoveTrackFromPlaylist.Visible = (mnuRemoveTrackFromPlaylist.DropDownItems.Count > 0);
         }
