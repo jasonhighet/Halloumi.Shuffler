@@ -26,7 +26,7 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DebugHelper.DebugMode = false;
+            DebugHelper.DebugMode = true;
 
             const string libraryFolder = @"D:\Music\Library";
 
@@ -43,13 +43,15 @@ namespace Halloumi.Shuffler.TestHarness
             _bassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
 
              //const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
-            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
+            //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
+            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\StereoFreeze.json";
             _player.LoadModule(module);
 
-            _player.PlayModule();
+            //_player.PlayModuleLooped();
             //_player.PlayPattern("StartMainLoop");
+            //_player.PlayPatternChannel("StartMainLoop", "MainLoops");
             //_player.PlayPatternChannel("StartMainLoop", "Drums");
-            //_player.PlayPattern("DrumsOnly");
+            _player.PlayPattern("DrumsOnly");
 
             //PluginHelper.VstPluginsFolder = @"D:\Music\VstPlugins";
         }
