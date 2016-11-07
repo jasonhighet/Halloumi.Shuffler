@@ -30,7 +30,7 @@ namespace Halloumi.Shuffler.Forms
             BassPlayer = bassPlayer;
             SampleLibrary = sampleLibrary;
             Library = library;
-            ModulePlayer = new ModulePlayer();
+            ModulePlayer = new ModulePlayer(library.LibraryFolder);
             ModulePlayer.CreateModule();
 
             samplesControl.BassPlayer = BassPlayer;
