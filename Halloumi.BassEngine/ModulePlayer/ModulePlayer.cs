@@ -335,9 +335,9 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                     sample.Length,
                     sample.Offset,
                     calculateBpmFromLength: true,
-                    targetBpm: module.Bpm * 0.995M);
+                    targetBpm: module.Bpm * 0.991M);
 
-                section.LoopIndefinitely = true;
+                //section.LoopIndefinitely = true;
             }
         }
 
