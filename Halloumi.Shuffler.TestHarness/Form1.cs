@@ -50,8 +50,8 @@ namespace Halloumi.Shuffler.TestHarness
             //_player.PlayModuleLooped();
             //_player.PlayPattern("StartMainLoop");
             //_player.PlayPatternChannel("StartMainLoop", "MainLoops");
-            //_player.PlayPatternChannel("StartMainLoop", "Drums");
-            _player.PlayPattern("DrumsOnly");
+            _player.PlayPatternChannel("Loop0", "Drums");
+            //_player.PlayPattern("DrumsOnly");
 
             //PluginHelper.VstPluginsFolder = @"D:\Music\VstPlugins";
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Channels;
@@ -328,16 +329,17 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             foreach (var sample in audioFile.Samples)
             {
                 var fullSampleKey = audioFile.Key + "." + sample.Key;
-                channelPlayer.Load(fullSampleKey, audioFile.Path);
+                var stream = channelPlayer.Load(fullSampleKey, audioFile.Path);
+                stream.DisableSyncs = true;
                 var section = channelPlayer.AddSection(fullSampleKey,
                     fullSampleKey,
                     sample.Start,
                     sample.Length,
                     sample.Offset,
                     calculateBpmFromLength: true,
-                    targetBpm: module.Bpm * 0.991M);
+                    targetBpm: module.Bpm);
 
-                //section.LoopIndefinitely = true;
+                section.LoopIndefinitely = true;
             }
         }
 
@@ -399,7 +401,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             Pause();
 
             _mainPlayer.Unload(PatternPlayer);
-            _mainPlayer.Load(PatternPlayer, SilenceHelper.GetSilenceAudioFile());
+           _mainPlayer.Load(PatternPlayer, SilenceHelper.GetSilenceAudioFile());
             _mainPlayer.AddSection(PatternPlayer, PatternPlayer, 0, _loopLength*patternLoopCount, bpm: _targetBpm);
             var section = _mainPlayer.GetAudioSection(PatternPlayer, PatternPlayer);
             section.LoopIndefinitely = true;
@@ -409,6 +411,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                 for (var i = 0; i < patternLoopCount; i++)
                 {
                     var currentPosition = position.Item2 + i*_loopLength;
+
                     _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1,
                         EventType.PlaySolo, player);
                 }

@@ -22,6 +22,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// </summary>
         internal SYNCPROC SyncProc = null;
 
+        public bool DisableSyncs { get; set; }
+
         protected AudioStream()
         {
             AudioSyncs = new List<AudioSync>();
