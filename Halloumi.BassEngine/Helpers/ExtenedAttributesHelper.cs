@@ -31,7 +31,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (track == null) return;
             if (track.Artist == "" || track.Title == "") return;
 
-            DebugHelper.WriteLine("Loading Extended Attributes " + track.Description);
+            // DebugHelper.WriteLine("Loading Extended Attributes " + track.Description);
 
             var attributes = GetExtendedAttributes(track);
             if (attributes.ContainsKey("FadeIn"))

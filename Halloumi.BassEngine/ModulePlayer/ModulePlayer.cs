@@ -331,15 +331,14 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
                 var fullSampleKey = audioFile.Key + "." + sample.Key;
                 var stream = channelPlayer.Load(fullSampleKey, audioFile.Path);
                 stream.DisableSyncs = true;
-                var section = channelPlayer.AddSection(fullSampleKey,
+
+                channelPlayer.AddSection(fullSampleKey,
                     fullSampleKey,
                     sample.Start,
                     sample.Length,
                     sample.Offset,
                     calculateBpmFromLength: true,
                     targetBpm: module.Bpm);
-
-                section.LoopIndefinitely = true;
             }
         }
 

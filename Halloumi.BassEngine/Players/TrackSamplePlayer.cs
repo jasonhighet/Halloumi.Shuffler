@@ -46,7 +46,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (track == null)
                 return;
 
-            DebugHelper.WriteLine("Loading samples for " + track.Description);
+            // DebugHelper.WriteLine("Loading samples for " + track.Description);
 
             var trackSamples = GetTrackSamples(track);
             foreach (var trackSample in trackSamples)
@@ -81,7 +81,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         private static IEnumerable<TrackSample> GetTrackSamples(Track track)
         {
-            DebugHelper.WriteLine("GetTrackSamples for " + track.Description);
+            // DebugHelper.WriteLine("GetTrackSamples for " + track.Description);
 
             var trackSamples = new List<TrackSample>();
             if (track.UsePreFadeIn)

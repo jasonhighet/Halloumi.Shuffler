@@ -234,7 +234,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         private void RemoveVstPlugin(VstPlugin plugin)
         {
             if (plugin == null) return;
-            DebugHelper.WriteLine("Unload plug-in" + plugin.Name);
+            // DebugHelper.WriteLine("Unload plug-in" + plugin.Name);
             if (plugin.Form != null)
             {
                 if (!plugin.Form.IsDisposed)
@@ -446,7 +446,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             if (!_waDspLoaded) StartWaDspEngine();
 
-            DebugHelper.WriteLine("Load WAPlugin " + location);
+            // DebugHelper.WriteLine("Load WAPlugin " + location);
 
             var plugin = new WaPlugin
             {
@@ -471,7 +471,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             if (WaPlugin == null)
                 return;
 
-            DebugHelper.WriteLine("Unload plug-in" + WaPlugin.Name);
+            // DebugHelper.WriteLine("Unload plug-in" + WaPlugin.Name);
             try
             {
                 BassWaDsp.BASS_WADSP_Stop(WaPlugin.Id);
@@ -491,7 +491,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         /// </summary>
         private static void StartWaDspEngine()
         {
-            DebugHelper.WriteLine("StartWADSPEngine");
+            // DebugHelper.WriteLine("StartWADSPEngine");
             BassWaDsp.BASS_WADSP_Init(IntPtr.Zero);
             _waDspLoaded = true;
         }

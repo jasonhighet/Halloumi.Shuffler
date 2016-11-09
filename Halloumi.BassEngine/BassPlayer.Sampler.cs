@@ -140,7 +140,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
         private void InitialiseSampler()
         {
-            DebugHelper.WriteLine("InitialiseSampler");
+            // DebugHelper.WriteLine("InitialiseSampler");
 
             // create mixer channel
             _samplerMixer = new MixerChannel(this);
@@ -151,7 +151,7 @@ namespace Halloumi.Shuffler.AudioEngine
             _samplePlayer = new TrackSamplePlayer(this);
             _samplerMixer.AddInputChannel(_samplePlayer.Output);
 
-            DebugHelper.WriteLine("END InitialiseSampler");
+            // DebugHelper.WriteLine("END InitialiseSampler");
         }
 
         private void RefreshSamples()

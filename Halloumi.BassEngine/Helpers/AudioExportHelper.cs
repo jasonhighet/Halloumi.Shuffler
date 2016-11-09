@@ -34,7 +34,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             decimal bpm = 0, 
             decimal targetBpm = 0)
         {
-            DebugHelper.WriteLine("Saving portion of track as wave with offset - " + inFilename);
+            // DebugHelper.WriteLine("Saving portion of track as wave with offset - " + inFilename);
 
             var audioStream = new Sample()
             {
@@ -167,7 +167,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <exception cref="System.Exception">Cannot load audio data</exception>
         public static void SaveAsMonoWave(byte[] audioData, string outFilename, double length, float gain)
         {
-            DebugHelper.WriteLine("SaveAsMonoWave");
+            // DebugHelper.WriteLine("SaveAsMonoWave");
 
             var audioDataHandle = GCHandle.Alloc(audioData, GCHandleType.Pinned);
             var audioDataPointer = audioDataHandle.AddrOfPinnedObject();
@@ -216,7 +216,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             audioDataHandle.Free();
 
-            DebugHelper.WriteLine("END SaveAsMonoWave");
+            // DebugHelper.WriteLine("END SaveAsMonoWave");
         }
 
         /// <summary>

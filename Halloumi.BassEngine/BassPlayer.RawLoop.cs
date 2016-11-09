@@ -31,12 +31,12 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void InitialiseRawLoopMixer()
         {
-            DebugHelper.WriteLine("InitialiseRawLoopMixer");
+            // DebugHelper.WriteLine("InitialiseRawLoopMixer");
 
             _rawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
             _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, _speakerOutput, _monitorOutput);
 
-            DebugHelper.WriteLine("END InitialiseRawLoopMixer");
+            // DebugHelper.WriteLine("END InitialiseRawLoopMixer");
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Halloumi.Shuffler.AudioEngine
             ExtenedAttributesHelper.LoadExtendedAttributes(track);
             LoadTrackAudioData(track);
 
-            DebugHelper.WriteLine("Loaded raw loop track " + track.Description);
+            // DebugHelper.WriteLine("Loaded raw loop track " + track.Description);
 
             // set track sync event
             track.SyncProc = OnTrackSync;
@@ -71,7 +71,7 @@ namespace Halloumi.Shuffler.AudioEngine
             track.RawLoopStart = 0;
             track.RawLoopEnd = track.Length;
 
-            DebugHelper.WriteLine("Loading raw loop track " + track.Description);
+            // DebugHelper.WriteLine("Loading raw loop track " + track.Description);
 
             AudioStreamHelper.AddToMixer(track, _rawLoopMixer.ChannelId);
             RawLoopTrack = track;
@@ -132,7 +132,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (RawLoopTrack == null) return;
 
-            DebugHelper.WriteLine("Playing in raw-loop mode");
+            // DebugHelper.WriteLine("Playing in raw-loop mode");
 
             AudioStreamHelper.Pause(RawLoopTrack);
             AudioStreamHelper.SetPosition(RawLoopTrack, RawLoopTrack.RawLoopOffset);
@@ -145,7 +145,7 @@ namespace Halloumi.Shuffler.AudioEngine
         public void StopRawLoop()
         {
             if (RawLoopTrack == null) return;
-            DebugHelper.WriteLine("Pausing raw-loop");
+            // DebugHelper.WriteLine("Pausing raw-loop");
             AudioStreamHelper.Pause(RawLoopTrack);
         }
     }

@@ -228,7 +228,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void Dispose()
         {
-            DebugHelper.WriteLine("Destroying Bass Engine");
+            // DebugHelper.WriteLine("Destroying Bass Engine");
 
             Stop();
 
@@ -285,7 +285,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void InitialiseTrackMixer()
         {
-            DebugHelper.WriteLine("InitialiseTrackMixer");
+            // DebugHelper.WriteLine("InitialiseTrackMixer");
 
             // create mixer channel
             _trackMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
@@ -304,7 +304,7 @@ namespace Halloumi.Shuffler.AudioEngine
             // then that to the main mixer
             _speakerOutput.AddInputChannel(_trackSendFxMixer);
 
-            DebugHelper.WriteLine("END InitialiseTrackMixer");
+            // DebugHelper.WriteLine("END InitialiseTrackMixer");
         }
 
         public void JumpBack()
@@ -354,12 +354,12 @@ namespace Halloumi.Shuffler.AudioEngine
             WaitForLock();
             Lock();
 
-            DebugHelper.WriteLine("Preloading track " + track.Description);
+            // DebugHelper.WriteLine("Preloading track " + track.Description);
             PreloadedTrack = track;
 
             LoadTrackAudioData(track);
 
-            DebugHelper.WriteLine("Preloading track " + track.Description + "...Done");
+            // DebugHelper.WriteLine("Preloading track " + track.Description + "...Done");
 
             Unlock();
         }
@@ -372,7 +372,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (track == null) return;
 
-            DebugHelper.WriteLine("Queuing track " + track.Description);
+            // DebugHelper.WriteLine("Queuing track " + track.Description);
 
             IsForceFadeNowMode = false;
 
@@ -454,7 +454,7 @@ namespace Halloumi.Shuffler.AudioEngine
                         t => string.Equals(t.Filename, filename, StringComparison.CurrentCultureIgnoreCase));
             }
 
-            DebugHelper.WriteLine("Loading track " + filename);
+            // DebugHelper.WriteLine("Loading track " + filename);
 
             if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
 
@@ -538,7 +538,7 @@ namespace Halloumi.Shuffler.AudioEngine
             {
                 if (track.TagDataLoaded) return;
 
-                DebugHelper.WriteLine("Loading track tags - " + track.Description);
+                // DebugHelper.WriteLine("Loading track tags - " + track.Description);
 
                 var tags = TagHelper.LoadTags(track.Filename);
 
@@ -574,7 +574,7 @@ namespace Halloumi.Shuffler.AudioEngine
         public void UnloadTrack(Track track)
         {
             if (track == null) return;
-            DebugHelper.WriteLine("Unloading track " + track.Description);
+            // DebugHelper.WriteLine("Unloading track " + track.Description);
 
             AudioStreamHelper.Pause(track);
             if (IsTrackInUse(track))
@@ -600,7 +600,7 @@ namespace Halloumi.Shuffler.AudioEngine
             // ensure mp3 tag data is loaded
             if (!track.TagDataLoaded) LoadTagData(track);
 
-            DebugHelper.WriteLine("Loading track Audio Data " + track.Description);
+            // DebugHelper.WriteLine("Loading track Audio Data " + track.Description);
             lock (track)
             {
                 AudioStreamHelper.LoadAudio(track);
@@ -650,7 +650,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             AddToRecentTracks(track);
 
-            DebugHelper.WriteLine("Finished loading track Audio Data " + track.Description);
+            // DebugHelper.WriteLine("Finished loading track Audio Data " + track.Description);
 
             return track;
         }
@@ -663,7 +663,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (!track.IsAudioLoaded()) return;
 
-            DebugHelper.WriteLine("Unloading track Audio Data " + track.Description);
+            // DebugHelper.WriteLine("Unloading track Audio Data " + track.Description);
 
             AudioStreamHelper.RemoveFromMixer(track, _trackMixer.ChannelId);
 
@@ -725,7 +725,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (CurrentTrack != null)
             {
-                DebugHelper.WriteLine("Play/resume playing current Track");
+                // DebugHelper.WriteLine("Play/resume playing current Track");
 
                 if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
 
@@ -744,7 +744,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ForcePlayNext()
         {
-            DebugHelper.WriteLine("ForceNextPrevious");
+            // DebugHelper.WriteLine("ForceNextPrevious");
             if (NextTrack == null) return;
             var trackName = NextTrack.Filename;
             ForcePlay(trackName);
@@ -755,7 +755,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ForceCueNext()
         {
-            DebugHelper.WriteLine("ForcePlayNext");
+            // DebugHelper.WriteLine("ForcePlayNext");
             if (NextTrack == null) return;
             var trackName = NextTrack.Filename;
             ForcePlay(trackName);
@@ -766,7 +766,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ForcePlayPrevious()
         {
-            DebugHelper.WriteLine("ForcePlayPrevious");
+            // DebugHelper.WriteLine("ForcePlayPrevious");
             if (PreviousTrack == null) return;
             var trackName = PreviousTrack.Filename;
             ForcePlay(trackName);
@@ -814,7 +814,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void Stop()
         {
-            DebugHelper.WriteLine("Stop");
+            // DebugHelper.WriteLine("Stop");
 
             Pause();
             if (CurrentTrack != null)
@@ -829,7 +829,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void Pause()
         {
-            DebugHelper.WriteLine("Pause");
+            // DebugHelper.WriteLine("Pause");
 
             StopSamples();
 
@@ -988,7 +988,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="position">The position.</param>
         public void SetAdjustedTrackPosition(long position)
         {
-            DebugHelper.WriteLine("Set track position");
+            // DebugHelper.WriteLine("Set track position");
             var track = ActiveTrack;
             if (track == null) return;
 
@@ -1037,7 +1037,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="seconds">The seconds.</param>
         public void SetTrackPosition(double seconds)
         {
-            DebugHelper.WriteLine("Set track position");
+            // DebugHelper.WriteLine("Set track position");
 
             var track = ActiveTrack;
             if (track == null) return;
@@ -1093,7 +1093,7 @@ namespace Halloumi.Shuffler.AudioEngine
         private static void StartAudioEngine(IntPtr windowHandle)
         {
             if (_engineStarted) return;
-            DebugHelper.WriteLine("Start Engine");
+            // DebugHelper.WriteLine("Start Engine");
             ChannelHelper.InitialiseAudioEngine(windowHandle);
             _engineStarted = true;
         }
@@ -1103,7 +1103,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private static void StopAudioEngine()
         {
-            DebugHelper.WriteLine("Stop Engine");
+            // DebugHelper.WriteLine("Stop Engine");
             Bass.BASS_Stop();
             Bass.BASS_Free();
         }
@@ -1116,7 +1116,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (track == null) return;
 
-            DebugHelper.WriteLine("Add track to mixer " + track.Description);
+            // DebugHelper.WriteLine("Add track to mixer " + track.Description);
 
             WaitForLock();
             Lock();
@@ -1167,7 +1167,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             while (IsLocked())
             {
-                DebugHelper.WriteLine("waiting for lock");
+                // DebugHelper.WriteLine("waiting for lock");
                 Thread.Sleep(50);
             }
         }
@@ -1228,7 +1228,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             ClearTrackSyncPositions(track);
 
-            DebugHelper.WriteLine("Set track sync positions " + track.Description);
+            // DebugHelper.WriteLine("Set track sync positions " + track.Description);
 
             // set end track sync
             SetTrackSync(track, 0, SyncType.TrackEnd);
@@ -1356,7 +1356,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="track">The track.</param>
         private void ClearTrackSyncPositions(Track track)
         {
-            DebugHelper.WriteLine("Clear track sync positions " + track.Description);
+            // DebugHelper.WriteLine("Clear track sync positions " + track.Description);
 
             if (track.IsAudioLoaded())
             {
@@ -1421,7 +1421,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             AudioStreamHelper.Pause(track);
 
-            DebugHelper.WriteLine("Remove track from mixer " + track.Description);
+            // DebugHelper.WriteLine("Remove track from mixer " + track.Description);
 
             ClearTrackSyncPositions(track);
 
@@ -1460,7 +1460,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (CurrentTrack == null) return;
 
-            DebugHelper.WriteLine("Start fade-in:" + CurrentTrack.Description);
+            // DebugHelper.WriteLine("Start fade-in:" + CurrentTrack.Description);
 
             Lock();
 
@@ -1497,7 +1497,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             Unlock();
 
-            DebugHelper.WriteLine("End Start fade-in:" + CurrentTrack.Description);
+            // DebugHelper.WriteLine("End Start fade-in:" + CurrentTrack.Description);
         }
 
         /// <summary>
@@ -1505,7 +1505,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void EndFadeIn()
         {
-            DebugHelper.WriteLine("End fade-in:" + CurrentTrack.Description);
+            // DebugHelper.WriteLine("End fade-in:" + CurrentTrack.Description);
 
             Lock();
 
@@ -1518,7 +1518,7 @@ namespace Halloumi.Shuffler.AudioEngine
             if ((isLooped && currentLoop < maxLoops - 1) || loopForever)
             {
                 var message = $"Looping fade-in section - starting loop {currentLoop + 1} of {maxLoops}";
-                DebugHelper.WriteLine(message);
+                // DebugHelper.WriteLine(message);
 
                 CurrentTrack.CurrentStartLoop++;
                 if (loopForever && CurrentTrack.CurrentStartLoop == maxLoops) CurrentTrack.CurrentStartLoop = 0;
@@ -1541,7 +1541,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 UnloadUnusedAudioData();
             }
 
-            DebugHelper.WriteLine("END End fade-in");
+            // DebugHelper.WriteLine("END End fade-in");
         }
 
         private void Unlock()
@@ -1560,7 +1560,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void StartFadeOut()
         {
-            DebugHelper.WriteLine("Start fade-out");
+            // DebugHelper.WriteLine("Start fade-out");
 
             Lock();
 
@@ -1784,7 +1784,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void EndFadeOut()
         {
-            DebugHelper.WriteLine("End fade-out");
+            // DebugHelper.WriteLine("End fade-out");
 
             IsForceFadeNowMode = false;
 
@@ -1799,7 +1799,7 @@ namespace Halloumi.Shuffler.AudioEngine
             if ((isLooped && currentLoop < maxLoops - 1) || loopForever)
             {
                 var message = $"Looping fade-out section - starting loop {currentLoop + 1} of {maxLoops}";
-                DebugHelper.WriteLine(message);
+                // DebugHelper.WriteLine(message);
 
                 PreviousTrack.CurrentEndLoop++;
 
@@ -1819,20 +1819,19 @@ namespace Halloumi.Shuffler.AudioEngine
             if (PreviousTrack == null) return;
             if (!HasExtendedMixAttributes()) return;
 
-            DebugHelper.WriteLine("Current End Loop: " + PreviousTrack.CurrentEndLoop + "  Fade End Loop: " +
-                                  GetExtendedMixAttributes().FadeEndLoop);
+            var message = "Current End Loop: " + PreviousTrack.CurrentEndLoop + "  Fade End Loop: " + GetExtendedMixAttributes().FadeEndLoop;
+            // DebugHelper.WriteLine(message);
 
             var mixAttributes = GetExtendedMixAttributes();
-            if (mixAttributes.FadeEndLoop == 0 || PreviousTrack.CurrentEndLoop == mixAttributes.FadeEndLoop)
+            if (mixAttributes.FadeEndLoop != 0 && PreviousTrack.CurrentEndLoop != mixAttributes.FadeEndLoop) return;
+
+            if (GetExtendedMixAttributes().PowerDownAfterFade)
             {
-                if (GetExtendedMixAttributes().PowerDownAfterFade)
-                {
-                    AudioStreamHelper.PowerDown(PreviousTrack);
-                }
-                else
-                {
-                    AudioStreamHelper.Pause(PreviousTrack);
-                }
+                AudioStreamHelper.PowerDown(PreviousTrack);
+            }
+            else
+            {
+                AudioStreamHelper.Pause(PreviousTrack);
             }
         }
 
@@ -1846,7 +1845,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void StartPreFadeIn()
         {
-            DebugHelper.WriteLine("Start pre-fade-in");
+            // DebugHelper.WriteLine("Start pre-fade-in");
 
             if (NextTrack == null || !NextTrack.UsePreFadeIn) return;
 
@@ -1865,7 +1864,7 @@ namespace Halloumi.Shuffler.AudioEngine
             // start playing the track
             AudioStreamHelper.Play(NextTrack);
 
-            DebugHelper.WriteLine("End Start pre-fade-in");
+            // DebugHelper.WriteLine("End Start pre-fade-in");
         }
 
         /// <summary>
@@ -1873,7 +1872,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void RaiseOnTrackChange()
         {
-            DebugHelper.WriteLine("Track change event");
+            // DebugHelper.WriteLine("Track change event");
             //Task.Run(() =>
             //{
                 OnTrackChange?.Invoke(CurrentTrack, EventArgs.Empty);
@@ -1886,7 +1885,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void RaiseOnEndFadeIn()
         {
-            DebugHelper.WriteLine("End fade in event");
+            // DebugHelper.WriteLine("End fade in event");
             Task.Run(() =>
             {
                 OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty);
@@ -1898,7 +1897,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void RaiseOnSkipToEnd()
         {
-            DebugHelper.WriteLine("Skip to end event");
+            // DebugHelper.WriteLine("Skip to end event");
             Task.Run(() =>
             {
                 OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty);
@@ -1910,7 +1909,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void RaiseOnTrackQueued()
         {
-            DebugHelper.WriteLine("Track queued event");
+            // DebugHelper.WriteLine("Track queued event");
             //Task.Run(() =>
             //{
                 OnTrackQueued?.Invoke(CurrentTrack, EventArgs.Empty);
@@ -1986,7 +1985,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         private void StartSkipSection()
         {
-            DebugHelper.WriteLine("Start skip section");
+            // DebugHelper.WriteLine("Start skip section");
 
             if (CurrentTrack == null || !CurrentTrack.HasSkipSection) return;
 
@@ -2004,7 +2003,7 @@ namespace Halloumi.Shuffler.AudioEngine
             var track = GetInUseTracks().FirstOrDefault(x => x.Channel == channel);
             var description = track != null ? "Track: " + track.Description : "";
 
-            DebugHelper.WriteLine("Event Fired: " + syncType + " " + description);
+            // DebugHelper.WriteLine("Event Fired: " + syncType + " " + description);
 
             switch (syncType)
             {

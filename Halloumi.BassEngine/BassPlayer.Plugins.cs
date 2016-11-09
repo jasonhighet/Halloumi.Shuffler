@@ -159,11 +159,11 @@ namespace Halloumi.Shuffler.AudioEngine
             if (CurrentTrack == null || LastTrackFxTrigger == null || LastTrackFxTriggerTrack == null)
                 return;
 
-            DebugHelper.WriteLine("Start StopTrackFXSend");
+            // DebugHelper.WriteLine("Start StopTrackFXSend");
 
             _trackSendMixer.SetVolume(0);
 
-            DebugHelper.WriteLine("Calculate TrackFXSend Length");
+            // DebugHelper.WriteLine("Calculate TrackFXSend Length");
 
             var position = AudioStreamHelper.GetPosition(LastTrackFxTriggerTrack);
             var positionSeconds = LastTrackFxTriggerTrack.SamplesToSeconds(position);
@@ -177,7 +177,7 @@ namespace Halloumi.Shuffler.AudioEngine
 
             LastTrackFxTrigger.Length = length;
 
-            DebugHelper.WriteLine("End StopTrackFXSend");
+            // DebugHelper.WriteLine("End StopTrackFXSend");
         }
 
         /// <summary>
