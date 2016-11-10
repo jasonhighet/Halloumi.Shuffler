@@ -150,7 +150,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         {
             if (samples < 0) return 0D;
 
-            lock (_cachedConversions)
+            // lock(_cachedConversions)
             {
                 if (_cachedConversions.Exists(c => c.Samples == samples))
                 {
@@ -168,7 +168,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             }
             else if (_cachedConversions.Count < 512)
             {
-                lock (_cachedConversions)
+                // lock(_cachedConversions)
                 {
                     _cachedConversions.Add(new SecondSampleConversion {Seconds = value, Samples = samples});
                 }
@@ -200,7 +200,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         {
             if (seconds < 0) return 0;
 
-            lock (_cachedConversions)
+            // lock(_cachedConversions)
             {
                 if (_cachedConversions.Exists(c => c.Seconds == seconds))
                 {
@@ -218,7 +218,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             }
             else if (_cachedConversions.Count < 512)
             {
-                lock (_cachedConversions)
+                // lock(_cachedConversions)
                 {
                     _cachedConversions.Add(new SecondSampleConversion {Seconds = seconds, Samples = value});
                 }
@@ -231,7 +231,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         {
             if (_cachedConversions.Count == 0) return 0;
 
-            lock (_cachedConversions)
+            // lock(_cachedConversions)
             {
                 var conversion = _cachedConversions.Last();
                 var samplesPerSecond = Convert.ToDouble(conversion.Samples)/conversion.Seconds;
@@ -242,7 +242,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         private double GuessSecondsFromSamples(long samples)
         {
             if (_cachedConversions.Count == 0) return 0;
-            lock (_cachedConversions)
+            // lock(_cachedConversions)
             {
                 var conversion = _cachedConversions.Last();
                 var secondsPerSample = conversion.Seconds/Convert.ToDouble(conversion.Samples);

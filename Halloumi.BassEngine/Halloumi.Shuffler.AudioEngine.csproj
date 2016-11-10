@@ -124,6 +124,7 @@
     <Compile Include="Models\PlayState.cs" />
     <Compile Include="ModulePlayer\Module.cs" />
     <Compile Include="ModulePlayer\ModulePlayer.cs" />
+    <Compile Include="ModulePlayer\SequencePlayer.cs" />
     <Compile Include="Players\Event.cs" />
     <Compile Include="Players\EventType.cs" />
     <Compile Include="Players\AudioPlayer.cs" />

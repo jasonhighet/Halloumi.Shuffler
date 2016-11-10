@@ -29,8 +29,45 @@ namespace Halloumi.Shuffler.TestHarness
         {
             DebugHelper.DebugMode = true;
 
+            _bassPlayer = new BassPlayer(Handle);
+            var player = new AudioPlayer();
+            _bassPlayer.SpeakerOutput.AddInputChannel(player.Output);
 
-            TestControlTrack();
+            var bpm = 105M;
+            var drumLoop = "D:\\Music\\Library\\Samples\\DrumLoops.Breaks\\Jaw Breaks\\16 - DrumLoops.Breaks - Jaw Breaks 16.mp3";
+
+            AudioExportHelper.SavePartialAsWave(drumLoop, "drumloop.wav", 0.41001700680272107, 2.3879591836725 * 2, targetBpm:bpm);
+            drumLoop = "drumloop.wav";
+
+            var stream = player.Load(drumLoop, drumLoop);
+            stream.DisableSyncs = true;
+
+            player.AddSection(drumLoop, drumLoop);
+
+            var sequencer = new SequencePlayer {Bpm = bpm, StepsPerLoop = 64, StepCount = 64, IsLooped = true};
+
+            var currentStep = 0;
+
+            while (currentStep < sequencer.StepsPerLoop)
+            {
+                sequencer.Actions.Add(new SequencePlayer.Action()
+                {
+                    ActionType = SequencePlayer.ActionType.PlaySolo,
+                    Player = player,
+                    SectionKey = drumLoop,
+                    Step = currentStep,
+                    StreamKey = drumLoop
+                });
+                currentStep += 16;
+            }
+
+            
+
+        
+
+            sequencer.Play();
+
+            //TestControlTrack();
 
             //TestModulePlayer();
         }

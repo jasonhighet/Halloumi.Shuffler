@@ -53,6 +53,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             //if (gain > 0)
             //    AudioStreamHelper.SetReplayGain(channel, gain);
 
+            if (targetBpm != 0 && bpm == 0)
+                bpm = BpmHelper.GetBpmFromLoopLength(length);
+
             if (targetBpm != 0 && bpm != 0)
                 AudioStreamHelper.SetTempoToMatchBpm(audioStream.Channel, bpm, targetBpm);
             
