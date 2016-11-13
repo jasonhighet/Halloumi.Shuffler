@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Enc;
@@ -15,7 +14,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     public static class AudioExportHelper
     {
         /// <summary>
-        /// Saves the partial as wave.
+        ///     Saves the partial as wave.
         /// </summary>
         /// <param name="inFilename">The in filename.</param>
         /// <param name="outFilename">The out filename.</param>
@@ -25,18 +24,18 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="gain">The gain.</param>
         /// <param name="bpm">The BPM.</param>
         /// <param name="targetBpm">The target BPM.</param>
-        public static void SavePartialAsWave(string inFilename, 
-            string outFilename, 
+        public static void SavePartialAsWave(string inFilename,
+            string outFilename,
             double start,
             double length,
-            double offset = 0, 
-            float gain = 0, 
-            decimal bpm = 0, 
+            double offset = 0,
+            float gain = 0,
+            decimal bpm = 0,
             decimal targetBpm = 0)
         {
             // DebugHelper.WriteLine("Saving portion of track as wave with offset - " + inFilename);
 
-            var audioStream = new Sample()
+            var audioStream = new Sample
             {
                 Filename = inFilename,
                 Description = inFilename,
@@ -46,20 +45,16 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             AudioStreamHelper.LoadAudio(audioStream);
 
-            //var channel = Bass.BASS_StreamCreateFile(inFilename, 0L, 0L,
-            //    BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_STREAM_PRESCAN);
-            //if (channel == 0) throw new Exception("Cannot load track " + inFilename);
-
-            //if (gain > 0)
-            //    AudioStreamHelper.SetReplayGain(channel, gain);
-
-            if (targetBpm != 0 && bpm != 0)
+            if (targetBpm != 0)
+            {
+                if (bpm == 0) bpm = BpmHelper.GetBpmFromLoopLength(length);
                 AudioStreamHelper.SetTempoToMatchBpm(audioStream.Channel, bpm, targetBpm);
-            
+            }
+
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
             BassEnc.BASS_Encode_Start(audioStream.Channel, outFilename, flags, null, IntPtr.Zero);
 
-            var startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start); 
+            var startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start);
             var endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start + length);
             if (offset == 0 || offset == start)
             {
@@ -243,7 +238,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 if (transferLength > buffer.Length) transferLength = buffer.Length;
 
                 // get the decoded sample data
-                var transferred = Bass.BASS_ChannelGetData(channel, buffer, (int)transferLength);
+                var transferred = Bass.BASS_ChannelGetData(channel, buffer, (int) transferLength);
 
                 if (transferred < 1) break; // error or the end
                 totalTransferLength -= transferred;

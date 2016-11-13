@@ -355,7 +355,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static void Pause(AudioStream audioStream)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
-            BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);
+            lock (Lock)
+            {
+                // DebugHelper.WriteLine("Pause Audio Stream (" + audioStream.Description + ")");
+                BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);
+            }
         }
 
         /// <summary>
@@ -380,9 +384,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             SetVolumeSlide(audioStream, volume, 0F, 0.15D);
             Thread.Sleep(150);
 
-            if (!audioStream.IsAudioLoaded()) return;
-            BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);
-
+            Pause(audioStream);
             SetVolume(audioStream, volume);
         }
 
@@ -394,11 +396,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
 
-            //lock (Lock)
-            //{
+            lock (Lock)
+            {
                 // DebugHelper.WriteLine("Play Audio Stream (" + audioStream.Description + ")");
                 BassMix.BASS_Mixer_ChannelPlay(audioStream.Channel);
-           // }
+           }
         }
 
         /// <summary>
@@ -559,7 +561,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             // DebugHelper.WriteLine($"AddChannelToMixer {mixerChannel} {channel}");
             try
             {
-                //lock (Lock)
+                lock (Lock)
                 {
                     BassMix.BASS_Mixer_StreamAddChannel(mixerChannel, channel,
                         BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
@@ -585,7 +587,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
 
-            //lock (Lock)
+            lock (Lock)
             {
                 // DebugHelper.WriteLine($"RemoveFromMixer {audioStream.Description} {audioStream.Channel}...");
                 BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);

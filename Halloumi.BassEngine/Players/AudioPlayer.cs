@@ -19,6 +19,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private readonly List<Event> _audioStreamEvents = new List<Event>();
         private readonly List<AudioStreamSection> _streamSections;
 
+        private DateTime _lastEvent = DateTime.Now;
+
         public AudioPlayer(IBmpProvider bpmProvider = null)
         {
             Output = new MixerChannel(bpmProvider);
@@ -151,12 +153,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AudioStreamHelper.Play(audioStream);
         }
 
-        private void PlayWithNoSyncs(string streamKey)
-        {
-            var audioStream = GetAudioStream(streamKey);
-            AudioStreamHelper.Play(audioStream);
-        }
-
         private void ApplySyncIfOneExistsForCurrentPosition(AudioStream audioStream)
         {
             var position = AudioStreamHelper.GetPosition(audioStream);
@@ -214,7 +210,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 var audioStream = GetAudioStream(streamKey);
                 AudioStreamHelper.Pause(audioStream);
             }
-            ;
         }
 
         public void Pause(string streamKey)
@@ -358,8 +353,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 _audioStreamEvents.Add(audioStreamEvent);
             }
 
-            var message = $"Added {eventType} on {streamKey} to {targetStreamKey} at {position}";
-            DebugHelper.WriteLine(message);
+            //var message = $"Added {eventType} on {streamKey} to {targetStreamKey} at {position}";
+            //DebugHelper.WriteLine(message);
         }
 
 
@@ -465,8 +460,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             }
         }
 
-        private DateTime _lastEvent = DateTime.Now;
-
         private void OnSync(int syncId, int channel, int data, IntPtr pointer)
         {
             Task.Run(() => OnSync(syncId, channel));
@@ -486,7 +479,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             var audioSection = GetAudioSectionBySync(channel, audioSync);
 
-            DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
+            //DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
             DebugHelper.WriteLine(secondsSinceLastEvent);
 
             switch (audioSync.SyncType)
@@ -507,7 +500,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             // DebugHelper.WriteLine("end onnsyc for " + streamSection.Key + " " + audioSync.SyncType);
 
-           OnEventSync(syncId);
+            OnEventSync(syncId);
         }
 
         private void OnEventSync(int syncId)
@@ -522,27 +515,20 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 var playerEvents = audioStreamEvents.Where(x => x.Player == player);
                 foreach (var audioEvent in playerEvents)
                 {
-                    DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
+                    //DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
                     AudioStream stream;
                     switch (audioEvent.StreamEventType)
                     {
                         case EventType.PlaySolo:
                             player.Pause();
                             player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
-                            if(player == this)
-                                player.PlayWithNoSyncs(audioEvent.TargetStreamKey);
-                            else
-                                player.Play(audioEvent.TargetStreamKey);
+                            player.Play(audioEvent.TargetStreamKey);
                             break;
-
                         case EventType.Play:
+                            player.Pause(audioEvent.TargetStreamKey);
                             player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
-                            if (player == this)
-                                player.PlayWithNoSyncs(audioEvent.TargetStreamKey);
-                            else
-                                player.Play(audioEvent.TargetStreamKey);
+                            player.Play(audioEvent.TargetStreamKey);
                             break;
-
                         case EventType.PauseAll:
                             player.Pause();
                             break;
@@ -560,7 +546,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                         default:
                             throw new Exception("Invalid Event Type");
                     }
-                    DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType + " " + syncId);
+                    //DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType + " " + syncId);
                 }
             });
         }
