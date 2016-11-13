@@ -467,21 +467,19 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         private void OnSync(int syncId, int channel)
         {
-            var currentEvent = DateTime.Now;
-            var timeSpan = currentEvent - _lastEvent;
-            var secondsSinceLastEvent = Math.Round(timeSpan.TotalSeconds, 4);
-            _lastEvent = currentEvent;
+            //var currentEvent = DateTime.Now;
+            //var timeSpan = currentEvent - _lastEvent;
+            //var secondsSinceLastEvent = Math.Round(timeSpan.TotalSeconds, 4);
+            //_lastEvent = currentEvent;
 
+            ////DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
+            //DebugHelper.WriteLine(secondsSinceLastEvent);
 
             var streamSection = GetStreamSectionByChannel(channel);
             var audioSync = GetAudioSyncById(channel, syncId);
             if (audioSync == null) return;
 
             var audioSection = GetAudioSectionBySync(channel, audioSync);
-
-            //DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
-            DebugHelper.WriteLine(secondsSinceLastEvent);
-
             switch (audioSync.SyncType)
             {
                 case SyncType.End:

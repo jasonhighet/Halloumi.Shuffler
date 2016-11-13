@@ -95,10 +95,10 @@ namespace Halloumi.Shuffler.TestHarness
             const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\StereoFreeze.json";
             _modulePlayer.LoadModule(module);
 
-            _modulePlayer.PlayModuleLooped();
+            //_modulePlayer.PlayModuleLooped();
             //_modulePlayer.PlayPattern("StartMainLoop");
             //_modulePlayer.PlayPatternChannel("StartMainLoop", "MainLoops");
-            //_modulePlayer.PlayPatternChannel("Loop0", "Drums");
+            _modulePlayer.PlayPatternChannel("Loop0", "Drums");
             //_modulePlayer.PlayPattern("DrumsOnly");
 
             //PluginHelper.VstPluginsFolder = @"D:\Music\VstPlugins";
