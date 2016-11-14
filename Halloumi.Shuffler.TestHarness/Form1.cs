@@ -61,10 +61,6 @@ namespace Halloumi.Shuffler.TestHarness
                 currentStep += 16;
             }
 
-            
-
-        
-
             sequencer.Play();
 
             //TestControlTrack();
@@ -129,14 +125,14 @@ namespace Halloumi.Shuffler.TestHarness
             _bassPlayer.SpeakerOutput.AddInputChannel(_modulePlayer.Output);
 
             //const string module = @"C:\Users\jason\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
-            //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
-            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\StereoFreeze.json";
+            const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\Viva.json";
+            //const string module = @"D:\Brooklyn2Birkenhead My Files\Music\Modules\StereoFreeze.json";
             _modulePlayer.LoadModule(module);
 
             //_modulePlayer.PlayModuleLooped();
-            //_modulePlayer.PlayPattern("StartMainLoop");
+            _modulePlayer.PlayPattern("StartMainLoop");
             //_modulePlayer.PlayPatternChannel("StartMainLoop", "MainLoops");
-            _modulePlayer.PlayPatternChannel("Loop0", "Drums");
+            //_modulePlayer.PlayPatternChannel("Loop0", "Drums");
             //_modulePlayer.PlayPattern("DrumsOnly");
 
             //PluginHelper.VstPluginsFolder = @"D:\Music\VstPlugins";
