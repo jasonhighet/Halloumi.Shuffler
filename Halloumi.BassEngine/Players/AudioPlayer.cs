@@ -153,6 +153,12 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AudioStreamHelper.Play(audioStream);
         }
 
+        private void PlayWithNoSyncs(string streamKey)
+        {
+            var audioStream = GetAudioStream(streamKey);
+            AudioStreamHelper.Play(audioStream);
+        }
+
         private void ApplySyncIfOneExistsForCurrentPosition(AudioStream audioStream)
         {
             var position = AudioStreamHelper.GetPosition(audioStream);
@@ -472,12 +478,15 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             //var secondsSinceLastEvent = Math.Round(timeSpan.TotalSeconds, 4);
             //_lastEvent = currentEvent;
 
-            ////DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
             //DebugHelper.WriteLine(secondsSinceLastEvent);
 
             var streamSection = GetStreamSectionByChannel(channel);
             var audioSync = GetAudioSyncById(channel, syncId);
             if (audioSync == null) return;
+            if (audioSync.SyncType == SyncType.Start)
+                return;
+
+            DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
 
             var audioSection = GetAudioSectionBySync(channel, audioSync);
             switch (audioSync.SyncType)
@@ -496,8 +505,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                     throw new ArgumentOutOfRangeException();
             }
 
-            // DebugHelper.WriteLine("end onnsyc for " + streamSection.Key + " " + audioSync.SyncType);
-
             OnEventSync(syncId);
         }
 
@@ -513,19 +520,24 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 var playerEvents = audioStreamEvents.Where(x => x.Player == player);
                 foreach (var audioEvent in playerEvents)
                 {
-                    //DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
+                    DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
                     AudioStream stream;
                     switch (audioEvent.StreamEventType)
                     {
                         case EventType.PlaySolo:
                             player.Pause();
                             player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
-                            player.Play(audioEvent.TargetStreamKey);
+                            if (player == this)
+                                player.PlayWithNoSyncs(audioEvent.TargetStreamKey);
+                            else
+                                player.Play(audioEvent.TargetStreamKey);
                             break;
                         case EventType.Play:
-                            player.Pause(audioEvent.TargetStreamKey);
                             player.QueueSection(audioEvent.TargetStreamKey, audioEvent.TargetSectionKey);
-                            player.Play(audioEvent.TargetStreamKey);
+                            if (player == this)
+                                player.PlayWithNoSyncs(audioEvent.TargetStreamKey);
+                            else
+                                player.Play(audioEvent.TargetStreamKey);
                             break;
                         case EventType.PauseAll:
                             player.Pause();
