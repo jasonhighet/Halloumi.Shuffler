@@ -16,7 +16,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     {
         private const int DefaultSampleRate = 44100;
 
-        //private static readonly object Lock = new object();
+        private static readonly object Lock = new object();
 
         static AudioStreamHelper()
         {

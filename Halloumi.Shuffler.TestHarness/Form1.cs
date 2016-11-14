@@ -27,7 +27,7 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DebugHelper.DebugMode = true;
+            //DebugHelper.DebugMode = true;
 
             _bassPlayer = new BassPlayer(Handle);
             var player = new AudioPlayer();
@@ -36,15 +36,15 @@ namespace Halloumi.Shuffler.TestHarness
             var bpm = 105M;
             var drumLoop = "D:\\Music\\Library\\Samples\\DrumLoops.Breaks\\Jaw Breaks\\16 - DrumLoops.Breaks - Jaw Breaks 16.mp3";
 
-            AudioExportHelper.SavePartialAsWave(drumLoop, "drumloop.wav", 0.41001700680272107, 2.3879591836725 * 2, targetBpm:bpm);
-            drumLoop = "drumloop.wav";
+            //AudioExportHelper.SavePartialAsWave(drumLoop, "drumloop.wav", 0.41001700680272107, 2.3879591836725 * 2, targetBpm:bpm);
+            //drumLoop = "drumloop.wav";
 
             var stream = player.Load(drumLoop, drumLoop);
             stream.DisableSyncs = true;
 
-            player.AddSection(drumLoop, drumLoop);
+            player.AddSection(drumLoop, drumLoop, 0.41001700680272107, 2.3879591836725, targetBpm:bpm);
 
-            var sequencer = new SequencePlayer {Bpm = bpm, StepsPerLoop = 64, StepCount = 64, IsLooped = true};
+            var sequencer = new SequencePlayer {Bpm = bpm, StepsPerLoop = 32, StepCount = 32, IsLooped = true};
 
             var currentStep = 0;
 
@@ -58,7 +58,7 @@ namespace Halloumi.Shuffler.TestHarness
                     Step = currentStep,
                     StreamKey = drumLoop
                 });
-                currentStep += 16;
+                currentStep += 8;
             }
 
             sequencer.Play();
