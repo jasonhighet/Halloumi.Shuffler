@@ -351,7 +351,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 TargetSectionKey = targetSectionKey,
                 StreamEventType = eventType,
                 Player = player,
-                Length = length
+                Length = length,
+                Position = position
             };
 
             lock (_audioStreamEvents)
@@ -483,8 +484,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             var streamSection = GetStreamSectionByChannel(channel);
             var audioSync = GetAudioSyncById(channel, syncId);
             if (audioSync == null) return;
-            if (audioSync.SyncType == SyncType.Start)
-                return;
 
             DebugHelper.WriteLine("start onnsyc " + streamSection.Key + " [ " + audioSync.SyncType + "]");
 
@@ -514,13 +513,13 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (audioStreamEvents == null || audioStreamEvents.Count == 0)
                 return;
 
-            var players = audioStreamEvents.Select(x => x.Player).Distinct();
+            var players = audioStreamEvents.Select(x => x.Player).Distinct().ToList();
             ParallelHelper.ForEach(players, player =>
             {
                 var playerEvents = audioStreamEvents.Where(x => x.Player == player);
                 foreach (var audioEvent in playerEvents)
                 {
-                    DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + syncId);
+                    DebugHelper.WriteLine("start event sycn:" + audioEvent.StreamEventType + " " + audioEvent.TargetStreamKey);
                     AudioStream stream;
                     switch (audioEvent.StreamEventType)
                     {

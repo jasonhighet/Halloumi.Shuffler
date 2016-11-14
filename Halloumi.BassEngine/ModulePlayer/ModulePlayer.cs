@@ -350,7 +350,7 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
             Pause();
 
-            const int patternLoopCount = 16;
+            const int patternLoopCount = 1;
 
             _mainPlayer.Unload(PatternPlayer);
             _mainPlayer.Load(PatternPlayer, SilenceHelper.GetSilenceAudioFile());

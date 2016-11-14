@@ -21,5 +21,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         public string StreamKey { get; internal set; }
 
         internal double Length { get; set; }
+
+        internal double Position { get; set; }
     }
 }
