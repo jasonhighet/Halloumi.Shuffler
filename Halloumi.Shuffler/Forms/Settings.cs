@@ -95,6 +95,7 @@ namespace Halloumi.Shuffler.Forms
             AlbumArtShown = true;
             ImportShufflerFilesFolder = "";
             RecentFiles = "";
+            ShowTrackDetails = true;
         }
 
         public string LibraryFolder { get; set; }
@@ -208,5 +209,6 @@ namespace Halloumi.Shuffler.Forms
         public string ImportShufflerFilesFolder { get; set; }
 
         public string RecentFiles { get; set; }
+        public bool ShowTrackDetails { get; set; }
     }
 }

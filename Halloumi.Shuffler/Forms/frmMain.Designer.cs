@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.kryptonManager = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
             this.pnlTop = new System.Windows.Forms.Panel();
-            this.playerDetails = new Halloumi.Shuffler.Controls.PlayerDetails();
             this.pnlMenuBar = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             this.linMenuBorder = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
@@ -70,6 +69,7 @@
             this.mnuViewAlbumArt = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowTrackDetails = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTracker = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModuleEditor = new System.Windows.Forms.ToolStripMenuItem();
@@ -124,6 +124,7 @@
             this.trackLibraryControl = new Halloumi.Shuffler.Controls.TrackLibraryControl();
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
+            this.playerDetails = new Halloumi.Shuffler.Controls.PlayerDetails();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
@@ -149,19 +150,6 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.Size = new System.Drawing.Size(1253, 149);
             this.pnlTop.TabIndex = 30;
-            // 
-            // playerDetails
-            // 
-            this.playerDetails.AlbumArtShown = true;
-            this.playerDetails.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(72)))), ((int)(((byte)(72)))));
-            this.playerDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.playerDetails.Location = new System.Drawing.Point(0, 37);
-            this.playerDetails.Margin = new System.Windows.Forms.Padding(5);
-            this.playerDetails.Name = "playerDetails";
-            this.playerDetails.PlaylistControl = null;
-            this.playerDetails.Size = new System.Drawing.Size(1253, 112);
-            this.playerDetails.TabIndex = 34;
-            this.playerDetails.VisualsShown = false;
             // 
             // pnlMenuBar
             // 
@@ -378,6 +366,7 @@
             this.toolStripSeparator7,
             this.mnuFadeNow,
             this.toolStripSeparator12,
+            this.mnuShowTrackDetails,
             this.mnuShowMixableTracks,
             this.mnuViewVisuals,
             this.mnuViewAlbumArt,
@@ -455,6 +444,13 @@
             this.mnuMinimizeToTray.Name = "mnuMinimizeToTray";
             this.mnuMinimizeToTray.Size = new System.Drawing.Size(196, 26);
             this.mnuMinimizeToTray.Text = "Minimi&ze To Tray";
+            // 
+            // mnuShowTrackDetails
+            // 
+            this.mnuShowTrackDetails.Name = "mnuShowTrackDetails";
+            this.mnuShowTrackDetails.Size = new System.Drawing.Size(196, 26);
+            this.mnuShowTrackDetails.Text = "Track &Details";
+            this.mnuShowTrackDetails.Click += new System.EventHandler(this.mnuShowTrackDetails_Click);
             // 
             // mnuTracker
             // 
@@ -876,6 +872,19 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
+            // playerDetails
+            // 
+            this.playerDetails.AlbumArtShown = true;
+            this.playerDetails.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(72)))), ((int)(((byte)(72)))));
+            this.playerDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.playerDetails.Location = new System.Drawing.Point(0, 37);
+            this.playerDetails.Margin = new System.Windows.Forms.Padding(5);
+            this.playerDetails.Name = "playerDetails";
+            this.playerDetails.PlaylistControl = null;
+            this.playerDetails.Size = new System.Drawing.Size(1253, 112);
+            this.playerDetails.TabIndex = 34;
+            this.playerDetails.VisualsShown = false;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1006,5 +1015,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuSampleLibrary;
         private System.Windows.Forms.ToolStripMenuItem mnuExportShufflerTracks;
         private System.Windows.Forms.ToolStripMenuItem mnuModuleEditor;
+        private System.Windows.Forms.ToolStripMenuItem mnuShowTrackDetails;
     }
 }

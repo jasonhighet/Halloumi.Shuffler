@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
@@ -21,9 +20,162 @@ namespace Halloumi.Shuffler.Controls
     /// </summary>
     public partial class TrackLibraryControl : UserControl
     {
+        private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
+
+
+        private bool _binding;
+
+        private bool _neverBind = true;
         public EventHandler DisplayedTracksChanging;
 
         public EventHandler SelectedTracksChanged;
+
+
+        public TrackLibraryControl()
+        {
+            InitializeComponent();
+
+            MinBpm = 0;
+            MaxBpm = 1000;
+            grdTracks.VirtualMode = true;
+
+            txtMinBPM.TextChanged += txtMinBPM_TextChanged;
+            txtMaxBPM.TextChanged += txtMaxBPM_TextChanged;
+
+            grdArtist.RowEnter += grdArtist_RowEnter;
+            grdGenre.RowEnter += grdGenre_RowEnter;
+            grdTracks.CellDoubleClick += grdTracks_CellDoubleClick;
+            grdTracks.SelectionChanged += grdTracks_SelectionChanged;
+            grdTracks.CellFormatting += grdTracks_CellFormatting;
+
+            lstAlbum.SelectedIndexChanged += lstAlbum_SelectedIndexChanged;
+            lstAlbum.MouseClick += lstAlbum_MouseClick;
+            mnuOpenFileLocation.Click += mnuOpenFileLocation_Click;
+            mnuRenameGenre.Click += mnuRenameGenre_Click;
+            mnuUpdateGenre.Click += mnuUpdateGenre_Click;
+            mnuRenameAlbum.Click += mnuRenameAlbum_Click;
+            mnuUpdateAlbum.Click += mnuUpdateAlbum_Click;
+            mnuRenameArtist.Click += mnuRenameArtist_Click;
+            mnuUpdateArtist.Click += mnuUpdateArtist_Click;
+            mnuUpdateAlbumArtist.Click += mnuUpdateAlbumArtist_Click;
+            mnuUpdateTrackDetails.Click += mnuUpdateTrackDetails_Click;
+            mnuUpdateShufflerDetails.Click += mnuUpdateShufflerDetails_Click;
+            mnuRemoveShufflerDetails.Click += mnuRemoveShufflerDetails_Click;
+            mnuQueue.Click += mnuQueue_Click;
+            mnuPlay.Click += mnuPlay_Click;
+            mnuTrack.Opening += mnuTrack_Opening;
+
+            backgroundWorker.DoWork += backgroundWorker_DoWork;
+            backgroundWorker.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
+
+            lstAlbum.Scroll += lstAlbum_Scroll;
+            txtSearch.KeyPress += txtSearch_KeyPress;
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            cmbPlaylist.SelectedIndexChanged += cmbPlaylist_SelectedIndexChanged;
+            cmbExcludedPlaylist.SelectedIndexChanged += cmbExcludedPlaylist_SelectedIndexChanged;
+            cmbShufflerFilter.SelectedIndexChanged += cmbShufflerFilter_SelectedIndexChanged;
+            cmbQueued.SelectedIndexChanged += cmbQueued_SelectedIndexChanged;
+            cmbTrackRankFilter.SelectedIndexChanged += cmbTrackRankFilter_SelectedIndexChanged;
+
+            grdTracks.SortOrderChanged += grdTracks_SortOrderChanged;
+            grdTracks.CellValueNeeded += grdTracks_CellValueNeeded;
+            grdTracks.SortColumnIndex = -1;
+
+            lstAlbum.BackColor = grdArtist.StateNormal.Background.Color1;
+            lstAlbum.ForeColor = grdArtist.ForeColor;
+
+            PlaylistFilter = "";
+            ExcludedPlaylistFilter = "";
+            SearchFilter = "";
+            ShufflerFilter = Library.ShufflerFilter.None;
+            TrackRankFilter = Library.TrackRankFilter.None;
+
+            grdTracks.DefaultCellStyle.Font = _font;
+
+            SetShufflerFilter();
+            SetTrackRankFilter();
+        }
+
+        private string SearchFilter { get; set; }
+
+        public string PlaylistFilter { get; internal set; }
+
+        public string ExcludedPlaylistFilter { get; internal set; }
+
+        private Library.ShufflerFilter ShufflerFilter { get; set; }
+
+        private Library.TrackRankFilter TrackRankFilter { get; set; }
+
+        private int MinBpm { get; set; }
+
+        private int MaxBpm { get; set; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SamplerControl SamplerControl { get; set; }
+
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Library Library { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SampleLibrary SampleLibrary { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MixLibrary MixLibrary { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the bass player.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AE.BassPlayer BassPlayer { get; set; }
+
+        /// <summary>
+        ///     Gets the playlist control.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PlaylistControl PlaylistControl { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the tool strip label.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ToolStripLabel ToolStripLabel { get; set; }
+
+        public bool ShowMixableTracks
+        {
+            set
+            {
+                splLibraryMixable.Panel2Collapsed = !value;
+                ShowCurrentTrackDetails();
+            }
+        }
+
+        public bool ShowTrackDetails
+        {
+            set
+            {
+                trackDetails.Visible = value;
+                ShowCurrentTrackDetails();
+            }
+        }
+
+        private List<TrackModel> TrackModels { get; set; }
 
         /// <summary>
         ///     Handles the Click event of the mnuRank control.
@@ -38,7 +190,7 @@ namespace Halloumi.Shuffler.Controls
 
             foreach (var track in GetSelectedTracks())
             {
-                track.Rank = (int)mixRank;
+                track.Rank = (int) mixRank;
                 Library.SaveRank(track);
             }
 
@@ -129,207 +281,6 @@ namespace Halloumi.Shuffler.Controls
             EditSamples();
         }
 
-        private class TrackModel
-        {
-            public TrackModel(Track track)
-            {
-                Filename = track.Filename;
-                Description = track.Description;
-                Album = track.Album;
-                Genre = track.Genre;
-                LengthFormatted = track.LengthFormatted;
-                Length = track.Length;
-                Bpm = track.Bpm;
-                EndBpm = track.EndBpm;
-                StartBpm = track.StartBpm;
-                TrackNumberFormatted = track.TrackNumberFormatted;
-                RankDescription = track.RankDescription;
-                Track = track;
-                Key = track.Key;
-
-                InCount = -1;
-                OutCount = -1;
-            }
-
-            public string Filename { get; }
-
-            public string Description { get; }
-
-            public string Album { get; }
-
-            public string Genre { get; }
-
-            public string LengthFormatted { get; }
-
-            public decimal Length { get; }
-
-            public decimal StartBpm { get; }
-
-            public decimal EndBpm { get; }
-
-            public decimal Bpm { get; }
-
-            public int InCount { get; set; }
-
-            public int OutCount { get; set; }
-
-            public string TrackNumberFormatted { get; }
-
-            public Track Track { get; }
-
-            public string RankDescription { get; }
-
-            public string Key { get; }
-        }
-
-        #region Private Variables
-
-        private bool _binding;
-
-        private bool _neverBind = true;
-
-        private string SearchFilter { get; set; }
-
-        public string PlaylistFilter { get; internal set; }
-
-        public string ExcludedPlaylistFilter { get; internal set; }
-
-        private Library.ShufflerFilter ShufflerFilter { get; set; }
-
-        private Library.TrackRankFilter TrackRankFilter { get; set; }
-
-        private int MinBpm { get; set; }
-
-        private int MaxBpm { get; set; }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SamplerControl SamplerControl { get; set; }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Library Library { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SampleLibrary SampleLibrary { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MixLibrary MixLibrary { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AE.BassPlayer BassPlayer { get; set; }
-
-        /// <summary>
-        ///     Gets the playlist control.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public PlaylistControl PlaylistControl { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the tool strip label.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ToolStripLabel ToolStripLabel { get; set; }
-
-        public bool ShowMixableTracks
-        {
-            set
-            {
-                splLibraryMixable.Panel2Collapsed = !value;
-                ShowCurrentTrackDetails();
-            }
-        }
-
-        #endregion
-
-        #region Constructors
-
-        public TrackLibraryControl()
-        {
-            InitializeComponent();
-
-            MinBpm = 0;
-            MaxBpm = 1000;
-            grdTracks.VirtualMode = true;
-
-            txtMinBPM.TextChanged += txtMinBPM_TextChanged;
-            txtMaxBPM.TextChanged += txtMaxBPM_TextChanged;
-
-            grdArtist.RowEnter += grdArtist_RowEnter;
-            grdGenre.RowEnter += grdGenre_RowEnter;
-            grdTracks.CellDoubleClick += grdTracks_CellDoubleClick;
-            grdTracks.SelectionChanged += grdTracks_SelectionChanged;
-            grdTracks.CellFormatting += grdTracks_CellFormatting;
-
-            lstAlbum.SelectedIndexChanged += lstAlbum_SelectedIndexChanged;
-            lstAlbum.MouseClick += lstAlbum_MouseClick;
-            mnuOpenFileLocation.Click += mnuOpenFileLocation_Click;
-            mnuRenameGenre.Click += mnuRenameGenre_Click;
-            mnuUpdateGenre.Click += mnuUpdateGenre_Click;
-            mnuRenameAlbum.Click += mnuRenameAlbum_Click;
-            mnuUpdateAlbum.Click += mnuUpdateAlbum_Click;
-            mnuRenameArtist.Click += mnuRenameArtist_Click;
-            mnuUpdateArtist.Click += mnuUpdateArtist_Click;
-            mnuUpdateAlbumArtist.Click += mnuUpdateAlbumArtist_Click;
-            mnuUpdateTrackDetails.Click += mnuUpdateTrackDetails_Click;
-            mnuUpdateShufflerDetails.Click += mnuUpdateShufflerDetails_Click;
-            mnuRemoveShufflerDetails.Click += mnuRemoveShufflerDetails_Click;
-            mnuQueue.Click += mnuQueue_Click;
-            mnuPlay.Click += mnuPlay_Click;
-            mnuTrack.Opening += mnuTrack_Opening;
-
-            backgroundWorker.DoWork += backgroundWorker_DoWork;
-            backgroundWorker.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
-
-            lstAlbum.Scroll += lstAlbum_Scroll;
-            txtSearch.KeyPress += txtSearch_KeyPress;
-            txtSearch.TextChanged += txtSearch_TextChanged;
-            cmbPlaylist.SelectedIndexChanged += cmbPlaylist_SelectedIndexChanged;
-            cmbExcludedPlaylist.SelectedIndexChanged += cmbExcludedPlaylist_SelectedIndexChanged;
-            cmbShufflerFilter.SelectedIndexChanged += cmbShufflerFilter_SelectedIndexChanged;
-            cmbQueued.SelectedIndexChanged += cmbQueued_SelectedIndexChanged;
-            cmbTrackRankFilter.SelectedIndexChanged += cmbTrackRankFilter_SelectedIndexChanged;
-
-            grdTracks.SortOrderChanged += grdTracks_SortOrderChanged;
-            grdTracks.CellValueNeeded += grdTracks_CellValueNeeded;
-            grdTracks.SortColumnIndex = -1;
-
-            lstAlbum.BackColor = grdArtist.StateNormal.Background.Color1;
-            lstAlbum.ForeColor = grdArtist.ForeColor;
-
-            PlaylistFilter = "";
-            ExcludedPlaylistFilter = "";
-            SearchFilter = "";
-            ShufflerFilter = Library.ShufflerFilter.None;
-            TrackRankFilter = Library.TrackRankFilter.None;
-
-            grdTracks.DefaultCellStyle.Font = _font;
-
-            SetShufflerFilter();
-            SetTrackRankFilter();
-        }
-
         public void Initalize()
         {
             trackDetails.Library = Library;
@@ -338,14 +289,8 @@ namespace Halloumi.Shuffler.Controls
             mixableTracks.Initialize(MixLibrary, this);
 
             trackDetails.DisplayTrackDetails(null);
-
-            //DebugHelper.WriteLine("Initialise");
-            //BindData();
         }
 
-        #endregion
-
-        #region Private Methods
 
         public List<Track> GetAvailableTracks()
         {
@@ -385,7 +330,8 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="bindArtists">If set to true, binds the artists.</param>
         /// <param name="bindAlbums">If set to true, binds the albums.</param>
         /// <param name="bindTracks">If set to true, binds the tracks.</param>
-        private void BindData(bool bindGenres = true, bool bindArtists = true, bool bindAlbums = true, bool bindTracks = true)
+        private void BindData(bool bindGenres = true, bool bindArtists = true, bool bindAlbums = true,
+            bool bindTracks = true)
         {
             if (_binding || _neverBind) return;
 
@@ -411,7 +357,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindPlaylists()
         {
-            if (_neverBind) return;  _binding = true;
+            if (_neverBind) return;
+            _binding = true;
 
             var selectedPlaylist = "";
             if (cmbPlaylist.SelectedItem != null) selectedPlaylist = cmbPlaylist.SelectedItem.ToString();
@@ -434,7 +381,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindExcludedPlaylists()
         {
-            if (_neverBind) return;  _binding = true;
+            if (_neverBind) return;
+            _binding = true;
 
             var selectedExcludedPlaylist = "";
             if (cmbExcludedPlaylist.SelectedItem != null)
@@ -453,14 +401,6 @@ namespace Halloumi.Shuffler.Controls
             _binding = false;
         }
 
-        /// <summary>
-        ///     Binds the data.
-        /// </summary>
-        /// <param name="bindGenres">If set to true, binds the genres.</param>
-        /// <param name="bindArtists">If set to true, binds the artists.</param>
-        /// <param name="bindAlbums">If set to true, binds the albums.</param>
-        /// <param name="bindTracks">If set to true, binds the tracks.</param>
-        private delegate void BindDataHandler(bool bindGenres, bool bindArtists, bool bindAlbums, bool bindTracks);
 
         /// <summary>
         ///     Binds the genres.
@@ -468,7 +408,8 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedGenres">The selected genres.</param>
         private void BindGenres(List<string> selectedGenres)
         {
-            if (_neverBind) return;  _binding = true;
+            if (_neverBind) return;
+            _binding = true;
 
             var genres = Library.GetGenres(SearchFilter, PlaylistFilter, ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter,
                 ExcludedPlaylistFilter);
@@ -494,7 +435,8 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedArtists">The selected artists.</param>
         private void BindArtists(List<string> selectedGenres, List<string> selectedArtists)
         {
-            if (_neverBind) return;  _binding = true;
+            if (_neverBind) return;
+            _binding = true;
 
             var artists = Library.GetAlbumArtists(selectedGenres, SearchFilter, PlaylistFilter, ShufflerFilter, MinBpm,
                 MaxBpm, TrackRankFilter, ExcludedPlaylistFilter);
@@ -514,7 +456,8 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedAlbums">The selected albums.</param>
         private void BindAlbums(List<string> selectedGenres, List<string> selectedArtists, List<string> selectedAlbums)
         {
-            if (_neverBind) return;  _binding = true;
+            if (_neverBind) return;
+            _binding = true;
 
             var albums = Library.GetAlbums(selectedGenres, selectedArtists, SearchFilter, PlaylistFilter, ShufflerFilter,
                 MinBpm, MaxBpm, TrackRankFilter, ExcludedPlaylistFilter);
@@ -544,7 +487,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void BindTracks()
         {
-            if (_neverBind) return;  _binding = true;
+            if (_neverBind) return;
+            _binding = true;
 
             DisplayedTracksChanging?.Invoke(this, EventArgs.Empty);
 
@@ -589,7 +533,7 @@ namespace Halloumi.Shuffler.Controls
                         .OrderByDescending(t => t.OutCount)
                         .ToList();
                 }
-                
+
                 if (sortField == "RankDescription")
                     trackModels = trackModels.OrderByDescending(t => t.Track.Rank).ToList();
                 if (sortField == "Key") trackModels = trackModels.OrderByDescending(t => t.Key).ToList();
@@ -614,8 +558,6 @@ namespace Halloumi.Shuffler.Controls
             RaiseSelectedTracksChanged();
         }
 
-        private List<TrackModel> TrackModels { get; set; }
-
         private void grdTracks_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex == -1) return;
@@ -632,12 +574,12 @@ namespace Halloumi.Shuffler.Controls
             else if (e.ColumnIndex == 6) e.Value = trackModel.TrackNumberFormatted;
             else if (e.ColumnIndex == 7)
             {
-                if(trackModel.InCount == -1)
+                if (trackModel.InCount == -1)
                     trackModel.InCount = MixLibrary.GetMixInCount(trackModel.Track);
                 e.Value = trackModel.InCount;
             }
-            
-            else if (e.ColumnIndex == 8) 
+
+            else if (e.ColumnIndex == 8)
             {
                 if (trackModel.OutCount == -1)
                     trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
@@ -666,8 +608,6 @@ namespace Halloumi.Shuffler.Controls
                 if (e.CellStyle.Font.Italic) e.CellStyle.Font = _font;
             }
         }
-
-        private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
 
         /// <summary>
         ///     Sets the selected genres.
@@ -751,7 +691,8 @@ namespace Halloumi.Shuffler.Controls
             var genres = new List<string>();
 
             // select selected artist
-            foreach (var genre in from DataGridViewRow row in grdGenre.SelectedRows select row.Cells[0].Value.ToString())
+            foreach (var genre in from DataGridViewRow row in grdGenre.SelectedRows select row.Cells[0].Value.ToString()
+                )
             {
                 genres.Add(genre);
                 if (genre == "(All)") break;
@@ -778,7 +719,8 @@ namespace Halloumi.Shuffler.Controls
             var artists = new List<string>();
 
             // select selected artist
-            foreach (var artist in from DataGridViewRow row in grdArtist.SelectedRows select row.Cells[0].Value.ToString())
+            foreach (
+                var artist in from DataGridViewRow row in grdArtist.SelectedRows select row.Cells[0].Value.ToString())
             {
                 artists.Add(artist);
                 if (artist == "(All)") break;
@@ -794,7 +736,7 @@ namespace Halloumi.Shuffler.Controls
         private string GetSelectedAlbum()
         {
             // select selected album
-            foreach (ListViewItem item in lstAlbum.Items.Cast<ListViewItem>().Where(item => item.Selected))
+            foreach (var item in lstAlbum.Items.Cast<ListViewItem>().Where(item => item.Selected))
             {
                 return item.Text;
             }
@@ -889,7 +831,7 @@ namespace Halloumi.Shuffler.Controls
             if (firstTile == null) return;
 
             var tileSize = lstAlbum.LargeImageList.ImageSize.Width + 50;
-            var imageCount = ((lstAlbum.Width/tileSize) + 1)*((lstAlbum.Height/tileSize) + 1)*3;
+            var imageCount = (lstAlbum.Width/tileSize + 1)*(lstAlbum.Height/tileSize + 1)*3;
             if (imageCount < 20) imageCount = 20;
 
             var startIndex = firstTile.Index;
@@ -924,11 +866,6 @@ namespace Halloumi.Shuffler.Controls
                 item.ImageKey = album.Name;
             }
         }
-
-        /// <summary>
-        ///     Loads the images for the albums currently visible in the album list.
-        /// </summary>
-        private delegate void LoadVisibleAlbumCoversHandler();
 
         /// <summary>
         ///     Opens the file location of the selected track
@@ -1130,10 +1067,8 @@ namespace Halloumi.Shuffler.Controls
             if (txtSearch.Text.Trim().Length <= 2 && txtSearch.Text.Trim().Length != 0) return;
 
             SearchFilter = txtSearch.Text.Trim();
-            //var bindData = new BindDataHandler(BindData);
-            //txtSearch.BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("Search");
-            BindData(true, true, true, true);
+            BindData();
         }
 
 
@@ -1152,8 +1087,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void LoadUiSettings()
         {
-            splLeftRight.SplitterDistance = (Width/5)*2;
-            splLeftMiddle.SplitterDistance = (Width/5)*1;
+            splLeftRight.SplitterDistance = Width/5*2;
+            splLeftMiddle.SplitterDistance = Width/5*1;
 
             try
             {
@@ -1199,53 +1134,13 @@ namespace Halloumi.Shuffler.Controls
                     }
                 }
 
-                //var bindData = new BindDataHandler(BindData);
-                //BeginInvoke(bindData, true, true, true, true);
                 DebugHelper.WriteLine("LoadUiSettings");
                 BindData();
-
             }
             catch
             {
                 // ignored
             }
-        }
-
-        public class Settings
-        {
-            public Settings()
-            {
-                TxtSearchText = "";
-                TxtMinBpmText = "";
-                TxtMaxBpmText = "";
-                CmbTrackRankFilterSelectedIndex = 0;
-                CmbShufflerFilterSelectedIndex = 0;
-                CmbQueuedSelectedIndex = 0;
-                Playlist = "";
-                ExcludedPlaylist = "";
-                SortColumnName = "";
-                SortOrder = SortOrder.None;
-            }
-
-            public string TxtSearchText { get; set; }
-
-            public string TxtMinBpmText { get; set; }
-
-            public string TxtMaxBpmText { get; set; }
-
-            public int CmbTrackRankFilterSelectedIndex { get; set; }
-
-            public int CmbShufflerFilterSelectedIndex { get; set; }
-
-            public int CmbQueuedSelectedIndex { get; set; }
-
-            public string Playlist { get; set; }
-
-            public string ExcludedPlaylist { get; set; }
-
-            public string SortColumnName { get; set; }
-
-            public SortOrder SortOrder { get; set; }
         }
 
         /// <summary>
@@ -1282,19 +1177,14 @@ namespace Halloumi.Shuffler.Controls
             SerializationHelper<Settings>.ToXmlFile(settings, filename);
         }
 
-        #endregion
-
-        #region Event Handlers
 
         /// <summary>
         ///     Handles the RowEnter event of the grdGenre control.
         /// </summary>
         private void grdGenre_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //grdGenre.BeginInvoke(bindData, false, true, true, true);
             DebugHelper.WriteLine("GenreRowEnter");
-            BindData(false, true, true, true);
+            BindData(false);
         }
 
         /// <summary>
@@ -1302,10 +1192,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdArtist_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //grdArtist.BeginInvoke(bindData, false, false, true, true);
             DebugHelper.WriteLine("ArtistRowEnter");
-            BindData(false, false, true, true);
+            BindData(false, false);
         }
 
         /// <summary>
@@ -1313,9 +1201,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void lstAlbum_MouseClick(object sender, MouseEventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //lstAlbum.BeginInvoke(bindData, false, false, false, true);
-            BindData(false, false, false, true);
+            BindData(false, false, false);
         }
 
         /// <summary>
@@ -1323,10 +1209,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void lstAlbum_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //lstAlbum.BeginInvoke(bindData, false, false, false, true);
             DebugHelper.WriteLine("lstAlbumChange");
-            BindData(false, false, false, true);
+            BindData(false, false, false);
         }
 
         /// <summary>
@@ -1351,8 +1235,6 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //lstAlbum.BeginInvoke(bindData, true, true, true, true);
             BindData();
         }
 
@@ -1448,13 +1330,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuTrack_Opening(object sender, CancelEventArgs e)
         {
-            mnuUpdateAlbum.Visible = (GetSelectedTracks().Count > 1);
-            mnuUpdateArtist.Visible = (GetSelectedTracks().Count > 1);
-            mnuUpdateGenre.Visible = (GetSelectedTracks().Count > 1);
-            mnuUpdateTrackDetails.Visible = (GetSelectedTracks().Count == 1);
-            mnuRemoveShufflerDetails.Visible = (GetSelectedTracks().Count == 1);
-            mnuUpdateShufflerDetails.Visible = (GetSelectedTracks().Count == 1);
-            mnuEditSamples.Visible = (GetSelectedTracks().Count == 1);
+            mnuUpdateAlbum.Visible = GetSelectedTracks().Count > 1;
+            mnuUpdateArtist.Visible = GetSelectedTracks().Count > 1;
+            mnuUpdateGenre.Visible = GetSelectedTracks().Count > 1;
+            mnuUpdateTrackDetails.Visible = GetSelectedTracks().Count == 1;
+            mnuRemoveShufflerDetails.Visible = GetSelectedTracks().Count == 1;
+            mnuUpdateShufflerDetails.Visible = GetSelectedTracks().Count == 1;
+            mnuEditSamples.Visible = GetSelectedTracks().Count == 1;
             mnuAddToSampler.Visible = false;
 
             BeginInvoke(new MethodInvoker(delegate
@@ -1478,7 +1360,7 @@ namespace Halloumi.Shuffler.Controls
             for (var i = 0; i < 6; i++)
             {
                 mnuRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
-                ((ToolStripMenuItem) mnuRank.DropDownItems[i]).Checked = ((5 - i) == currentMixRank);
+                ((ToolStripMenuItem) mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
 
@@ -1512,7 +1394,7 @@ namespace Halloumi.Shuffler.Controls
                 //Application.DoEvents();
             }
             mnuAddTrackToPlaylist.DropDownItems.Add("(New Playlist)", null, mnuAddNewPlaylist_Click);
-            mnuAddTrackToPlaylist.Visible = (mnuAddTrackToPlaylist.DropDownItems.Count > 0);
+            mnuAddTrackToPlaylist.Visible = mnuAddTrackToPlaylist.DropDownItems.Count > 0;
         }
 
         private void BindRemoveTrackFromPlaylistMenu()
@@ -1525,7 +1407,7 @@ namespace Halloumi.Shuffler.Controls
                 mnuRemoveTrackFromPlaylist.DropDownItems.Add(playlist.Name, null, mnuRemoveTrackFromPlaylist_Click);
                 //Application.DoEvents();
             }
-            mnuRemoveTrackFromPlaylist.Visible = (mnuRemoveTrackFromPlaylist.DropDownItems.Count > 0);
+            mnuRemoveTrackFromPlaylist.Visible = mnuRemoveTrackFromPlaylist.DropDownItems.Count > 0;
         }
 
         /// <summary>
@@ -1550,8 +1432,6 @@ namespace Halloumi.Shuffler.Controls
 
             if (GetSelectedPlaylist() == null || GetSelectedPlaylist().Name != playlist.Name) return;
 
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             BindData();
         }
 
@@ -1581,8 +1461,6 @@ namespace Halloumi.Shuffler.Controls
             Library.RemoveTracksFromPlaylist(playlist, GetSelectedTracks());
 
             if (GetSelectedPlaylist() == null || GetSelectedPlaylist().Name != playlist.Name) return;
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             BindData();
         }
 
@@ -1594,11 +1472,8 @@ namespace Halloumi.Shuffler.Controls
             if (cmbPlaylist.SelectedItem.ToString() == PlaylistFilter) return;
             PlaylistFilter = cmbPlaylist.SelectedItem.ToString();
             SearchFilter = "";
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("playlistIndexChange");
             BindData();
-            //txtSearch.Text = "";
         }
 
         /// <summary>
@@ -1609,11 +1484,8 @@ namespace Halloumi.Shuffler.Controls
             if (cmbExcludedPlaylist.SelectedItem.ToString() == ExcludedPlaylistFilter) return;
             ExcludedPlaylistFilter = cmbExcludedPlaylist.SelectedItem.ToString();
             SearchFilter = "";
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("ExcPlaylistChaneg");
             BindData();
-            //txtSearch.Text = "";
         }
 
         /// <summary>
@@ -1631,24 +1503,22 @@ namespace Halloumi.Shuffler.Controls
         {
             var shufflerFilter = Library.ShufflerFilter.None;
             var comboIndex = cmbShufflerFilter.SelectedIndex;
-            
+
             // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (comboIndex == 1) shufflerFilter = Library.ShufflerFilter.ShuflerTracks;
             else if (comboIndex == 2) shufflerFilter = Library.ShufflerFilter.NonShufflerTracks;
 
-            colTrackAlbum.Visible = (shufflerFilter != Library.ShufflerFilter.ShuflerTracks);
+            colTrackAlbum.Visible = shufflerFilter != Library.ShufflerFilter.ShuflerTracks;
 
-            colTrackNumber.Visible = (shufflerFilter != Library.ShufflerFilter.ShuflerTracks);
-            colInCount.Visible = (shufflerFilter == Library.ShufflerFilter.ShuflerTracks);
-            colOutCount.Visible = (shufflerFilter == Library.ShufflerFilter.ShuflerTracks);
-            colTrackKey.Visible = (shufflerFilter == Library.ShufflerFilter.ShuflerTracks);
+            colTrackNumber.Visible = shufflerFilter != Library.ShufflerFilter.ShuflerTracks;
+            colInCount.Visible = shufflerFilter == Library.ShufflerFilter.ShuflerTracks;
+            colOutCount.Visible = shufflerFilter == Library.ShufflerFilter.ShuflerTracks;
+            colTrackKey.Visible = shufflerFilter == Library.ShufflerFilter.ShuflerTracks;
 
             colUnrankedCount.Visible = false;
 
             if (shufflerFilter == ShufflerFilter) return;
             ShufflerFilter = shufflerFilter;
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("setShufflerFilter");
             BindData();
         }
@@ -1677,8 +1547,6 @@ namespace Halloumi.Shuffler.Controls
 
             if (trackRankFilter == TrackRankFilter) return;
             TrackRankFilter = trackRankFilter;
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("setTrackRankFilter");
             BindData();
         }
@@ -1695,8 +1563,6 @@ namespace Halloumi.Shuffler.Controls
 
             MinBpm = min;
             MaxBpm = max;
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("BpmFilter");
             BindData();
         }
@@ -1706,8 +1572,6 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbQueued_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, true, true, true, true);
             DebugHelper.WriteLine("QueuedIndexChange");
             BindData();
         }
@@ -1762,10 +1626,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdTracks_SortOrderChanged(object sender, EventArgs e)
         {
-            //var bindData = new BindDataHandler(BindData);
-            //BeginInvoke(bindData, false, false, false, true);
             DebugHelper.WriteLine("SortOrderChanged");
-            BindData(false, false, false, true);
+            BindData(false, false, false);
         }
 
         /// <summary>
@@ -1781,13 +1643,16 @@ namespace Halloumi.Shuffler.Controls
         private void ShowCurrentTrackDetails()
         {
             var track = GetSelectedTrack();
-            trackDetails.DisplayTrackDetails(track);
 
-            Task.Run(() =>
+            if (trackDetails.Visible)
             {
-                if (!splLibraryMixable.Panel2Collapsed)
-                    mixableTracks.DisplayMixableTracks(track);
-            });
+                trackDetails.DisplayTrackDetails(track);
+            }
+
+            if (!splLibraryMixable.Panel2Collapsed)
+            {
+                mixableTracks.DisplayMixableTracks(track);
+            }
         }
 
         private void RaiseSelectedTracksChanged()
@@ -1811,6 +1676,99 @@ namespace Halloumi.Shuffler.Controls
             SetBpmFilter();
         }
 
-        #endregion
+        private class TrackModel
+        {
+            public TrackModel(Track track)
+            {
+                Filename = track.Filename;
+                Description = track.Description;
+                Album = track.Album;
+                Genre = track.Genre;
+                LengthFormatted = track.LengthFormatted;
+                Length = track.Length;
+                Bpm = track.Bpm;
+                EndBpm = track.EndBpm;
+                StartBpm = track.StartBpm;
+                TrackNumberFormatted = track.TrackNumberFormatted;
+                RankDescription = track.RankDescription;
+                Track = track;
+                Key = track.Key;
+
+                InCount = -1;
+                OutCount = -1;
+            }
+
+            public string Filename { get; }
+
+            public string Description { get; }
+
+            public string Album { get; }
+
+            public string Genre { get; }
+
+            public string LengthFormatted { get; }
+
+            public decimal Length { get; }
+
+            public decimal StartBpm { get; }
+
+            public decimal EndBpm { get; }
+
+            public decimal Bpm { get; }
+
+            public int InCount { get; set; }
+
+            public int OutCount { get; set; }
+
+            public string TrackNumberFormatted { get; }
+
+            public Track Track { get; }
+
+            public string RankDescription { get; }
+
+            public string Key { get; }
+        }
+
+        /// <summary>
+        ///     Loads the images for the albums currently visible in the album list.
+        /// </summary>
+        private delegate void LoadVisibleAlbumCoversHandler();
+
+        public class Settings
+        {
+            public Settings()
+            {
+                TxtSearchText = "";
+                TxtMinBpmText = "";
+                TxtMaxBpmText = "";
+                CmbTrackRankFilterSelectedIndex = 0;
+                CmbShufflerFilterSelectedIndex = 0;
+                CmbQueuedSelectedIndex = 0;
+                Playlist = "";
+                ExcludedPlaylist = "";
+                SortColumnName = "";
+                SortOrder = SortOrder.None;
+            }
+
+            public string TxtSearchText { get; set; }
+
+            public string TxtMinBpmText { get; set; }
+
+            public string TxtMaxBpmText { get; set; }
+
+            public int CmbTrackRankFilterSelectedIndex { get; set; }
+
+            public int CmbShufflerFilterSelectedIndex { get; set; }
+
+            public int CmbQueuedSelectedIndex { get; set; }
+
+            public string Playlist { get; set; }
+
+            public string ExcludedPlaylist { get; set; }
+
+            public string SortColumnName { get; set; }
+
+            public SortOrder SortOrder { get; set; }
+        }
     }
 }

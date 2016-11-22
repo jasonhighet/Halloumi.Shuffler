@@ -563,6 +563,8 @@ namespace Halloumi.Shuffler.Forms
             mnuMinimizeToTray.Checked = (settings.MinimizeToTray);
 
             mnuShowMixableTracks.Checked = (settings.ShowMixableTracks);
+            mnuShowTrackDetails.Checked = (settings.ShowTrackDetails);
+
             playlistControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
             trackLibraryControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
 
@@ -693,6 +695,7 @@ namespace Halloumi.Shuffler.Forms
             settings.VisualsShown = playerDetails.VisualsShown;
             settings.AlbumArtShown = playerDetails.AlbumArtShown;
             settings.ShowMixableTracks = mnuShowMixableTracks.Checked;
+            settings.ShowTrackDetails = mnuShowTrackDetails.Checked;
 
             settings.UpdateLibraryOnStartup = mnuUpdateLibraryOnStartup.Checked;
 
@@ -1163,6 +1166,15 @@ namespace Halloumi.Shuffler.Forms
         private void FrmMain_Shown(object sender, EventArgs e)
         {
             trackLibraryControl.InitialBind();
+        }
+
+        private void mnuShowTrackDetails_Click(object sender, EventArgs e)
+        {
+            mnuShowTrackDetails.Checked = !mnuShowTrackDetails.Checked;
+            trackLibraryControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
+            playlistControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
+
+            SaveSettings();
         }
     }
 }

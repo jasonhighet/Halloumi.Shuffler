@@ -74,6 +74,14 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
+        public bool ShowTrackDetails
+        {
+            set
+            {
+                trackDetails.Visible = value;
+                ShowCurrentTrackDetails();
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the library.
@@ -283,9 +291,16 @@ namespace Halloumi.Shuffler.Controls
         private void ShowCurrentTrackDetails()
         {
             var track = GetSelectedTrack();
-            trackDetails.DisplayTrackDetails(track);
+            if (trackDetails.Visible)
+            {
+                trackDetails.DisplayTrackDetails(track);
+            }
+
             if (!splTopBottom.Panel2Collapsed)
+            {
                 mixableTracks.DisplayMixableTracks(track);
+            }
+            
         }
 
         /// <summary>
