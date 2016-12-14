@@ -224,7 +224,6 @@ namespace Halloumi.Shuffler.Forms
             {
                 SampleLibrary.UpdateTrackSamples(LibraryTrack, Samples);
                 SampleLibrary.SaveCache();
-                SampleLibrary.SaveSampleFiles(LibraryTrack);
             }
 
             Close();

@@ -343,25 +343,16 @@ namespace Halloumi.Shuffler.Controls
         {
             lock (_player)
             {
+                _player.Pause();
+
                 var samples = GetSelectedSamples();
                 if (samples == null || samples.Count == 0) return;
-
-                var existingSamples = string.Join(",", _player.GetSampleKeys().OrderBy(x => x).ToArray());
-                var newSamples = string.Join(",", 
-                    samples.Select(GetSampleKey)
-                        .OrderBy(x => x).ToArray());
-
-                if (newSamples == existingSamples)
-                    return;
-
-
-
-                _player.Pause();
+                
                 _player.UnloadAll();
-
                 foreach (var sample in samples)
                 {
                     var filename = SampleLibrary.GetTrackFromSample(sample).Filename;
+
                     _player.AddSample(GetSampleKey(sample),
                         filename,
                         sample.Start,
@@ -370,7 +361,6 @@ namespace Halloumi.Shuffler.Controls
                 }
 
                 _player.Play();
-
             }
         }
 
@@ -378,7 +368,6 @@ namespace Halloumi.Shuffler.Controls
         {
             return SampleLibrary.GetTrackFromSample(sample).Description + "." + sample.Description;
         }
-
 
         /// <summary>
         ///     Handles the KeyPress event of the txtSearch control.
@@ -402,8 +391,15 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdSamples_SelectionChanged(object sender, EventArgs e)
         {
-            PlayCurrentSamples();
+            var playingSamples = string.Join(",", GetSelectedSamples().Select(x => x.TrackArtist + x.TrackTitle + x.Description));
+
+            if(playingSamples != _playingSamples)
+                PlayCurrentSamples();
+
+            _playingSamples = playingSamples;
         }
+
+        private string _playingSamples;
 
         /// <summary>
         ///     Handles the TextChanged event of the txtMaxBPM control.

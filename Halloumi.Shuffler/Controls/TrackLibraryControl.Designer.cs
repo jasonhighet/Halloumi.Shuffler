@@ -31,16 +31,16 @@ namespace Halloumi.Shuffler.Controls
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.mnuGenre = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRenameGenre = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuArtist = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -76,6 +76,7 @@ namespace Halloumi.Shuffler.Controls
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.sepOpenFileLocation = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAddToSampler = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEditSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.pnlBackground2 = new Halloumi.Common.Windows.Controls.Panel();
             this.splLibraryMixable = new System.Windows.Forms.SplitContainer();
@@ -91,8 +92,8 @@ namespace Halloumi.Shuffler.Controls
             this.colArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlAlbum = new Halloumi.Common.Windows.Controls.Panel();
             this.lstAlbum = new Halloumi.Common.Windows.Controls.ListView();
-            this.colAlbumName = new System.Windows.Forms.ColumnHeader();
-            this.colAlbumAlbumArtist = new System.Windows.Forms.ColumnHeader();
+            this.colAlbumName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colAlbumAlbumArtist = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.linAlbumHeader = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
             this.pnlAlbumHeader = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             this.lblAlbumHeader = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
@@ -130,12 +131,13 @@ namespace Halloumi.Shuffler.Controls
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbShufflerFilter = new Halloumi.Common.Windows.Controls.ComboBox();
             this.mixableTracks = new Halloumi.Shuffler.Controls.MixableTracks();
-            this.mnuEditSamples = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuExportMixSectionsAsSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGenre.SuspendLayout();
             this.mnuArtist.SuspendLayout();
             this.mnuAlbum.SuspendLayout();
             this.mnuTrack.SuspendLayout();
             this.pnlBackground2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splLibraryMixable)).BeginInit();
             this.splLibraryMixable.Panel1.SuspendLayout();
             this.splLibraryMixable.Panel2.SuspendLayout();
             this.splLibraryMixable.SuspendLayout();
@@ -179,50 +181,53 @@ namespace Halloumi.Shuffler.Controls
             // mnuGenre
             // 
             this.mnuGenre.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuGenre.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuGenre.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRenameGenre});
             this.mnuGenre.Name = "mnuGenre";
-            this.mnuGenre.Size = new System.Drawing.Size(185, 28);
+            this.mnuGenre.Size = new System.Drawing.Size(191, 30);
             // 
             // mnuRenameGenre
             // 
             this.mnuRenameGenre.Name = "mnuRenameGenre";
-            this.mnuRenameGenre.Size = new System.Drawing.Size(184, 24);
+            this.mnuRenameGenre.Size = new System.Drawing.Size(190, 26);
             this.mnuRenameGenre.Text = "&Rename Genre...";
             // 
             // mnuArtist
             // 
             this.mnuArtist.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuArtist.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuArtist.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRenameArtist});
             this.mnuArtist.Name = "mnuGenre";
-            this.mnuArtist.Size = new System.Drawing.Size(181, 28);
+            this.mnuArtist.Size = new System.Drawing.Size(187, 30);
             // 
             // mnuRenameArtist
             // 
             this.mnuRenameArtist.Name = "mnuRenameArtist";
-            this.mnuRenameArtist.Size = new System.Drawing.Size(180, 24);
+            this.mnuRenameArtist.Size = new System.Drawing.Size(186, 26);
             this.mnuRenameArtist.Text = "&Rename Artist...";
             // 
             // mnuAlbum
             // 
             this.mnuAlbum.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuAlbum.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuAlbum.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRenameAlbum,
             this.mnuUpdateAlbumArtist});
             this.mnuAlbum.Name = "mnuGenre";
-            this.mnuAlbum.Size = new System.Drawing.Size(224, 52);
+            this.mnuAlbum.Size = new System.Drawing.Size(230, 56);
             // 
             // mnuRenameAlbum
             // 
             this.mnuRenameAlbum.Name = "mnuRenameAlbum";
-            this.mnuRenameAlbum.Size = new System.Drawing.Size(223, 24);
+            this.mnuRenameAlbum.Size = new System.Drawing.Size(229, 26);
             this.mnuRenameAlbum.Text = "&Rename Album...";
             // 
             // mnuUpdateAlbumArtist
             // 
             this.mnuUpdateAlbumArtist.Name = "mnuUpdateAlbumArtist";
-            this.mnuUpdateAlbumArtist.Size = new System.Drawing.Size(223, 24);
+            this.mnuUpdateAlbumArtist.Size = new System.Drawing.Size(229, 26);
             this.mnuUpdateAlbumArtist.Text = "Update Album A&rtist...";
             // 
             // imlAlbumArt
@@ -234,6 +239,7 @@ namespace Halloumi.Shuffler.Controls
             // mnuTrack
             // 
             this.mnuTrack.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mnuTrack.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mnuTrack.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuPlay,
             this.mnuQueue,
@@ -255,109 +261,110 @@ namespace Halloumi.Shuffler.Controls
             this.mnuRank,
             this.sepOpenFileLocation,
             this.mnuAddToSampler,
-            this.mnuEditSamples});
+            this.mnuEditSamples,
+            this.mnuExportMixSectionsAsSamples});
             this.mnuTrack.Name = "mnuTrack";
-            this.mnuTrack.Size = new System.Drawing.Size(242, 440);
+            this.mnuTrack.Size = new System.Drawing.Size(295, 504);
             // 
             // mnuPlay
             // 
             this.mnuPlay.Name = "mnuPlay";
-            this.mnuPlay.Size = new System.Drawing.Size(241, 24);
+            this.mnuPlay.Size = new System.Drawing.Size(294, 26);
             this.mnuPlay.Text = "&Play";
             // 
             // mnuQueue
             // 
             this.mnuQueue.Name = "mnuQueue";
-            this.mnuQueue.Size = new System.Drawing.Size(241, 24);
+            this.mnuQueue.Size = new System.Drawing.Size(294, 26);
             this.mnuQueue.Text = "&Queue";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(291, 6);
             // 
             // mnuAddTrackToPlaylist
             // 
             this.mnuAddTrackToPlaylist.Name = "mnuAddTrackToPlaylist";
-            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(241, 24);
+            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(294, 26);
             this.mnuAddTrackToPlaylist.Text = "A&dd To Playlist";
             // 
             // mnuRemoveTrackFromPlaylist
             // 
             this.mnuRemoveTrackFromPlaylist.Name = "mnuRemoveTrackFromPlaylist";
-            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(294, 26);
             this.mnuRemoveTrackFromPlaylist.Text = "&Remove From Playlist";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(291, 6);
             // 
             // mnuOpenFileLocation
             // 
             this.mnuOpenFileLocation.Name = "mnuOpenFileLocation";
-            this.mnuOpenFileLocation.Size = new System.Drawing.Size(241, 24);
+            this.mnuOpenFileLocation.Size = new System.Drawing.Size(294, 26);
             this.mnuOpenFileLocation.Text = "Open File &Location";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(291, 6);
             // 
             // mnuUpdateTrackDetails
             // 
             this.mnuUpdateTrackDetails.Name = "mnuUpdateTrackDetails";
-            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(294, 26);
             this.mnuUpdateTrackDetails.Text = "Update &Track Details";
             // 
             // mnuUpdateArtist
             // 
             this.mnuUpdateArtist.Name = "mnuUpdateArtist";
-            this.mnuUpdateArtist.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateArtist.Size = new System.Drawing.Size(294, 26);
             this.mnuUpdateArtist.Text = "Update A&rtist...";
             // 
             // mnuUpdateAlbum
             // 
             this.mnuUpdateAlbum.Name = "mnuUpdateAlbum";
-            this.mnuUpdateAlbum.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateAlbum.Size = new System.Drawing.Size(294, 26);
             this.mnuUpdateAlbum.Text = "Update &Album...";
             // 
             // mnuUpdateGenre
             // 
             this.mnuUpdateGenre.Name = "mnuUpdateGenre";
-            this.mnuUpdateGenre.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateGenre.Size = new System.Drawing.Size(294, 26);
             this.mnuUpdateGenre.Text = "Update &Genre...";
             // 
             // mnuUpdateShufflerDetails
             // 
             this.mnuUpdateShufflerDetails.Name = "mnuUpdateShufflerDetails";
-            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(294, 26);
             this.mnuUpdateShufflerDetails.Text = "Update &Shuffler Details...";
             // 
             // mnuRemoveShufflerDetails
             // 
             this.mnuRemoveShufflerDetails.Name = "mnuRemoveShufflerDetails";
-            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(294, 26);
             this.mnuRemoveShufflerDetails.Text = "&Remove Shuffer Details";
             // 
             // mnuReloadMetadata
             // 
             this.mnuReloadMetadata.Name = "mnuReloadMetadata";
-            this.mnuReloadMetadata.Size = new System.Drawing.Size(241, 24);
+            this.mnuReloadMetadata.Size = new System.Drawing.Size(294, 26);
             this.mnuReloadMetadata.Text = "Reload &Metadata";
             this.mnuReloadMetadata.Click += new System.EventHandler(this.mnuReloadMetadata_Click);
             // 
             // mnuCalculateKey
             // 
             this.mnuCalculateKey.Name = "mnuCalculateKey";
-            this.mnuCalculateKey.Size = new System.Drawing.Size(241, 24);
+            this.mnuCalculateKey.Size = new System.Drawing.Size(294, 26);
             this.mnuCalculateKey.Text = "Calculate &Key";
             this.mnuCalculateKey.Click += new System.EventHandler(this.mnuCalculateKey_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(291, 6);
             // 
             // mnuRank
             // 
@@ -369,55 +376,67 @@ namespace Halloumi.Shuffler.Controls
             this.toolStripMenuItem5,
             this.toolStripMenuItem6});
             this.mnuRank.Name = "mnuRank";
-            this.mnuRank.Size = new System.Drawing.Size(241, 24);
+            this.mnuRank.Size = new System.Drawing.Size(294, 26);
             this.mnuRank.Text = "Track Rating";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem1.Text = "toolStripMenuItem1";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem2.Text = "toolStripMenuItem2";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem3.Text = "toolStripMenuItem3";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem4.Text = "toolStripMenuItem4";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem5.Text = "toolStripMenuItem5";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(217, 26);
             this.toolStripMenuItem6.Text = "toolStripMenuItem6";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.mnuRank_Click);
             // 
             // sepOpenFileLocation
             // 
             this.sepOpenFileLocation.Name = "sepOpenFileLocation";
-            this.sepOpenFileLocation.Size = new System.Drawing.Size(238, 6);
+            this.sepOpenFileLocation.Size = new System.Drawing.Size(291, 6);
+            // 
+            // mnuAddToSampler
+            // 
+            this.mnuAddToSampler.Name = "mnuAddToSampler";
+            this.mnuAddToSampler.Size = new System.Drawing.Size(294, 26);
+            // 
+            // mnuEditSamples
+            // 
+            this.mnuEditSamples.Name = "mnuEditSamples";
+            this.mnuEditSamples.Size = new System.Drawing.Size(294, 26);
+            this.mnuEditSamples.Text = "Edit Samples";
+            this.mnuEditSamples.Click += new System.EventHandler(this.mnuEditSamples_Click);
             // 
             // pnlBackground2
             // 
@@ -563,9 +582,9 @@ namespace Halloumi.Shuffler.Controls
             this.grdGenre.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdGenre.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellSheet;
             this.grdGenre.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdGenre.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdGenre.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
             this.grdGenre.TabIndex = 0;
             // 
             // colGenre
@@ -618,9 +637,9 @@ namespace Halloumi.Shuffler.Controls
             this.grdArtist.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdArtist.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellCustom1;
             this.grdArtist.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdArtist.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdArtist.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
             this.grdArtist.TabIndex = 0;
             // 
             // colArtist
@@ -762,9 +781,9 @@ namespace Halloumi.Shuffler.Controls
             this.grdTracks.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdTracks.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
             this.grdTracks.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdTracks.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left)
-                        | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdTracks.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
             this.grdTracks.TabIndex = 53;
             // 
             // colTrackDescription
@@ -794,7 +813,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackGenre.Name = "colTrackGenre";
             this.colTrackGenre.ReadOnly = true;
             this.colTrackGenre.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackGenre.Width = 75;
+            this.colTrackGenre.Width = 81;
             // 
             // colTrackLength
             // 
@@ -806,7 +825,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackLength.Name = "colTrackLength";
             this.colTrackLength.ReadOnly = true;
             this.colTrackLength.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackLength.Width = 81;
+            this.colTrackLength.Width = 87;
             // 
             // colTrackStartBPM
             // 
@@ -820,7 +839,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackStartBPM.Name = "colTrackStartBPM";
             this.colTrackStartBPM.ReadOnly = true;
             this.colTrackStartBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackStartBPM.Width = 101;
+            this.colTrackStartBPM.Width = 107;
             // 
             // colTrackEndBPM
             // 
@@ -834,7 +853,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackEndBPM.Name = "colTrackEndBPM";
             this.colTrackEndBPM.ReadOnly = true;
             this.colTrackEndBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackEndBPM.Width = 95;
+            this.colTrackEndBPM.Width = 101;
             // 
             // colTrackNumber
             // 
@@ -846,7 +865,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackNumber.Name = "colTrackNumber";
             this.colTrackNumber.ReadOnly = true;
             this.colTrackNumber.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackNumber.Width = 45;
+            this.colTrackNumber.Width = 51;
             // 
             // colInCount
             // 
@@ -858,7 +877,7 @@ namespace Halloumi.Shuffler.Controls
             this.colInCount.Name = "colInCount";
             this.colInCount.ReadOnly = true;
             this.colInCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colInCount.Width = 48;
+            this.colInCount.Width = 54;
             // 
             // colOutCount
             // 
@@ -870,7 +889,7 @@ namespace Halloumi.Shuffler.Controls
             this.colOutCount.Name = "colOutCount";
             this.colOutCount.ReadOnly = true;
             this.colOutCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colOutCount.Width = 60;
+            this.colOutCount.Width = 66;
             // 
             // colUnrankedCount
             // 
@@ -882,7 +901,7 @@ namespace Halloumi.Shuffler.Controls
             this.colUnrankedCount.Name = "colUnrankedCount";
             this.colUnrankedCount.ReadOnly = true;
             this.colUnrankedCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colUnrankedCount.Width = 56;
+            this.colUnrankedCount.Width = 62;
             // 
             // colTrackRank
             // 
@@ -892,7 +911,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackRank.Name = "colTrackRank";
             this.colTrackRank.ReadOnly = true;
             this.colTrackRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackRank.Width = 68;
+            this.colTrackRank.Width = 74;
             // 
             // colTrackKey
             // 
@@ -902,7 +921,7 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackKey.Name = "colTrackKey";
             this.colTrackKey.ReadOnly = true;
             this.colTrackKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackKey.Width = 60;
+            this.colTrackKey.Width = 66;
             // 
             // trackDetails
             // 
@@ -970,10 +989,10 @@ namespace Halloumi.Shuffler.Controls
             this.txtSearch.ErrorProvider = null;
             this.txtSearch.Location = new System.Drawing.Point(60, 4);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(4);
-            this.txtSearch.MaximumValue = 2147483647;
-            this.txtSearch.MinimumValue = -2147483648;
+            this.txtSearch.MaximumValue = 2147483647D;
+            this.txtSearch.MinimumValue = -2147483648D;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(116, 24);
+            this.txtSearch.Size = new System.Drawing.Size(116, 27);
             this.txtSearch.TabIndex = 1;
             // 
             // label5
@@ -996,10 +1015,10 @@ namespace Halloumi.Shuffler.Controls
             this.txtMinBPM.ErrorProvider = null;
             this.txtMinBPM.Location = new System.Drawing.Point(221, 4);
             this.txtMinBPM.Margin = new System.Windows.Forms.Padding(4);
-            this.txtMinBPM.MaximumValue = 2147483647;
-            this.txtMinBPM.MinimumValue = -2147483648;
+            this.txtMinBPM.MaximumValue = 2147483647D;
+            this.txtMinBPM.MinimumValue = -2147483648D;
             this.txtMinBPM.Name = "txtMinBPM";
-            this.txtMinBPM.Size = new System.Drawing.Size(35, 24);
+            this.txtMinBPM.Size = new System.Drawing.Size(35, 27);
             this.txtMinBPM.TabIndex = 12;
             // 
             // label4
@@ -1022,10 +1041,10 @@ namespace Halloumi.Shuffler.Controls
             this.txtMaxBPM.ErrorProvider = null;
             this.txtMaxBPM.Location = new System.Drawing.Point(304, 4);
             this.txtMaxBPM.Margin = new System.Windows.Forms.Padding(4);
-            this.txtMaxBPM.MaximumValue = 2147483647;
-            this.txtMaxBPM.MinimumValue = -2147483648;
+            this.txtMaxBPM.MaximumValue = 2147483647D;
+            this.txtMaxBPM.MinimumValue = -2147483648D;
             this.txtMaxBPM.Name = "txtMaxBPM";
-            this.txtMaxBPM.Size = new System.Drawing.Size(35, 24);
+            this.txtMaxBPM.Size = new System.Drawing.Size(35, 27);
             this.txtMaxBPM.TabIndex = 10;
             // 
             // label1
@@ -1177,20 +1196,20 @@ namespace Halloumi.Shuffler.Controls
             this.mixableTracks.Size = new System.Drawing.Size(1347, 163);
             this.mixableTracks.TabIndex = 0;
             // 
-            // mnuEditSamples
+            // mnuExportMixSectionsAsSamples
             // 
-            this.mnuEditSamples.Name = "mnuEditSamples";
-            this.mnuEditSamples.Size = new System.Drawing.Size(241, 24);
-            this.mnuEditSamples.Text = "Edit Samples";
-            this.mnuEditSamples.Click += new System.EventHandler(this.mnuEditSamples_Click);
+            this.mnuExportMixSectionsAsSamples.Name = "mnuExportMixSectionsAsSamples";
+            this.mnuExportMixSectionsAsSamples.Size = new System.Drawing.Size(294, 26);
+            this.mnuExportMixSectionsAsSamples.Text = "Export Mi&x Sections As Samples";
+            this.mnuExportMixSectionsAsSamples.Click += new System.EventHandler(this.mnuExportMixSectionsAsSamples_Click);
             // 
-            // LibraryControl
+            // TrackLibraryControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlBackground2);
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "LibraryControl";
+            this.Name = "TrackLibraryControl";
             this.Size = new System.Drawing.Size(1357, 727);
             this.mnuGenre.ResumeLayout(false);
             this.mnuArtist.ResumeLayout(false);
@@ -1199,6 +1218,7 @@ namespace Halloumi.Shuffler.Controls
             this.pnlBackground2.ResumeLayout(false);
             this.splLibraryMixable.Panel1.ResumeLayout(false);
             this.splLibraryMixable.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splLibraryMixable)).EndInit();
             this.splLibraryMixable.ResumeLayout(false);
             this.pnlLibraryDetails.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splLibrary.Panel1)).EndInit();
@@ -1334,5 +1354,6 @@ namespace Halloumi.Shuffler.Controls
         private System.Windows.Forms.ToolStripMenuItem mnuCalculateKey;
         private System.Windows.Forms.ToolStripMenuItem mnuReloadMetadata;
         private System.Windows.Forms.ToolStripMenuItem mnuEditSamples;
+        private System.Windows.Forms.ToolStripMenuItem mnuExportMixSectionsAsSamples;
     }
 }

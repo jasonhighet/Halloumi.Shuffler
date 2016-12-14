@@ -1315,13 +1315,17 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuRemoveShufflerDetails_Click(object sender, EventArgs e)
         {
-            var track = GetSelectedTrack();
-            if (track == null) return;
+            var tracks = GetSelectedTracks();
+            if (tracks.Count == 0) return;
 
-            var message = $"Are you sure you wish to remove the shuffler details for '{track.Description}'?";
+            var message = $"Are you sure you wish to remove the shuffler details for these track(s)?";
             if (!MessageBoxHelper.Confirm(message)) return;
 
-            Library.RemoveShufflerDetails(track);
+            foreach (var track in tracks)
+            {
+                Library.RemoveShufflerDetails(track);
+            }
+            
             BindData();
         }
 
@@ -1334,7 +1338,6 @@ namespace Halloumi.Shuffler.Controls
             mnuUpdateArtist.Visible = GetSelectedTracks().Count > 1;
             mnuUpdateGenre.Visible = GetSelectedTracks().Count > 1;
             mnuUpdateTrackDetails.Visible = GetSelectedTracks().Count == 1;
-            mnuRemoveShufflerDetails.Visible = GetSelectedTracks().Count == 1;
             mnuUpdateShufflerDetails.Visible = GetSelectedTracks().Count == 1;
             mnuEditSamples.Visible = GetSelectedTracks().Count == 1;
             mnuAddToSampler.Visible = false;
@@ -1769,6 +1772,15 @@ namespace Halloumi.Shuffler.Controls
             public string SortColumnName { get; set; }
 
             public SortOrder SortOrder { get; set; }
+        }
+
+        private void mnuExportMixSectionsAsSamples_Click(object sender, EventArgs e)
+        {
+            var tracks = GetSelectedTracks().Where(t => t.IsShufflerTrack);
+            foreach (var track in tracks)
+            {
+                SampleLibrary.ExportMixSectionsAsSamples(track);
+            }
         }
     }
 }
