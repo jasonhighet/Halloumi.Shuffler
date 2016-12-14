@@ -198,7 +198,9 @@ namespace Halloumi.Shuffler.AudioLibrary
             {
                 Description = "FadeIn",
                 Start = bassTrack.SamplesToSeconds(bassTrack.FadeInStart),
-                Length = bassTrack.FadeOutLengthSeconds
+                Length = bassTrack.FadeInLengthSeconds,
+                Bpm = BpmHelper.GetBpmFromLoopLength(bassTrack.FadeInLengthSeconds),
+                Gain = bassTrack.Gain
             };
 
             UpdateSampleFromTrack(fadeIn, track);
@@ -209,7 +211,9 @@ namespace Halloumi.Shuffler.AudioLibrary
             {
                 Description = "FadeOut",
                 Start = bassTrack.SamplesToSeconds(bassTrack.FadeOutStart),
-                Length = bassTrack.FadeOutLengthSeconds
+                Length = bassTrack.FadeOutLengthSeconds,
+                Bpm = BpmHelper.GetBpmFromLoopLength(bassTrack.FadeOutLengthSeconds),
+                Gain = bassTrack.Gain
             };
 
             UpdateSampleFromTrack(fadeOut, track);
