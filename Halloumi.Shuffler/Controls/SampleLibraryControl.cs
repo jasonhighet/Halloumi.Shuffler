@@ -164,9 +164,6 @@ namespace Halloumi.Shuffler.Controls
         private void BindData()
         {
             if (_binding) return;
-
-            //var selectedSamples = GetSelectedSamples();
-
             BindSamples();
         }
 
@@ -176,6 +173,12 @@ namespace Halloumi.Shuffler.Controls
         private void BindSamples()
         {
             _binding = true;
+
+            lock (_player)
+            {
+                _player.Pause();
+            }
+            
 
             grdSamples.SaveSelectedRows();
 
@@ -280,8 +283,7 @@ namespace Halloumi.Shuffler.Controls
             if (SearchFilter == txtSearch.Text.Trim()) return;
 
             SearchFilter = txtSearch.Text.Trim();
-            var bindData = new BindDataHandler(BindData);
-            txtSearch.BeginInvoke(bindData);
+            BindData();
         }
 
         /// <summary>
@@ -293,8 +295,7 @@ namespace Halloumi.Shuffler.Controls
                 return;
 
             LoopFilter = cmbLoopType.GetTextThreadSafe();
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData);
+            BindData();
         }
 
         /// <summary>
@@ -306,8 +307,7 @@ namespace Halloumi.Shuffler.Controls
                 return;
 
             KeyFilter = cmbKey.GetTextThreadSafe();
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData);
+            BindData();
         }
 
         /// <summary>
@@ -319,8 +319,7 @@ namespace Halloumi.Shuffler.Controls
                 return;
 
             IncludeAntonalFilter = chkIncludeAntonal.Checked;
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData);
+            BindData();
         }
 
         private void SetBpmFilter()
@@ -335,8 +334,7 @@ namespace Halloumi.Shuffler.Controls
 
             MinBpm = min;
             MaxBpm = max;
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData);
+            BindData();
         }
 
         private void PlayCurrentSamples()
@@ -366,7 +364,7 @@ namespace Halloumi.Shuffler.Controls
 
         private string GetSampleKey(Sample sample)
         {
-            return SampleLibrary.GetTrackFromSample(sample).Description + "." + sample.Description;
+            return SampleLibrary.GetTrackFromSample(sample).Description + " - " + sample.Description;
         }
 
         /// <summary>
@@ -382,8 +380,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdSamples_SortOrderChanged(object sender, EventArgs e)
         {
-            var bindData = new BindDataHandler(BindData);
-            BeginInvoke(bindData);
+            BindData();
         }
 
         /// <summary>
@@ -539,11 +536,6 @@ namespace Halloumi.Shuffler.Controls
 
             public Sample Sample { get; }
         }
-
-        /// <summary>
-        ///     Binds the data.
-        /// </summary>
-        private delegate void BindDataHandler();
 
         private void mnuImportSamples_Click(object sender, EventArgs e)
         {
