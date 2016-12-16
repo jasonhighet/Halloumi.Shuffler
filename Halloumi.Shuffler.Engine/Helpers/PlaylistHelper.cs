@@ -158,25 +158,31 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// </returns>
         public static Playlist LoadPlaylist(string playlistFile, Library library)
         {
-            var playlist = new Playlist
+            return new Playlist
             {
                 Filename = playlistFile,
-                Name = Path.GetFileNameWithoutExtension(playlistFile)
+                Name = StringHelper.TitleCase(Path.GetFileNameWithoutExtension(playlistFile)),
+                Tracks = AudioEngine.Helpers.PlaylistHelper
+                    .GetPlaylistEntries(playlistFile)
+                    .Select(x => LoadLibraryTrack(library, x))
+                    .Where(x=>x!=null)
+                    .ToList()
             };
-            playlist.Name = StringHelper.TitleCase(playlist.Name);
+        }
 
-            var tracks = from entry 
-                         in AudioEngine.Helpers.PlaylistHelper.GetPlaylistEntries(playlistFile)
-                         let entryTitle = entry.Title.ToLower()
-                         let entryArtist = entry.Artist.ToLower()
-                         select library.LoadTrack(entry.Path) ?? library.GetTrack(entryArtist, entryTitle, 0) 
-                         into track
-                         where track != null
-                         select track;
+        private static Track LoadLibraryTrack(Library library, AudioEngine.Helpers.PlaylistHelper.PlaylistEntry entry)
+        {
+            var entryTitle = entry.Title.ToLower();
+            var entryArtist = entry.Artist.ToLower();
 
-            playlist.Tracks.AddRange(tracks);
+            return (IsValidLibraryTrack(library, entry.Path))
+                ? library.LoadTrack(entry.Path)
+                : library.GetTrack(entryArtist, entryTitle, 0);
+        }
 
-            return playlist;
+        private static bool IsValidLibraryTrack(Library library, string path)
+        {
+            return path.StartsWith(library.LibraryFolder) && File.Exists(path);
         }
 
         /// <summary>
