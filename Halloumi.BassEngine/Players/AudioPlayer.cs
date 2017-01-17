@@ -514,7 +514,8 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 return;
 
             var players = audioStreamEvents.Select(x => x.Player).Distinct().ToList();
-            ParallelHelper.ForEach(players, player =>
+            //ParallelHelper.ForEach(players, player =>
+            Parallel.ForEach(players, player =>
             {
                 var playerEvents = audioStreamEvents.Where(x => x.Player == player);
                 foreach (var audioEvent in playerEvents)

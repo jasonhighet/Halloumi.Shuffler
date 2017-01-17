@@ -91,7 +91,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
                 foreach (var position in positions)
                 {
-                        var currentPosition = position.Item2 * _loopLength;
+                    var currentPosition = position.Item2;
                         _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1,
                             EventType.PlaySolo, player);
                 }
