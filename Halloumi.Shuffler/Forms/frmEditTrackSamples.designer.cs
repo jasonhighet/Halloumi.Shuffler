@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            var listViewItem1 = new System.Windows.Forms.ListViewItem("Sample #1");
-            var listViewItem2 = new System.Windows.Forms.ListViewItem("Sample #2");
-            var listViewItem3 = new System.Windows.Forms.ListViewItem("Sample #3");
-            var listViewItem4 = new System.Windows.Forms.ListViewItem("Sample #4");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Sample #1");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Sample #2");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Sample #3");
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Sample #4");
             this.pnlMain = new Halloumi.Common.Windows.Controls.Panel();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new Halloumi.Common.Windows.Controls.Panel();
@@ -44,7 +44,6 @@
             this.btnZoomSample = new Halloumi.Common.Windows.Controls.Button();
             this.txtSampleStartPosition = new Halloumi.Common.Windows.Controls.SecondsTextBox();
             this.label7 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbSampleLength = new Halloumi.Shuffler.Controls.SecondsComboBox();
             this.label4 = new Halloumi.Common.Windows.Controls.Label();
             this.txtSampleOffsetPosition = new Halloumi.Common.Windows.Controls.SecondsTextBox();
             this.label14 = new Halloumi.Common.Windows.Controls.Label();
@@ -56,6 +55,7 @@
             this.kryptonHeader1 = new ComponentFactory.Krypton.Toolkit.KryptonHeader();
             this.pnlSamples = new Halloumi.Common.Windows.Controls.Panel();
             this.tblSamples = new System.Windows.Forms.TableLayoutPanel();
+            this.btnCloneSample = new Halloumi.Common.Windows.Controls.Button();
             this.btnAddSample = new Halloumi.Common.Windows.Controls.Button();
             this.lstSamples = new Halloumi.Common.Windows.Controls.ListView();
             this.colSample = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -76,7 +76,6 @@
             this.lblTrackBPM = new Halloumi.Common.Windows.Controls.Label();
             this.lblTrackKey = new Halloumi.Common.Windows.Controls.Label();
             this.hdrTrackDetails = new ComponentFactory.Krypton.Toolkit.KryptonHeader();
-            this.trackWave = new Halloumi.Shuffler.Controls.TrackWave();
             this.linLine = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.flpButtonsRight = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new Halloumi.Common.Windows.Controls.Button();
@@ -90,12 +89,13 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.label2 = new Halloumi.Common.Windows.Controls.Label();
+            this.cmbSampleLength = new Halloumi.Shuffler.Controls.SecondsComboBox();
+            this.trackWave = new Halloumi.Shuffler.Controls.TrackWave();
             this.pnlMain.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbLoopMode)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbSampleLength)).BeginInit();
             this.pnlSamples.SuspendLayout();
             this.tblSamples.SuspendLayout();
             this.pnlTrackDetails.SuspendLayout();
@@ -105,6 +105,7 @@
             this.flpButtonsLeft.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbSampleLength)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlMain
@@ -113,7 +114,7 @@
             this.pnlMain.Controls.Add(this.tblMain);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
-            this.pnlMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlMain.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.pnlMain.Size = new System.Drawing.Size(1633, 622);
@@ -132,7 +133,7 @@
             this.tblMain.Controls.Add(this.trackWave, 0, 0);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(7, 6);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 316F));
@@ -148,7 +149,7 @@
             this.panel2.Controls.Add(this.kryptonHeader1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(543, 320);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(1);
             this.panel2.Size = new System.Drawing.Size(531, 286);
@@ -180,7 +181,7 @@
             this.tableLayoutPanel2.Controls.Add(this.txtTags, 1, 6);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(1, 26);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.tableLayoutPanel2.RowCount = 7;
@@ -206,7 +207,7 @@
             "Partial Loop (Anchor Start)",
             "Partial Loop (Anchor End)"});
             this.cmbLoopMode.Location = new System.Drawing.Point(182, 185);
-            this.cmbLoopMode.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbLoopMode.Margin = new System.Windows.Forms.Padding(4);
             this.cmbLoopMode.Name = "cmbLoopMode";
             this.cmbLoopMode.Size = new System.Drawing.Size(243, 25);
             this.cmbLoopMode.TabIndex = 71;
@@ -276,7 +277,7 @@
             // txtSampleStartPosition
             // 
             this.txtSampleStartPosition.Location = new System.Drawing.Point(182, 10);
-            this.txtSampleStartPosition.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSampleStartPosition.Margin = new System.Windows.Forms.Padding(4);
             this.txtSampleStartPosition.Name = "txtSampleStartPosition";
             this.txtSampleStartPosition.Seconds = 0D;
             this.txtSampleStartPosition.Size = new System.Drawing.Size(124, 27);
@@ -297,19 +298,6 @@
             this.label7.TabIndex = 63;
             this.label7.Text = "Offset:";
             // 
-            // cmbSampleLength
-            // 
-            this.cmbSampleLength.DropDownWidth = 79;
-            this.cmbSampleLength.Location = new System.Drawing.Point(182, 80);
-            this.cmbSampleLength.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cmbSampleLength.Name = "cmbSampleLength";
-            this.cmbSampleLength.Seconds = 0D;
-            this.cmbSampleLength.Size = new System.Drawing.Size(124, 25);
-            this.cmbSampleLength.TabIndex = 55;
-            this.cmbSampleLength.Text = "00:00:0000";
-            this.cmbSampleLength.SelectedIndexChanged += new System.EventHandler(this.cmbSampleLength_SelectedIndexChanged);
-            this.cmbSampleLength.TextUpdate += new System.EventHandler(this.cmbSampleLength_TextUpdate);
-            // 
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -326,7 +314,7 @@
             // txtSampleOffsetPosition
             // 
             this.txtSampleOffsetPosition.Location = new System.Drawing.Point(182, 45);
-            this.txtSampleOffsetPosition.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSampleOffsetPosition.Margin = new System.Windows.Forms.Padding(4);
             this.txtSampleOffsetPosition.Name = "txtSampleOffsetPosition";
             this.txtSampleOffsetPosition.Seconds = 0D;
             this.txtSampleOffsetPosition.Size = new System.Drawing.Size(124, 27);
@@ -352,7 +340,7 @@
             this.chkPrimaryLoop.CheckedValue = "0.5";
             this.chkPrimaryLoop.LabelStyle = ComponentFactory.Krypton.Toolkit.LabelStyle.NormalPanel;
             this.chkPrimaryLoop.Location = new System.Drawing.Point(182, 115);
-            this.chkPrimaryLoop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkPrimaryLoop.Margin = new System.Windows.Forms.Padding(4);
             this.chkPrimaryLoop.Name = "chkPrimaryLoop";
             this.chkPrimaryLoop.Size = new System.Drawing.Size(115, 24);
             this.chkPrimaryLoop.TabIndex = 68;
@@ -391,7 +379,7 @@
             this.chkAtonal.CheckedValue = "0.5";
             this.chkAtonal.LabelStyle = ComponentFactory.Krypton.Toolkit.LabelStyle.NormalPanel;
             this.chkAtonal.Location = new System.Drawing.Point(182, 150);
-            this.chkAtonal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkAtonal.Margin = new System.Windows.Forms.Padding(4);
             this.chkAtonal.Name = "chkAtonal";
             this.chkAtonal.Size = new System.Drawing.Size(69, 24);
             this.chkAtonal.TabIndex = 66;
@@ -417,7 +405,7 @@
             this.kryptonHeader1.Dock = System.Windows.Forms.DockStyle.Top;
             this.kryptonHeader1.HeaderStyle = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
             this.kryptonHeader1.Location = new System.Drawing.Point(1, 1);
-            this.kryptonHeader1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.kryptonHeader1.Margin = new System.Windows.Forms.Padding(4);
             this.kryptonHeader1.Name = "kryptonHeader1";
             this.kryptonHeader1.Size = new System.Drawing.Size(529, 25);
             this.kryptonHeader1.StateCommon.Border.DrawBorders = ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom;
@@ -434,7 +422,7 @@
             this.pnlSamples.Controls.Add(this.hdrSamples);
             this.pnlSamples.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlSamples.Location = new System.Drawing.Point(4, 320);
-            this.pnlSamples.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlSamples.Margin = new System.Windows.Forms.Padding(4);
             this.pnlSamples.Name = "pnlSamples";
             this.pnlSamples.Padding = new System.Windows.Forms.Padding(1);
             this.pnlSamples.Size = new System.Drawing.Size(531, 286);
@@ -451,10 +439,11 @@
             this.tblSamples.Controls.Add(this.lstSamples, 0, 0);
             this.tblSamples.Controls.Add(this.btnRemoveSample, 2, 1);
             this.tblSamples.Controls.Add(this.btnRenameSample, 2, 2);
-            this.tblSamples.Controls.Add(this.btnImportSamplesFromMix, 2, 3);
+            this.tblSamples.Controls.Add(this.btnCloneSample, 2, 3);
+            this.tblSamples.Controls.Add(this.btnImportSamplesFromMix, 2, 4);
             this.tblSamples.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblSamples.Location = new System.Drawing.Point(1, 26);
-            this.tblSamples.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblSamples.Margin = new System.Windows.Forms.Padding(4);
             this.tblSamples.Name = "tblSamples";
             this.tblSamples.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.tblSamples.RowCount = 5;
@@ -465,6 +454,18 @@
             this.tblSamples.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.49854F));
             this.tblSamples.Size = new System.Drawing.Size(529, 259);
             this.tblSamples.TabIndex = 11;
+            // 
+            // btnCloneSample
+            // 
+            this.btnCloneSample.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnCloneSample.Location = new System.Drawing.Point(384, 153);
+            this.btnCloneSample.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
+            this.btnCloneSample.Name = "btnCloneSample";
+            this.btnCloneSample.Size = new System.Drawing.Size(134, 38);
+            this.btnCloneSample.Style = Halloumi.Common.Windows.Controls.ButtonStyle.Secondary;
+            this.btnCloneSample.TabIndex = 64;
+            this.btnCloneSample.Text = "Clone Sample";
+            this.btnCloneSample.Click += new System.EventHandler(this.btnCloneSample_Click);
             // 
             // btnAddSample
             // 
@@ -495,7 +496,7 @@
             listViewItem3,
             listViewItem4});
             this.lstSamples.Location = new System.Drawing.Point(11, 10);
-            this.lstSamples.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lstSamples.Margin = new System.Windows.Forms.Padding(4);
             this.lstSamples.MultiSelect = false;
             this.lstSamples.Name = "lstSamples";
             this.tblSamples.SetRowSpan(this.lstSamples, 5);
@@ -537,7 +538,7 @@
             // 
             // btnImportSamplesFromMix
             // 
-            this.btnImportSamplesFromMix.Location = new System.Drawing.Point(384, 153);
+            this.btnImportSamplesFromMix.Location = new System.Drawing.Point(384, 202);
             this.btnImportSamplesFromMix.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
             this.btnImportSamplesFromMix.Name = "btnImportSamplesFromMix";
             this.btnImportSamplesFromMix.Size = new System.Drawing.Size(133, 38);
@@ -551,7 +552,7 @@
             this.hdrSamples.Dock = System.Windows.Forms.DockStyle.Top;
             this.hdrSamples.HeaderStyle = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
             this.hdrSamples.Location = new System.Drawing.Point(1, 1);
-            this.hdrSamples.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.hdrSamples.Margin = new System.Windows.Forms.Padding(4);
             this.hdrSamples.Name = "hdrSamples";
             this.hdrSamples.Size = new System.Drawing.Size(529, 25);
             this.hdrSamples.StateCommon.Border.DrawBorders = ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom;
@@ -568,7 +569,7 @@
             this.pnlTrackDetails.Controls.Add(this.hdrTrackDetails);
             this.pnlTrackDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTrackDetails.Location = new System.Drawing.Point(1082, 320);
-            this.pnlTrackDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlTrackDetails.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTrackDetails.Name = "pnlTrackDetails";
             this.pnlTrackDetails.Padding = new System.Windows.Forms.Padding(1);
             this.pnlTrackDetails.Size = new System.Drawing.Size(533, 286);
@@ -592,7 +593,7 @@
             this.tblTrackDetails.Controls.Add(this.lblTrackKey, 1, 4);
             this.tblTrackDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblTrackDetails.Location = new System.Drawing.Point(1, 26);
-            this.tblTrackDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblTrackDetails.Margin = new System.Windows.Forms.Padding(4);
             this.tblTrackDetails.Name = "tblTrackDetails";
             this.tblTrackDetails.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.tblTrackDetails.RowCount = 5;
@@ -744,7 +745,7 @@
             this.hdrTrackDetails.Dock = System.Windows.Forms.DockStyle.Top;
             this.hdrTrackDetails.HeaderStyle = ComponentFactory.Krypton.Toolkit.HeaderStyle.Secondary;
             this.hdrTrackDetails.Location = new System.Drawing.Point(1, 1);
-            this.hdrTrackDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.hdrTrackDetails.Margin = new System.Windows.Forms.Padding(4);
             this.hdrTrackDetails.Name = "hdrTrackDetails";
             this.hdrTrackDetails.Size = new System.Drawing.Size(531, 25);
             this.hdrTrackDetails.StateCommon.Border.DrawBorders = ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom;
@@ -753,28 +754,11 @@
             this.hdrTrackDetails.Values.Heading = "Track Details";
             this.hdrTrackDetails.Values.Image = null;
             // 
-            // trackWave
-            // 
-            this.trackWave.BassPlayer = null;
-            this.tblMain.SetColumnSpan(this.trackWave, 3);
-            this.trackWave.CurrentSample = null;
-            this.trackWave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trackWave.Filename = null;
-            this.trackWave.Location = new System.Drawing.Point(5, 5);
-            this.trackWave.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.trackWave.Mode = Halloumi.Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler;
-            this.trackWave.Name = "trackWave";
-            this.trackWave.Samples = null;
-            this.trackWave.ShowTrackFx = false;
-            this.trackWave.Size = new System.Drawing.Size(1609, 306);
-            this.trackWave.TabIndex = 45;
-            this.trackWave.TrackSamples = null;
-            // 
             // linLine
             // 
             this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.linLine.Location = new System.Drawing.Point(0, 622);
-            this.linLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.linLine.Margin = new System.Windows.Forms.Padding(4);
             this.linLine.Name = "linLine";
             this.linLine.Size = new System.Drawing.Size(1633, 2);
             this.linLine.TabIndex = 0;
@@ -787,7 +771,7 @@
             this.flpButtonsRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtonsRight.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flpButtonsRight.Location = new System.Drawing.Point(1345, 1);
-            this.flpButtonsRight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flpButtonsRight.Margin = new System.Windows.Forms.Padding(4);
             this.flpButtonsRight.Name = "flpButtonsRight";
             this.flpButtonsRight.Padding = new System.Windows.Forms.Padding(7, 1, 0, 6);
             this.flpButtonsRight.Size = new System.Drawing.Size(287, 51);
@@ -797,7 +781,7 @@
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(155, 6);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(120, 38);
             this.btnCancel.TabIndex = 1;
@@ -808,7 +792,7 @@
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(25, 6);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(5);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(120, 38);
             this.btnOK.TabIndex = 0;
@@ -823,7 +807,7 @@
             this.pnlButtons.Controls.Add(this.flpButtonsRight);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlButtons.Location = new System.Drawing.Point(0, 624);
-            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Padding = new System.Windows.Forms.Padding(1);
             this.pnlButtons.Size = new System.Drawing.Size(1633, 53);
@@ -835,7 +819,7 @@
             this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(296, 1);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(7, 6, 0, 6);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(287, 51);
@@ -847,7 +831,7 @@
             this.flpButtonsLeft.Controls.Add(this.cmbOutput);
             this.flpButtonsLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.flpButtonsLeft.Location = new System.Drawing.Point(1, 1);
-            this.flpButtonsLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flpButtonsLeft.Margin = new System.Windows.Forms.Padding(4);
             this.flpButtonsLeft.Name = "flpButtonsLeft";
             this.flpButtonsLeft.Padding = new System.Windows.Forms.Padding(13, 8, 13, 12);
             this.flpButtonsLeft.Size = new System.Drawing.Size(295, 51);
@@ -877,7 +861,7 @@
             "Monitor",
             "Both"});
             this.cmbOutput.Location = new System.Drawing.Point(96, 12);
-            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4);
             this.cmbOutput.Name = "cmbOutput";
             this.cmbOutput.Size = new System.Drawing.Size(96, 25);
             this.cmbOutput.TabIndex = 8;
@@ -934,7 +918,37 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Fade-Out Start:";
             // 
-            // frmEditTrackSamples
+            // cmbSampleLength
+            // 
+            this.cmbSampleLength.DropDownWidth = 79;
+            this.cmbSampleLength.Location = new System.Drawing.Point(182, 80);
+            this.cmbSampleLength.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbSampleLength.Name = "cmbSampleLength";
+            this.cmbSampleLength.Seconds = 0D;
+            this.cmbSampleLength.Size = new System.Drawing.Size(124, 25);
+            this.cmbSampleLength.TabIndex = 55;
+            this.cmbSampleLength.Text = "00:00:0000";
+            this.cmbSampleLength.SelectedIndexChanged += new System.EventHandler(this.cmbSampleLength_SelectedIndexChanged);
+            this.cmbSampleLength.TextUpdate += new System.EventHandler(this.cmbSampleLength_TextUpdate);
+            // 
+            // trackWave
+            // 
+            this.trackWave.BassPlayer = null;
+            this.tblMain.SetColumnSpan(this.trackWave, 3);
+            this.trackWave.CurrentSample = null;
+            this.trackWave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackWave.Filename = null;
+            this.trackWave.Location = new System.Drawing.Point(5, 5);
+            this.trackWave.Margin = new System.Windows.Forms.Padding(5);
+            this.trackWave.Mode = Halloumi.Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler;
+            this.trackWave.Name = "trackWave";
+            this.trackWave.Samples = null;
+            this.trackWave.ShowTrackFx = false;
+            this.trackWave.Size = new System.Drawing.Size(1609, 306);
+            this.trackWave.TabIndex = 45;
+            this.trackWave.TrackSamples = null;
+            // 
+            // FrmEditTrackSamples
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -946,7 +960,7 @@
             this.Controls.Add(this.linLine);
             this.Controls.Add(this.pnlButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmEditTrackSamples";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Halloumi : Shuffler : Samples";
@@ -960,7 +974,6 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbLoopMode)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbSampleLength)).EndInit();
             this.pnlSamples.ResumeLayout(false);
             this.pnlSamples.PerformLayout();
             this.tblSamples.ResumeLayout(false);
@@ -972,6 +985,7 @@
             this.flpButtonsLeft.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.cmbSampleLength)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1036,5 +1050,6 @@
         private Halloumi.Common.Windows.Controls.TextBox txtTags;
         private Halloumi.Common.Windows.Controls.ComboBox cmbLoopMode;
         private Halloumi.Common.Windows.Controls.Button btnImportSamplesFromMix;
+        private Common.Windows.Controls.Button btnCloneSample;
     }
 }

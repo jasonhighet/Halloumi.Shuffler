@@ -810,5 +810,19 @@ namespace Halloumi.Shuffler.Controls
 
             Process.Start(editPath, output);
         }
+
+        private void btnlLeft_Click(object sender, EventArgs e)
+        {
+            var zoomLength = ZoomLength;
+            ZoomStart -= zoomLength;
+            Zoom(zoomLength);
+        }
+
+        private void btnRight_Click(object sender, EventArgs e)
+        {
+            var zoomLength = ZoomLength;
+            ZoomStart += zoomLength;
+            Zoom(zoomLength);
+        }
     }
 }

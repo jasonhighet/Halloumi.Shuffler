@@ -344,6 +344,14 @@ namespace Halloumi.Shuffler.Forms
             var sampleName = UserInputHelper.GetUserInput("Sample Name", "", this);
             if (sampleName == "") return;
 
+            var start = Track.SamplesToSeconds(trackWave.ZoomStart);
+            var length = Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
+
+            AddSample(sampleName, start, length);
+        }
+
+        private void AddSample(string sampleName, double start, double length)
+        {
             var sample = new Sample
             {
                 Description = sampleName
@@ -357,8 +365,8 @@ namespace Halloumi.Shuffler.Forms
             trackWave.CurrentSample = sample;
             trackWave.Samples = Samples;
 
-            sample.Start = Track.SamplesToSeconds(trackWave.ZoomStart);
-            sample.Length = Track.SamplesToSeconds(trackWave.ZoomEnd - trackWave.ZoomStart);
+            sample.Start = start;
+            sample.Length = length;
             sample.Bpm = BpmHelper.GetBpmFromLoopLength(sample.Length);
 
             RefreshTrackWavePositions();
@@ -492,6 +500,15 @@ namespace Halloumi.Shuffler.Forms
         {
             var outputType = cmbOutput.ParseEnum<SoundOutput>();
             BassPlayer.RawLoopOutput = outputType;
+        }
+
+        private void btnCloneSample_Click(object sender, EventArgs e)
+        {
+            if (CurrentSample == null) return;
+
+            var description = CurrentSample.Description + " Cloned";
+
+            AddSample(description, CurrentSample.Start, CurrentSample.Length);
         }
     }
 }
