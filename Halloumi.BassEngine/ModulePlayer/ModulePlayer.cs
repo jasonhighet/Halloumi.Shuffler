@@ -183,6 +183,17 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
             Module = module;
 
+            foreach (var audioFile in module.AudioFiles)
+            {
+                if (File.Exists(audioFile.Path) || _libraryFolder == "" || !_libraryFolder.EndsWith("Library") ||
+                    !audioFile.Path.Contains("Library")) continue;
+
+                var index = audioFile.Path.IndexOf("Library", StringComparison.Ordinal) + "Libary".Length + 1;
+                var path = _libraryFolder + audioFile.Path.Substring(index);
+                audioFile.Path = path;
+            }
+
+
             LoadChannelPlayers(module);
             LoadAudioFiles(module);
         }
@@ -314,24 +325,12 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
         /// <param name="module"></param>
         /// <param name="channelPlayer"></param>
         /// <param name="audioFile"></param>
-        private void LoadSamples(Module module, AudioPlayer channelPlayer, Module.AudioFile audioFile)
+        private static void LoadSamples(Module module, AudioPlayer channelPlayer, Module.AudioFile audioFile)
         {
-            if (!File.Exists(audioFile.Path)
-                && _libraryFolder != ""
-                && _libraryFolder.EndsWith("Library")
-                && audioFile.Path.Contains("Library"))
-            {
-                var index = audioFile.Path.IndexOf("Library", StringComparison.Ordinal) + "Libary".Length + 1;
-                var path = _libraryFolder + audioFile.Path.Substring(index);
-                audioFile.Path = path;
-            }
-
             foreach (var sample in audioFile.Samples)
             {
                 var fullSampleKey = audioFile.Key + "." + sample.Key;
-                var stream = channelPlayer.Load(fullSampleKey, audioFile.Path);
-                stream.DisableSyncs = true;
-
+                channelPlayer.Load(fullSampleKey, audioFile.Path);
                 channelPlayer.AddSection(fullSampleKey,
                     fullSampleKey,
                     sample.Start,
@@ -350,11 +349,9 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
             Pause();
 
-            const int patternLoopCount = 1;
-
             _mainPlayer.Unload(PatternPlayer);
             _mainPlayer.Load(PatternPlayer, SilenceHelper.GetSilenceAudioFile());
-            _mainPlayer.AddSection(PatternPlayer, PatternPlayer, 0, _loopLength*patternLoopCount, bpm: _targetBpm);
+            _mainPlayer.AddSection(PatternPlayer, PatternPlayer, 0, _loopLength, bpm: _targetBpm);
 
             var section = _mainPlayer.GetAudioSection(PatternPlayer, PatternPlayer);
             section.LoopIndefinitely = true;
@@ -367,12 +364,9 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
                 foreach (var position in positions)
                 {
-                    for (var i = 0; i < patternLoopCount; i++)
-                    {
-                        var currentPosition = position.Item2 + i*_loopLength;
+                    var currentPosition = position.Item2;
                         _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1,
                             EventType.PlaySolo, player);
-                    }
                 }
             }
 
@@ -391,7 +385,6 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
             if (channel == null)
                 return;
 
-            const int patternLoopCount = 16;
             var channelIndex = Module.Channels.IndexOf(channel);
             var channelSequence = pattern.Sequence[channelIndex];
             var positions = GetPositions(channelSequence);
@@ -401,19 +394,16 @@ namespace Halloumi.Shuffler.AudioEngine.ModulePlayer
 
             _mainPlayer.Unload(PatternPlayer);
            _mainPlayer.Load(PatternPlayer, SilenceHelper.GetSilenceAudioFile());
-            _mainPlayer.AddSection(PatternPlayer, PatternPlayer, 0, _loopLength*patternLoopCount, bpm: _targetBpm);
+            _mainPlayer.AddSection(PatternPlayer, PatternPlayer, 0, _loopLength, bpm: _targetBpm);
             var section = _mainPlayer.GetAudioSection(PatternPlayer, PatternPlayer);
             section.LoopIndefinitely = true;
 
             foreach (var position in positions)
             {
-                for (var i = 0; i < patternLoopCount; i++)
-                {
-                    var currentPosition = position.Item2 + i*_loopLength;
+                var currentPosition = position.Item2;
 
-                    _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1,
-                        EventType.PlaySolo, player);
-                }
+                _mainPlayer.AddEvent(PatternPlayer, currentPosition, position.Item1, position.Item1,
+                    EventType.PlaySolo, player);
             }
 
             _mainPlayer.QueueSection(PatternPlayer, PatternPlayer);
