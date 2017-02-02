@@ -1977,7 +1977,9 @@ namespace Halloumi.Shuffler.AudioEngine
                 AudioStreamHelper.ResetTempo(NextTrack);
             }
 
-            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - 0.05);
+            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - (BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm) / 2));
+
+            RaiseOnSkipToEnd();
         }
 
         /// <summary>

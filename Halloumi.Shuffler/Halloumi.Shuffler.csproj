@@ -125,12 +125,6 @@
       <DependentUpon>SongControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SecondsComboBox.cs" />
-    <Compile Include="Controls\SkipBack.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SkipBack.Designer.cs">
-      <DependentUpon>SkipBack.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\TrackLibraryControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -346,15 +340,6 @@
       <DependentUpon>frmVstChain.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Settings.cs" />
-    <Compile Include="Forms\TrackPlayerExtensions\frmFadeNow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TrackPlayerExtensions\frmFadeNow.Designer.cs">
-      <DependentUpon>frmFadeNow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TrackPlayerExtensions\TrackPlayerExtensionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\ListBuilder.resx">
@@ -368,10 +353,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ModulePlayerControls\SongControl.resx">
       <DependentUpon>SongControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SkipBack.resx">
-      <DependentUpon>SkipBack.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TrackLibraryControl.resx">
       <DependentUpon>TrackLibraryControl.cs</DependentUpon>
@@ -510,10 +491,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmVstChain.resx">
       <DependentUpon>frmVstChain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TrackPlayerExtensions\frmFadeNow.resx">
-      <DependentUpon>frmFadeNow.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

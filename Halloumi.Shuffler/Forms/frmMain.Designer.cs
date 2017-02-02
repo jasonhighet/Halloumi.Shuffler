@@ -62,7 +62,6 @@
             this.mnuViewLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewMixer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuFadeNow = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuShowMixableTracks = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewVisuals = new System.Windows.Forms.ToolStripMenuItem();
@@ -364,7 +363,6 @@
             this.mnuViewLibrary,
             this.mnuViewMixer,
             this.toolStripSeparator7,
-            this.mnuFadeNow,
             this.toolStripSeparator12,
             this.mnuShowTrackDetails,
             this.mnuShowMixableTracks,
@@ -400,13 +398,6 @@
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(193, 6);
-            // 
-            // mnuFadeNow
-            // 
-            this.mnuFadeNow.Name = "mnuFadeNow";
-            this.mnuFadeNow.Size = new System.Drawing.Size(196, 26);
-            this.mnuFadeNow.Text = "Fade &Now";
-            this.mnuFadeNow.Click += new System.EventHandler(this.mnuFadeNow_Click);
             // 
             // toolStripSeparator12
             // 
@@ -987,8 +978,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuViewPlaylist;
         private System.Windows.Forms.ToolStripMenuItem mnuViewLibrary;
         private System.Windows.Forms.ToolStripMenuItem mnuViewMixer;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripMenuItem mnuFadeNow;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;       
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripMenuItem mnuShowMixableTracks;
         private System.Windows.Forms.ToolStripMenuItem mnuViewVisuals;

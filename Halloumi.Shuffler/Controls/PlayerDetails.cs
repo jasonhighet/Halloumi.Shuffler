@@ -354,7 +354,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void btnSkipToEnd_Click(object sender, EventArgs e)
         {
-            BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.SkipToEnd(); }));
+            BeginInvoke(new MethodInvoker(delegate() { this.BassPlayer.SkipToFadeOut(); }));
         }
 
         /// <summary>

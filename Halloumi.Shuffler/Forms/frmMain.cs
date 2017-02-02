@@ -13,7 +13,6 @@ using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Controls;
-using Halloumi.Shuffler.Forms.TrackPlayerExtensions;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
 
@@ -26,7 +25,6 @@ namespace Halloumi.Shuffler.Forms
         private FrmGeneratePlaylist _autoGenerateSettings;
 
         private bool _bassPlayerOnTrackChange;
-        private FrmFadeNow _frmFadeNow;
         private FrmSampleLibrary _frmSampleLibrary;
         private FrmModuleEditor _frmModuleEditor;
 
@@ -287,23 +285,6 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        private void mnuFadeNow_Click(object sender, EventArgs e)
-        {
-            if (_frmFadeNow == null || _frmFadeNow.IsDisposed)
-            {
-                _frmFadeNow = new FrmFadeNow
-                {
-                    BassPlayer = BassPlayer,
-                    Library = Library,
-                    PlaylistControl = playlistControl
-                };
-            }
-            if (!_frmFadeNow.Visible)
-            {
-                WindowHelper.ShowDialog(this, _frmFadeNow);
-            }
-        }
-
         private void playerDetails_SelectedViewChanged(object sender, EventArgs e)
         {
             SetView(playerDetails.GetSelectedView());
@@ -363,17 +344,6 @@ namespace Halloumi.Shuffler.Forms
         private void LoadUiSettings()
         {
             var settings = Settings.Default;
-            //if (settings.LeftRightSplit != 0)
-            //{
-            //    try { splLeftRight.SplitterDistance = settings.LeftRightSplit; }
-            //    catch { }
-            //}
-
-            //if (settings.TrackSplit != 0)
-            //{
-            //    try { splTrack.SplitterDistance = settings.TrackSplit; }
-            //    catch { }
-            //}
 
             if (settings.WaPlugin != "")
             {
