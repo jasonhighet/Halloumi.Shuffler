@@ -45,10 +45,14 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             AudioStreamHelper.LoadAudio(audioStream);
 
+
             if (targetBpm != 0)
             {
                 if (bpm == 0) bpm = BpmHelper.GetBpmFromLoopLength(length);
+                var percentChange = BpmHelper.GetAdjustedBpmPercentChange(bpm, targetBpm) / 100;
                 AudioStreamHelper.SetTempoToMatchBpm(audioStream.Channel, bpm, targetBpm);
+
+                length = length * (double)(1 + percentChange);
             }
 
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
