@@ -9,6 +9,7 @@ using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.Bass.AddOn.Vst;
 using Un4seen.Bass.AddOn.WaDsp;
+using System.Threading;
 
 namespace Halloumi.Shuffler.AudioEngine.Channels
 {
@@ -447,21 +448,29 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             if (!_waDspLoaded) StartWaDspEngine();
 
             // DebugHelper.WriteLine("Load WAPlugin " + location);
+            var id = BassWaDsp.BASS_WADSP_Load(location, 10, 10, 300, 300, null);
+            Thread.Sleep(20);
 
             var plugin = new WaPlugin
             {
-                Id = BassWaDsp.BASS_WADSP_Load(location, 10, 10, 300, 300, null),
+                Id = id,
                 Module = 0
             };
 
             plugin.Name = BassWaDsp.BASS_WADSP_GetName(plugin.Id);
+            Thread.Sleep(20);
             plugin.Location = location;
+
             BassWaDsp.BASS_WADSP_Start(plugin.Id, plugin.Module, ChannelId);
+            Thread.Sleep(20);
+
             BassWaDsp.BASS_WADSP_ChannelSetDSP(plugin.Id, ChannelId, 1);
+            Thread.Sleep(20);
 
             WaPlugin = plugin;
 
             BassMix.BASS_Mixer_ChannelPlay(ChannelId);
+            Thread.Sleep(20);
 
             return plugin;
         }
@@ -475,8 +484,13 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             try
             {
                 BassWaDsp.BASS_WADSP_Stop(WaPlugin.Id);
+                Thread.Sleep(20);
+
                 BassWaDsp.BASS_WADSP_ChannelRemoveDSP(WaPlugin.Id);
+                Thread.Sleep(20);
+
                 BassWaDsp.BASS_WADSP_FreeDSP(WaPlugin.Id);
+                Thread.Sleep(20);
             }
             catch
             {
@@ -493,6 +507,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         {
             // DebugHelper.WriteLine("StartWADSPEngine");
             BassWaDsp.BASS_WADSP_Init(IntPtr.Zero);
+            Thread.Sleep(20);
             _waDspLoaded = true;
         }
     }
