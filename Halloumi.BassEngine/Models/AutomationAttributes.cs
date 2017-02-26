@@ -2,17 +2,16 @@
 using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
-using System.Xml.Serialization;
 
 namespace Halloumi.Shuffler.AudioEngine.Models
 {
     public class AutomationAttributes
     {
-        public List<TrackFXTrigger> TrackFXTriggers { get; set; }
+        private static readonly Dictionary<string, AutomationAttributes> CachedAttributes =
+            new Dictionary<string, AutomationAttributes>();
 
-        public List<SampleTrigger> SampleTriggers { get; set; }
-        public List<ExtendedMixAttributes> ExtendedMixes { get; set; }
-        public List<TrackSample> TrackSamples { get; set; }
+        private static readonly Dictionary<string, AutomationAttributes> AllAttributes =
+                    new Dictionary<string, AutomationAttributes>();
 
         public AutomationAttributes()
         {
@@ -22,11 +21,16 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             TrackSamples = new List<TrackSample>();
         }
 
-        public ExtendedMixAttributes GetExtendedMixAttributes(Track track)
-        {
-            if (track == null) return null;
-            return GetExtendedMixAttributes(track.Description);
-        }
+        // ReSharper disable once InconsistentNaming
+        public List<TrackFXTrigger> TrackFXTriggers { get; set; }
+
+        public List<SampleTrigger> SampleTriggers { get; set; }
+
+        public List<ExtendedMixAttributes> ExtendedMixes { get; set; }
+
+        public List<TrackSample> TrackSamples { get; set; }
+
+        public string Track { get; set; }
 
         public ExtendedMixAttributes GetExtendedMixAttributes(string trackDescription)
         {
@@ -47,49 +51,35 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             if (track == null || folder == "") return null;
             return GetAutomationAttributes(track.Description, folder);
         }
-        
+
         public static AutomationAttributes GetAutomationAttributes(string trackDescription, string folder)
         {
             if (trackDescription == "" || folder == "") return null;
 
             AutomationAttributes attributes;
-            if (_cachedAttributes.ContainsKey(trackDescription))
+            if (CachedAttributes.ContainsKey(trackDescription))
             {
-                attributes = _cachedAttributes[trackDescription];
+                attributes = CachedAttributes[trackDescription];
             }
             else
             {
                 var filepath = GetAttributesFilePath(trackDescription, folder);
-                if (File.Exists(filepath))
-                {
-                    attributes = SerializationHelper<AutomationAttributes>.FromXmlFile(filepath);
-                }
-                else
-                {
-                    attributes = new AutomationAttributes();
-                }
+                attributes = File.Exists(filepath)
+                    ? SerializationHelper<AutomationAttributes>.FromXmlFile(filepath)
+                    : new AutomationAttributes();
+
+                attributes.Track = trackDescription;
+
                 try
                 {
-                    _cachedAttributes.Add(trackDescription, attributes);
+                    CachedAttributes.Add(trackDescription, attributes);
                 }
                 catch
                 {
-                    if (_cachedAttributes.ContainsKey(trackDescription)) attributes = _cachedAttributes[trackDescription];
+                    if (CachedAttributes.ContainsKey(trackDescription)) attributes = CachedAttributes[trackDescription];
                 }
             }
             return attributes;
-        }
-
-        public static AutomationAttributes ReloadAutomationAttributes(Track track, string folder)
-        {
-            if (track == null || folder == "") return null;
-
-            if (_cachedAttributes.ContainsKey(track.Description))
-            {
-                _cachedAttributes.Remove(track.Description);
-            }
-
-            return GetAutomationAttributes(track, folder);
         }
 
 
@@ -111,21 +101,15 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             }
         }
 
-        private static Dictionary<string, AutomationAttributes> _cachedAttributes = new Dictionary<string, AutomationAttributes>();
-
         private static string GetAttributesFilePath(string trackDescription, string folder)
         {
-            return Path.Combine(folder, FileSystemHelper.StripInvalidFileNameChars(trackDescription) + ".AutomationAttributes.xml");
+            return Path.Combine(folder,
+                FileSystemHelper.StripInvalidFileNameChars(trackDescription) + ".AutomationAttributes.xml");
         }
 
         public static void ClearCache()
         {
-            _cachedAttributes.Clear();
-        }
-
-        public TrackSample GetTrackSampleByKey(string key)
-        {
-            return TrackSamples.Where(ts => ts.Key == key).FirstOrDefault();
+            CachedAttributes.Clear();
         }
     }
 }
