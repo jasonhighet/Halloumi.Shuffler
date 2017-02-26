@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
@@ -31,7 +32,6 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private readonly Dictionary<string, List<MixRanking>> _toMixes = new Dictionary<string, List<MixRanking>>();
 
-
         /// <summary>
         ///     Initializes a new instance of the MixLibrary class.
         /// </summary>
@@ -53,14 +53,49 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public string MixDetailsFolder { get; set; }
 
+        private string MixLibraryDatabaseFile => Path.Combine(MixDetailsFolder, "Halloumi.Shuffler.MixLibrary.xml");
 
-        /// <summary>
-        ///     Loads all mix details.
-        /// </summary>
+        public void SaveToDatabase()
+        {
+            var mixes = _toMixes.Select(x => new TrackMix
+            {
+                Track = x.Key,
+                MixRankings = x.Value
+                    .OrderByDescending(y => y.MixLevel)
+                    .ThenBy(y => y.FromTrack)
+                    .Select(y => y.ToString())
+                    .ToList()
+            }).OrderBy(x => x.Track).ToList();
+
+            var mixLibraryDatabaseFile = Path.Combine(MixDetailsFolder, "Halloumi.Shuffler.MixLibrary.xml");
+
+            SerializationHelper<List<TrackMix>>.ToXmlFile(mixes, mixLibraryDatabaseFile);
+        }
+
         public void LoadAllMixDetails()
         {
-            var availableTracks = AvailableTracks.Where(t => t.IsShufflerTrack).ToList();
-            ParallelHelper.ForEach(availableTracks, track => { LoadMixRankings(track.Description); });
+            var mixLibraryDatabaseFile = MixLibraryDatabaseFile;
+            var trackMixeses = SerializationHelper<List<TrackMix>>.FromXmlFile(mixLibraryDatabaseFile);
+
+            Clear();
+
+            Parallel.ForEach(trackMixeses, trackMixes =>
+            {
+                DebugHelper.WriteLine("LoadMixRankings - " + trackMixes.Track);
+
+                lock (_loadedTracks)
+                {
+                    _loadedTracks.Add(trackMixes.Track);
+                }
+
+                var mixRankings =
+                    trackMixes.MixRankings.Select(mixRanking => MixRanking.FromString(mixRanking, trackMixes.Track))
+                        .Where(mixRank => mixRank != null);
+                foreach (var mixRank in mixRankings)
+                {
+                    SetMixLevel(mixRank.FromTrack, mixRank.ToTrack, mixRank.MixLevel);
+                }
+            });
         }
 
         /// <summary>
@@ -364,7 +399,8 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (fromTrack == null || toTrack == null) return;
             SetMixLevel(fromTrack.Description, toTrack.Description, mixLevel);
-            SaveMixRankings(fromTrack.Description);
+            //SaveMixRankings(fromTrack.Description);
+            SaveMixRankings();
         }
 
         /// <summary>
@@ -595,55 +631,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-        public void ImportFromFolder(string folder, bool deleteAfterImport)
-        {
-            var importFiles = FileSystemHelper.SearchFiles(folder, "*.Mixes.txt", false);
-            foreach (var importFile in importFiles)
-            {
-                var trackDescription = GetFuzzyTrackDescriptionFromMixFile(importFile);
-                var existingFile = GetMixRankingFileName(trackDescription);
-
-                var existingFileDate = File.GetLastWriteTime(existingFile);
-                var importFileDate = File.GetLastWriteTime(importFile);
-
-                if (!File.Exists(existingFile))
-                {
-                    FileSystemHelper.Copy(importFile, existingFile);
-                }
-                else if (FileSystemHelper.AreFilesDifferent(existingFile, importFile))
-                {
-                    var changed = MergeMixFile(existingFile, importFile, existingFileDate, importFileDate);
-                    if (changed && !deleteAfterImport)
-                    {
-                        FileSystemHelper.Copy(existingFile, importFile);
-                        existingFileDate = File.GetLastWriteTime(existingFile);
-                    }
-                    File.SetLastWriteTime(importFile, existingFileDate);
-                }
-
-                if (deleteAfterImport)
-                    File.Delete(importFile);
-
-                FuzzyUncacheMixRanking(trackDescription);
-            }
-
-            if (deleteAfterImport) return;
-
-            var existingFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
-            foreach (var existingFile in existingFiles)
-            {
-                var fileName = Path.GetFileName(existingFile);
-                if (fileName == null) continue;
-
-
-                var importFile = Path.Combine(folder, fileName);
-                if (File.Exists(importFile)) continue;
-
-                var existingFileDate = File.GetLastWriteTime(existingFile);
-                FileSystemHelper.Copy(existingFile, importFile);
-                File.SetLastWriteTime(importFile, existingFileDate);
-            }
-        }
 
 
         /// <summary>
@@ -690,31 +677,11 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-        private void SaveMixRankings(string trackDescription)
+        private void SaveMixRankings()
         {
-            var filename = GetMixRankingFileName(trackDescription);
-            var toTracks = GetToMixes(trackDescription);
-            SaveMixRankings(filename, toTracks);
+            Task.Run(() => SaveToDatabase());
         }
 
-        private static void SaveMixRankings(string filename, IEnumerable<MixRanking> toTracks)
-        {
-            var content = new StringBuilder();
-            foreach (var toTrack in toTracks)
-            {
-                content.AppendLine(toTrack.ToString());
-            }
-
-            var blank = content.Length == 0 || content.ToString().Trim().Replace(Environment.NewLine, "") == "";
-            if (blank && File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
-            else if (!blank)
-            {
-                File.WriteAllText(filename, content.ToString(), Encoding.UTF8);
-            }
-        }
 
         /// <summary>
         ///     Loads the mix tracks.
@@ -749,88 +716,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-        private void FuzzyUncacheMixRanking(string trackDescription)
-        {
-            trackDescription = StringHelper.GetAlphaNumericCharactersOnly(trackDescription).ToLower();
-
-            List<string> trackDescriptions;
-            lock (_toMixes)
-            {
-                trackDescriptions =
-                    _loadedTracks
-                        .Where(
-                            loadedTrack =>
-                                StringHelper.GetAlphaNumericCharactersOnly(loadedTrack).ToLower() == trackDescription)
-                        .ToList();
-            }
-
-            foreach (var description in trackDescriptions)
-            {
-                UncacheMixRanking(description);
-            }
-        }
-
-        private static bool MergeMixFile(string existingFile, string importFile, DateTime existingFileDate,
-            DateTime importFileDate)
-        {
-            if (!File.Exists(existingFile) || !File.Exists(importFile)) return false;
-
-            var fuzzyTrackDescription = GetFuzzyTrackDescriptionFromMixFile(existingFile);
-
-            var existingRankings = File.ReadAllLines(existingFile)
-                .Distinct()
-                .Select(s => MixRanking.FromString(s, fuzzyTrackDescription))
-                .Where(s => s != null)
-                .ToList();
-
-            var importRankings = File.ReadAllLines(importFile)
-                .Distinct()
-                .Select(s => MixRanking.FromString(s, fuzzyTrackDescription))
-                .ToList();
-
-            var changed = false;
-            foreach (var importRanking in importRankings)
-            {
-                var existingRanking = existingRankings
-                    .FirstOrDefault(r => r.ToTrack == importRanking.ToTrack);
-
-                if (existingRanking == null)
-                {
-                    existingRankings.Add(importRanking);
-                    changed = true;
-                }
-                else if (existingRanking.MixLevel != importRanking.MixLevel && existingFileDate < importFileDate)
-                {
-                    existingRanking.MixLevel = importRanking.MixLevel;
-                    changed = true;
-                }
-            }
-
-            if (changed)
-                SaveMixRankings(existingFile, existingRankings);
-
-            return changed;
-        }
-
-        private static string GetFuzzyTrackDescriptionFromMixFile(string filename)
-        {
-            var fileName = Path.GetFileName(filename);
-            return fileName?.Replace(".Mixes.txt", "") ?? "";
-        }
-
-        /// <summary>
-        ///     Gets the preferred tracks object for the specified track.
-        ///     Loads from file if not in collection.
-        /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        private void UncacheMixRanking(string trackDescription)
-        {
-            lock (_loadedTracks)
-            {
-                if (!_loadedTracks.Contains(trackDescription)) return;
-                _loadedTracks.Remove(trackDescription);
-            }
-        }
 
         /// <summary>
         ///     Gets the name of the file used to store the details of a mix ranking object for a specific track
@@ -850,7 +735,14 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
 
-        private class MixRanking
+        public class TrackMix
+        {
+            public string Track { get; set; }
+            public List<string> MixRankings { get; set; }
+        }
+
+
+        public class MixRanking
         {
             public string FromTrack { get; set; }
 
