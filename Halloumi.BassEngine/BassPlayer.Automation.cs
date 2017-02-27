@@ -61,10 +61,10 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (LastTrackFxTriggerTrack == null || LastTrackFxTrigger == null) return;
 
-            var attributes = GetAutomationAttributes(LastTrackFxTriggerTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(LastTrackFxTriggerTrack.Description);
             attributes.TrackFXTriggers.Add(LastTrackFxTrigger);
 
-            SaveAutomationAttributes(LastTrackFxTriggerTrack);
+            AutomationAttributesHelper.SaveAutomationAttributes(LastTrackFxTriggerTrack.Description, attributes);
 
             if (IsTrackInUse(LastTrackFxTriggerTrack)) ResetTrackSyncPositions();
 
@@ -78,13 +78,15 @@ namespace Halloumi.Shuffler.AudioEngine
         public void ClearTrackFxTriggers(Track track)
         {
             if (track == null) return;
-            var attributes = GetAutomationAttributes(track);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(track.Description);
 
             if (attributes.TrackFXTriggers.Count == 0) return;
 
             if (IsTrackInUse(track)) ClearTrackSyncPositions(track);
             attributes.TrackFXTriggers.Clear();
-            SaveAutomationAttributes(track);
+            
+            AutomationAttributesHelper.SaveAutomationAttributes(track.Description, attributes);
+
             if (IsTrackInUse(track)) ResetTrackSyncPositions();
         }
 
@@ -94,15 +96,16 @@ namespace Halloumi.Shuffler.AudioEngine
         public void RemovePreviousTrackFxTrigger()
         {
             if (CurrentTrack == null) return;
-            var attributes = GetAutomationAttributes(CurrentTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
             if (attributes.TrackFXTriggers.Count == 0) return;
 
-            var automation = GetPrevTrackFxTrigger();
-            if (automation == null) return;
+            var trigger = GetPrevTrackFxTrigger(attributes);
+            if (trigger == null) return;
 
             ClearTrackSyncPositions(CurrentTrack);
-            attributes.TrackFXTriggers.Remove(automation);
-            SaveAutomationAttributes(CurrentTrack);
+            attributes.TrackFXTriggers.Remove(trigger);
+
+            AutomationAttributesHelper.SaveAutomationAttributes(CurrentTrack.Description, attributes);
 
             ResetTrackSyncPositions();
         }
@@ -114,7 +117,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (LastSampleTriggerTrack == null || LastSampleTrigger == null) return;
 
-            var attributes = GetAutomationAttributes(LastSampleTriggerTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(LastSampleTriggerTrack.Description);
             var sample = GetSampleBySampleId(LastSampleTrigger.SampleId);
 
             if (sample != null)
@@ -138,7 +141,8 @@ namespace Halloumi.Shuffler.AudioEngine
                     mixDetails.SampleTriggers.Add(LastSampleTrigger);
                 }
 
-                SaveAutomationAttributes(LastSampleTriggerTrack);
+                AutomationAttributesHelper.SaveAutomationAttributes(LastSampleTriggerTrack.Description, attributes);
+                
                 if (IsTrackInUse(LastSampleTriggerTrack)) ResetTrackSyncPositions();
             }
 
@@ -148,21 +152,6 @@ namespace Halloumi.Shuffler.AudioEngine
             LastSampleTriggerNextTrackDescription = "";
         }
 
-        /// <summary>
-        ///     Clears the track FX triggers for the specified track.
-        /// </summary>
-        public void ClearSampleTriggers(Track track)
-        {
-            if (track == null) return;
-            var attributes = GetAutomationAttributes(track);
-
-            if (attributes.SampleTriggers.Count == 0) return;
-
-            if (IsTrackInUse(track)) ClearTrackSyncPositions(track);
-            attributes.SampleTriggers.Clear();
-            SaveAutomationAttributes(track);
-            if (IsTrackInUse(track)) ResetTrackSyncPositions();
-        }
 
         /// <summary>
         ///     Clears the track FX triggers for the specified track.
@@ -170,15 +159,17 @@ namespace Halloumi.Shuffler.AudioEngine
         public void ClearSampleTriggers()
         {
             if (CurrentTrack == null) return;
-            var attributes = GetAutomationAttributes(CurrentTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
 
             ClearTrackSyncPositions(CurrentTrack);
 
             attributes.SampleTriggers.Clear();
-            var nextTrackSampleTriggers = GetNextTrackSampleTriggers();
-            nextTrackSampleTriggers.Clear();
 
-            SaveAutomationAttributes(CurrentTrack);
+            var mixDetails = attributes.GetExtendedMixAttributes(NextTrack.Description);
+            mixDetails?.SampleTriggers.Clear();
+
+            AutomationAttributesHelper.SaveAutomationAttributes(CurrentTrack.Description, attributes);
+
             ResetTrackSyncPositions();
         }
 
@@ -188,14 +179,14 @@ namespace Halloumi.Shuffler.AudioEngine
         public void RemovePreviousSampleTrigger()
         {
             if (CurrentTrack == null) return;
-            var attributes = GetAutomationAttributes(CurrentTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
 
-            var trigger = GetPrevSampleTrigger();
+            var trigger = GetPrevSampleTrigger(attributes);
             if (trigger == null) return;
 
             ClearTrackSyncPositions(CurrentTrack);
 
-            var nextTrackSampleTriggers = GetNextTrackSampleTriggers();
+            var nextTrackSampleTriggers = GetNextTrackSampleTriggers(attributes);
 
             if (attributes.SampleTriggers.Contains(trigger))
             {
@@ -206,7 +197,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 nextTrackSampleTriggers.Remove(trigger);
             }
 
-            SaveAutomationAttributes(CurrentTrack);
+            AutomationAttributesHelper.SaveAutomationAttributes(CurrentTrack.Description, attributes);
 
             ResetTrackSyncPositions();
         }
@@ -241,12 +232,15 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private TrackFXTrigger GetCurrentTrackFxTrigger()
+        private TrackFXTrigger GetCurrentTrackFxTrigger(AutomationAttributes attributes = null)
         {
             if (CurrentTrack == null) return null;
 
+            if (attributes == null)
+                attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
+
             var position = AudioStreamHelper.GetPosition(CurrentTrack);
-            return GetAutomationAttributes(CurrentTrack)
+            return attributes
                 .TrackFXTriggers
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
                 .FirstOrDefault();
@@ -256,12 +250,15 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private TrackFXTrigger GetPrevTrackFxTrigger()
+        private TrackFXTrigger GetPrevTrackFxTrigger(AutomationAttributes attributes = null)
         {
             if (CurrentTrack == null) return null;
 
+            if (attributes == null)
+                attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
+
             var position = AudioStreamHelper.GetPosition(CurrentTrack);
-            return GetAutomationAttributes(CurrentTrack)
+            return attributes
                 .TrackFXTriggers
                 .Where(ta => ta.StartSample <= position)
                 .OrderBy(ta => Math.Abs(ta.StartSample - position))
@@ -306,12 +303,15 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private SampleTrigger GetCurrentSampleTrigger()
+        private SampleTrigger GetCurrentSampleTrigger(AutomationAttributes attributes = null)
         {
             if (CurrentTrack == null) return null;
+            if (attributes == null)
+                attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
+
             var position = AudioStreamHelper.GetPosition(CurrentTrack);
 
-            return GetCurrentSampleTriggers()
+            return GetCurrentSampleTriggers(attributes)
                 .OrderBy(t => Math.Abs(t.StartSample - position))
                 .FirstOrDefault();
         }
@@ -320,13 +320,16 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the current automated track FX.
         /// </summary>
         /// <returns>The current automated track FX.</returns>
-        private SampleTrigger GetPrevSampleTrigger()
+        private SampleTrigger GetPrevSampleTrigger(AutomationAttributes attributes = null)
         {
             if (CurrentTrack == null) return null;
+            if (attributes == null)
+                attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
+
 
             var position = AudioStreamHelper.GetPosition(CurrentTrack);
 
-            return GetCurrentSampleTriggers()
+            return GetCurrentSampleTriggers(attributes)
                 .Where(t => t.StartSample <= position)
                 .OrderBy(t => Math.Abs(t.StartSample - position))
                 .FirstOrDefault();
@@ -336,11 +339,13 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the sample triggers for the current track, including ones specific to the next track
         /// </summary>
         /// <returns>A list of sample triggers, or an empty list if there are none</returns>
-        private IEnumerable<SampleTrigger> GetCurrentSampleTriggers()
+        private IEnumerable<SampleTrigger> GetCurrentSampleTriggers(AutomationAttributes attributes = null)
         {
             if (CurrentTrack == null) return new List<SampleTrigger>();
 
-            var attributes = GetAutomationAttributes(CurrentTrack);
+            if(attributes == null)
+                attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
+
             if (attributes == null) return new List<SampleTrigger>();
 
             return attributes
@@ -354,55 +359,17 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the sample triggers from the next track for the current track.
         /// </summary>
         /// <returns>A list of the sample triggers</returns>
-        private List<SampleTrigger> GetNextTrackSampleTriggers()
+        private List<SampleTrigger> GetNextTrackSampleTriggers(AutomationAttributes attributes = null)
         {
             if (NextTrack == null) return new List<SampleTrigger>();
 
-            var attributes = GetAutomationAttributes(CurrentTrack);
+            if (attributes == null)
+                attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
+
             if (attributes == null) return new List<SampleTrigger>();
 
             var mixDetails = attributes.GetExtendedMixAttributes(NextTrack.Description);
             return mixDetails == null ? new List<SampleTrigger>() : mixDetails.SampleTriggers;
-        }
-
-        /// <summary>
-        ///     Gets the automation attributes for a track.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>The automation attributes</returns>
-        public AutomationAttributes GetAutomationAttributes(Track track)
-        {
-            return track == null ? null : GetAutomationAttributes(track.Description);
-        }
-
-        /// <summary>
-        ///     Gets the automation attributes for a track.
-        /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        /// <returns>The automation attributes</returns>
-        public AutomationAttributes GetAutomationAttributes(string trackDescription)
-        {
-            return AutomationAttributes.GetAutomationAttributes(trackDescription, ExtenedAttributesHelper.ExtendedAttributeFolder);
-        }
-
-        /// <summary>
-        ///     Saves the automation attributes.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void SaveAutomationAttributes(Track track)
-        {
-            if (track == null) return;
-            AutomationAttributes.SaveAutomationAttributes(track, ExtenedAttributesHelper.ExtendedAttributeFolder);
-        }
-
-        /// <summary>
-        ///     Reloads the automation attributes.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void ReloadAutomationAttributes(Track track)
-        {
-            if (track == null) return;
-            AutomationAttributes.SaveAutomationAttributes(track, ExtenedAttributesHelper.ExtendedAttributeFolder);
         }
 
         /// <summary>
@@ -413,7 +380,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (track != CurrentTrack) return;
 
-            foreach (var trigger in GetAutomationAttributes(track).TrackFXTriggers)
+            foreach (var trigger in AutomationAttributesHelper.GetAutomationAttributes(track.Description).TrackFXTriggers)
             {
                 trigger.StartSample = track.SecondsToSamples(trigger.Start);
                 trigger.EndSample = track.SecondsToSamples(trigger.Start + trigger.Length);
@@ -434,9 +401,9 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Clears the automation sync positions.
         /// </summary>
         /// <param name="track">The track.</param>
-        private void ClearAutomationSyncPositions(Track track)
+        private void ClearAutomationSyncPositions(AudioStream track)
         {
-            foreach (var trigger in GetAutomationAttributes(track).TrackFXTriggers)
+            foreach (var trigger in AutomationAttributesHelper.GetAutomationAttributes(track.Description).TrackFXTriggers)
             {
                 if (trigger.StartSyncId != int.MinValue)
                 {
@@ -557,7 +524,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (LastExtendedMixTrack == null || LastExtendedMixAttributes == null) return;
 
-            var attributes = GetAutomationAttributes(LastExtendedMixTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(LastExtendedMixTrack.Description);
             if (attributes == null) return;
 
             var existingMix = attributes.GetExtendedMixAttributes(LastExtendedMixAttributes.TrackDescription);
@@ -568,7 +535,7 @@ namespace Halloumi.Shuffler.AudioEngine
             }
 
             attributes.ExtendedMixes.Add(LastExtendedMixAttributes);
-            SaveAutomationAttributes(LastExtendedMixTrack);
+            AutomationAttributesHelper.SaveAutomationAttributes(LastExtendedMixTrack.Description, attributes);
 
             LastExtendedMixTrack = null;
             LastExtendedMixAttributes = null;
@@ -578,11 +545,12 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             if (CurrentTrack == null || PreviousTrack == null) return;
 
-            var attributes = GetAutomationAttributes(PreviousTrack);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(PreviousTrack.Description);
             if (attributes == null) return;
 
             attributes.RemoveExtendedMixAttributes(CurrentTrack.Description);
-            SaveAutomationAttributes(PreviousTrack);
+            
+            AutomationAttributesHelper.SaveAutomationAttributes(PreviousTrack.Description, attributes);
 
             LastExtendedMixTrack = null;
             LastExtendedMixAttributes = null;
@@ -627,9 +595,6 @@ namespace Halloumi.Shuffler.AudioEngine
 
         public void SetManualMixVolume(decimal value)
         {
-            //if (!IsManualMixMode) return;
-            //if (PreviousManaulExtendedFadeType != ExtendedFadeType.Default) return;
-
             value = 100M - value;
 
             var track = PreviousTrack;
@@ -657,7 +622,6 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         /// Makes the power off noise on a track
         /// </summary>
-        /// <param name="track">The track.</param>
         public void PowerOffPreviousTrack()
         {
             if (PreviousTrack == null) return;
@@ -671,7 +635,6 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         /// Pauses the track.
         /// </summary>
-        /// <param name="track">The track.</param>
         public void PausePreviousTrack()
         {
             if (PreviousTrack == null) return;

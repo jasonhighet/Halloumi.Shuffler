@@ -35,10 +35,10 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Initializes a new instance of the MixLibrary class.
         /// </summary>
-        /// <param name="mixDetailsFolder">The mix details folder.</param>
-        public MixLibrary(string mixDetailsFolder)
+        /// <param name="shufflerFolder">The mix details folder.</param>
+        public MixLibrary(string shufflerFolder)
         {
-            MixDetailsFolder = mixDetailsFolder;
+            ShufflerFolder = shufflerFolder;
             AvailableTracks = new List<Track>();
         }
 
@@ -51,9 +51,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Gets or sets the folder where mix detail files are stored
         /// </summary>
-        public string MixDetailsFolder { get; set; }
+        public string ShufflerFolder { get; set; }
 
-        private string MixLibraryDatabaseFile => Path.Combine(MixDetailsFolder, "Halloumi.Shuffler.MixLibrary.xml");
+        private string MixLibraryDatabaseFile => Path.Combine(ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml");
 
         public void SaveToDatabase()
         {
@@ -67,12 +67,12 @@ namespace Halloumi.Shuffler.AudioLibrary
                     .ToList()
             }).OrderBy(x => x.Track).ToList();
 
-            var mixLibraryDatabaseFile = Path.Combine(MixDetailsFolder, "Halloumi.Shuffler.MixLibrary.xml");
+            var mixLibraryDatabaseFile = Path.Combine(ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml");
 
             SerializationHelper<List<TrackMix>>.ToXmlFile(mixes, mixLibraryDatabaseFile);
         }
 
-        public void LoadAllMixDetails()
+        public void LoadFromDatabase()
         {
             var mixLibraryDatabaseFile = MixLibraryDatabaseFile;
             var trackMixeses = SerializationHelper<List<TrackMix>>.FromXmlFile(mixLibraryDatabaseFile);
@@ -492,10 +492,10 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="fadeOutTrackDescription">The fade out track description.</param>
         /// <param name="fadeInTrackDescription">The fade in track description.</param>
         /// <returns>The extended mix attributes.</returns>
-        private ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription,
+        private static ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription,
             string fadeInTrackDescription)
         {
-            var attributes = AutomationAttributes.GetAutomationAttributes(fadeOutTrackDescription, MixDetailsFolder);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(fadeOutTrackDescription);
             return attributes?.GetExtendedMixAttributes(fadeInTrackDescription);
         }
 
@@ -618,7 +618,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             FileSystemHelper.DeleteFiles(folder, "*.Mixes.txt", false);
 
-            var sourceFiles = FileSystemHelper.SearchFiles(MixDetailsFolder, "*.Mixes.txt", false);
+            var sourceFiles = FileSystemHelper.SearchFiles(ShufflerFolder, "*.Mixes.txt", false);
             foreach (var source in sourceFiles)
             {
                 var fileName = Path.GetFileName(source);
@@ -731,7 +731,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             filename = FileSystemHelper.StripInvalidFileNameChars(filename);
 
-            return Path.Combine(MixDetailsFolder, filename);
+            return Path.Combine(ShufflerFolder, filename);
         }
 
 

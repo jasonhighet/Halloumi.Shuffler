@@ -1040,15 +1040,15 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
 
-        /// <summary>
-        ///     Imports the shuffler details.
-        /// </summary>
-        /// <param name="importFolder">The import folder.</param>
-        /// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
-        public void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
-        {
-            ShufflerHelper.ImportShufflerDetails(importFolder, deleteAfterImport);
-        }
+        ///// <summary>
+        /////     Imports the shuffler details.
+        ///// </summary>
+        ///// <param name="importFolder">The import folder.</param>
+        ///// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
+        //public void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
+        //{
+        //    ShufflerHelper.ImportShufflerDetails(importFolder, deleteAfterImport);
+        //}
 
         public Track LoadNonLibraryTrack(string filename)
         {

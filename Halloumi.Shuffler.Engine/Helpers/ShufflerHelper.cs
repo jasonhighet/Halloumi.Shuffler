@@ -148,65 +148,65 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             return filename;
         }
 
-        /// <summary>
-        ///     Imports the shuffler details.
-        /// </summary>
-        /// <param name="importFolder">The import folder.</param>
-        /// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
-        public static void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
-        {
-            if (!Directory.Exists(importFolder)) return;
-            var importFiles = FileSystemHelper.SearchFiles(importFolder,
-                "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
-            foreach (var importFile in importFiles)
-            {
-                var fileName = Path.GetFileName(importFile);
-                if (fileName == null) continue;
+        ///// <summary>
+        /////     Imports the shuffler details.
+        ///// </summary>
+        ///// <param name="importFolder">The import folder.</param>
+        ///// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
+        //public static void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
+        //{
+        //    if (!Directory.Exists(importFolder)) return;
+        //    var importFiles = FileSystemHelper.SearchFiles(importFolder,
+        //        "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
+        //    foreach (var importFile in importFiles)
+        //    {
+        //        var fileName = Path.GetFileName(importFile);
+        //        if (fileName == null) continue;
 
-                var existingFile = Path.Combine(ShufflerFolder, fileName);
-                if (!File.Exists(existingFile))
-                {
-                    FileSystemHelper.Copy(importFile, existingFile);
-                }
-                else
-                {
-                    var existingFileDate = File.GetLastWriteTime(existingFile);
-                    var importFileDate = File.GetLastWriteTime(importFile);
+        //        var existingFile = Path.Combine(ShufflerFolder, fileName);
+        //        if (!File.Exists(existingFile))
+        //        {
+        //            FileSystemHelper.Copy(importFile, existingFile);
+        //        }
+        //        else
+        //        {
+        //            var existingFileDate = File.GetLastWriteTime(existingFile);
+        //            var importFileDate = File.GetLastWriteTime(importFile);
 
-                    if (existingFileDate < importFileDate)
-                    {
-                        FileSystemHelper.Copy(importFile, existingFile);
-                        File.SetLastWriteTime(existingFile, importFileDate);
-                    }
-                    else if (!deleteAfterImport && existingFileDate != importFileDate)
-                    {
-                        FileSystemHelper.Copy(existingFile, importFile);
-                        File.SetLastWriteTime(importFile, existingFileDate);
-                    }
-                }
-                if (deleteAfterImport) File.Delete(importFile);
-            }
+        //            if (existingFileDate < importFileDate)
+        //            {
+        //                FileSystemHelper.Copy(importFile, existingFile);
+        //                File.SetLastWriteTime(existingFile, importFileDate);
+        //            }
+        //            else if (!deleteAfterImport && existingFileDate != importFileDate)
+        //            {
+        //                FileSystemHelper.Copy(existingFile, importFile);
+        //                File.SetLastWriteTime(importFile, existingFileDate);
+        //            }
+        //        }
+        //        if (deleteAfterImport) File.Delete(importFile);
+        //    }
 
-            if (!deleteAfterImport)
-            {
-                var existingFiles = FileSystemHelper.SearchFiles(ShufflerFolder,
-                    "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
-                foreach (var existingFile in existingFiles)
-                {
-                    var fileName = Path.GetFileName(existingFile);
-                    if (fileName == null) continue;
+        //    if (!deleteAfterImport)
+        //    {
+        //        var existingFiles = FileSystemHelper.SearchFiles(ShufflerFolder,
+        //            "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
+        //        foreach (var existingFile in existingFiles)
+        //        {
+        //            var fileName = Path.GetFileName(existingFile);
+        //            if (fileName == null) continue;
 
-                    var importFile = Path.Combine(importFolder, fileName);
+        //            var importFile = Path.Combine(importFolder, fileName);
 
-                    if (File.Exists(importFile)) continue;
+        //            if (File.Exists(importFile)) continue;
 
-                    var existingFileDate = File.GetLastWriteTime(existingFile);
-                    FileSystemHelper.Copy(existingFile, importFile);
-                    File.SetLastWriteTime(importFile, existingFileDate);
-                }
-            }
+        //            var existingFileDate = File.GetLastWriteTime(existingFile);
+        //            FileSystemHelper.Copy(existingFile, importFile);
+        //            File.SetLastWriteTime(importFile, existingFileDate);
+        //        }
+        //    }
 
-            AutomationAttributes.ClearCache();
-        }
+            
+        //}
     }
 }

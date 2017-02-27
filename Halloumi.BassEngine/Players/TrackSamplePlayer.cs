@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
@@ -122,8 +121,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         private static IEnumerable<TrackSample> GetAdditionalTrackSamples(string trackDescription)
         {
-            var attributes = AutomationAttributes
-                .GetAutomationAttributes(trackDescription, ExtenedAttributesHelper.ExtendedAttributeFolder);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(trackDescription);
 
             return attributes?.TrackSamples?.OrderBy(t => t.Description).ToList() 
                 ?? new List<TrackSample>();

@@ -1,7 +1,7 @@
-﻿using System.Xml.Serialization;
-
+﻿
 namespace Halloumi.Shuffler.AudioEngine.Models
 {
+    // ReSharper disable once InconsistentNaming
     public class TrackFXTrigger
     {
         /// <summary>
@@ -51,6 +51,20 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             DelayNotes = 0.25M;
             StartSample = 0;
             EndSample = 0;
+        }
+
+        public TrackFXTrigger Clone()
+        {
+            return new TrackFXTrigger()
+            {
+                StartSyncId = StartSyncId,
+                EndSyncId = EndSyncId,
+                Start = Start,
+                Length = Length,
+                DelayNotes = DelayNotes,
+                StartSample = StartSample,
+                EndSample = EndSample
+            };
         }
     }
 }

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
@@ -1720,7 +1719,7 @@ namespace Halloumi.Shuffler.AudioEngine
         private ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription,
             string fadeInTrackDescription)
         {
-            var attributes = GetAutomationAttributes(fadeOutTrackDescription);
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(fadeOutTrackDescription);
             return attributes?.GetExtendedMixAttributes(fadeInTrackDescription);
         }
 
@@ -1798,7 +1797,7 @@ namespace Halloumi.Shuffler.AudioEngine
             // set to loop start if necessary
             if ((isLooped && currentLoop < maxLoops - 1) || loopForever)
             {
-                var message = $"Looping fade-out section - starting loop {currentLoop + 1} of {maxLoops}";
+                //var message = $"Looping fade-out section - starting loop {currentLoop + 1} of {maxLoops}";
                 // DebugHelper.WriteLine(message);
 
                 PreviousTrack.CurrentEndLoop++;
@@ -2003,7 +2002,7 @@ namespace Halloumi.Shuffler.AudioEngine
         {
             var syncType = (SyncType) (pointer.ToInt32());
             var track = GetInUseTracks().FirstOrDefault(x => x.Channel == channel);
-            var description = track != null ? "Track: " + track.Description : "";
+            //var description = track != null ? "Track: " + track.Description : "";
 
             // DebugHelper.WriteLine("Event Fired: " + syncType + " " + description);
 

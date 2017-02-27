@@ -128,8 +128,14 @@ namespace Halloumi.Shuffler.Forms
             shufflerController.Initalize();
 
             MixLibrary.AvailableTracks = Library.GetTracks();
-            MixLibrary.LoadAllMixDetails();
+            MixLibrary.LoadFromDatabase();
             //var devices = AE.BassHelper.GetWaveOutDevices();
+
+            //var tracks = Library.GetTracks().Select(x => x.Description).Distinct().ToList();
+            AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
+            AutomationAttributesHelper.LoadFromDatabase();
+            //AutomationAttributesHelper.SaveToDatabase();
+
 
             SetView(PlayerDetails.SelectedView.Library);
         }
@@ -214,16 +220,6 @@ namespace Halloumi.Shuffler.Forms
         private void mnuCleanLibrary_Click(object sender, EventArgs e)
         {
             Library.CleanLibrary();
-        }
-
-        private void mnuSyncShufflerFiles_Click(object sender, EventArgs e)
-        {
-            var exportShufflerFiles = new FrmImportShufflerFiles
-            {
-                Library = Library,
-                MixLibrary = MixLibrary
-            };
-            exportShufflerFiles.ShowDialog();
         }
 
         private void mnuUpdateDuplicateTracks_Click(object sender, EventArgs e)

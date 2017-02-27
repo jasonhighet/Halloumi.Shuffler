@@ -49,7 +49,7 @@ namespace Halloumi.Shuffler.Forms
 
         public string Filename { get; set; }
 
-        private AutomationAttributes AutomationAttributes => BassPlayer.GetAutomationAttributes(Track);
+        private AutomationAttributes AutomationAttributes { get; set; }
 
         private TrackSample CurrentSample { get; set; }
 
@@ -203,6 +203,8 @@ namespace Halloumi.Shuffler.Forms
         {
             trackWave.BassPlayer = BassPlayer;
             Track = trackWave.LoadTrack(Filename);
+            AutomationAttributes = AutomationAttributesHelper.GetAutomationAttributes(Track.Description);
+
             cmbOutput.SelectedIndex = 0;
 
             CurrentSamples = new List<TrackSample>();
@@ -363,8 +365,7 @@ namespace Halloumi.Shuffler.Forms
             }
 
             ExtenedAttributesHelper.SaveExtendedAttributes(Track);
-            BassPlayer.ReloadTrack(Track.Filename);
-            BassPlayer.SaveAutomationAttributes(Track);
+            AutomationAttributesHelper.SaveAutomationAttributes(Track.Description, AutomationAttributes);
             BassPlayer.ReloadTrack(Track.Filename);
 
             _saved = true;
@@ -618,7 +619,6 @@ namespace Halloumi.Shuffler.Forms
             trackWave.Unload();
             if (!_saved) return;
 
-            BassPlayer.ReloadAutomationAttributes(Track);
             BassPlayer.ReloadTrack(Track.Filename);
         }
 

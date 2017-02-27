@@ -52,7 +52,6 @@
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuUpdateLibraryOnStartup = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuSyncShufflerFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUpdateDuplicateTracks = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExportLibraryTracks = new System.Windows.Forms.ToolStripMenuItem();
@@ -275,7 +274,6 @@
             this.toolStripSeparator8,
             this.mnuUpdateLibraryOnStartup,
             this.toolStripSeparator1,
-            this.mnuSyncShufflerFiles,
             this.mnuUpdateDuplicateTracks,
             this.toolStripSeparator10,
             this.mnuExportLibraryTracks,
@@ -322,13 +320,6 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(260, 6);
-            // 
-            // mnuSyncShufflerFiles
-            // 
-            this.mnuSyncShufflerFiles.Name = "mnuSyncShufflerFiles";
-            this.mnuSyncShufflerFiles.Size = new System.Drawing.Size(263, 26);
-            this.mnuSyncShufflerFiles.Text = "&Sync Shuffler Files...";
-            this.mnuSyncShufflerFiles.Click += new System.EventHandler(this.mnuSyncShufflerFiles_Click);
             // 
             // mnuUpdateDuplicateTracks
             // 
@@ -970,7 +961,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem mnuUpdateLibraryOnStartup;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem mnuSyncShufflerFiles;
         private System.Windows.Forms.ToolStripMenuItem mnuUpdateDuplicateTracks;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripMenuItem mnuExportLibraryTracks;

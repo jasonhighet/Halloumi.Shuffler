@@ -55,5 +55,20 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             StartSample = 0;
             EndSample = 0;
         }
+
+        public SampleTrigger Clone()
+        {
+            return new SampleTrigger()
+            {
+                StartSyncId = StartSyncId,
+                EndSyncId = EndSyncId,
+                Start = Start,
+                Length = Length,
+                DelayNotes = DelayNotes,
+                StartSample = StartSample,
+                EndSample = EndSample,
+                SampleId = SampleId
+            };
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Halloumi.Shuffler.AudioEngine.Models
@@ -54,6 +55,21 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             FadeEndLoop = 0;
             PowerDownAfterFade = false;
             ExtendedFadeType = ExtendedFadeType.Default;
+        }
+
+        public ExtendedMixAttributes Clone()
+        {
+            return new ExtendedMixAttributes()
+            {
+                SampleTriggers = SampleTriggers.Select(x => x.Clone()).ToList(),
+                ExtendedFadeType = ExtendedFadeType,
+                FadeEnd = FadeEnd,
+                FadeEndLoop = FadeEndLoop,
+                FadeEndVolume = FadeEndVolume,
+                FadeLength = FadeLength,
+                PowerDownAfterFade = PowerDownAfterFade,
+                TrackDescription = TrackDescription
+            };
         }
     }
 }
