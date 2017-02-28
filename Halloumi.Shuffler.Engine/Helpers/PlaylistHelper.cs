@@ -176,7 +176,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             var entryArtist = entry.Artist.ToLower();
 
             return (IsValidLibraryTrack(library, entry.Path))
-                ? library.LoadTrack(entry.Path)
+                ? library.LoadTrack(entry.Path, false)
                 : library.GetTrack(entryArtist, entryTitle, 0);
         }
 

@@ -79,14 +79,15 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             Clear();
 
+
             Parallel.ForEach(trackMixeses, trackMixes =>
             {
                 DebugHelper.WriteLine("LoadMixRankings - " + trackMixes.Track);
 
-                lock (_loadedTracks)
-                {
+                //lock (_loadedTracks)
+                //{
                     _loadedTracks.Add(trackMixes.Track);
-                }
+                //}
 
                 var mixRankings =
                     trackMixes.MixRankings.Select(mixRanking => MixRanking.FromString(mixRanking, trackMixes.Track))

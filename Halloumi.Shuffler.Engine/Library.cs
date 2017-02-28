@@ -588,18 +588,19 @@ namespace Halloumi.Shuffler.AudioLibrary
 
 
         /// <summary>
-        ///     Reloads a track.
+        /// Reloads a track.
         /// </summary>
         /// <param name="filename">The filename.</param>
+        /// <param name="updateLength">if set to <c>true</c> [update length].</param>
         /// <returns></returns>
-        public Track LoadTrack(string filename)
+        public Track LoadTrack(string filename, bool updateLength = true)
         {
             var track = GetTrackByFilename(filename);
 
             if (track == null)
                 track = LoadNewTrack(filename);
             else
-                TrackHelper.LoadTrack(track);
+                TrackHelper.LoadTrack(track, updateLength);
 
             return track;
         }
@@ -1115,9 +1116,9 @@ namespace Halloumi.Shuffler.AudioLibrary
             AlbumCoverHelper.SetTrackAlbumCover(track, image);
         }
 
-        private Track LoadNewTrack(string filename)
+        private Track LoadNewTrack(string filename, bool updateLength = false)
         {
-            var track = TrackHelper.LoadTrack(filename);
+            var track = TrackHelper.LoadTrack(filename, updateLength);
             if (track == null) return null;
 
             lock (Tracks)

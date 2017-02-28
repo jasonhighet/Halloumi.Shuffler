@@ -138,21 +138,22 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.TrackNumber = trackDetails.TrackNumber != "" ? track.TrackNumber : 0;
         }
 
-        public static Track LoadTrack(string filename)
+        public static Track LoadTrack(string filename, bool updateLength = true)
         {
             if (!File.Exists(filename)) return null;
             if (!filename.ToLower().EndsWith(".mp3")) return null;
 
             var track = new Track {Filename = filename};
-            LoadTrack(track);
+            LoadTrack(track, updateLength);
             return track;
         }
 
         /// <summary>
-        ///     Loads the track details from the tags in the associate mp3
+        /// Loads the track details from the tags in the associate mp3
         /// </summary>
         /// <param name="track">The track to load the details of.</param>
-        public static void LoadTrack(Track track)
+        /// <param name="updateLength">if set to <c>true</c> [update length].</param>
+        public static void LoadTrack(Track track, bool updateLength = true)
         {
             if (!File.Exists(track.Filename)) return;
             if (!track.Filename.ToLower().EndsWith(".mp3")) return;
@@ -206,7 +207,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.OriginalDescription = track.Description;
             track.FullLength = track.Length;
 
-            UpdateLength(track);
+            if(updateLength)
+                UpdateLength(track);
+
             UpdateKey(track);
 
             track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);

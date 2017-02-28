@@ -5,9 +5,9 @@ using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
+using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Forms;
 using Un4seen.Bass;
@@ -19,25 +19,44 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class PlayerDetails : UserControl
     {
+        public enum SelectedView
+        {
+            Playlist = 0,
+            Library = 1,
+            Mixer = 2
+        }
+
         private readonly Visuals _bassVisuals = new Visuals();
 
-        #region Constructors
+        private bool _bassPlayerOnTrackChange;
+        private bool _bindingVolumeSlider;
+        private bool _firstVisualShown;
+
+        private bool _loaded;
+
+        private PlaylistControl _playlistControl;
+
+        private bool _timerTick;
+
+        private Color _volumeColor1 = Color.Wheat;
+        private Color _volumeColor2 = Color.Gold;
 
         /// <summary>
-        /// Initializes a new instance of the TrackDetails class.
+        ///     Initializes a new instance of the TrackDetails class.
         /// </summary>
         public PlayerDetails()
         {
             InitializeComponent();
 
             Timer = new BASSTimer(100) {Interval = 100};
-            
+
             Load += TrackDetails_Load;
             KryptonManager.GlobalPaletteChanged += KryptonManager_GlobalPaletteChanged;
 
             slider.Slid += Slider_Slid;
             btnPlay.Click += btnPlay_Click;
-            btnPause.Click += btnPlay_Click; Timer.Tick += Timer_Tick;
+            btnPause.Click += btnPlay_Click;
+            Timer.Tick += Timer_Tick;
 
             btnPrevious.Click += btnPrevious_Click;
             btnSkipToEnd.Click += btnSkipToEnd_Click;
@@ -55,18 +74,71 @@ namespace Halloumi.Shuffler.Controls
             _bassVisuals.MaxFrequencySpectrum = Utils.FFTFrequency2Index(16000, 1024, 44100);
         }
 
+        public bool VisualsShown { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether album art is shown.
+        /// </summary>
+        public bool AlbumArtShown
+        {
+            get { return picCover.Visible; }
+            set { picCover.Visible = value; }
+        }
+
+
+        /// <summary>
+        ///     Gets or sets the library.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Library Library { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the bass player.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AE.BassPlayer BassPlayer { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the mix library
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MixLibrary MixLibrary { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the timer.
+        /// </summary>
+        //private System.Windows.Forms.Timer Timer { get; set; }
+        private BASSTimer Timer { get; }
+
+        /// <summary>
+        ///     Gets or sets the playlist control.
+        /// </summary>
+        public PlaylistControl PlaylistControl
+        {
+            get { return _playlistControl; }
+            set
+            {
+                //if (_playlistControl != null) _playlistControl.PlaylistChanged -= PlaylistControl_PlaylistChanged;
+                _playlistControl = value;
+                if (_playlistControl != null) _playlistControl.PlaylistChanged += PlaylistControl_PlaylistChanged;
+            }
+        }
+
         public void Initialize()
         {
             var settings = Settings.Default;
             BassPlayer.SetMixerVolume(settings.Volume);
 
-            SetVolume((int)settings.Volume);
+            SetVolume((int) settings.Volume);
 
             BassPlayer.OnVolumeChanged += BassPlayer_OnVolumeChanged;
         }
 
         /// <summary>
-        /// Handles the Load event of the TrackDetails control.
+        ///     Handles the Load event of the TrackDetails control.
         /// </summary>
         private void TrackDetails_Load(object sender, EventArgs e)
         {
@@ -94,21 +166,16 @@ namespace Halloumi.Shuffler.Controls
             _loaded = true;
         }
 
-        private bool _loaded;
-
-        #endregion
-
-        #region Private Methods
-
         /// <summary>
-        /// Sets the state of the control based on the current theme.
+        ///     Sets the state of the control based on the current theme.
         /// </summary>
         private void SetThemeState()
         {
             if (DesignMode) return;
 
             var palette = KryptonHelper.GetCurrentPalette();
-            var color = KryptonManager.GetPaletteForMode(palette).GetBackColor2(PaletteBackStyle.PanelAlternate, PaletteState.Normal);
+            var color = KryptonManager.GetPaletteForMode(palette)
+                .GetBackColor2(PaletteBackStyle.PanelAlternate, PaletteState.Normal);
 
             BackColor = color;
             pnlSlider.BackColor = color;
@@ -116,15 +183,14 @@ namespace Halloumi.Shuffler.Controls
             slider.BackColor = color;
             sldVolume.BackColor = color;
 
-            _volumeColor1 = KryptonManager.GetPaletteForMode(palette).GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
-            _volumeColor2 = KryptonManager.GetPaletteForMode(palette).GetBackColor2(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
+            _volumeColor1 = KryptonManager.GetPaletteForMode(palette)
+                .GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
+            _volumeColor2 = KryptonManager.GetPaletteForMode(palette)
+                .GetBackColor2(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
         }
 
-        private Color _volumeColor1 = Color.Wheat;
-        private Color _volumeColor2 = Color.Gold;
-
         /// <summary>
-        /// Displays the current track details.
+        ///     Displays the current track details.
         /// </summary>
         public void DisplayCurrentTrackDetails()
         {
@@ -199,15 +265,12 @@ namespace Halloumi.Shuffler.Controls
             MixLibrary.SetMixLevel(prevTrack, currentTrack, mixRank);
         }
 
-        #endregion
-
-        #region Event Handlers
 
         /// <summary>
-        /// Handles the Slid event of the Slider control.
+        ///     Handles the Slid event of the Slider control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void Slider_Slid(object sender, EventArgs e)
         {
             Timer.Stop();
@@ -218,7 +281,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Tick event of the Timer control.
+        ///     Handles the Tick event of the Timer control.
         /// </summary>
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -232,19 +295,8 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
-        public bool VisualsShown { get; set; }
-
         /// <summary>
-        /// Gets or sets a value indicating whether album art is shown.
-        /// </summary>
-        public bool AlbumArtShown
-        {
-            get { return picCover.Visible; }
-            set { picCover.Visible = value; }
-        }
-
-        /// <summary>
-        /// Handles the Tick event of the Timer control.
+        ///     Handles the Tick event of the Timer control.
         /// </summary>
         private void Timer_Tick()
         {
@@ -256,26 +308,24 @@ namespace Halloumi.Shuffler.Controls
 
             var position = BassPlayer.GetTrackPosition();
 
-            if (slider.Maximum != position.Length) slider.Maximum = (int)position.Length;
-            if (slider.Value != position.Positition) slider.Value = (int)position.Positition;
+            if (slider.Maximum != position.Length) slider.Maximum = (int) position.Length;
+            if (slider.Value != position.Positition) slider.Value = (int) position.Positition;
 
             if (lblTimeElapsed.Text != position.ElapsedFormatted) lblTimeElapsed.Text = position.ElapsedFormatted;
-            if (lblTimeRemaining.Text != position.RemainingFormatted) lblTimeRemaining.Text = position.RemainingFormatted;
+            if (lblTimeRemaining.Text != position.RemainingFormatted)
+                lblTimeRemaining.Text = position.RemainingFormatted;
 
-            btnPause.Visible = (BassPlayer.PlayState == PlayState.Playing);
-            btnPlay.Visible = (BassPlayer.PlayState != PlayState.Playing);
+            btnPause.Visible = BassPlayer.PlayState == PlayState.Playing;
+            btnPlay.Visible = BassPlayer.PlayState != PlayState.Playing;
 
             ShowVisuals();
 
             _timerTick = false;
         }
 
-        private bool _timerTick;
-        private bool _firstVisualShown;
-
         private void ShowVisuals()
         {
-            picVisuals.Visible = (VisualsShown && BassPlayer.PlayState == PlayState.Playing);
+            picVisuals.Visible = VisualsShown && BassPlayer.PlayState == PlayState.Playing;
             if (!VisualsShown) return;
             if (BassPlayer.PlayState == PlayState.Playing)
             {
@@ -311,7 +361,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Click event of the btnPlay control.
+        ///     Handles the Click event of the btnPlay control.
         /// </summary>
         private void btnPlay_Click(object sender, EventArgs e)
         {
@@ -319,12 +369,12 @@ namespace Halloumi.Shuffler.Controls
                 ? delegate { BassPlayer.Pause(); }
                 : new MethodInvoker(delegate { BassPlayer.Play(); }));
 
-            btnPause.Visible = (BassPlayer.PlayState == PlayState.Playing);
-            btnPlay.Visible = (BassPlayer.PlayState != PlayState.Playing);
+            btnPause.Visible = BassPlayer.PlayState == PlayState.Playing;
+            btnPlay.Visible = BassPlayer.PlayState != PlayState.Playing;
         }
 
         /// <summary>
-        /// Handles the Click event of the btnPrevious control.
+        ///     Handles the Click event of the btnPrevious control.
         /// </summary>
         private void btnPrevious_Click(object sender, EventArgs e)
         {
@@ -332,7 +382,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Click event of the btnSkipToEnd control.
+        ///     Handles the Click event of the btnSkipToEnd control.
         /// </summary>
         private void btnSkipToEnd_Click(object sender, EventArgs e)
         {
@@ -340,15 +390,15 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Click event of the btnNext control.
+        ///     Handles the Click event of the btnNext control.
         /// </summary>
         private void btnNext_Click(object sender, EventArgs e)
         {
-            BeginInvoke(new MethodInvoker(delegate { PlaylistControl.PlayNextTrack(); }));
+            BeginInvoke(new MethodInvoker(delegate { BassPlayer.SkipToEnd(); }));
         }
 
         /// <summary>
-        /// Handles the GlobalPaletteChanged event of the KryptonManager control.
+        ///     Handles the GlobalPaletteChanged event of the KryptonManager control.
         /// </summary>
         private void KryptonManager_GlobalPaletteChanged(object sender, EventArgs e)
         {
@@ -356,7 +406,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the OnTrackChange event of the BassPlayer control.
+        ///     Handles the OnTrackChange event of the BassPlayer control.
         /// </summary>
         private void BassPlayer_OnTrackChange(object sender, EventArgs e)
         {
@@ -368,7 +418,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the OnTrackChange event of the BassPlayer control.
+        ///     Handles the OnTrackChange event of the BassPlayer control.
         /// </summary>
         private void BassPlayer_OnTrackChange()
         {
@@ -380,11 +430,9 @@ namespace Halloumi.Shuffler.Controls
             _bassPlayerOnTrackChange = false;
         }
 
-        private bool _bassPlayerOnTrackChange;
-
 
         /// <summary>
-        /// Handles the PlaylistChanged event of the PlaylistControl control.
+        ///     Handles the PlaylistChanged event of the PlaylistControl control.
         /// </summary>
         private void PlaylistControl_PlaylistChanged(object sender, EventArgs e)
         {
@@ -392,7 +440,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        /// Handles the Slid event of the sldVolume control.
+        ///     Handles the Slid event of the sldVolume control.
         /// </summary>
         private void sldVolume_Slid(object sender, EventArgs e)
         {
@@ -402,7 +450,6 @@ namespace Halloumi.Shuffler.Controls
             lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
             _bindingVolumeSlider = false;
         }
-        private bool _bindingVolumeSlider;
 
         private void SetVolume(int volume)
         {
@@ -413,63 +460,10 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnVolumeChanged(object sender, EventArgs e)
         {
             if (_bindingVolumeSlider) return;
-            var volume = (int)BassPlayer.GetMixerVolume();
+            var volume = (int) BassPlayer.GetMixerVolume();
             if (volume != sldVolume.Value)
                 SetVolume(volume);
         }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Library Library { get; set; }
-
-        /// <summary>
-        /// Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AE.BassPlayer BassPlayer { get; set; }
-
-        /// <summary>
-        /// Gets or sets the mix library
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MixLibrary MixLibrary { get; set; }
-
-        /// <summary>
-        /// Gets or sets the timer.
-        /// </summary>
-        //private System.Windows.Forms.Timer Timer { get; set; }
-
-        private BASSTimer Timer { get; set; }
-
-        /// <summary>
-        /// Gets or sets the playlist control.
-        /// </summary>
-        public PlaylistControl PlaylistControl
-        {
-            get
-            {
-                return _playlistControl;
-            }
-            set
-            {
-                //if (_playlistControl != null) _playlistControl.PlaylistChanged -= PlaylistControl_PlaylistChanged;
-                _playlistControl = value;
-                if (_playlistControl != null) _playlistControl.PlaylistChanged += PlaylistControl_PlaylistChanged;
-            }
-        }
-
-        private PlaylistControl _playlistControl;
-
-        #endregion
 
         private void btnReplayMix_Click(object sender, EventArgs e)
         {
@@ -485,21 +479,14 @@ namespace Halloumi.Shuffler.Controls
 
         public SelectedView GetSelectedView()
         {
-            return (SelectedView)tabButtons.CheckedIndex;
+            return (SelectedView) tabButtons.CheckedIndex;
         }
 
         public void SetSelectedView(SelectedView selectedView)
         {
-            var index = (int)selectedView;
+            var index = (int) selectedView;
             if (index != tabButtons.CheckedIndex)
-                tabButtons.CheckedIndex = (int)selectedView;
-        }
-
-        public enum SelectedView
-        {
-            Playlist = 0,
-            Library = 1,
-            Mixer = 2
+                tabButtons.CheckedIndex = (int) selectedView;
         }
     }
 }
