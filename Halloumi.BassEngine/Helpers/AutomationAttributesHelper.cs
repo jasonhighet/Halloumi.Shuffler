@@ -14,9 +14,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         private static readonly Dictionary<string, AutomationAttributes> AllAttributes =
             new Dictionary<string, AutomationAttributes>();
 
-        //private static readonly Dictionary<string, AutomationAttributes> CachedAttributes =
-        //    new Dictionary<string, AutomationAttributes>();
-
         //public static void LoadAllAutomationAttributes(List<string> trackDescriptions, string folder)
         //{
         //    foreach (var trackDescription in trackDescriptions)

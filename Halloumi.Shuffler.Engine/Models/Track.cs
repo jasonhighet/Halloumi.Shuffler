@@ -28,8 +28,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
             TrackNumber = 0;
             CannotCalculateBpm = false;
             IsShufflerTrack = false;
-            ShufflerAttribuesFile = "";
-            ShufflerMixesFile = "";
             StartBpm = 0;
             EndBpm = 0;
             Rank = 1;
@@ -168,22 +166,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         public bool IsShufflerTrack { get; set; }
 
         /// <summary>
-        /// Gets or sets the shuffler attribues file.
-        /// </summary>
-        public string ShufflerAttribuesFile { get; set; }
-
-        /// <summary>
-        /// Gets or sets the shuffler mixes file.
-        /// </summary>
-        public string ShufflerMixesFile { get; set; }
-
-        /// <summary>
         /// Gets the description.
         /// </summary>
-        public string Description
-        {
-            get { return Artist + " - " + Title; }
-        }
+        public string Description => Artist + " - " + Title;
 
         /// <summary>
         /// Gets description at the time the track was loaded

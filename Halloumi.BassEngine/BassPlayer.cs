@@ -87,7 +87,7 @@ namespace Halloumi.Shuffler.AudioEngine
             InitialiseRawLoopMixer();
             InitialiseManualMixer();
 
-            ExtenedAttributesHelper.ExtendedAttributeFolder = "";
+            ExtenedAttributesHelper.ShufflerFolder = "";
         }
 
         public bool LoopFadeInForever { get; set; }

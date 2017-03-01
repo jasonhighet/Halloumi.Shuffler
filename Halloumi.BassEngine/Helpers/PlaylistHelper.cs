@@ -118,30 +118,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Gets the shuffler attributes.
-        /// </summary>
-        /// <param name="extendedAttributeFile">The shuffler attributes file</param>
-        /// <returns>
-        ///     A collection of shuffler attributes
-        /// </returns>
-        public static Dictionary<string, string> GetShufflerAttributes(string extendedAttributeFile)
-        {
-            var attributes = new Dictionary<string, string>();
-            if (!File.Exists(extendedAttributeFile)) return attributes;
-
-            var elements = File.ReadAllText(extendedAttributeFile)
-                .Split(';')
-                .Select(element => element.Split('=').ToList())
-                .Where(items => items.Count > 1 && !attributes.ContainsKey(items[0].Trim()));
-
-            foreach (var element in elements)
-            {
-                attributes.Add(element[0].Trim(), element[1].Trim());
-            }
-            return attributes;
-        }
-
-        /// <summary>
         ///     Represents an entry in a m3u playlist
         /// </summary>
         public class PlaylistEntry

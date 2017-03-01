@@ -316,7 +316,7 @@ namespace Halloumi.Shuffler.Controls
 
             _doNotBind = true;
             BassPlayer.ForcePlay(previousTrack.Filename);
-            BassPlayer.SkipToEnd();
+            BassPlayer.SkipToFadeOut();
             BassPlayer.Play();
 
             _doNotBind = false;

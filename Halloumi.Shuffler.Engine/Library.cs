@@ -95,7 +95,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Gets or sets the folder where the shuffler extended attribute files for the library are kept
         /// </summary>
-        public string ShufflerFolder => ExtenedAttributesHelper.ExtendedAttributeFolder;
+        public string ShufflerFolder => ExtenedAttributesHelper.ShufflerFolder;
 
 
         public Track GetTrack(string artist, string title, decimal length = 0)
@@ -818,7 +818,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public void RemoveShufflerDetails(Track track)
         {
             if (!track.IsShufflerTrack) return;
-            File.Delete(track.ShufflerAttribuesFile);
+            ExtenedAttributesHelper.SaveExtendedAttributes(track.Description, new Dictionary<string, string>());
             LoadTrack(track.Filename);
         }
 

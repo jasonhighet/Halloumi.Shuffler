@@ -96,17 +96,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
         private static DateTime GetTrackLastModified(string filename)
         {
-            var trackDetails = AudioEngine.Helpers.TrackHelper.GuessTrackDetailsFromFilename(filename);
-            var shufflerFile = ShufflerHelper.GetShufflerAttributeFile(trackDetails.Artist + " - " + trackDetails.Title);
-            var shufflerDate = DateTime.MinValue;
-            if (File.Exists(shufflerFile))
-            {
-                shufflerDate = File.GetLastWriteTime(shufflerFile);
-                //shufflerDate = DateTime.Now;
-            }
-
-            var dateModified = File.GetLastWriteTime(filename);
-            return shufflerDate > dateModified ? shufflerDate : dateModified;
+            return File.GetLastWriteTime(filename);
         }
 
 

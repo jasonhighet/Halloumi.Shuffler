@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 
@@ -10,17 +10,51 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
     public static class ExtenedAttributesHelper
     {
-        private static readonly Dictionary<string, Dictionary<string, string>> CachedAttributes;
+        private static readonly Dictionary<string, ExtenedAttributes> AllAttributes = new Dictionary<string, ExtenedAttributes>();
 
-        static ExtenedAttributesHelper()
+        //public static void LoadAllExtendedAttributes(List<string> trackDescriptions)
+        //{
+        //    foreach (var trackDescription in trackDescriptions)
+        //    {
+        //        var filepath = GetExtendedAttributeFile(trackDescription);
+        //        if (!File.Exists(filepath)) continue;
+
+        //        var attributeDictionary = GetExtendedAttributes(trackDescription);
+
+        //        var extendedAttributed = new ExtenedAttributes() {Track = trackDescription};
+        //        extendedAttributed.SetAttributeDictionary(attributeDictionary);
+
+        //        AllAttributes.Add(trackDescription, extendedAttributed);
+        //    }
+        //}
+
+        public static void LoadFromDatabase()
         {
-            CachedAttributes = new Dictionary<string, Dictionary<string, string>>();
+            AllAttributes.Clear();
+            var filepath = ExtendedAttributesFile;
+            if (!File.Exists(filepath))
+                return;
+
+            var allAttributes = SerializationHelper<List<ExtenedAttributes>>.FromXmlFile(filepath);
+            foreach (var attributes in allAttributes)
+            {
+                AllAttributes.Add(attributes.Track, attributes);
+            }
         }
+
+        public static void SaveToDatabase()
+        {
+            var attributes = AllAttributes.Select(x => x.Value).ToList().OrderBy(x => x.Track).ToList();
+            var filepath = ExtendedAttributesFile;
+            SerializationHelper<List<ExtenedAttributes>>.ToXmlFile(attributes, filepath);
+        }
+
+        private static string ExtendedAttributesFile => Path.Combine(ShufflerFolder, "Haloumi.Shuffler.ExtendedAtrributes.xml");
 
         /// <summary>
         ///     Gets or sets the track extended attribute folder.
         /// </summary>
-        public static string ExtendedAttributeFolder { get; set; }
+        public static string ShufflerFolder { get; set; }
 
         /// <summary>
         ///     Loads any attributes stored in a the track comment tag.
@@ -33,7 +67,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             // DebugHelper.WriteLine("Loading Extended Attributes " + track.Description);
 
-            var attributes = GetExtendedAttributes(track);
+            var attributes = GetExtendedAttributes(track.Description);
             if (attributes.ContainsKey("FadeIn"))
             {
                 track.FadeInStart = track.SecondsToSamples(ConversionHelper.ToDouble(attributes["FadeIn"]));
@@ -116,97 +150,64 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Gets the path of extended attribute file for the specified track
-        /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        /// <returns>
-        ///     A filename, including the full path
-        /// </returns>
-        public static string GetExtendedAttributeFile(string trackDescription)
-        {
-            var filename = trackDescription
-                           + ".ExtendedAttributes.txt";
-            filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            return Path.Combine(ExtendedAttributeFolder, filename);
-        }
-
-        /// <summary>
-        ///     Gets the shuffler attributes.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>
-        ///     A collection of shuffler attributes
-        /// </returns>
-        private static Dictionary<string, string> GetExtendedAttributes(AudioStream track)
-        {
-            return GetExtendedAttributes(track.Description);
-        }
-
-        /// <summary>
         ///     Gets the shuffler attributes.
         /// </summary>
         /// <param name="trackDescription">The track description.</param>
         /// <returns>
         ///     A collection of shuffler attributes
         /// </returns>
-        public static Dictionary<string, string> GetExtendedAttributes(string trackDescription)
+       public static Dictionary<string, string> GetExtendedAttributes(string trackDescription)
         {
-            var extendedAttributeFile = GetExtendedAttributeFile(trackDescription);
+            if (trackDescription == "") return null;
+            return AllAttributes.ContainsKey(trackDescription)
+                ? AllAttributes[trackDescription].GetAttributeDictionary()
+                : new Dictionary<string, string>();
+        }
 
-            if (CachedAttributes.ContainsKey(trackDescription))
-                return CachedAttributes[trackDescription];
-
-            var attributes = new Dictionary<string, string>();
-            if (!File.Exists(extendedAttributeFile)) return attributes;
-
-            var attributeLines = File.ReadAllText(extendedAttributeFile)
-                .Split(';')
-                .ToList()
-                .Select(element => element.Split('=').ToList())
-                .Where(items => items.Count > 1 && !attributes.ContainsKey(items[0].Trim()));
-
-            foreach (var attributeLine in attributeLines)
-            {
-                attributes.Add(attributeLine[0].Trim(), attributeLine[1].Trim());
-            }
-
-            if (!CachedAttributes.ContainsKey(trackDescription))
-                CachedAttributes.Add(trackDescription, attributes);
-
-            return attributes;
+        public static void ClearExtendedAttributes(string trackDescription)
+        {
+            SaveExtendedAttributes(trackDescription, new Dictionary<string, string>());
         }
 
         /// <summary>
-        ///     Saves the extended attributes.
+        /// Saves the extended attributes.
         /// </summary>
+        /// <param name="trackDescription">The track description.</param>
         /// <param name="attributes">The attributes.</param>
-        /// <param name="extendedAttributeFile">The extended attribute file.</param>
-        public static void SaveExtendedAttributes(Dictionary<string, string> attributes, string extendedAttributeFile)
+        public static void SaveExtendedAttributes(string trackDescription, Dictionary<string, string> attributes)
         {
-            if (attributes.Count == 0)
+            if (AllAttributes.ContainsKey(trackDescription))
             {
-                if (File.Exists(extendedAttributeFile))
-                    File.Delete((extendedAttributeFile));
+                if (attributes.Count == 0)
+                {
+                    AllAttributes.Remove(trackDescription);
+                }
+                else
+                {
+                    var extendedAttributes = new ExtenedAttributes() { Track = trackDescription };
+                    extendedAttributes.SetAttributeDictionary(attributes);
+                    AllAttributes[trackDescription] = extendedAttributes;
+                }
             }
-            else
+            else if(attributes.Count > 0)
             {
-                var extendedAttributeData = attributes.Aggregate("",
-                    (current, keyvalue) => current + $"{keyvalue.Key}={keyvalue.Value};");
+                var extendedAttributes = new ExtenedAttributes() {Track = trackDescription};
+                extendedAttributes.SetAttributeDictionary(attributes);
+            }
 
-                File.WriteAllText(extendedAttributeFile, extendedAttributeData, Encoding.UTF8);
-            }
+            Task.Run(() => SaveToDatabase());
         }
 
         /// <summary>
-        ///     Determines whether the specified track has an extended attribute file.
+        /// Determines whether the specified track has an extended attribute file.
         /// </summary>
-        /// <param name="track">The track.</param>
+        /// <param name="trackDescription">The track description.</param>
         /// <returns>
-        ///     True if the specified track has an extended attribute file; otherwise, false.
+        /// True if the specified track has an extended attribute file; otherwise, false.
         /// </returns>
-        public static bool HasExtendedAttributeFile(Track track)
+        public static bool HasExtendedAttributes(string trackDescription)
         {
-            return File.Exists(GetExtendedAttributeFile(track.Description));
+            return AllAttributes.ContainsKey(trackDescription);
         }
 
         /// <summary>
@@ -266,8 +267,44 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (track.Key != "")
                 attributes.Add("Key", track.Key);
 
-            var extendedAttributeFile = GetExtendedAttributeFile(track.Description);
-            SaveExtendedAttributes(attributes, extendedAttributeFile);
+            SaveExtendedAttributes(track.Description, attributes);
+        }
+
+        public class ExtenedAttributes
+        {
+            public string Track { get; set; }
+
+            public string Attributes { get; set; }
+
+            public Dictionary<string, string> GetAttributeDictionary()
+            {
+                var attributeDictionary = new Dictionary<string, string>();
+
+                var attributeLines = Attributes
+                    .Split(';')
+                    .ToList()
+                    .Select(element => element.Split('=').ToList())
+                    .Where(items => items.Count > 1 && !attributeDictionary.ContainsKey(items[0].Trim()));
+
+                foreach (var attributeLine in attributeLines)
+                {
+                    attributeDictionary.Add(attributeLine[0].Trim(), attributeLine[1].Trim());
+                }
+
+                return attributeDictionary;
+            }
+
+            public void SetAttributeDictionary(Dictionary<string, string> attributeDictionary)
+            {
+                Attributes = "";
+                var keyValues = attributeDictionary
+                    .ToList()
+                    .OrderBy(x => x.Key)
+                    .Where(x => !string.IsNullOrEmpty(x.Value));
+
+                Attributes = keyValues.Aggregate("",
+                    (current, keyvalue) => current + $"{keyvalue.Key}={keyvalue.Value};");
+            }
         }
     }
 }

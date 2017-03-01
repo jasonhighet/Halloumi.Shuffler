@@ -80,7 +80,7 @@ namespace Halloumi.Shuffler.TestHarness
             const string libraryFolder = @"D:\Music\Library";
 
             _bassPlayer = new BassPlayer(Handle);
-            ExtenedAttributesHelper.ExtendedAttributeFolder = @"D:\Music\ShufflerAudioDatabase";
+            ExtenedAttributesHelper.ShufflerFolder = @"D:\Music\ShufflerAudioDatabase";
 
             _library = new Library(_bassPlayer) {LibraryFolder = libraryFolder};
 

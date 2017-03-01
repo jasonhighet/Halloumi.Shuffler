@@ -132,6 +132,11 @@ namespace Halloumi.Shuffler.Forms
             //var devices = AE.BassHelper.GetWaveOutDevices();
 
             //var tracks = Library.GetTracks().Select(x => x.Description).Distinct().ToList();
+            ExtenedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
+            ExtenedAttributesHelper.LoadFromDatabase();
+            //ExtenedAttributesHelper.SaveToDatabase();
+
+
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             AutomationAttributesHelper.LoadFromDatabase();
             //AutomationAttributesHelper.SaveToDatabase();
@@ -325,7 +330,7 @@ namespace Halloumi.Shuffler.Forms
             var settings = Settings.Default;
             Library.LibraryFolder = settings.LibraryFolder;
             Library.PlaylistFolder = settings.PlaylistFolder;
-            ExtenedAttributesHelper.ExtendedAttributeFolder = settings.ShufflerFolder;
+            ExtenedAttributesHelper.ShufflerFolder = settings.ShufflerFolder;
             PluginHelper.WaPluginsFolder = settings.WaPluginsFolder;
             PluginHelper.VstPluginsFolder = settings.VstPluginsFolder;
             formStateController.FormStateSettings = settings.FormStateSettings;

@@ -10,7 +10,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 {
     public static class ShufflerHelper
     {
-        public static string ShufflerFolder => ExtenedAttributesHelper.ExtendedAttributeFolder;
+        public static string ShufflerFolder => ExtenedAttributesHelper.ShufflerFolder;
 
         /// <summary>
         ///     Updates the Shuffler files after a track has been changed.
@@ -23,19 +23,19 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         {
             try
             {
-                var newAttributesFile = GetShufflerAttributeFile(track.Description);
-                var newMixesFile = GetShufflerMixesFile(track);
+                //var newAttributesFile = GetShufflerAttributeFile(track.Description);
+                //var newMixesFile = GetShufflerMixesFile(track);
 
-                File.Move(track.ShufflerAttribuesFile, newAttributesFile);
-                File.Move(track.ShufflerMixesFile, newMixesFile);
+                //File.Move(track.ShufflerAttribuesFile, newAttributesFile);
+                //File.Move(track.ShufflerMixesFile, newMixesFile);
 
-                track.ShufflerAttribuesFile = newAttributesFile;
-                track.ShufflerMixesFile = newMixesFile;
+                //track.ShufflerAttribuesFile = newAttributesFile;
+                //track.ShufflerMixesFile = newMixesFile;
 
-                var replacer = new TextReplacer(track.OriginalDescription + ",", track.Description + ",", false, false,
-                    false, false);
+                //var replacer = new TextReplacer(track.OriginalDescription + ",", track.Description + ",", false, false,
+                //    false, false);
 
-                replacer.Replace(ShufflerFolder, "*.Mixes.txt", false);
+                //replacer.Replace(ShufflerFolder, "*.Mixes.txt", false);
             }
             catch
             {
@@ -49,15 +49,11 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// <param name="track">The track.</param>
         public static Dictionary<string, string> LoadShufflerDetails(Track track)
         {
-            var shufflerAttribuesFile = GetShufflerAttributeFile(track.Description);
-            track.IsShufflerTrack = File.Exists(shufflerAttribuesFile);
+            track.IsShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(track.Description);
 
             if (!track.IsShufflerTrack) return null;
 
-            track.ShufflerAttribuesFile = shufflerAttribuesFile;
-            track.ShufflerMixesFile = GetShufflerMixesFile(track);
-
-            var attributes = AudioEngine.Helpers.PlaylistHelper.GetShufflerAttributes(track.ShufflerAttribuesFile);
+            var attributes = ExtenedAttributesHelper.GetExtendedAttributes(track.Description);
 
             if (attributes.ContainsKey("StartBPM"))
                 track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
@@ -115,38 +111,38 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
         public static void SaveShufflerAttributes(Track track, Dictionary<string, string> attributes)
         {
-            ExtenedAttributesHelper.SaveExtendedAttributes(attributes, GetShufflerAttributeFile(track.Description));
+            ExtenedAttributesHelper.SaveExtendedAttributes(track.Description, attributes);
         }
 
-        /// <summary>
-        ///     Gets the shuffler attribute file for a track
-        /// </summary>
-        /// <param name="trackDescription">The track description.</param>
-        /// <returns>
-        ///     The shuffler attribute file
-        /// </returns>
-        public static string GetShufflerAttributeFile(string trackDescription)
-        {
-            var filename = $"{trackDescription}.ExtendedAttributes.txt";
-            filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            filename = Path.Combine(ShufflerFolder, filename);
-            return filename;
-        }
+        ///// <summary>
+        /////     Gets the shuffler attribute file for a track
+        ///// </summary>
+        ///// <param name="trackDescription">The track description.</param>
+        ///// <returns>
+        /////     The shuffler attribute file
+        ///// </returns>
+        //public static string GetShufflerAttributeFile(string trackDescription)
+        //{
+        //    var filename = $"{trackDescription}.ExtendedAttributes.txt";
+        //    filename = FileSystemHelper.StripInvalidFileNameChars(filename);
+        //    filename = Path.Combine(ShufflerFolder, filename);
+        //    return filename;
+        //}
 
-        /// <summary>
-        ///     Gets the shuffler mixes file for a track
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>
-        ///     The shuffler mixes file
-        /// </returns>
-        public static string GetShufflerMixesFile(Track track)
-        {
-            var filename = $"{track.Description}.Mixes.txt";
-            filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-            filename = Path.Combine(ShufflerFolder, filename);
-            return filename;
-        }
+        ///// <summary>
+        /////     Gets the shuffler mixes file for a track
+        ///// </summary>
+        ///// <param name="track">The track.</param>
+        ///// <returns>
+        /////     The shuffler mixes file
+        ///// </returns>
+        //public static string GetShufflerMixesFile(Track track)
+        //{
+        //    var filename = $"{track.Description}.Mixes.txt";
+        //    filename = FileSystemHelper.StripInvalidFileNameChars(filename);
+        //    filename = Path.Combine(ShufflerFolder, filename);
+        //    return filename;
+        //}
 
         ///// <summary>
         /////     Imports the shuffler details.
