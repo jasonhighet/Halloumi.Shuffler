@@ -176,6 +176,13 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="attributes">The attributes.</param>
         public static void SaveExtendedAttributes(string trackDescription, Dictionary<string, string> attributes)
         {
+            SetExtendedAttributes(trackDescription, attributes);
+
+            Task.Run(() => SaveToDatabase());
+        }
+
+        private static void SetExtendedAttributes(string trackDescription, Dictionary<string, string> attributes)
+        {
             if (AllAttributes.ContainsKey(trackDescription))
             {
                 if (attributes.Count == 0)
@@ -189,13 +196,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                     AllAttributes[trackDescription] = extendedAttributes;
                 }
             }
-            else if(attributes.Count > 0)
+            else if (attributes.Count > 0)
             {
-                var extendedAttributes = new ExtenedAttributes() {Track = trackDescription};
+                var extendedAttributes = new ExtenedAttributes() { Track = trackDescription };
                 extendedAttributes.SetAttributeDictionary(attributes);
             }
-
-            Task.Run(() => SaveToDatabase());
         }
 
         /// <summary>
@@ -208,6 +213,22 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static bool HasExtendedAttributes(string trackDescription)
         {
             return AllAttributes.ContainsKey(trackDescription);
+        }
+
+        /// <summary>
+        ///     Sets a track attribute, but does not save it
+        /// </summary>
+        /// <param name="track">The track.</param>
+        public static void SetExtendedAttribute(string trackDescription, string key, string value)
+        {
+            var attributes = GetExtendedAttributes(trackDescription);
+            if (attributes.ContainsKey(key))
+                attributes.Remove(key);
+
+            if (!string.IsNullOrEmpty(value))
+                attributes.Add(key, value);
+
+            SetExtendedAttributes(trackDescription, attributes);
         }
 
         /// <summary>

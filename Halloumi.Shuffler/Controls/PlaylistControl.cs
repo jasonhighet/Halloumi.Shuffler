@@ -175,10 +175,11 @@ namespace Halloumi.Shuffler.Controls
             var trackRankDescription = toolStripDropDownItem.Text;
             var trackRank = MixLibrary.GetRankFromDescription(trackRankDescription);
 
-            foreach (var track in GetSelectedLibraryTracks())
+            var tracks = GetSelectedLibraryTracks();
+            Library.SetRank(tracks, (int)trackRank);
+
+            foreach (var track in tracks)
             {
-                track.Rank = (int)trackRank;
-                Library.SaveRank(track);
                 var trackModel = TrackModels.FirstOrDefault(t => t.Description == track.Description);
                 if (trackModel == null) continue;
                 trackModel.TrackRankDescription = trackRankDescription;

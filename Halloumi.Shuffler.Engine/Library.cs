@@ -605,9 +605,9 @@ namespace Halloumi.Shuffler.AudioLibrary
             return track;
         }
 
-        public void SaveRank(Track track)
+        public void SetRank(List<Track> tracks, int rank)
         {
-            TrackHelper.UpdateRank(track);
+            TrackHelper.SetRank(tracks, rank);
         }
 
 

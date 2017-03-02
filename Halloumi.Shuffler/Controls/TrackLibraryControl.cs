@@ -188,11 +188,8 @@ namespace Halloumi.Shuffler.Controls
             var mixRankDescription = dropDownItem.Text;
             var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
 
-            foreach (var track in GetSelectedTracks())
-            {
-                track.Rank = (int) mixRank;
-                Library.SaveRank(track);
-            }
+            var tracks = GetSelectedTracks();
+            Library.SetRank(tracks, (int)mixRank);
 
             DebugHelper.WriteLine("mnuRank");
             BindData();

@@ -7,6 +7,7 @@ using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using IdSharp.Tagging.ID3v2;
+using System.Threading.Tasks;
 
 namespace Halloumi.Shuffler.AudioLibrary.Helpers
 {
@@ -244,11 +245,16 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.Title = data[1].Trim();
         }
 
-        public static void UpdateRank(Track track)
+        public static void SetRank(List<Track> tracks, int rank)
         {
-            var bassTrack = BassPlayer.LoadTrack(track.Filename);
-            bassTrack.Rank = track.Rank;
-            ExtenedAttributesHelper.SaveExtendedAttributes(bassTrack);
+            foreach (var track in tracks)
+            {
+                track.Rank = rank;
+                var bassTrack = BassPlayer.LoadTrack(track.Filename);
+                bassTrack.Rank = track.Rank;
+                ExtenedAttributesHelper.SetExtendedAttribute(track.Description, "Rank", track.Rank.ToString());
+            }
+            Task.Run(() => ExtenedAttributesHelper.SaveToDatabase());
         }
     }
 }

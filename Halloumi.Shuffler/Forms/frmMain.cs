@@ -180,8 +180,11 @@ namespace Halloumi.Shuffler.Forms
             var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
 
             var track = playlistControl.GetCurrentTrack();
-            track.Rank = (int) mixRank;
-            Library.SaveRank(track);
+            if (track == null)
+                return;
+
+            var tracks = new List<Track> { track };
+            Library.SetRank(tracks, (int)mixRank);
         }
 
         private void mnuViewVisuals_Click(object sender, EventArgs e)

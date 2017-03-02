@@ -552,7 +552,8 @@ namespace Halloumi.Shuffler.AudioEngine
                 if (tags.Gain.HasValue)
                     track.Gain = tags.Gain.Value;
 
-                track.Key = tags.Key;
+                if(!string.IsNullOrEmpty(tags.Key))
+                    track.Key = tags.Key;
 
                 if (tags.Bpm.HasValue)
                     track.TagBpm = tags.Bpm.Value;
