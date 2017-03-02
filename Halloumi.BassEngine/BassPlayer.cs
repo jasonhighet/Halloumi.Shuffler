@@ -446,7 +446,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </returns>
         public Track LoadTrack(string filename, string artist, string title)
         {
-            if (CachedTracks.Exists(t => string.Equals(t.Filename, filename, StringComparison.CurrentCultureIgnoreCase)))
+            if (IsTrackLoaded(filename))
             {
                 return
                     CachedTracks.FirstOrDefault(
@@ -472,6 +472,11 @@ namespace Halloumi.Shuffler.AudioEngine
             LoadTagData(track);
 
             return track;
+        }
+
+        public bool IsTrackLoaded(string filename)
+        {
+            return CachedTracks.Exists(t => string.Equals(t.Filename, filename, StringComparison.CurrentCultureIgnoreCase));
         }
 
 

@@ -250,8 +250,13 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             foreach (var track in tracks)
             {
                 track.Rank = rank;
-                var bassTrack = BassPlayer.LoadTrack(track.Filename);
-                bassTrack.Rank = track.Rank;
+
+                if (BassPlayer.IsTrackLoaded(track.Filename))
+                {
+                    var bassTrack = BassPlayer.LoadTrack(track.Filename);
+                    bassTrack.Rank = track.Rank;
+                }
+
                 ExtenedAttributesHelper.SetExtendedAttribute(track.Description, "Rank", track.Rank.ToString());
             }
             Task.Run(() => ExtenedAttributesHelper.SaveToDatabase());
