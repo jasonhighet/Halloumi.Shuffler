@@ -15,6 +15,7 @@ using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
+using PlaylistHelper = Halloumi.Shuffler.AudioLibrary.Helpers.PlaylistHelper;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -431,8 +432,7 @@ namespace Halloumi.Shuffler.Controls
                 Application.DoEvents();
 
                 CurrentPlaylistFile = playlistName;
-                var playlist = Library.LoadPlaylist(playlistName);
-                QueuePlaylist(playlist);
+                QueueTracks(PlaylistHelper.GetTracksInPlaylistFile(playlistName));
             }
             catch (Exception e)
             {
@@ -440,23 +440,6 @@ namespace Halloumi.Shuffler.Controls
             }
             Cursor = Cursors.Default;
             Application.DoEvents();
-        }
-
-        /// <summary>
-        ///     Queues a play-list.
-        /// </summary>
-        /// <param name="playlist">The play-list.</param>
-        public void QueuePlaylist(Playlist playlist)
-        {
-            try
-            {
-                TrackModels.Clear();
-                QueueTracks(playlist.Tracks);
-            }
-            catch (Exception e)
-            {
-                HandleException(e);
-            }
         }
 
         /// <summary>
@@ -657,12 +640,7 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                var playlist = new Playlist
-                {
-                    Filename = playlistFile,
-                    Tracks = GetTracks()
-                };
-                Library.SavePlaylist(playlist);
+                PlaylistHelper.ExportPlaylist(playlistFile, GetTracks());
                 CurrentPlaylistFile = playlistFile;
             }
             catch (Exception e)
@@ -1015,23 +993,13 @@ namespace Halloumi.Shuffler.Controls
             Track selectedTrack = null;
             if (selectedTracks.Count == 1) selectedTrack = selectedTracks[0];
 
-            var playlists = Library.GetAllPlaylists();
+            var playlists = PlaylistHelper.GetPlaylistsNotForTrack(selectedTrack);
 
-            // generate 'add to play-list' sub menu
+            // generate 'add to playlist' sub menu
             mnuAddTrackToPlaylist.DropDownItems.Clear();
             foreach (var playlist in playlists)
             {
-                if (selectedTrack != null)
-                {
-                    if (!playlist.Tracks.Contains(selectedTrack))
-                    {
-                        mnuAddTrackToPlaylist.DropDownItems.Add(playlist.Name, null, mnuAddTrackToPlaylist_Click);
-                    }
-                }
-                else
-                {
-                    mnuAddTrackToPlaylist.DropDownItems.Add(playlist.Name, null, mnuAddTrackToPlaylist_Click);
-                }
+                mnuAddTrackToPlaylist.DropDownItems.Add(playlist, null, mnuAddTrackToPlaylist_Click);
             }
             mnuAddTrackToPlaylist.DropDownItems.Add("(New Playlist)", null, mnuAddNewPlaylist_Click);
             mnuAddTrackToPlaylist.Visible = (mnuAddTrackToPlaylist.DropDownItems.Count > 0);
@@ -1039,14 +1007,14 @@ namespace Halloumi.Shuffler.Controls
 
         private void BindRemoveTrackFromPlaylistMenu()
         {
-            // generate 'remove from play-list' sub menu
+            // generate 'remove from playlist' sub menu
             mnuRemoveTrackFromPlaylist.DropDownItems.Clear();
-            var selectedPlaylists = Library.GetPlaylistsForTracks(GetSelectedLibraryTracks());
+            var selectedPlaylists = PlaylistHelper.GetPlaylistsForTracks(GetSelectedLibraryTracks());
             foreach (var playlist in selectedPlaylists)
             {
-                mnuRemoveTrackFromPlaylist.DropDownItems.Add(playlist.Name, null, mnuRemoveTrackFromPlaylist_Click);
+                mnuRemoveTrackFromPlaylist.DropDownItems.Add(playlist, null, mnuRemoveTrackFromPlaylist_Click);
             }
-            mnuRemoveTrackFromPlaylist.Visible = (mnuRemoveTrackFromPlaylist.DropDownItems.Count > 0);
+            mnuRemoveTrackFromPlaylist.Visible = mnuRemoveTrackFromPlaylist.DropDownItems.Count > 0;
         }
 
         /// <summary>
@@ -1057,8 +1025,8 @@ namespace Halloumi.Shuffler.Controls
             var menu = sender as ToolStripMenuItem;
             if (menu == null) return;
 
-            var playlist = Library.GetPlaylistByName(menu.Text);
-            Library.AddTracksToPlaylist(playlist, GetSelectedLibraryTracks());
+            var playlist = menu.Text;
+            PlaylistHelper.AddTracksToPlaylist(playlist, GetSelectedLibraryTracks());
         }
 
         /// <summary>
@@ -1084,8 +1052,8 @@ namespace Halloumi.Shuffler.Controls
             var menu = sender as ToolStripMenuItem;
             if (menu == null) return;
 
-            var playlist = Library.GetPlaylistByName(menu.Text);
-            Library.RemoveTracksFromPlaylist(playlist, GetSelectedLibraryTracks());
+            var playlist = menu.Text;
+            PlaylistHelper.RemoveTracksFromPlaylist(playlist, GetSelectedLibraryTracks());
         }
 
         /// <summary>

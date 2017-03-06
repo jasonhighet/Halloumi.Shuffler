@@ -15,6 +15,7 @@ using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
+using PlaylistHelper = Halloumi.Shuffler.AudioLibrary.Helpers.PlaylistHelper;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -74,6 +75,8 @@ namespace Halloumi.Shuffler.Forms
             BassPlayer = new AE.BassPlayer(Handle);
             Library = new Library(BassPlayer);
 
+            PlaylistHelper.Library = Library;
+            
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
 
@@ -111,9 +114,6 @@ namespace Halloumi.Shuffler.Forms
 
             Library.LoadFromDatabase();
 
-            if (Library.GetTracks().Count > 0)
-                Library.LoadPlaylists();
-
             trackLibraryControl.Initalize();
 
             SampleLibrary.LoadFromCache();
@@ -130,17 +130,14 @@ namespace Halloumi.Shuffler.Forms
             MixLibrary.AvailableTracks = Library.GetTracks();
             MixLibrary.LoadFromDatabase();
             //var devices = AE.BassHelper.GetWaveOutDevices();
-
-            //var tracks = Library.GetTracks().Select(x => x.Description).Distinct().ToList();
+            
             ExtenedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             ExtenedAttributesHelper.LoadFromDatabase();
-            //ExtenedAttributesHelper.SaveToDatabase();
-
 
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             AutomationAttributesHelper.LoadFromDatabase();
-            //AutomationAttributesHelper.SaveToDatabase();
 
+            PlaylistHelper.LoadFromDatabase();
 
             SetView(PlayerDetails.SelectedView.Library);
         }

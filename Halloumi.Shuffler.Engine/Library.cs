@@ -86,11 +86,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public string LibraryFolder { get; set; }
 
-        public string PlaylistFolder
-        {
-            get { return PlaylistHelper.PlaylistFolder; }
-            set { PlaylistHelper.PlaylistFolder = value; }
-        }
+        public string PlaylistFolder { get; set; }
 
         /// <summary>
         ///     Gets or sets the folder where the shuffler extended attribute files for the library are kept
@@ -100,12 +96,15 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         public Track GetTrack(string artist, string title, decimal length = 0)
         {
-            artist = artist.ToLower();
-            title = title.ToLower();
-
             var track = Tracks.FirstOrDefault(
-                x => x.Artist.ToLower() == artist && x.Title.ToLower() == title && x.Length == length)
-                        ?? Tracks.Where(x => x.Artist.ToLower() == artist && x.Title.ToLower() == title)
+                x =>
+                    string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase) &&
+                    string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase) && x.Length == length)
+                        ??
+                        Tracks.Where(
+                            x =>
+                                string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase) &&
+                                string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase))
                             .OrderByDescending(x => Math.Abs(x.Length - length))
                             .FirstOrDefault();
 
@@ -191,12 +190,12 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (genreFilters == null)
             {
-                genreFilters = new List<string> {""};
+                genreFilters = new List<string> { "" };
             }
 
             if (albumArtistFilters == null)
             {
-                albumArtistFilters = new List<string> {""};
+                albumArtistFilters = new List<string> { "" };
             }
 
             var albums = new List<string>();
@@ -258,7 +257,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (genreFilters == null)
             {
-                genreFilters = new List<string> {""};
+                genreFilters = new List<string> { "" };
             }
 
             var artists = new List<string>();
@@ -288,7 +287,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>A list of tracks</returns>
         public List<Track> GetAllTracksForAlbum(string albumName)
         {
-            return GetTracks("", "", "", albumName, "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+            return GetTracks("", "", "", albumName, "", "", ShufflerFilter.None, 0, 1000);
         }
 
         /// <summary>
@@ -342,7 +341,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             return GetArtists("", "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
         }
-
 
 
         /// <summary>
@@ -462,10 +460,15 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (maxBpm == 0) maxBpm = 200;
 
-            List<Track> tracks;
-            lock (Tracks)
+            Console.WriteLine("GET TRACKS!!!");
+
+            var tracks = Tracks;
+            if (!string.IsNullOrEmpty(playlistFilter))
             {
-                tracks = Tracks
+                tracks = PlaylistHelper.GetTracksInPlaylist(playlistFilter);
+            }
+
+            tracks = tracks
                     .Where(t => genreFilter == "" || t.Genre.ToLower() == genreFilter)
                     .Where(t => albumFilter == "" || t.Album.ToLower() == albumFilter)
                     .Where(t => artistFilter == "" || t.Artist.ToLower() == artistFilter)
@@ -480,7 +483,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                     .ThenBy(t => t.Artist)
                     .ThenBy(t => t.Title)
                     .ToList();
-            }
 
             if (!string.IsNullOrEmpty(searchFilter))
             {
@@ -491,24 +493,10 @@ namespace Halloumi.Shuffler.AudioLibrary
                                            || t.Title.ToLower().Contains(searchFilter)).ToList();
             }
 
-            if (!string.IsNullOrEmpty(playlistFilter))
-            {
-                var playlist = GetPlaylistByName(playlistFilter);
-                if (playlist != null)
-                {
-                    var playlistTracks = new HashSet<string>(playlist.Tracks.Select(t => t.Description).Distinct());
-                    tracks = tracks.Where(t => playlistTracks.Contains(t.Description)).ToList();
-                }
-            }
-
             if (!string.IsNullOrEmpty(excludePlaylistFilter))
             {
-                var excludePlaylist = GetPlaylistByName(excludePlaylistFilter);
-                if (excludePlaylist != null)
-                {
-                    var excludeTracks = new HashSet<string>(excludePlaylist.Tracks.Select(t => t.Description).Distinct());
-                    tracks = tracks.Where(t => !excludeTracks.Contains(t.Description)).ToList();
-                }
+                var excludeTracks = new HashSet<string>(PlaylistHelper.GetTracksInPlaylist(excludePlaylistFilter).Select(t => t.Description).Distinct());
+                tracks = tracks.Where(t => !excludeTracks.Contains(t.Description)).ToList();
             }
 
             switch (trackRankFilter)
@@ -588,7 +576,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
 
         /// <summary>
-        /// Reloads a track.
+        ///     Reloads a track.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="updateLength">if set to <c>true</c> [update length].</param>
@@ -637,7 +625,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                     Tracks.Remove(track);
 
                     if (_cancelImport) break;
-                    RemoveTrackFromAllPlaylists(track);
                 }
             }
 
@@ -672,7 +659,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (newGenre.Trim() == "" || oldGenre.Trim() == "") return;
             if (newGenre.Trim() == NoValue || oldGenre.Trim() == NoValue) return;
 
-            var tracks = GetTracks(oldGenre, "", "", "", "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+            var tracks = GetTracks(oldGenre, "", "", "", "", "", ShufflerFilter.None, 0, 1000);
             UpdateGenre(tracks, newGenre);
         }
 
@@ -736,7 +723,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (newArtist.Trim() == "" || oldArtist.Trim() == "") return;
             if (newArtist.Trim() == NoValue || oldArtist.Trim() == NoValue) return;
 
-            var tracks = GetTracks("", "", oldArtist, "", "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+            var tracks = GetTracks("", "", oldArtist, "", "", "", ShufflerFilter.None, 0, 1000);
             foreach (var track in tracks)
             {
                 track.AlbumArtist = newArtist;
@@ -744,7 +731,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 SaveTrack(track);
             }
 
-            tracks = GetTracks("", oldArtist, "", "", "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+            tracks = GetTracks("", oldArtist, "", "", "", "", ShufflerFilter.None, 0, 1000);
             foreach (var track in tracks)
             {
                 track.Artist = newArtist;
@@ -835,60 +822,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             SaveToDatabase();
         }
 
-        public List<Playlist> GetAllPlaylists()
-        {
-            return PlaylistHelper.GetAllPlaylists();
-        }
-
-        public Playlist GetPlaylistByName(string name)
-        {
-            return PlaylistHelper.GetPlaylistByName(name);
-        }
-
-        public void LoadPlaylists()
-        {
-            PlaylistHelper.LoadPlaylists(this);
-        }
-
-        public void AddTracksToPlaylist(Playlist playlist, List<Track> tracks)
-        {
-            PlaylistHelper.AddTracksToPlaylist(playlist, tracks);
-        }
-
-        public void RemoveTracksFromPlaylist(Playlist playlist, List<Track> tracks)
-        {
-            PlaylistHelper.RemoveTracksFromPlaylist(playlist, tracks);
-        }
-
-        public void RemoveTrackFromAllPlaylists(Track track)
-        {
-            PlaylistHelper.RemoveTrackFromAllPlaylists(track);
-        }
-
-        public List<Playlist> GetPlaylistsForTrack(Track track)
-        {
-            return PlaylistHelper.GetPlaylistsForTrack(track);
-        }
-
-        public List<Playlist> GetPlaylistsForTracks(List<Track> tracks)
-        {
-            return PlaylistHelper.GetPlaylistsForTracks(tracks);
-        }
-
-        public Playlist CreateNewPlaylist(string playlistName)
-        {
-            return PlaylistHelper.CreateNewPlaylist(playlistName);
-        }
-
-        public Playlist LoadPlaylist(string playlistFile)
-        {
-            return PlaylistHelper.LoadPlaylist(playlistFile, this);
-        }
-
-        public void SavePlaylist(Playlist playlist)
-        {
-            PlaylistHelper.SavePlaylist(playlist);
-        }
 
         public void CopyAudioFromAnotherTrack(Track destinationTrack, Track sourceTrack)
         {
@@ -1041,16 +974,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
 
-        ///// <summary>
-        /////     Imports the shuffler details.
-        ///// </summary>
-        ///// <param name="importFolder">The import folder.</param>
-        ///// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
-        //public void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
-        //{
-        //    ShufflerHelper.ImportShufflerDetails(importFolder, deleteAfterImport);
-        //}
-
         public Track LoadNonLibraryTrack(string filename)
         {
             return TrackHelper.LoadTrack(filename);
@@ -1072,22 +995,22 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (!TrackHelper.SaveTrack(track)) return false;
             if (!TrackHelper.RenameTrack(track)) return false;
 
-            if (!updateAxillaryFiles) return true;
-            try
-            {
-                if (track.IsShufflerTrack) ShufflerHelper.RenameShufferFiles(track);
+            //if (!updateAxillaryFiles) return true;
+            //try
+            //{
+            //    if (track.IsShufflerTrack) ShufflerHelper.RenameShufferFiles(track);
 
-                // if filename changed, save any associated play-list files
-                var playlists = PlaylistHelper.GetAllPlaylists().Where(playlist => playlist.Tracks.Contains(track));
-                foreach (var playlist in playlists)
-                {
-                    PlaylistHelper.SavePlaylist(playlist);
-                }
-            }
-            catch
-            {
-                // ignored
-            }
+            //    // if filename changed, save any associated play-list files
+            //    var playlists = PlaylistHelper.GetAllPlaylists().Where(playlist => playlist.Tracks.Contains(track));
+            //    foreach (var playlist in playlists)
+            //    {
+            //        PlaylistHelper.SavePlaylist(playlist);
+            //    }
+            //}
+            //catch
+            //{
+            //    // ignored
+            //}
 
             return true;
         }

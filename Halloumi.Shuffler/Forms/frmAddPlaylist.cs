@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -47,9 +48,7 @@ namespace Halloumi.Shuffler.Forms
             Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            var playlist = Library.CreateNewPlaylist(playlistName);
-
-            Library.AddTracksToPlaylist(playlist, Tracks);
+            PlaylistHelper.AddTracksToPlaylist(playlistName, Tracks);
 
             DialogResult = DialogResult.OK;
             Close();
