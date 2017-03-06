@@ -29,9 +29,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             {
                 var tracks = playlist
                     .Entries
-                    .Select(entry => Library.GetTracksByDescription(entry.Artist + " - " + entry.Title)
-                    .OrderByDescending(x => Math.Abs(x.Length - entry.Length))
-                    .FirstOrDefault())
+                    .Select(entry => Library.GetTrack(entry.Artist, entry.Title, entry.Length))
                     .Where(track => track != null)
                     .OrderBy(x=>x.Description)
                     .ToList();
@@ -39,7 +37,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                 var dictionary = new Dictionary<string, Track>();
                 foreach (var track in tracks)
                 {
-                    if(dictionary.ContainsKey(track.Description))
+                    if(!dictionary.ContainsKey(track.Description))
                         dictionary.Add(track.Description, track);
                 }
 
@@ -186,6 +184,16 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                     .Select(LoadLibraryTrack)
                     .Where(x => x != null)
                     .ToList();
+        }
+
+        /// <summary>
+        ///     Gets all the play-lists that contain a specific track.
+        /// </summary>
+        /// <param name="track">The track.</param>
+        /// <returns>A list of play-lists that contain the track</returns>
+        public static List<string> GetPlaylistsNotForTracks(List<Track> tracks)
+        {
+            return tracks.SelectMany(GetPlaylistsNotForTrack).Distinct().OrderBy(x => x).ToList(); ;
         }
 
         /// <summary>

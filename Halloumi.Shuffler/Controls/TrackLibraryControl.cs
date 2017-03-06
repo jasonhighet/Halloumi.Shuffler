@@ -1368,11 +1368,7 @@ namespace Halloumi.Shuffler.Controls
         private void BindAddTrackToPlaylistMenu()
         {
             var selectedTracks = GetSelectedTracks();
-
-            Track selectedTrack = null;
-            if (selectedTracks.Count == 1) selectedTrack = selectedTracks[0];
-
-            var playlists = PlaylistHelper.GetPlaylistsNotForTrack(selectedTrack);
+            var playlists = PlaylistHelper.GetPlaylistsNotForTracks(selectedTracks);
 
             // generate 'add to playlist' sub menu
             mnuAddTrackToPlaylist.DropDownItems.Clear();
