@@ -168,7 +168,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                 if (!string.IsNullOrEmpty(tags.InitialKey))
                 {
                     var tagKey = tags.InitialKey.Trim();
-                    track.Key = tagKey;
+                    track.Key = KeyHelper.ParseKey(tagKey);
                 }
 
                 LoadArtistAndAlbumArtist(track);

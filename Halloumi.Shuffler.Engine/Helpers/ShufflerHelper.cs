@@ -49,6 +49,8 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// <param name="track">The track.</param>
         public static Dictionary<string, string> LoadShufflerDetails(Track track)
         {
+            track.Key = KeyHelper.ParseKey(track.Key);
+
             track.IsShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(track.Description);
 
             if (!track.IsShufflerTrack) return null;
@@ -91,7 +93,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if (attributes.ContainsKey("PowerDown"))
                 track.PowerDown = ConversionHelper.ToBoolean(attributes["PowerDown"]);
 
-            if (attributes.ContainsKey("Key")) track.Key = attributes["Key"];
+            if (attributes.ContainsKey("Key")) track.Key = KeyHelper.ParseKey(attributes["Key"]);
 
             decimal outLoopLength = 0;
             if (attributes.ContainsKey("FadeOutLengthInSeconds"))
