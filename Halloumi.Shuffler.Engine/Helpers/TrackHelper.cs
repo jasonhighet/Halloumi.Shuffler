@@ -201,7 +201,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if(updateLength)
                 UpdateLength(track);
 
-            UpdateKey(track);
+            //UpdateKey(track);
 
             track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
@@ -212,23 +212,24 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         }
 
 
-        private static void UpdateKey(Track track)
-        {
-            var attributes = ShufflerHelper.LoadShufflerDetails(track);
-            var attributeKey = (attributes == null) ? "" : attributes.ContainsKey("Key") ? attributes["Key"] : "";
+        //private static void UpdateKey(Track track)
+        //{
+        //    var attributes = ShufflerHelper.LoadShufflerDetails(track);
+        //    var attributeKey = (attributes == null) ? "" : attributes.ContainsKey("Key") ? attributes["Key"] : "";
 
-            if (track.Key != "" && attributeKey == "" && track.IsShufflerTrack)
-            {
-                ShufflerHelper.SetAttribute("Key", track.Key, attributes);
-                ShufflerHelper.SaveShufflerAttributes(track, attributes);
-            }
-            else if (track.Key == "" && attributeKey != "")
-            {
-                SaveTrack(track);
-            }
+        //    if (track.Key != "" && attributeKey == "" && track.IsShufflerTrack)
+        //    {
+        //        track.Key = string.IsNullOrEmpty(attributeKey) ? track.Key : attributeKey;
+        //        ExtenedAttributesHelper.SetExtendedAttribute(track.Description, "Key", track.Key);
+        //        ExtenedAttributesHelper.SaveToDatabase();
 
-            track.Key = string.IsNullOrEmpty(attributeKey) ? track.Key : attributeKey;
-        }
+        //    }
+        //    else if (track.Key == "" && attributeKey != "")
+        //    {
+        //        track.Key = string.IsNullOrEmpty(attributeKey) ? track.Key : attributeKey;
+        //        SaveTrack(track);
+        //    }
+        //}
 
 
 

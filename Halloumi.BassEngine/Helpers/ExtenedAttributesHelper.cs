@@ -216,9 +216,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Sets a track attribute, but does not save it
+        /// Sets a track attribute, but does not save it
         /// </summary>
-        /// <param name="track">The track.</param>
+        /// <param name="trackDescription">The track description.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
         public static void SetExtendedAttribute(string trackDescription, string key, string value)
         {
             var attributes = GetExtendedAttributes(trackDescription);

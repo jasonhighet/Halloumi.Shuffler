@@ -60,6 +60,8 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if (attributes.ContainsKey("EndBPM"))
                 track.EndBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
 
+            track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
+
             if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
 
             decimal start = 0;
@@ -100,19 +102,19 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
             return attributes;
         }
-        public static void SetAttribute(string key, string value, IDictionary<string, string> attributes)
-        {
-            if (attributes == null) return;
-            if (!attributes.ContainsKey(key))
-                attributes.Add(key, value);
-            else
-                attributes[key] = value;
-        }
+        //public static void SetAttribute(string key, string value, IDictionary<string, string> attributes)
+        //{
+        //    if (attributes == null) return;
+        //    if (!attributes.ContainsKey(key))
+        //        attributes.Add(key, value);
+        //    else
+        //        attributes[key] = value;
+        //}
 
-        public static void SaveShufflerAttributes(Track track, Dictionary<string, string> attributes)
-        {
-            ExtenedAttributesHelper.SaveExtendedAttributes(track.Description, attributes);
-        }
+        //public static void SaveShufflerAttributes(Track track, Dictionary<string, string> attributes)
+        //{
+        //    ExtenedAttributesHelper.SaveExtendedAttributes(track.Description, attributes);
+        //}
 
         ///// <summary>
         /////     Gets the shuffler attribute file for a track

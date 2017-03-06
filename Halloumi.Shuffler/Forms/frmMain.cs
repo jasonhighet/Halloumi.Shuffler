@@ -133,7 +133,7 @@ namespace Halloumi.Shuffler.Forms
             
             ExtenedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             ExtenedAttributesHelper.LoadFromDatabase();
-            Library.UpdateIsShuffler();
+            Library.LoadAllExtendedAttributes();
 
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             AutomationAttributesHelper.LoadFromDatabase();

@@ -937,11 +937,11 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-        public void UpdateIsShuffler()
+        public void LoadAllExtendedAttributes()
         {
             foreach (var track in Tracks)
             {
-                track.IsShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(track.Description);
+                ShufflerHelper.LoadShufflerDetails(track);
             }
         }
 
