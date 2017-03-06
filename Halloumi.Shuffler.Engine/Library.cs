@@ -929,12 +929,22 @@ namespace Halloumi.Shuffler.AudioLibrary
                     Tracks.Clear();
                     Tracks.AddRange(tracks.ToArray());
                 }
+
             }
             catch
             {
                 // ignored
             }
         }
+
+        public void UpdateIsShuffler()
+        {
+            foreach (var track in Tracks)
+            {
+                track.IsShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(track.Description);
+            }
+        }
+
 
         /// <summary>
         ///     Cleans the folder images.
