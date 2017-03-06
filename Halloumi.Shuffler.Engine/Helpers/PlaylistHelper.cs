@@ -33,9 +33,17 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                     .OrderByDescending(x => Math.Abs(x.Length - entry.Length))
                     .FirstOrDefault())
                     .Where(track => track != null)
-                    .ToDictionary(track => track.Description);
+                    .OrderBy(x=>x.Description)
+                    .ToList();
 
-                _playlistTracks.Add(playlist.Name, tracks);
+                var dictionary = new Dictionary<string, Track>();
+                foreach (var track in tracks)
+                {
+                    if(dictionary.ContainsKey(track.Description))
+                        dictionary.Add(track.Description, track);
+                }
+
+                _playlistTracks.Add(playlist.Name, dictionary);
             }
         }
 
