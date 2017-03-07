@@ -1444,6 +1444,9 @@ namespace Halloumi.Shuffler.Controls
             CollectionFilter = cmbCollection.SelectedItem.ToString();
             SearchFilter = "";
             BindData();
+
+            SaveSettings();
+        
         }
 
         /// <summary>
@@ -1456,6 +1459,8 @@ namespace Halloumi.Shuffler.Controls
             SearchFilter = "";
             DebugHelper.WriteLine("ExcPlaylistChaneg");
             BindData();
+
+            SaveSettings();
         }
 
         /// <summary>
