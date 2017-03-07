@@ -151,7 +151,8 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </returns>
         public List<Genre> GetAllGenres()
         {
-            return GetGenres("", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+           // return GetGenres("", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+            return Tracks.Select(x => x.Genre).Distinct().OrderBy(x => x).Select(x => new Genre(x)).ToList();
         }
 
         /// <summary>

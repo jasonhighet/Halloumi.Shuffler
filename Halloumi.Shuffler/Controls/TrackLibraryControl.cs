@@ -10,10 +10,10 @@ using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
-using CollectionHelper = Halloumi.Shuffler.AudioLibrary.Helpers.CollectionHelper;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -190,7 +190,7 @@ namespace Halloumi.Shuffler.Controls
             var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
 
             var tracks = GetSelectedTracks();
-            Library.SetRank(tracks, (int)mixRank);
+            Library.SetRank(tracks, (int) mixRank);
 
             DebugHelper.WriteLine("mnuRank");
             BindData();
@@ -292,7 +292,8 @@ namespace Halloumi.Shuffler.Controls
 
         public List<Track> GetAvailableTracks()
         {
-            return Library.GetTracks("", "", "", "", "", CollectionFilter, ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter,
+            return Library.GetTracks("", "", "", "", "", CollectionFilter, ShufflerFilter, MinBpm, MaxBpm,
+                TrackRankFilter,
                 ExcludedCollectionFilter);
         }
 
@@ -342,10 +343,36 @@ namespace Halloumi.Shuffler.Controls
             if (bindTracks) BindCollections();
             if (bindTracks) BindExcludedCollections();
 
+            var displayedTracks = GetDisplayedTracks();
+
             if (bindGenres) BindGenres(selectedGenres);
-            if (bindArtists) BindArtists(selectedGenres, selectedArtists);
-            if (bindAlbums) BindAlbums(selectedGenres, selectedArtists, selectedAlbums);
-            if (bindTracks) BindTracks();
+            if (bindArtists)
+            {
+                var artists =
+                    displayedTracks.Select(x => x.AlbumArtist)
+                        .OrderBy(t => t)
+                        .Where(t => t != "")
+                        .Distinct()
+                        .Select(t => new Artist(t))
+                        .ToList();
+                BindArtists(selectedGenres, selectedArtists, artists);
+            }
+
+            if (bindAlbums)
+            {
+                var albums =
+                    displayedTracks.Select(x => x.Album)
+                        .OrderBy(t => t)
+                        .Where(t => t != "")
+                        .Distinct()
+                        .Select(t => new Album(t))
+                        .ToList();
+
+                BindAlbums(selectedGenres, selectedArtists, selectedAlbums, albums);
+            }
+            
+            if (bindTracks) BindTracks(GetAvailableTracks(), displayedTracks);
+
 
             DebugHelper.WriteLine("END BIND LIBRARY");
         }
@@ -409,8 +436,9 @@ namespace Halloumi.Shuffler.Controls
             if (_neverBind) return;
             _binding = true;
 
-            var genres = Library.GetGenres(SearchFilter, CollectionFilter, ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter,
-                ExcludedCollectionFilter);
+            //var genres = Library.GetGenres(SearchFilter, CollectionFilter, ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter,
+            //    ExcludedCollectionFilter);
+            var genres = Library.GetAllGenres();
             genres.Insert(0, new Genre("(All)"));
 
             grdGenre.DataSource = genres;
@@ -431,13 +459,16 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         /// <param name="selectedGenres">The selected genres.</param>
         /// <param name="selectedArtists">The selected artists.</param>
-        private void BindArtists(List<string> selectedGenres, List<string> selectedArtists)
+        /// <param name="artists">The artists.</param>
+        private void BindArtists(List<string> selectedGenres, List<string> selectedArtists, List<Artist> artists = null)
         {
             if (_neverBind) return;
             _binding = true;
 
-            var artists = Library.GetAlbumArtists(selectedGenres, SearchFilter, CollectionFilter, ShufflerFilter, MinBpm,
-                MaxBpm, TrackRankFilter, ExcludedCollectionFilter);
+            if (artists == null)
+                artists = Library.GetAlbumArtists(selectedGenres, SearchFilter, CollectionFilter, ShufflerFilter, MinBpm,
+                    MaxBpm, TrackRankFilter, ExcludedCollectionFilter);
+
             artists.Insert(0, new Artist("(All)"));
 
             grdArtist.DataSource = artists;
@@ -452,13 +483,16 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="selectedGenres">The selected genres.</param>
         /// <param name="selectedArtists">The selected artists.</param>
         /// <param name="selectedAlbums">The selected albums.</param>
-        private void BindAlbums(List<string> selectedGenres, List<string> selectedArtists, List<string> selectedAlbums)
+        /// <param name="albums">The albums.</param>
+        private void BindAlbums(List<string> selectedGenres, List<string> selectedArtists,
+            ICollection<string> selectedAlbums, List<Album> albums = null)
         {
             if (_neverBind) return;
             _binding = true;
 
-            var albums = Library.GetAlbums(selectedGenres, selectedArtists, SearchFilter, CollectionFilter, ShufflerFilter,
-                MinBpm, MaxBpm, TrackRankFilter, ExcludedCollectionFilter);
+            if (albums == null)
+                albums = Library.GetAlbums(selectedGenres, selectedArtists, SearchFilter, CollectionFilter,
+                    ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter, ExcludedCollectionFilter);
 
             var items = new List<ListViewItem>();
             foreach (var album in albums)
@@ -483,7 +517,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Binds the tracks.
         /// </summary>
-        private void BindTracks()
+        private void BindTracks(List<Track> availableTracks = null, List<Track> displayedTracks = null)
         {
             if (_neverBind) return;
             _binding = true;
@@ -492,9 +526,15 @@ namespace Halloumi.Shuffler.Controls
 
             grdTracks.SaveSelectedRows();
 
-            MixLibrary.AvailableTracks = GetAvailableTracks();
+            if (availableTracks == null)
+                availableTracks = GetAvailableTracks();
 
-            var trackModels = GetDisplayedTracks()
+            MixLibrary.AvailableTracks = availableTracks;
+
+            if (displayedTracks == null)
+                displayedTracks = GetDisplayedTracks();
+
+            var trackModels = displayedTracks
                 .Take(2000)
                 .Select(t => new TrackModel(t))
                 .ToList();
@@ -1143,7 +1183,7 @@ namespace Halloumi.Shuffler.Controls
                 SortColumnName = grdTracks.SortedColumn != null ? grdTracks.SortedColumn.DataPropertyName : "",
                 SortOrder = grdTracks.SortOrder,
                 Collection = cmbCollection.SelectedText,
-                ExcludedCollection = cmbExcludedCollection.SelectedText,
+                ExcludedCollection = cmbExcludedCollection.SelectedText
             };
 
 
@@ -1310,7 +1350,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 Library.RemoveShufflerDetails(track);
             }
-            
+
             BindData();
         }
 
@@ -1402,7 +1442,7 @@ namespace Halloumi.Shuffler.Controls
             var playlist = menu.Text;
             CollectionHelper.AddTracksToCollection(playlist, GetSelectedTracks());
 
-            if (GetSelectedPlaylist() == null || GetSelectedPlaylist()!= playlist) return;
+            if (GetSelectedPlaylist() == null || GetSelectedPlaylist() != playlist) return;
 
             BindData();
         }
@@ -1431,7 +1471,7 @@ namespace Halloumi.Shuffler.Controls
             if (menu == null) return;
             CollectionHelper.RemoveTracksFromCollection(menu.Text, GetSelectedTracks());
 
-            if (GetSelectedPlaylist() == null || GetSelectedPlaylist()!= menu.Text) return;
+            if (GetSelectedPlaylist() == null || GetSelectedPlaylist() != menu.Text) return;
             BindData();
         }
 
@@ -1446,7 +1486,6 @@ namespace Halloumi.Shuffler.Controls
             BindData();
 
             SaveSettings();
-        
         }
 
         /// <summary>
@@ -1651,6 +1690,41 @@ namespace Halloumi.Shuffler.Controls
             SetBpmFilter();
         }
 
+        private void mnuExportMixSectionsAsSamples_Click(object sender, EventArgs e)
+        {
+            var tracks = GetSelectedTracks().Where(t => t.IsShufflerTrack);
+            foreach (var track in tracks)
+            {
+                SampleLibrary.ExportMixSectionsAsSamples(track);
+            }
+        }
+
+        public void ImportCollection()
+        {
+            var filename = FileDialogHelper.OpenSingle("Playlists files (*.m3u)|*.m3u|All files (*.*)|*.*");
+
+            if (filename == "")
+                return;
+
+            CollectionHelper.ImportPlaylist(filename);
+
+            BindData();
+        }
+
+        public void DeleteCollection()
+        {
+            if (CollectionFilter == "")
+                return;
+
+            if (!MessageBoxHelper.Confirm("Are you sure you wish to delete the " + CollectionFilter + " collection?"))
+                return;
+
+            CollectionHelper.DeleteCollection(CollectionFilter);
+
+            CollectionFilter = "";
+            BindData();
+        }
+
         private class TrackModel
         {
             public TrackModel(Track track)
@@ -1744,41 +1818,6 @@ namespace Halloumi.Shuffler.Controls
             public string SortColumnName { get; set; }
 
             public SortOrder SortOrder { get; set; }
-        }
-
-        private void mnuExportMixSectionsAsSamples_Click(object sender, EventArgs e)
-        {
-            var tracks = GetSelectedTracks().Where(t => t.IsShufflerTrack);
-            foreach (var track in tracks)
-            {
-                SampleLibrary.ExportMixSectionsAsSamples(track);
-            }
-        }
-
-        public void ImportCollection()
-        {
-            var filename = FileDialogHelper.OpenSingle("Playlists files (*.m3u)|*.m3u|All files (*.*)|*.*");
-
-            if (filename == "")
-                return;
-
-            CollectionHelper.ImportPlaylist(filename);
-
-            BindData();
-        }
-
-        public void DeleteCollection()
-        {
-            if(CollectionFilter == "")
-                return;
-
-            if(!MessageBoxHelper.Confirm("Are you sure you wish to delete the " +CollectionFilter + " collection?"))
-                return;
-
-            CollectionHelper.DeleteCollection(CollectionFilter);
-
-            CollectionFilter = "";
-            BindData();
         }
     }
 }
