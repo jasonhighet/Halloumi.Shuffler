@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.Models;
-using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
+using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.AudioLibrary.Helpers
 {
@@ -82,7 +80,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if (inLoopLength > 0) track.StartBpm = BpmHelper.GetBpmFromLoopLength(Convert.ToDouble(inLoopLength));
 
             inLoopCount = inLoopCount - 1;
-            if (inLoopCount > 0) length = length + (inLoopCount*inLoopLength);
+            if (inLoopCount > 0) length = length + inLoopCount*inLoopLength;
 
             decimal skipLength = 0;
             if (attributes.ContainsKey("SkipLengthInSeconds"))
@@ -104,9 +102,10 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
             return attributes;
         }
-        //public static void SetAttribute(string key, string value, IDictionary<string, string> attributes)
-        //{
+
         //    if (attributes == null) return;
+        //{
+        //public static void SetAttribute(string key, string value, IDictionary<string, string> attributes)
         //    if (!attributes.ContainsKey(key))
         //        attributes.Add(key, value);
         //    else
@@ -206,7 +205,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         //        }
         //    }
 
-            
+
         //}
     }
 }

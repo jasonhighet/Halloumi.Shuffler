@@ -242,12 +242,12 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var attributes = new Dictionary<string, string>();
 
             if (track.StartBpm != 0)
-                attributes.Add("StartBPM", $"{track.StartBpm}");
+                attributes.Add("StartBPM", $"{track.StartBpm:0.000}");
 
             if (track.EndBpm != 0)
-                attributes.Add("EndBPM", $"{track.EndBpm}");
+                attributes.Add("EndBPM", $"{track.EndBpm:0.000}");
 
-            attributes.Add("Duration", $"{track.LengthSeconds}");
+            attributes.Add("Duration", $"{track.LengthSeconds:0.000}");
 
             if (track.FadeInStart != 0)
                 attributes.Add("FadeIn", $"{track.SamplesToSeconds(track.FadeInStart):0.000}");

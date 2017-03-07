@@ -15,7 +15,7 @@ using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
-using PlaylistHelper = Halloumi.Shuffler.AudioLibrary.Helpers.PlaylistHelper;
+using CollectionHelper = Halloumi.Shuffler.AudioLibrary.Helpers.CollectionHelper;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -75,7 +75,7 @@ namespace Halloumi.Shuffler.Forms
             BassPlayer = new AE.BassPlayer(Handle);
             Library = new Library(BassPlayer);
 
-            PlaylistHelper.Library = Library;
+            CollectionHelper.Library = Library;
             
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
@@ -138,7 +138,7 @@ namespace Halloumi.Shuffler.Forms
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             AutomationAttributesHelper.LoadFromDatabase();
 
-            PlaylistHelper.LoadFromDatabase();
+            CollectionHelper.LoadFromDatabase();
 
             SetView(PlayerDetails.SelectedView.Library);
         }
@@ -1017,7 +1017,7 @@ namespace Halloumi.Shuffler.Forms
 
             var playlistName = (!string.IsNullOrEmpty(playlistControl.CurrentPlaylistFile))
                 ? Path.GetFileNameWithoutExtension(playlistControl.CurrentPlaylistFile)
-                : trackLibraryControl.PlaylistFilter;
+                : trackLibraryControl.CollectionFilter;
 
             ExportTracks(tracks, playlistName);
         }
@@ -1147,6 +1147,16 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
 
             SaveSettings();
+        }
+
+        private void mnuImportCollection_Click(object sender, EventArgs e)
+        {
+            this.trackLibraryControl.ImportCollection();
+        }
+
+        private void mnuDeleteCollection_Click(object sender, EventArgs e)
+        {
+            this.trackLibraryControl.DeleteCollection();
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Halloumi.Shuffler.Forms
             Cursor = Cursors.Hand;
             Application.DoEvents();
 
-            PlaylistHelper.AddTracksToPlaylist(playlistName, Tracks);
+            CollectionHelper.AddTracksToCollection(playlistName, Tracks);
 
             DialogResult = DialogResult.OK;
             Close();

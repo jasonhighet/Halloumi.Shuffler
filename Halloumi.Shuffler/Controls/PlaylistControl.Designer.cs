@@ -35,8 +35,8 @@
             this.mnuTrack = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuPlay = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuAddTrackToPlaylist = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRemoveTrackFromPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAddTrackToCollection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRemoveTrackFromCollection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuOpenFileLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep3 = new System.Windows.Forms.ToolStripSeparator();
@@ -106,8 +106,8 @@
             this.mnuTrack.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuPlay,
             this.mnuSep1,
-            this.mnuAddTrackToPlaylist,
-            this.mnuRemoveTrackFromPlaylist,
+            this.mnuAddTrackToCollection,
+            this.mnuRemoveTrackFromCollection,
             this.mnuSep2,
             this.mnuOpenFileLocation,
             this.mnuSep3,
@@ -134,15 +134,15 @@
             // 
             // mnuAddTrackToPlaylist
             // 
-            this.mnuAddTrackToPlaylist.Name = "mnuAddTrackToPlaylist";
-            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(241, 24);
-            this.mnuAddTrackToPlaylist.Text = "A&dd To Playlist";
+            this.mnuAddTrackToCollection.Name = "mnuAddTrackToCollection";
+            this.mnuAddTrackToCollection.Size = new System.Drawing.Size(241, 24);
+            this.mnuAddTrackToCollection.Text = "A&dd To Collection";
             // 
             // mnuRemoveTrackFromPlaylist
             // 
-            this.mnuRemoveTrackFromPlaylist.Name = "mnuRemoveTrackFromPlaylist";
-            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(241, 24);
-            this.mnuRemoveTrackFromPlaylist.Text = "&Remove From Playlist";
+            this.mnuRemoveTrackFromCollection.Name = "mnuRemoveTrackFromCollection";
+            this.mnuRemoveTrackFromCollection.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveTrackFromCollection.Text = "&Remove From Collection";
             // 
             // mnuSep2
             // 
@@ -630,8 +630,8 @@
         private System.Windows.Forms.ContextMenuStrip mnuTrack;
         private System.Windows.Forms.ToolStripMenuItem mnuPlay;
         private System.Windows.Forms.ToolStripSeparator mnuSep1;
-        private System.Windows.Forms.ToolStripMenuItem mnuAddTrackToPlaylist;
-        private System.Windows.Forms.ToolStripMenuItem mnuRemoveTrackFromPlaylist;
+        private System.Windows.Forms.ToolStripMenuItem mnuAddTrackToCollection;
+        private System.Windows.Forms.ToolStripMenuItem mnuRemoveTrackFromCollection;
         private System.Windows.Forms.ToolStripSeparator mnuSep2;
         private System.Windows.Forms.ToolStripMenuItem mnuOpenFileLocation;
         private System.Windows.Forms.ToolStripSeparator mnuSep4;

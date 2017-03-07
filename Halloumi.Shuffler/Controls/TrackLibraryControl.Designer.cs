@@ -53,8 +53,8 @@ namespace Halloumi.Shuffler.Controls
             this.mnuPlay = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuQueue = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuAddTrackToPlaylist = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRemoveTrackFromPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAddTrackToCollection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRemoveTrackFromCollection = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuOpenFileLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -121,9 +121,9 @@ namespace Halloumi.Shuffler.Controls
             this.label4 = new Halloumi.Common.Windows.Controls.Label();
             this.txtMaxBPM = new Halloumi.Common.Windows.Controls.TextBox();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbPlaylist = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.cmbCollection = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label7 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbExcludedPlaylist = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.cmbExcludedCollection = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label6 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbTrackRankFilter = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label2 = new Halloumi.Common.Windows.Controls.Label();
@@ -171,8 +171,8 @@ namespace Halloumi.Shuffler.Controls
             ((System.ComponentModel.ISupportInitialize)(this.grdTracks)).BeginInit();
             this.pnlDivider.SuspendLayout();
             this.flpToolbarRight.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbPlaylist)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbExcludedPlaylist)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbCollection)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbExcludedCollection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbTrackRankFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbQueued)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbShufflerFilter)).BeginInit();
@@ -244,8 +244,8 @@ namespace Halloumi.Shuffler.Controls
             this.mnuPlay,
             this.mnuQueue,
             this.toolStripSeparator2,
-            this.mnuAddTrackToPlaylist,
-            this.mnuRemoveTrackFromPlaylist,
+            this.mnuAddTrackToCollection,
+            this.mnuRemoveTrackFromCollection,
             this.toolStripSeparator1,
             this.mnuOpenFileLocation,
             this.toolStripSeparator3,
@@ -285,15 +285,15 @@ namespace Halloumi.Shuffler.Controls
             // 
             // mnuAddTrackToPlaylist
             // 
-            this.mnuAddTrackToPlaylist.Name = "mnuAddTrackToPlaylist";
-            this.mnuAddTrackToPlaylist.Size = new System.Drawing.Size(294, 26);
-            this.mnuAddTrackToPlaylist.Text = "A&dd To Playlist";
+            this.mnuAddTrackToCollection.Name = "mnuAddTrackToCollection";
+            this.mnuAddTrackToCollection.Size = new System.Drawing.Size(294, 26);
+            this.mnuAddTrackToCollection.Text = "A&dd To Collection";
             // 
             // mnuRemoveTrackFromPlaylist
             // 
-            this.mnuRemoveTrackFromPlaylist.Name = "mnuRemoveTrackFromPlaylist";
-            this.mnuRemoveTrackFromPlaylist.Size = new System.Drawing.Size(294, 26);
-            this.mnuRemoveTrackFromPlaylist.Text = "&Remove From Playlist";
+            this.mnuRemoveTrackFromCollection.Name = "mnuRemoveTrackFromCollection";
+            this.mnuRemoveTrackFromCollection.Size = new System.Drawing.Size(294, 26);
+            this.mnuRemoveTrackFromCollection.Text = "&Remove From Collection";
             // 
             // toolStripSeparator1
             // 
@@ -954,9 +954,9 @@ namespace Halloumi.Shuffler.Controls
             this.flpToolbarRight.Controls.Add(this.label4);
             this.flpToolbarRight.Controls.Add(this.txtMaxBPM);
             this.flpToolbarRight.Controls.Add(this.label1);
-            this.flpToolbarRight.Controls.Add(this.cmbPlaylist);
+            this.flpToolbarRight.Controls.Add(this.cmbCollection);
             this.flpToolbarRight.Controls.Add(this.label7);
-            this.flpToolbarRight.Controls.Add(this.cmbExcludedPlaylist);
+            this.flpToolbarRight.Controls.Add(this.cmbExcludedCollection);
             this.flpToolbarRight.Controls.Add(this.label6);
             this.flpToolbarRight.Controls.Add(this.cmbTrackRankFilter);
             this.flpToolbarRight.Controls.Add(this.label2);
@@ -1059,18 +1059,18 @@ namespace Halloumi.Shuffler.Controls
             this.label1.Size = new System.Drawing.Size(58, 26);
             this.label1.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label1.TabIndex = 4;
-            this.label1.Text = "Playlist:";
+            this.label1.Text = "Collection:";
             // 
             // cmbPlaylist
             // 
-            this.cmbPlaylist.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPlaylist.DropDownWidth = 121;
-            this.cmbPlaylist.ErrorProvider = null;
-            this.cmbPlaylist.Location = new System.Drawing.Point(405, 4);
-            this.cmbPlaylist.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbPlaylist.Name = "cmbPlaylist";
-            this.cmbPlaylist.Size = new System.Drawing.Size(137, 25);
-            this.cmbPlaylist.TabIndex = 3;
+            this.cmbCollection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCollection.DropDownWidth = 121;
+            this.cmbCollection.ErrorProvider = null;
+            this.cmbCollection.Location = new System.Drawing.Point(405, 4);
+            this.cmbCollection.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbCollection.Name = "cmbCollection";
+            this.cmbCollection.Size = new System.Drawing.Size(137, 25);
+            this.cmbCollection.TabIndex = 3;
             // 
             // label7
             // 
@@ -1088,14 +1088,14 @@ namespace Halloumi.Shuffler.Controls
             // 
             // cmbExcludedPlaylist
             // 
-            this.cmbExcludedPlaylist.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbExcludedPlaylist.DropDownWidth = 121;
-            this.cmbExcludedPlaylist.ErrorProvider = null;
-            this.cmbExcludedPlaylist.Location = new System.Drawing.Point(613, 4);
-            this.cmbExcludedPlaylist.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbExcludedPlaylist.Name = "cmbExcludedPlaylist";
-            this.cmbExcludedPlaylist.Size = new System.Drawing.Size(137, 25);
-            this.cmbExcludedPlaylist.TabIndex = 16;
+            this.cmbExcludedCollection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbExcludedCollection.DropDownWidth = 121;
+            this.cmbExcludedCollection.ErrorProvider = null;
+            this.cmbExcludedCollection.Location = new System.Drawing.Point(613, 4);
+            this.cmbExcludedCollection.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbExcludedCollection.Name = "cmbExcludedCollection";
+            this.cmbExcludedCollection.Size = new System.Drawing.Size(137, 25);
+            this.cmbExcludedCollection.TabIndex = 16;
             // 
             // label6
             // 
@@ -1253,8 +1253,8 @@ namespace Halloumi.Shuffler.Controls
             this.pnlDivider.ResumeLayout(false);
             this.flpToolbarRight.ResumeLayout(false);
             this.flpToolbarRight.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbPlaylist)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbExcludedPlaylist)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbCollection)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbExcludedCollection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbTrackRankFilter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbQueued)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbShufflerFilter)).EndInit();
@@ -1276,8 +1276,8 @@ namespace Halloumi.Shuffler.Controls
         private System.Windows.Forms.ToolStripMenuItem mnuPlay;
         private System.Windows.Forms.ToolStripMenuItem mnuQueue;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem mnuAddTrackToPlaylist;
-        private System.Windows.Forms.ToolStripMenuItem mnuRemoveTrackFromPlaylist;
+        private System.Windows.Forms.ToolStripMenuItem mnuAddTrackToCollection;
+        private System.Windows.Forms.ToolStripMenuItem mnuRemoveTrackFromCollection;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem mnuOpenFileLocation;
         private System.Windows.Forms.ToolStripSeparator sepOpenFileLocation;
@@ -1330,9 +1330,9 @@ namespace Halloumi.Shuffler.Controls
         private Halloumi.Common.Windows.Controls.Label label4;
         private Halloumi.Common.Windows.Controls.TextBox txtMaxBPM;
         private Halloumi.Common.Windows.Controls.Label label1;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbPlaylist;
+        private Halloumi.Common.Windows.Controls.ComboBox cmbCollection;
         private Halloumi.Common.Windows.Controls.Label label7;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbExcludedPlaylist;
+        private Halloumi.Common.Windows.Controls.ComboBox cmbExcludedCollection;
         private Halloumi.Common.Windows.Controls.Label label6;
         private Halloumi.Common.Windows.Controls.ComboBox cmbTrackRankFilter;
         private Halloumi.Common.Windows.Controls.Label label2;
