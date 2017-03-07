@@ -8,7 +8,6 @@ using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
-using CollectionHelper = Halloumi.Shuffler.AudioLibrary.Helpers.CollectionHelper;
 using TrackHelper = Halloumi.Shuffler.AudioLibrary.Helpers.TrackHelper;
 
 namespace Halloumi.Shuffler.AudioLibrary
@@ -96,189 +95,13 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         public Track GetTrack(string artist, string title, decimal length = 0)
         {
-            var track = Tracks.FirstOrDefault(
-                x =>
-                    string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase) &&
-                    string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase) && x.Length == length)
-                        ??
-                        Tracks.Where(
-                            x =>
-                                string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase) &&
-                                string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase))
-                            .OrderByDescending(x => Math.Abs(x.Length - length))
-                            .FirstOrDefault();
-
-            return track;
-        }
-
-        /// <summary>
-        ///     Gets a list of genres.
-        /// </summary>
-        /// <param name="searchFilter">The search filter.</param>
-        /// <param name="collectionFilter">The play-list filter.</param>
-        /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBpm">The min BPM.</param>
-        /// <param name="maxBpm">The max BPM.</param>
-        /// <param name="trackRankFilter">The track rank filter.</param>
-        /// <param name="excludeCollectionFilter">The exclude play-list filter.</param>
-        /// <returns>
-        ///     A list of genres.
-        /// </returns>
-        public List<Genre> GetGenres(string searchFilter,
-            string collectionFilter,
-            ShufflerFilter shufflerFilter,
-            int minBpm,
-            int maxBpm,
-            TrackRankFilter trackRankFilter,
-            string excludeCollectionFilter)
-        {
-            return
-                GetTracks("", "", "", "", searchFilter, collectionFilter, shufflerFilter, minBpm, maxBpm, trackRankFilter,
-                    excludeCollectionFilter)
-                    .OrderBy(t => t.Genre)
-                    .Where(t => t.Genre != "" && t.Genre != "(All)")
-                    .Select(t => t.Genre)
-                    .Distinct()
-                    .Select(g => new Genre(g))
-                    .ToList();
-        }
-
-        /// <summary>
-        ///     Gets a list of genres.
-        /// </summary>
-        /// <returns>
-        ///     A list of genres.
-        /// </returns>
-        public List<Genre> GetAllGenres()
-        {
-           // return GetGenres("", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
-            return Tracks.Select(x => x.Genre).Distinct().OrderBy(x => x).Select(x => new Genre(x)).ToList();
-        }
-
-        /// <summary>
-        ///     Gets all albums.
-        /// </summary>
-        /// <returns>A list of all albums</returns>
-        public List<Album> GetAllAlbums()
-        {
-            return GetAlbums(null, null, "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
-        }
-
-        /// <summary>
-        ///     Gets a list of albums.
-        /// </summary>
-        /// <param name="genreFilters">The genre filters.</param>
-        /// <param name="albumArtistFilters">The album artist filters.</param>
-        /// <param name="searchFilter">The search filter.</param>
-        /// <param name="collectionFilter">The play-list filter.</param>
-        /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBpm">The minimum BPM.</param>
-        /// <param name="maxBpm">The maximum BPM.</param>
-        /// <param name="trackRankFilter">The track rank filter.</param>
-        /// <param name="excludeCollectionFilter">The exclude play-list filter.</param>
-        /// <returns>
-        ///     A list of albums matching the criteria.
-        /// </returns>
-        public List<Album> GetAlbums(List<string> genreFilters,
-            List<string> albumArtistFilters,
-            string searchFilter,
-            string collectionFilter,
-            ShufflerFilter shufflerFilter,
-            int minBpm,
-            int maxBpm,
-            TrackRankFilter trackRankFilter,
-            string excludeCollectionFilter)
-        {
-            if (genreFilters == null)
-            {
-                genreFilters = new List<string> { "" };
-            }
-
-            if (albumArtistFilters == null)
-            {
-                albumArtistFilters = new List<string> { "" };
-            }
-
-            var albums = new List<string>();
-            foreach (var genre in genreFilters)
-            {
-                foreach (var albumArtist in albumArtistFilters)
-                {
-                    albums.AddRange(
-                        GetTracks(genre, "", albumArtist, "", searchFilter, collectionFilter, shufflerFilter, minBpm,
-                            maxBpm, trackRankFilter, excludeCollectionFilter)
-                            .Union(GetTracks(genre, albumArtist, "", "", searchFilter, collectionFilter, shufflerFilter,
-                                minBpm, maxBpm, trackRankFilter, excludeCollectionFilter))
-                            .OrderBy(t => t.Album)
-                            .Where(t => t.Album != "")
-                            .Select(t => t.Album)
-                            .Distinct()
-                            .ToList());
-                }
-            }
-
-            return albums
-                .Distinct()
-                .OrderBy(a => a)
-                .Select(a => new Album(a))
+            var tracks = Tracks.Where(x => string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase)
+                                           && string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
-        }
 
-        /// <summary>
-        ///     Gets all album artists.
-        /// </summary>
-        /// <returns> A list of all album artists.</returns>
-        public List<Artist> GetAllAlbumArtists()
-        {
-            return GetAlbumArtists(null, "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
-        }
-
-        /// <summary>
-        ///     Gets a filtered list of album artists.
-        /// </summary>
-        /// <param name="genreFilters">The genre filters.</param>
-        /// <param name="searchFilter">The search filter.</param>
-        /// <param name="collectionFilter">The play-list filter.</param>
-        /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBpm">The minimum BPM.</param>
-        /// <param name="maxBpm">The maximum BPM.</param>
-        /// <param name="trackRankFilter">The track rank filter.</param>
-        /// <param name="excludeCollectionFilter">The exclude play-list filter.</param>
-        /// <returns>
-        ///     A list of album artists matching the criteria.
-        /// </returns>
-        public List<Artist> GetAlbumArtists(List<string> genreFilters,
-            string searchFilter,
-            string collectionFilter,
-            ShufflerFilter shufflerFilter,
-            int minBpm,
-            int maxBpm,
-            TrackRankFilter trackRankFilter,
-            string excludeCollectionFilter)
-        {
-            if (genreFilters == null)
-            {
-                genreFilters = new List<string> { "" };
-            }
-
-            var artists = new List<string>();
-            foreach (var genreFilter in genreFilters)
-            {
-                artists.AddRange(
-                    GetTracks(genreFilter, "", "", "", searchFilter, collectionFilter, shufflerFilter, minBpm, maxBpm,
-                        trackRankFilter, excludeCollectionFilter)
-                        .OrderBy(t => t.AlbumArtist)
-                        .Where(t => t.AlbumArtist != "")
-                        .Select(t => t.AlbumArtist)
-                        .Distinct()
-                        .ToList());
-            }
-            return artists
-                .Distinct()
-                .OrderBy(a => a)
-                .Where(a => a != "(All)")
-                .Select(a => new Artist(a))
-                .ToList();
+            return tracks.Count == 1
+                ? tracks[0]
+                : tracks.OrderByDescending(x => Math.Abs(x.Length - length)).FirstOrDefault();
         }
 
         /// <summary>
@@ -288,68 +111,73 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>A list of tracks</returns>
         public List<Track> GetAllTracksForAlbum(string albumName)
         {
-            return GetTracks("", "", "", albumName, "", "", ShufflerFilter.None, 0, 1000);
+            var albumFilter = new List<string> {albumName};
+            return GetTracks(albumFilter: albumFilter);
         }
 
         /// <summary>
-        ///     Gets a filtered list of artists.
+        ///     Gets all tracks for an album.
         /// </summary>
-        /// <param name="genreFilter">The genre filter.</param>
-        /// <param name="searchFilter">The search filter.</param>
-        /// <param name="collectionFilter">The play-list filter.</param>
-        /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBpm">The minimum BPM.</param>
-        /// <param name="maxBpm">The maximum BPM.</param>
-        /// <param name="trackRankFilter">The track rank filter.</param>
-        /// <param name="excludeCollectionFilter">The exclude play-list filter.</param>
-        /// <returns>
-        ///     A list of artists matching the criteria.
-        /// </returns>
-        public List<Artist> GetArtists(string genreFilter,
-            string searchFilter,
-            string collectionFilter,
-            ShufflerFilter shufflerFilter,
-            int minBpm,
-            int maxBpm,
-            TrackRankFilter trackRankFilter,
-            string excludeCollectionFilter)
+        /// <param name="artistName">Name of the album.</param>
+        /// <returns>A list of tracks</returns>
+        public List<Track> GetAllTracksForArtist(string artistName)
         {
-            var artists =
-                GetTracks(genreFilter, "", "", "", searchFilter, collectionFilter, shufflerFilter, minBpm, maxBpm,
-                    trackRankFilter, excludeCollectionFilter)
-                    .OrderBy(t => t.AlbumArtist)
-                    .Where(t => t.AlbumArtist != "")
-                    .Select(t => t.AlbumArtist)
-                    .Union(GetTracks(genreFilter, "", "", "", searchFilter, collectionFilter, shufflerFilter, minBpm,
-                        maxBpm, trackRankFilter, excludeCollectionFilter)
-                        .Where(t => t.Artist != "")
-                        .OrderBy(t => t.Artist)
-                        .Select(t => t.Artist))
-                    .Distinct()
-                    .Select(a => new Artist(a))
-                    .ToList();
-
-            return artists;
+            var artistFilter = new List<string> {artistName};
+            return GetTracks(artistFilter: artistFilter);
         }
 
-        /// <summary>
-        ///     Gets a list of all artists.
-        /// </summary>
-        /// <returns>
-        ///     A list of all artists
-        /// </returns>
+        public List<Genre> GetGenresFromTracks(List<Track> tracks)
+        {
+            return tracks.Select(x => x.Genre).Distinct().OrderBy(x => x).Select(x => new Genre(x)).ToList();
+        }
+
+        public List<Genre> GetAllGenres()
+        {
+            return GetGenresFromTracks(Tracks);
+        }
+
+        public List<Album> GetAlbumsFromTracks(List<Track> tracks)
+        {
+            return tracks.Select(x => x.Album).Distinct().OrderBy(x => x).Select(x => new Album(x)).ToList();
+        }
+
+        public List<Album> GetAllAlbums()
+        {
+            return GetAlbumsFromTracks(Tracks);
+        }
+
+        public List<Artist> GetArtistsFromTracks(List<Track> tracks)
+        {
+            return tracks.Select(x => x.Artist).Distinct().OrderBy(x => x).Select(x => new Artist(x)).ToList();
+        }
+
         public List<Artist> GetAllArtists()
         {
-            return GetArtists("", "", "", ShufflerFilter.None, 0, 1000, TrackRankFilter.None, "");
+            return GetArtistsFromTracks(Tracks);
         }
 
+        public List<Artist> GetAlbumArtistsFromTracks(List<Track> tracks)
+        {
+            return tracks.Select(x => x.AlbumArtist).Distinct().OrderBy(x => x).Select(x => new Artist(x)).ToList();
+        }
+
+        public List<Artist> GetAllAlbumArtists()
+        {
+            return GetAlbumArtistsFromTracks(Tracks);
+        }
+
+
+        public int TrackCount()
+        {
+            return Tracks.Count;
+        }
 
         /// <summary>
         ///     Gets a filtered list of tracks.
         /// </summary>
         /// <param name="genreFilters">The genre filters.</param>
-        /// <param name="artistFilters">The artist filters.</param>
-        /// <param name="albumFilters">The album filters.</param>
+        /// <param name="artistFilter">The artist filters.</param>
+        /// <param name="albumFilter">The album filters.</param>
         /// <param name="searchFilter">The search filter.</param>
         /// <param name="collectionFilter">The play-list filter.</param>
         /// <param name="shufflerFilter">The shuffler filter.</param>
@@ -360,92 +188,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>
         ///     A list tracks matching the criteria.
         /// </returns>
-        public List<Track> GetTracks(List<string> genreFilters,
-            List<string> artistFilters,
-            List<string> albumFilters,
-            string searchFilter,
-            string collectionFilter,
-            ShufflerFilter shufflerFilter,
-            int minBpm,
-            int maxBpm,
-            TrackRankFilter trackRankFilter,
-            string excludeCollectionFilter)
-        {
-            var tracks = new List<Track>();
-
-            if (genreFilters == null) genreFilters = new List<string>();
-            if (artistFilters == null) artistFilters = new List<string>();
-            if (albumFilters == null) albumFilters = new List<string>();
-
-            if (genreFilters.Contains("")) genreFilters.Clear();
-            if (artistFilters.Contains("")) artistFilters.Clear();
-            if (albumFilters.Contains("")) albumFilters.Clear();
-
-            if (genreFilters.Count == 0) genreFilters.Add("");
-            if (artistFilters.Count == 0) artistFilters.Add("");
-            if (albumFilters.Count == 0) albumFilters.Add("");
-
-            foreach (var genre in genreFilters)
-            {
-                foreach (var artist in artistFilters)
-                {
-                    foreach (var album in albumFilters)
-                    {
-                        tracks.AddRange(
-                            GetTracks(genre, "", artist, album, searchFilter, collectionFilter, shufflerFilter, minBpm,
-                                maxBpm, trackRankFilter, excludeCollectionFilter)
-                                .Union(GetTracks(genre, artist, "", album, searchFilter, collectionFilter, shufflerFilter,
-                                    minBpm, maxBpm, trackRankFilter, excludeCollectionFilter))
-                                .Distinct()
-                                .ToList());
-                    }
-                }
-            }
-
-            tracks = tracks
-                .Distinct()
-                .OrderBy(t => t.AlbumArtist)
-                .ThenBy(t => t.Album)
-                .ThenBy(t => t.TrackNumber)
-                .ThenBy(t => t.Artist)
-                .ThenBy(t => t.Title)
-                .ToList();
-
-            if (shufflerFilter != ShufflerFilter.ShuflerTracks) return tracks;
-
-            var distinctTracks = new List<Track>();
-            foreach (
-                var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
-            {
-                distinctTracks.Add(track);
-            }
-            tracks.Clear();
-            tracks.AddRange(distinctTracks);
-
-            return tracks;
-        }
-
-        /// <summary>
-        ///     Gets a filtered list of tracks.
-        /// </summary>
-        /// <param name="genreFilter">The genre filter.</param>
-        /// <param name="artistFilter">The artist filter.</param>
-        /// <param name="albumArtistFilter">The album artist filter.</param>
-        /// <param name="albumFilter">The album filter.</param>
-        /// <param name="searchFilter">The search filter.</param>
-        /// <param name="collectionFilter">The play-list filter.</param>
-        /// <param name="shufflerFilter">The shuffler filter.</param>
-        /// <param name="minBpm">The minimum BPM.</param>
-        /// <param name="maxBpm">The maximum BPM.</param>
-        /// <param name="trackRankFilter">The track rank filter.</param>
-        /// <param name="excludeCollectionFilter">The exclude play-list filter.</param>
-        /// <returns>
-        ///     A list tracks matching the criteria.
-        /// </returns>
-        public List<Track> GetTracks(string genreFilter = "",
-            string artistFilter = "",
-            string albumArtistFilter = "",
-            string albumFilter = "",
+        public List<Track> GetTracks(List<string> genreFilters = null,
+            List<string> artistFilter = null,
+            List<string> albumFilter = null,
             string searchFilter = "",
             string collectionFilter = "",
             ShufflerFilter shufflerFilter = ShufflerFilter.None,
@@ -454,14 +199,13 @@ namespace Halloumi.Shuffler.AudioLibrary
             TrackRankFilter trackRankFilter = TrackRankFilter.None,
             string excludeCollectionFilter = "")
         {
-            genreFilter = genreFilter.Replace(AllFilter, "").ToLower().Trim();
-            albumFilter = albumFilter.Replace(AllFilter, "").ToLower().Trim();
-            artistFilter = artistFilter.Replace(AllFilter, "").ToLower().Trim();
-            albumArtistFilter = albumArtistFilter.Replace(AllFilter, "").ToLower().Trim();
+            var genres = GetHashSet(genreFilters);
+            var albums = GetHashSet(albumFilter);
+            var artists = GetHashSet(artistFilter);
 
             if (maxBpm == 0) maxBpm = 200;
 
-            Console.WriteLine("GET TRACKS!!!");
+            Console.WriteLine(@"GET TRACKS!!!");
 
             var tracks = Tracks;
             if (!string.IsNullOrEmpty(collectionFilter))
@@ -470,20 +214,17 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
 
             tracks = tracks
-                    .Where(t => genreFilter == "" || t.Genre.ToLower() == genreFilter)
-                    .Where(t => albumFilter == "" || t.Album.ToLower() == albumFilter)
-                    .Where(t => artistFilter == "" || t.Artist.ToLower() == artistFilter)
-                    .Where(t => albumArtistFilter == "" || t.AlbumArtist.ToLower() == albumArtistFilter)
-                    .Where(
-                        t =>
-                            (t.StartBpm >= minBpm && t.StartBpm <= maxBpm) || (t.EndBpm >= minBpm && t.EndBpm <= maxBpm))
-                    .Distinct()
-                    .OrderBy(t => t.AlbumArtist)
-                    .ThenBy(t => t.Album)
-                    .ThenBy(t => t.TrackNumber)
-                    .ThenBy(t => t.Artist)
-                    .ThenBy(t => t.Title)
-                    .ToList();
+                .Where(t => genres.Count == 0 || genres.Contains(t.Genre))
+                .Where(t => albums.Count == 0 || albums.Contains(t.Album))
+                .Where(t => artists.Count == 0 || artists.Contains(t.Artist) || artists.Contains(t.AlbumArtist))
+                .Where(t => (t.StartBpm >= minBpm && t.StartBpm <= maxBpm) || (t.EndBpm >= minBpm && t.EndBpm <= maxBpm))
+                .Distinct()
+                .OrderBy(t => t.AlbumArtist)
+                .ThenBy(t => t.Album)
+                .ThenBy(t => t.TrackNumber)
+                .ThenBy(t => t.Artist)
+                .ThenBy(t => t.Title)
+                .ToList();
 
             if (!string.IsNullOrEmpty(searchFilter))
             {
@@ -496,7 +237,11 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (!string.IsNullOrEmpty(excludeCollectionFilter))
             {
-                var excludeTracks = new HashSet<string>(CollectionHelper.GetTracksInCollection(excludeCollectionFilter).Select(t => t.Description).Distinct());
+                var excludeTracks =
+                    new HashSet<string>(
+                        CollectionHelper.GetTracksInCollection(excludeCollectionFilter)
+                            .Select(t => t.Description)
+                            .Distinct());
                 tracks = tracks.Where(t => !excludeTracks.Contains(t.Description)).ToList();
             }
 
@@ -527,20 +272,15 @@ namespace Halloumi.Shuffler.AudioLibrary
                     : tracks.Where(t => !t.IsShufflerTrack).ToList();
             }
 
-            if (shufflerFilter != ShufflerFilter.ShuflerTracks)
-                return tracks;
-
-            //var distinctTracks = new List<Track>();
-            //foreach (
-            //    var track in tracks.Where(track => distinctTracks.Count(t => t.Description == track.Description) == 0))
-            //{
-            //    distinctTracks.Add(track);
-            //}
-
-            //tracks.Clear();
-            //tracks.AddRange(distinctTracks);
-
             return tracks;
+        }
+
+        private static HashSet<string> GetHashSet(List<string> list)
+        {
+            if (list == null) list = new List<string>();
+            if (list.Any(x => x == AllFilter))
+                list.Clear();
+            return new HashSet<string>(list.Distinct());
         }
 
         /// <summary>
@@ -555,6 +295,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             description = description.ToLower().Trim();
             return Tracks.Where(t => t.Description.ToLower() == description).ToList();
         }
+
 
         /// <summary>
         ///     Gets a track from the library matching the specified filename.
@@ -631,6 +372,8 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), file => { LoadTrack(file); });
 
+            LoadAllExtendedAttributes();
+
             SaveToDatabase();
         }
 
@@ -660,7 +403,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (newGenre.Trim() == "" || oldGenre.Trim() == "") return;
             if (newGenre.Trim() == NoValue || oldGenre.Trim() == NoValue) return;
 
-            var tracks = GetTracks(oldGenre, "", "", "", "", "", ShufflerFilter.None, 0, 1000);
+            var tracks = GetTracks(new List<string> {oldGenre}, null, null, "", "", ShufflerFilter.None, 0, 1000);
             UpdateGenre(tracks, newGenre);
         }
 
@@ -724,21 +467,13 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (newArtist.Trim() == "" || oldArtist.Trim() == "") return;
             if (newArtist.Trim() == NoValue || oldArtist.Trim() == NoValue) return;
 
-            var tracks = GetTracks("", "", oldArtist, "", "", "", ShufflerFilter.None, 0, 1000);
+            var tracks = GetAllTracksForArtist(oldArtist);
             foreach (var track in tracks)
             {
-                track.AlbumArtist = newArtist;
+                if (track.AlbumArtist == oldArtist) track.AlbumArtist = newArtist;
                 if (track.Artist == oldArtist) track.Artist = newArtist;
                 SaveTrack(track);
             }
-
-            tracks = GetTracks("", oldArtist, "", "", "", "", ShufflerFilter.None, 0, 1000);
-            foreach (var track in tracks)
-            {
-                track.Artist = newArtist;
-                SaveTrack(track);
-            }
-
             SaveToDatabase();
         }
 
@@ -930,7 +665,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                     Tracks.Clear();
                     Tracks.AddRange(tracks.ToArray());
                 }
-
             }
             catch
             {
@@ -1027,18 +761,23 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
         /// <summary>
-        ///     Gets a album cover.
+        /// Gets a album cover.
         /// </summary>
         /// <param name="albumName">Name of the album.</param>
-        /// <returns>The album cover</returns>
-        public Image GetAlbumCover(string albumName)
+        /// <param name="tracks">The tracks.</param>
+        /// <returns>
+        ///     The album cover
+        /// </returns>
+        public Image GetAlbumCover(string albumName, List<Track> tracks = null)
         {
             if (albumName == AllFilter) return null;
 
             var cover = AlbumCoverHelper.GetAlbumCover(albumName);
             if (cover != null) return cover;
 
-            var tracks = GetAllTracksForAlbum(albumName);
+            Console.WriteLine("GET ALBUM TRACKS");
+            tracks = tracks?.Where(x => x.Album == albumName).ToList() ?? GetAllTracksForAlbum(albumName);
+            
             if (tracks.Count == 0) return null;
 
             AlbumCoverHelper.LoadAlbumCover(tracks[0]);

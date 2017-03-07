@@ -346,7 +346,7 @@ namespace Halloumi.Shuffler.Forms
             else
             {
                 availableTracks = LibraryControl
-                    .GetAvailableTracks()
+                    .AvailableTracks
                     .Where(t => t.IsShufflerTrack)
                     .ToList();
             }
@@ -471,7 +471,7 @@ namespace Halloumi.Shuffler.Forms
             DisableControls();
 
             _displayedTracks = LibraryControl
-                .GetDisplayedTracks()
+                .DisplayedTracks
                 .Where(t => t.IsShufflerTrack)
                 .ToList();
 

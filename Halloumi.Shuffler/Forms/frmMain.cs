@@ -234,7 +234,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 BassPlayer = BassPlayer,
                 Library = Library,
-                Tracks = trackLibraryControl.GetDisplayedTracks().ToList()
+                Tracks = trackLibraryControl.DisplayedTracks.ToList()
             };
             similarTracks.ShowDialog();
         }
@@ -268,7 +268,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuExportLibraryTracks_Click(object sender, EventArgs e)
         {
-            var tracks = trackLibraryControl.GetDisplayedTracks();
+            var tracks = trackLibraryControl.DisplayedTracks;
             const string playlistName = "";
             ExportTracks(tracks, playlistName);
         }

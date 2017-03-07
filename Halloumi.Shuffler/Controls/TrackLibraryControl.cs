@@ -36,6 +36,9 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
+            DisplayedTracks = new List<Track>();
+            AvailableTracks = new List<Track>();
+
             MinBpm = 0;
             MaxBpm = 1000;
             grdTracks.VirtualMode = true;
@@ -86,7 +89,7 @@ namespace Halloumi.Shuffler.Controls
             lstAlbum.ForeColor = grdArtist.ForeColor;
 
             CollectionFilter = "";
-            ExcludedCollectionFilter = "";
+            ExcludeCollectionFilter = "";
             SearchFilter = "";
             ShufflerFilter = Library.ShufflerFilter.None;
             TrackRankFilter = Library.TrackRankFilter.None;
@@ -101,7 +104,7 @@ namespace Halloumi.Shuffler.Controls
 
         public string CollectionFilter { get; internal set; }
 
-        public string ExcludedCollectionFilter { get; internal set; }
+        public string ExcludeCollectionFilter { get; internal set; }
 
         private Library.ShufflerFilter ShufflerFilter { get; set; }
 
@@ -136,6 +139,10 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MixLibrary MixLibrary { get; set; }
+
+        public List<Track> DisplayedTracks { get; set; }
+        
+        public List<Track> AvailableTracks { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass player.
@@ -290,15 +297,18 @@ namespace Halloumi.Shuffler.Controls
         }
 
 
-        public List<Track> GetAvailableTracks()
+        private List<Track> GetAvailableTracks()
         {
-            return Library.GetTracks("", "", "", "", "", CollectionFilter, ShufflerFilter, MinBpm, MaxBpm,
-                TrackRankFilter,
-                ExcludedCollectionFilter);
+            Console.WriteLine("AVAILABLE TRACS");
+            return Library.GetTracks(collectionFilter:CollectionFilter, 
+                shufflerFilter:ShufflerFilter, 
+                trackRankFilter:TrackRankFilter, 
+                excludeCollectionFilter:ExcludeCollectionFilter);
         }
 
-        public List<Track> GetDisplayedTracks()
+        private List<Track> GetDisplayedTracks()
         {
+            Console.WriteLine("DISPLAYED TRACS");
             var tracks = Library.GetTracks(GetSelectedGenres(),
                 GetSelectedArtists(),
                 GetSelectedAlbums(),
@@ -308,7 +318,7 @@ namespace Halloumi.Shuffler.Controls
                 MinBpm,
                 MaxBpm,
                 TrackRankFilter,
-                ExcludedCollectionFilter);
+                ExcludeCollectionFilter);
 
             if (PlaylistControl == null || cmbQueued.Text == "") return tracks;
             var queuedTracks = PlaylistControl.GetTracks();
@@ -334,7 +344,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (_binding || _neverBind) return;
 
-            DebugHelper.WriteLine("BIND LIBRARY");
+            Console.WriteLine("BIND LIBRARY");
 
             var selectedGenres = GetSelectedGenres();
             var selectedArtists = GetSelectedArtists();
@@ -343,38 +353,35 @@ namespace Halloumi.Shuffler.Controls
             if (bindTracks) BindCollections();
             if (bindTracks) BindExcludedCollections();
 
-            var displayedTracks = GetDisplayedTracks();
+            AvailableTracks = GetAvailableTracks();
+            DisplayedTracks = GetDisplayedTracks();
+            MixLibrary.AvailableTracks = AvailableTracks;
 
-            if (bindGenres) BindGenres(selectedGenres);
+            if (bindGenres)
+            {
+                var genres = Library.GetGenresFromTracks(AvailableTracks);
+                BindGenres(selectedGenres, genres);
+            }
+            
             if (bindArtists)
             {
-                var artists =
-                    displayedTracks.Select(x => x.AlbumArtist)
-                        .OrderBy(t => t)
-                        .Where(t => t != "")
-                        .Distinct()
-                        .Select(t => new Artist(t))
-                        .ToList();
-                BindArtists(selectedGenres, selectedArtists, artists);
+                var artists = Library.GetAlbumArtistsFromTracks(DisplayedTracks);
+                BindArtists(selectedArtists, artists);
             }
 
             if (bindAlbums)
             {
-                var albums =
-                    displayedTracks.Select(x => x.Album)
-                        .OrderBy(t => t)
-                        .Where(t => t != "")
-                        .Distinct()
-                        .Select(t => new Album(t))
-                        .ToList();
-
-                BindAlbums(selectedGenres, selectedArtists, selectedAlbums, albums);
+                var albums = Library.GetAlbumsFromTracks(DisplayedTracks);
+                BindAlbums(selectedAlbums, albums);
             }
             
-            if (bindTracks) BindTracks(GetAvailableTracks(), displayedTracks);
+            if (bindTracks)
+            {
+                BindTracks(AvailableTracks, DisplayedTracks);
+                SaveSettings();
+            }
 
-
-            DebugHelper.WriteLine("END BIND LIBRARY");
+            Console.WriteLine("END BIND LIBRARY");
         }
 
         /// <summary>
@@ -409,7 +416,7 @@ namespace Halloumi.Shuffler.Controls
             if (_neverBind) return;
             _binding = true;
 
-            var selectedExcludedPlaylist = ExcludedCollectionFilter;
+            var selectedExcludedPlaylist = ExcludeCollectionFilter;
             if (cmbExcludedCollection.SelectedItem != null)
                 selectedExcludedPlaylist = cmbExcludedCollection.SelectedItem.ToString();
 
@@ -428,17 +435,15 @@ namespace Halloumi.Shuffler.Controls
 
 
         /// <summary>
-        ///     Binds the genres.
+        /// Binds the genres.
         /// </summary>
         /// <param name="selectedGenres">The selected genres.</param>
-        private void BindGenres(List<string> selectedGenres)
+        /// <param name="genres">The genres.</param>
+        private void BindGenres(List<string> selectedGenres, IList<Genre> genres)
         {
             if (_neverBind) return;
             _binding = true;
 
-            //var genres = Library.GetGenres(SearchFilter, CollectionFilter, ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter,
-            //    ExcludedCollectionFilter);
-            var genres = Library.GetAllGenres();
             genres.Insert(0, new Genre("(All)"));
 
             grdGenre.DataSource = genres;
@@ -457,17 +462,12 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Binds the artists.
         /// </summary>
-        /// <param name="selectedGenres">The selected genres.</param>
         /// <param name="selectedArtists">The selected artists.</param>
         /// <param name="artists">The artists.</param>
-        private void BindArtists(List<string> selectedGenres, List<string> selectedArtists, List<Artist> artists = null)
+        private void BindArtists(List<string> selectedArtists, IList<Artist> artists)
         {
             if (_neverBind) return;
             _binding = true;
-
-            if (artists == null)
-                artists = Library.GetAlbumArtists(selectedGenres, SearchFilter, CollectionFilter, ShufflerFilter, MinBpm,
-                    MaxBpm, TrackRankFilter, ExcludedCollectionFilter);
 
             artists.Insert(0, new Artist("(All)"));
 
@@ -480,19 +480,12 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Binds the albums.
         /// </summary>
-        /// <param name="selectedGenres">The selected genres.</param>
-        /// <param name="selectedArtists">The selected artists.</param>
         /// <param name="selectedAlbums">The selected albums.</param>
         /// <param name="albums">The albums.</param>
-        private void BindAlbums(List<string> selectedGenres, List<string> selectedArtists,
-            ICollection<string> selectedAlbums, List<Album> albums = null)
+        private void BindAlbums(ICollection<string> selectedAlbums, List<Album> albums)
         {
             if (_neverBind) return;
             _binding = true;
-
-            if (albums == null)
-                albums = Library.GetAlbums(selectedGenres, selectedArtists, SearchFilter, CollectionFilter,
-                    ShufflerFilter, MinBpm, MaxBpm, TrackRankFilter, ExcludedCollectionFilter);
 
             var items = new List<ListViewItem>();
             foreach (var album in albums)
@@ -517,7 +510,7 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Binds the tracks.
         /// </summary>
-        private void BindTracks(List<Track> availableTracks = null, List<Track> displayedTracks = null)
+        private void BindTracks(IReadOnlyCollection<Track> availableTracks, IReadOnlyCollection<Track> displayedTracks)
         {
             if (_neverBind) return;
             _binding = true;
@@ -525,14 +518,6 @@ namespace Halloumi.Shuffler.Controls
             DisplayedTracksChanging?.Invoke(this, EventArgs.Empty);
 
             grdTracks.SaveSelectedRows();
-
-            if (availableTracks == null)
-                availableTracks = GetAvailableTracks();
-
-            MixLibrary.AvailableTracks = availableTracks;
-
-            if (displayedTracks == null)
-                displayedTracks = GetDisplayedTracks();
 
             var trackModels = displayedTracks
                 .Take(2000)
@@ -589,7 +574,7 @@ namespace Halloumi.Shuffler.Controls
             grdTracks.RestoreSelectedRows();
             grdTracks.InvalidateDisplayedRows();
 
-            SetToolStripLabel();
+            SetToolStripLabel(Library.TrackCount(), availableTracks.Count, displayedTracks.Count);
 
             _binding = false;
 
@@ -888,7 +873,7 @@ namespace Halloumi.Shuffler.Controls
 
                 if (!imlAlbumArt.Images.ContainsKey(album.Name))
                 {
-                    var image = Library.GetAlbumCover(album.Name);
+                    var image = Library.GetAlbumCover(album.Name, AvailableTracks);
                     if (image == null) continue;
 
                     using (var graphics = Graphics.FromImage(image))
@@ -1107,12 +1092,11 @@ namespace Halloumi.Shuffler.Controls
         }
 
 
-        private void SetToolStripLabel()
+        private void SetToolStripLabel(int libraryCount, int availableCount, int displayedCount)
         {
             if (ToolStripLabel == null) return;
 
-            var text =
-                $"{Library.GetTracks().Count} library tracks.  {GetAvailableTracks().Count} available tracks.  {GetDisplayedTracks().Count} displayed tracks.";
+            var text = $"{libraryCount} library tracks. {availableCount} available tracks. {displayedCount} displayed tracks.";
 
             ToolStripLabel.Text = text;
         }
@@ -1145,7 +1129,7 @@ namespace Halloumi.Shuffler.Controls
                 cmbTrackRankFilter.SelectedIndex = settings.CmbTrackRankFilterSelectedIndex;
 
                 CollectionFilter = settings.Collection;
-                ExcludedCollectionFilter = settings.ExcludedCollection;
+                ExcludeCollectionFilter = settings.ExcludedCollection;
 
                 if (settings.SortColumnName != "")
                 {
@@ -1493,8 +1477,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void CmbExcludedCollectionSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmbExcludedCollection.SelectedItem.ToString() == ExcludedCollectionFilter) return;
-            ExcludedCollectionFilter = cmbExcludedCollection.SelectedItem.ToString();
+            if (cmbExcludedCollection.SelectedItem.ToString() == ExcludeCollectionFilter) return;
+            ExcludeCollectionFilter = cmbExcludedCollection.SelectedItem.ToString();
             SearchFilter = "";
             DebugHelper.WriteLine("ExcPlaylistChaneg");
             BindData();

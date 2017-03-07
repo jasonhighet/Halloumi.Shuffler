@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.Controls
                 .ToList();
 
             return _libraryControl
-                .GetDisplayedTracks()
+                .DisplayedTracks ?? new List<Track>()
                 .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
@@ -58,7 +58,7 @@ namespace Halloumi.Shuffler.Controls
                 .ToList();
 
             return _libraryControl
-                .GetDisplayedTracks()
+                .DisplayedTracks ?? new List<Track>()
                 .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
@@ -191,9 +191,18 @@ namespace Halloumi.Shuffler.Controls
             var mixableTracks = new List<MixableTrackModel>();
             foreach (var track in tracks)
             {
+                if(_parentTrack == null) continue;
                 if (mixableTracks.Exists(mt => mt.Description == track.Description)) continue;
                 if (chkExcludeQueued.Checked && playListTracks.Exists(mt => mt.Description == track.Description))
                     continue;
+
+                var mixRank = (view == View.FromTracks)
+                    ? _mixLibrary.GetExtendedMixLevel(track, _parentTrack)
+                    : _mixLibrary.GetExtendedMixLevel(_parentTrack, track);
+
+                var mixRankDescription = (view == View.FromTracks)
+                    ? _mixLibrary.GetExtendedMixDescription(track, _parentTrack)
+                    : _mixLibrary.GetExtendedMixDescription(_parentTrack, track);
 
                 var mixableTrack = new MixableTrackModel
                 {
@@ -201,25 +210,17 @@ namespace Halloumi.Shuffler.Controls
                     Description = track.Description,
                     Bpm = track.Bpm,
                     Diff = BpmHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
-                    MixRank = (view == View.FromTracks)
-                        ? _mixLibrary.GetExtendedMixLevel(track, _parentTrack)
-                        : _mixLibrary.GetExtendedMixLevel(_parentTrack, track),
-
-                    MixRankDescription = (view == View.FromTracks)
-                        ? _mixLibrary.GetExtendedMixDescription(track, _parentTrack)
-                        : _mixLibrary.GetExtendedMixDescription(_parentTrack, track),
-
+                    MixRank = mixRank,
+                    MixRankDescription = mixRankDescription,
                     Rank = track.Rank,
                     RankDescription = track.RankDescription,
                     Key = KeyHelper.GetDisplayKey(track.Key),
-
                     KeyDiff = KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
                     KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track.Key, _parentTrack.Key)
                      
                 };
 
-                mixableTrack.MixRankDescription =
-                    _mixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
+                mixableTrack.MixRankDescription = _mixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
                 var hasExtendedMix = _mixLibrary.HasExtendedMix(_parentTrack, track);
                 if (hasExtendedMix) mixableTrack.MixRankDescription += "*";
 
