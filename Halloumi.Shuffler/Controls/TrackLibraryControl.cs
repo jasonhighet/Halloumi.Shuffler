@@ -358,7 +358,7 @@ namespace Halloumi.Shuffler.Controls
             if (_neverBind) return;
             _binding = true;
 
-            var selectedPlaylist = "";
+            var selectedPlaylist = CollectionFilter;
             if (cmbCollection.SelectedItem != null) selectedPlaylist = cmbCollection.SelectedItem.ToString();
 
             cmbCollection.Items.Clear();
@@ -382,7 +382,7 @@ namespace Halloumi.Shuffler.Controls
             if (_neverBind) return;
             _binding = true;
 
-            var selectedExcludedPlaylist = "";
+            var selectedExcludedPlaylist = ExcludedCollectionFilter;
             if (cmbExcludedCollection.SelectedItem != null)
                 selectedExcludedPlaylist = cmbExcludedCollection.SelectedItem.ToString();
 
@@ -1104,19 +1104,8 @@ namespace Halloumi.Shuffler.Controls
                 cmbShufflerFilter.SelectedIndex = settings.CmbShufflerFilterSelectedIndex;
                 cmbTrackRankFilter.SelectedIndex = settings.CmbTrackRankFilterSelectedIndex;
 
-                var playlistIndex = cmbCollection.FindString(settings.Playlist);
-                if (playlistIndex != -1)
-                {
-                    cmbCollection.SelectedIndex = playlistIndex;
-                    CollectionFilter = settings.Playlist;
-                }
-
-                var excludedPlaylistIndex = cmbExcludedCollection.FindString(settings.ExcludedPlaylist);
-                if (excludedPlaylistIndex != -1)
-                {
-                    cmbExcludedCollection.SelectedIndex = excludedPlaylistIndex;
-                    ExcludedCollectionFilter = settings.ExcludedPlaylist;
-                }
+                CollectionFilter = settings.Collection;
+                ExcludedCollectionFilter = settings.ExcludedCollection;
 
                 if (settings.SortColumnName != "")
                 {
@@ -1153,19 +1142,20 @@ namespace Halloumi.Shuffler.Controls
                 CmbQueuedSelectedIndex = cmbQueued.SelectedIndex,
                 SortColumnName = grdTracks.SortedColumn != null ? grdTracks.SortedColumn.DataPropertyName : "",
                 SortOrder = grdTracks.SortOrder,
-                Playlist = ""
+                Collection = cmbCollection.SelectedText,
+                ExcludedCollection = cmbExcludedCollection.SelectedText,
             };
 
 
             if (cmbCollection.SelectedIndex > 0)
             {
-                settings.Playlist = cmbCollection.SelectedItem.ToString();
+                settings.Collection = cmbCollection.SelectedItem.ToString();
             }
 
-            settings.ExcludedPlaylist = "";
+            settings.ExcludedCollection = "";
             if (cmbExcludedCollection.SelectedIndex > 0)
             {
-                settings.ExcludedPlaylist = cmbExcludedCollection.SelectedItem.ToString();
+                settings.ExcludedCollection = cmbExcludedCollection.SelectedItem.ToString();
             }
 
             var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.Library.xml");
@@ -1724,8 +1714,8 @@ namespace Halloumi.Shuffler.Controls
                 CmbTrackRankFilterSelectedIndex = 0;
                 CmbShufflerFilterSelectedIndex = 0;
                 CmbQueuedSelectedIndex = 0;
-                Playlist = "";
-                ExcludedPlaylist = "";
+                Collection = "";
+                ExcludedCollection = "";
                 SortColumnName = "";
                 SortOrder = SortOrder.None;
             }
@@ -1742,9 +1732,9 @@ namespace Halloumi.Shuffler.Controls
 
             public int CmbQueuedSelectedIndex { get; set; }
 
-            public string Playlist { get; set; }
+            public string Collection { get; set; }
 
-            public string ExcludedPlaylist { get; set; }
+            public string ExcludedCollection { get; set; }
 
             public string SortColumnName { get; set; }
 
