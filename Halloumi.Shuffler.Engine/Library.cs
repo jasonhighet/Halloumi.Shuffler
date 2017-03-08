@@ -332,6 +332,8 @@ namespace Halloumi.Shuffler.AudioLibrary
             else
                 TrackHelper.LoadTrack(track, updateLength);
 
+            ShufflerHelper.LoadShufflerDetails(track);
+
             return track;
         }
 
@@ -371,8 +373,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
 
             ParallelHelper.ForEach(files.TakeWhile(file => !_cancelImport), file => { LoadTrack(file); });
-
-            LoadAllExtendedAttributes();
 
             SaveToDatabase();
         }

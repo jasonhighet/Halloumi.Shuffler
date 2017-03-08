@@ -47,6 +47,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// <param name="track">The track.</param>
         public static Dictionary<string, string> LoadShufflerDetails(Track track)
         {
+            //if(track.Title.Contains("Escobar"))
+            //    Console.WriteLine("Stop");
+
             track.Key = KeyHelper.ParseKey(track.Key);
 
             track.IsShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(track.Description);
@@ -55,12 +58,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
             var attributes = ExtenedAttributesHelper.GetExtendedAttributes(track.Description);
 
-            if (attributes.ContainsKey("StartBPM"))
-                track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
-            if (attributes.ContainsKey("EndBPM"))
-                track.EndBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
-
-            track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
             if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
 
@@ -99,6 +96,13 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if (outLoopLength > 0) track.EndBpm = BpmHelper.GetBpmFromLoopLength(Convert.ToDouble(outLoopLength));
 
             track.Length = length;
+
+            if (attributes.ContainsKey("StartBPM"))
+                track.StartBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["StartBPM"], track.Bpm));
+            if (attributes.ContainsKey("EndBPM"))
+                track.EndBpm = BpmHelper.NormaliseBpm(ConversionHelper.ToDecimal(attributes["EndBPM"], track.Bpm));
+
+            track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
             return attributes;
         }
