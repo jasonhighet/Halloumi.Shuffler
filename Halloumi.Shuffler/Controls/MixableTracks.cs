@@ -44,8 +44,7 @@ namespace Halloumi.Shuffler.Controls
                 .Select(x => x.Description)
                 .ToList();
 
-            return _libraryControl
-                .DisplayedTracks ?? new List<Track>()
+            return (_libraryControl.DisplayedTracks ?? new List<Track>())
                 .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
@@ -57,8 +56,7 @@ namespace Halloumi.Shuffler.Controls
                 .Select(x => x.Description)
                 .ToList();
 
-            return _libraryControl
-                .DisplayedTracks ?? new List<Track>()
+            return (_libraryControl.DisplayedTracks ?? new List<Track>())
                 .Where(x => mixableTracks.Contains(x.Description))
                 .ToList();
         }
@@ -119,7 +117,8 @@ namespace Halloumi.Shuffler.Controls
         {
             if (!_bindDataAllowed) return;
 
-            var view = cmbView.ParseEnum<View>();
+
+             var view = cmbView.ParseEnum<View>();
 
             var rankFilter = cmbRank.GetTextThreadSafe();
             List<int> ranks;
@@ -165,9 +164,14 @@ namespace Halloumi.Shuffler.Controls
                     break;
             }
 
-            var tracks = (view == View.FromTracks)
-                ? GetMixableFromTracks(_parentTrack, ranks)
-                : GetMixableToTracks(_parentTrack, ranks);
+            List<Track> tracks;
+            if (_parentTrack == null)
+                tracks = new List<Track>();
+            else if (view == View.FromTracks)
+                tracks = GetMixableFromTracks(_parentTrack, ranks);
+            else
+                tracks = GetMixableToTracks(_parentTrack, ranks);
+
 
             var playListTracks = new List<Track>();
             if (PlaylistControl != null)
@@ -175,13 +179,13 @@ namespace Halloumi.Shuffler.Controls
                 playListTracks = PlaylistControl.GetTracks();
             }
 
-            if (minimumKeyRank == 0)
+            if (minimumKeyRank == 0 && _parentTrack !=null)
             {
                 tracks = tracks
                     .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) <= 1)
                     .ToList();
             }
-            else if (minimumKeyRank != -1)
+            else if (minimumKeyRank != -1 && _parentTrack != null)
             {
                 tracks = tracks
                     .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) >= minimumKeyRank)

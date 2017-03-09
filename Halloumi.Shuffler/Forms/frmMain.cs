@@ -536,6 +536,8 @@ namespace Halloumi.Shuffler.Forms
 
             mnuShowMixableTracks.Checked = (settings.ShowMixableTracks);
             mnuShowTrackDetails.Checked = (settings.ShowTrackDetails);
+            trackLibraryControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
+            playlistControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
 
             playlistControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
             trackLibraryControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
