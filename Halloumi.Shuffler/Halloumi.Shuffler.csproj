@@ -273,11 +273,11 @@
     <Compile Include="Forms\frmAddPlaylist.Designer.cs">
       <DependentUpon>frmAddPlaylist.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmPlugin.cs">
+    <Compile Include="Forms\frmPluginSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmPlugin.designer.cs">
-      <DependentUpon>frmPlugin.cs</DependentUpon>
+    <Compile Include="Forms\frmPluginSettings.designer.cs">
+      <DependentUpon>frmPluginSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmSettings.cs">
       <SubType>Form</SubType>
@@ -333,6 +333,7 @@
     <Compile Include="Forms\frmVstChain.Designer.cs">
       <DependentUpon>frmVstChain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\PluginSettings.cs" />
     <Compile Include="Forms\Settings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -443,8 +444,8 @@
       <DependentUpon>frmAddPlaylist.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmPlugin.resx">
-      <DependentUpon>frmPlugin.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmPluginSettings.resx">
+      <DependentUpon>frmPluginSettings.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmSettings.resx">

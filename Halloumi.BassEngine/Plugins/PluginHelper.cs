@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Un4seen.Bass.AddOn.Vst;
 using Un4seen.Bass.AddOn.WaDsp;
 
@@ -74,6 +75,18 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
 
             var containerForm = new VstPluginConfigForm(plugin);
             containerForm.Show();
+        }
+
+        public static WaPlugin FindWaPluginByLocation(string location)
+        {
+            var name = GetPluginNameFromFileName(location);
+            return FindWaPlugins().FirstOrDefault(x => x.Name == name);
+        }
+
+        public static VstPlugin FindVstPluginByLocation(string location)
+        {
+            var name = GetPluginNameFromFileName(location);
+            return FindVstPlugins().FirstOrDefault(x => x.Name == name);
         }
 
         /// <summary>

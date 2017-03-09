@@ -6,16 +6,9 @@ namespace Halloumi.Shuffler.Forms
 {
     public class Settings
     {
-        private static Settings _default = null;
+        private static Settings _default;
 
-        public static Settings Default
-        {
-            get
-            {
-                if (_default == null) _default = LoadSetttings();
-                return _default;
-            }
-        }
+        public static Settings Default => _default ?? (_default = LoadSetttings());
 
         private static Settings LoadSetttings()
         {
@@ -29,7 +22,9 @@ namespace Halloumi.Shuffler.Forms
                 }
             }
             catch
-            { }
+            {
+                // ignored
+            }
 
             return settings;
         }
@@ -43,7 +38,6 @@ namespace Halloumi.Shuffler.Forms
         public Settings()
         {
             LibraryFolder = "";
-            PlaylistFolder = "";
             ShufflerFolder = "";
             WaPluginsFolder = "";
             VstPluginsFolder = "";
@@ -99,9 +93,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
         public string LibraryFolder { get; set; }
-
-        public string PlaylistFolder { get; set; }
-
+        
         public string ShufflerFolder { get; set; }
 
         public string WaPluginsFolder { get; set; }
@@ -113,26 +105,6 @@ namespace Halloumi.Shuffler.Forms
         public string MainMixerVstPlugin2 { get; set; }
 
         public string WaPlugin { get; set; }
-
-        public int LeftRightSplit { get; set; }
-
-        public string FormStateSettings { get; set; }
-
-        public int TrackSplit { get; set; }
-
-        public bool MinimizeToTray { get; set; }
-
-        public bool LimitSongLength { get; set; }
-
-        public string ExportPlaylistFolder { get; set; }
-
-        public decimal Volume { get; set; }
-
-        public bool ShowMixableTracks { get; set; }
-
-        public string AnalogXScratchFolder { get; set; }
-
-        public string KeyFinderFolder { get; set; }
 
         public string SamplerVstPlugin { get; set; }
 
@@ -157,6 +129,27 @@ namespace Halloumi.Shuffler.Forms
         public string SamplerVstPlugin2Parameters { get; set; }
 
         public string TrackFxvstPlugin2Parameters { get; set; }
+
+        public int LeftRightSplit { get; set; }
+
+        public string FormStateSettings { get; set; }
+
+        public int TrackSplit { get; set; }
+
+        public bool MinimizeToTray { get; set; }
+
+        public bool LimitSongLength { get; set; }
+
+        public string ExportPlaylistFolder { get; set; }
+
+        public decimal Volume { get; set; }
+
+        public bool ShowMixableTracks { get; set; }
+
+        public string AnalogXScratchFolder { get; set; }
+
+        public string KeyFinderFolder { get; set; }
+
 
         public bool CutSamplerBass { get; set; }
 

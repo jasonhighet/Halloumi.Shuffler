@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
+using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
+using Halloumi.Common.Windows.Helpers;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class FrmPlugin : BaseForm
+    // ReSharper disable once InconsistentNaming
+    public partial class frmPluginSettings : BaseForm
     {
         private AE.BassPlayer BassPlayer { get; set; }
 
-        public FrmPlugin(AE.BassPlayer bassPlayer)
+        public frmPluginSettings(AE.BassPlayer bassPlayer)
         {
             InitializeComponent();
             BassPlayer = bassPlayer;
@@ -22,7 +27,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_binding) return;
             if (cmbVSTPlugins.SelectedIndex == -1) return;
-            LoadMainVstPlugin(cmbVSTPlugins.SelectedValue.ToString());
+            LoadMainMixerVstPlugin(cmbVSTPlugins.SelectedValue.ToString());
         }
 
         private void cmbWAPlugins_SelectedIndexChanged(object sender, EventArgs e)
@@ -57,7 +62,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_binding) return;
             if (cmbTrackFXVSTPlugins.SelectedIndex == -1) return;
-            LoadTrackFxvstPlugin(cmbTrackFXVSTPlugins.SelectedValue.ToString());
+            LoadTrackFxVstPlugin(cmbTrackFXVSTPlugins.SelectedValue.ToString());
         }
 
         private void btnWAPluginConfig_Click(object sender, EventArgs e)
@@ -101,7 +106,7 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        public void LoadMainVstPlugin(string location)
+        public void LoadMainMixerVstPlugin(string location)
         {
             try
             {
@@ -171,7 +176,7 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        public void LoadTrackFxvstPlugin(string location)
+        public void LoadTrackFxVstPlugin(string location)
         {
             try
             {
@@ -185,7 +190,7 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        public void LoadTrackFxvstPlugin2(string location)
+        public void LoadTrackFxVstPlugin2(string location)
         {
             try
             {
@@ -232,6 +237,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbWAPlugins.DataSource = null;
             cmbWAPlugins.Items.Clear();
             cmbWAPlugins.DisplayMember = "Name";
             cmbWAPlugins.ValueMember = "Location";
@@ -262,6 +268,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbVSTPlugins.DataSource = null;
             cmbVSTPlugins.Items.Clear();
             cmbVSTPlugins.DisplayMember = "Name";
             cmbVSTPlugins.ValueMember = "Location";
@@ -292,6 +299,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbMainMixerPlugins2.DataSource = null;
             cmbMainMixerPlugins2.Items.Clear();
             cmbMainMixerPlugins2.DisplayMember = "Name";
             cmbMainMixerPlugins2.ValueMember = "Location";
@@ -328,6 +336,7 @@ namespace Halloumi.Shuffler.Forms
                 plugins.Add(model);
             }
 
+            cmbSamplerVSTPlugins.DataSource = null;
             cmbSamplerVSTPlugins.Items.Clear();
             cmbSamplerVSTPlugins.DisplayMember = "Name";
             cmbSamplerVSTPlugins.ValueMember = "Location";
@@ -358,6 +367,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbSamplerVSTPlugins2.DataSource = null;
             cmbSamplerVSTPlugins2.Items.Clear();
             cmbSamplerVSTPlugins2.DisplayMember = "Name";
             cmbSamplerVSTPlugins2.ValueMember = "Location";
@@ -388,6 +398,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbTrackVSTPlugins.DataSource = null;
             cmbTrackVSTPlugins.Items.Clear();
             cmbTrackVSTPlugins.DisplayMember = "Name";
             cmbTrackVSTPlugins.ValueMember = "Location";
@@ -418,6 +429,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbTrackFXVSTPlugins.DataSource = null;
             cmbTrackFXVSTPlugins.Items.Clear();
             cmbTrackFXVSTPlugins.DisplayMember = "Name";
             cmbTrackFXVSTPlugins.ValueMember = "Location";
@@ -448,6 +460,7 @@ namespace Halloumi.Shuffler.Forms
                 Location = plugin.Location, Name = plugin.Name
             }));
 
+            cmbTrackFXVSTPlugins2.DataSource = null;
             cmbTrackFXVSTPlugins2.Items.Clear();
             cmbTrackFXVSTPlugins2.DisplayMember = "Name";
             cmbTrackFXVSTPlugins2.ValueMember = "Location";
@@ -473,9 +486,9 @@ namespace Halloumi.Shuffler.Forms
 
         public string CurrentTrackVstPluginLocation => BassPlayer.TrackVstPlugin == null ? "" : BassPlayer.TrackVstPlugin.Location;
 
-        public string CurrentTrackFxvstPluginLocation => BassPlayer.TrackSendFxvstPlugin == null ? "" : BassPlayer.TrackSendFxvstPlugin.Location;
+        public string CurrentTrackFxvstPluginLocation => BassPlayer.TrackSendFxVstPlugin == null ? "" : BassPlayer.TrackSendFxVstPlugin.Location;
 
-        public string CurrentTrackFxvstPluginLocation2 => BassPlayer.TrackSendFxvstPlugin2 == null ? "" : BassPlayer.TrackSendFxvstPlugin2.Location;
+        public string CurrentTrackFxvstPluginLocation2 => BassPlayer.TrackSendFxVstPlugin2 == null ? "" : BassPlayer.TrackSendFxVstPlugin2.Location;
 
         public string CurrentWaPluginLocation => BassPlayer.WaPlugin == null ? "" : BassPlayer.WaPlugin.Location;
 
@@ -534,19 +547,19 @@ namespace Halloumi.Shuffler.Forms
             settings.TrackVstPluginParameters = trackVstPluginParameters;
 
             var trackFxVstPlugin = "";
-            if (BassPlayer.TrackSendFxvstPlugin != null) trackFxVstPlugin = BassPlayer.TrackSendFxvstPlugin.Location;
+            if (BassPlayer.TrackSendFxVstPlugin != null) trackFxVstPlugin = BassPlayer.TrackSendFxVstPlugin.Location;
             settings.TrackFxvstPlugin = trackFxVstPlugin;
 
             var trackFxVstPluginParameters = "";
-            if (BassPlayer.TrackSendFxvstPlugin != null) trackFxVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin);
+            if (BassPlayer.TrackSendFxVstPlugin != null) trackFxVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin);
             settings.TrackFxvstPluginParameters = trackFxVstPluginParameters;
 
             var trackFxVstPlugin2 = "";
-            if (BassPlayer.TrackSendFxvstPlugin2 != null) trackFxVstPlugin2 = BassPlayer.TrackSendFxvstPlugin2.Location;
+            if (BassPlayer.TrackSendFxVstPlugin2 != null) trackFxVstPlugin2 = BassPlayer.TrackSendFxVstPlugin2.Location;
             settings.TrackFxvstPlugin2 = trackFxVstPlugin2;
 
             var trackFxVstPluginParameters2 = "";
-            if (BassPlayer.TrackSendFxvstPlugin2 != null) trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxvstPlugin2);
+            if (BassPlayer.TrackSendFxVstPlugin2 != null) trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2);
             settings.TrackFxvstPlugin2Parameters = trackFxVstPluginParameters2;
 
             settings.Save();
@@ -561,8 +574,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnTrackFXVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.TrackSendFxvstPlugin == null) return;
-            PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin);
+            if (BassPlayer.TrackSendFxVstPlugin == null) return;
+            PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxVstPlugin);
         }
 
         private void btnSamplerVSTPlugin2Config_Click(object sender, EventArgs e)
@@ -575,13 +588,13 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_binding) return;
             if (cmbTrackFXVSTPlugins2.SelectedIndex == -1) return;
-            LoadTrackFxvstPlugin2(cmbTrackFXVSTPlugins2.SelectedValue.ToString());
+            LoadTrackFxVstPlugin2(cmbTrackFXVSTPlugins2.SelectedValue.ToString());
         }
 
         private void btnTrackFXVSTPluginConfig2_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.TrackSendFxvstPlugin2 == null) return;
-            PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxvstPlugin2);
+            if (BassPlayer.TrackSendFxVstPlugin2 == null) return;
+            PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxVstPlugin2);
         }
 
         private void btnMainMixerPluginConfig2_Click(object sender, EventArgs e)
@@ -595,6 +608,141 @@ namespace Halloumi.Shuffler.Forms
             if (_binding) return;
             if (cmbMainMixerPlugins2.SelectedIndex == -1) return;
             LoadMainMixerVstPlugin2(cmbMainMixerPlugins2.SelectedValue.ToString());
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            var settings = new PluginSettings();
+
+            var winampPlugin = "";
+            if (BassPlayer.WaPlugin != null) winampPlugin = BassPlayer.WaPlugin.Location;
+            settings.WaPlugin = winampPlugin;
+
+            var mainVstPlugin = "";
+            if (BassPlayer.MainVstPlugin != null) mainVstPlugin = BassPlayer.MainVstPlugin.Location;
+            settings.MainMixerVstPlugin = mainVstPlugin;
+
+            var mainVstPluginParameters = "";
+            if (BassPlayer.MainVstPlugin != null) mainVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin);
+            settings.MainMixerVstPluginParameters = mainVstPluginParameters;
+
+            var mainVstPlugin2 = "";
+            if (BassPlayer.MainVstPlugin2 != null) mainVstPlugin2 = BassPlayer.MainVstPlugin2.Location;
+            settings.MainMixerVstPlugin2 = mainVstPlugin2;
+
+            var mainVstPluginParameters2 = "";
+            if (BassPlayer.MainVstPlugin2 != null) mainVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin2);
+            settings.MainMixerVstPlugin2Parameters = mainVstPluginParameters2;
+
+            var samplerVstPlugin = "";
+            if (BassPlayer.SamplerVstPlugin != null) samplerVstPlugin = BassPlayer.SamplerVstPlugin.Location; 
+            settings.SamplerVstPlugin = samplerVstPlugin;
+
+            var samplerVstPluginParameters = "";
+            if (BassPlayer.SamplerVstPlugin != null) samplerVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin);
+            settings.SamplerVstPluginParameters = samplerVstPluginParameters;
+
+            var samplerVstPlugin2 = "";
+            if (BassPlayer.SamplerVstPlugin2 != null) samplerVstPlugin2 = BassPlayer.SamplerVstPlugin2.Location;
+            settings.SamplerVstPlugin2 = samplerVstPlugin2;
+
+            var samplerVstPluginParameters2 = "";
+            if (BassPlayer.SamplerVstPlugin2 != null) samplerVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin2);
+            settings.SamplerVstPlugin2Parameters = samplerVstPluginParameters2;
+
+            var trackVstPlugin = "";
+            if (BassPlayer.TrackVstPlugin != null) trackVstPlugin = BassPlayer.TrackVstPlugin.Location;
+            settings.TrackVstPlugin = trackVstPlugin;
+
+            var trackVstPluginParameters = "";
+            if (BassPlayer.TrackVstPlugin != null) trackVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackVstPlugin);
+            settings.TrackVstPluginParameters = trackVstPluginParameters;
+
+            var trackFxVstPlugin = "";
+            if (BassPlayer.TrackSendFxVstPlugin != null) trackFxVstPlugin = BassPlayer.TrackSendFxVstPlugin.Location;
+            settings.TrackFxVstPlugin = trackFxVstPlugin;
+
+            var trackFxVstPluginParameters = "";
+            if (BassPlayer.TrackSendFxVstPlugin != null) trackFxVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin);
+            settings.TrackFxvstPluginParameters = trackFxVstPluginParameters;
+
+            var trackFxVstPlugin2 = "";
+            if (BassPlayer.TrackSendFxVstPlugin2 != null) trackFxVstPlugin2 = BassPlayer.TrackSendFxVstPlugin2.Location;
+            settings.TrackFxVstPlugin2 = trackFxVstPlugin2;
+
+            var trackFxVstPluginParameters2 = "";
+            if (BassPlayer.TrackSendFxVstPlugin2 != null) trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2);
+            settings.TrackFxvstPlugin2Parameters = trackFxVstPluginParameters2;
+
+            var filename = FileDialogHelper.SaveAs("Plugin Settings (*.PluginSettings.xml)|*.PluginSettings.xml", "");
+            if(filename != "")
+                SerializationHelper<PluginSettings>.ToXmlFile(settings, filename);
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            var filename = FileDialogHelper.OpenSingle("Plugin Settings (*.PluginSettings.xml)|*.PluginSettings.xml");
+            if(!File.Exists(filename))
+                return;
+
+            var settings = SerializationHelper<PluginSettings>.FromXmlFile(filename);
+
+            var waPlugin = PluginHelper.FindWaPluginByLocation(settings.WaPlugin);
+            if (waPlugin != null)
+                LoadWaPlugin(waPlugin.Location);
+
+            var mainMixerVstPlugin = PluginHelper.FindVstPluginByLocation(settings.MainMixerVstPlugin);
+            if (mainMixerVstPlugin != null)
+            {
+                LoadMainMixerVstPlugin(mainMixerVstPlugin.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin, settings.MainMixerVstPlugin);
+            }
+
+            var mainMixerVstPlugin2 = PluginHelper.FindVstPluginByLocation(settings.MainMixerVstPlugin2);
+            if (mainMixerVstPlugin2 != null)
+            {
+                LoadMainMixerVstPlugin2(mainMixerVstPlugin2.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin2, settings.MainMixerVstPlugin2);
+            }
+
+            var samplerVstPlugin = PluginHelper.FindVstPluginByLocation(settings.SamplerVstPlugin);
+            if (samplerVstPlugin != null)
+            {
+                LoadSamplerVstPlugin(samplerVstPlugin.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin, settings.SamplerVstPlugin);
+            }
+
+            var samplerVstPlugin2 = PluginHelper.FindVstPluginByLocation(settings.SamplerVstPlugin2);
+            if (samplerVstPlugin2 != null)
+            {
+                LoadSamplerVstPlugin2(samplerVstPlugin2.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2, settings.SamplerVstPlugin2);
+            }
+
+            var trackVstPlugin = PluginHelper.FindVstPluginByLocation(settings.TrackVstPlugin);
+            if (trackVstPlugin != null)
+            {
+                LoadTrackVstPlugin(trackVstPlugin.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.TrackVstPlugin, settings.TrackVstPlugin);
+            }
+
+            var trackFxVstPlugin = PluginHelper.FindVstPluginByLocation(settings.TrackFxVstPlugin);
+            if (trackFxVstPlugin != null)
+            {
+                LoadTrackFxVstPlugin2(trackFxVstPlugin.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin, settings.TrackFxVstPlugin);
+            }
+
+
+            var trackFxVstPlugin2 = PluginHelper.FindVstPluginByLocation(settings.TrackFxVstPlugin2);
+            if (trackFxVstPlugin2 != null)
+            {
+                LoadTrackFxVstPlugin(trackFxVstPlugin2.Location);
+                PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2, settings.TrackFxVstPlugin2);
+            }
+
+
+            BindData();
         }
     }
 }

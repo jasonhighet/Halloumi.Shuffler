@@ -41,12 +41,12 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackSendFxvstPlugin => _trackSendFxMixer.GetVstPlugin(0);
+        public VstPlugin TrackSendFxVstPlugin => _trackSendFxMixer.GetVstPlugin(0);
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackSendFxvstPlugin2 => _trackSendFxMixer.GetVstPlugin(1);
+        public VstPlugin TrackSendFxVstPlugin2 => _trackSendFxMixer.GetVstPlugin(1);
 
         public decimal TrackSendFxDelayNotes
         {

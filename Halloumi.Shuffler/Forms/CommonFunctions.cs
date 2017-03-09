@@ -27,28 +27,13 @@ namespace Halloumi.Shuffler.Forms
         {
             var settings = Settings.Default;
 
-            if (Environment.MachineName == "JASON-LAPTOP")
-            {
-                if (settings.LibraryFolder == "") settings.LibraryFolder = @"E:\Music\Library";
-                if (settings.PlaylistFolder == "") settings.PlaylistFolder = @"E:\Music\Playlists";
-                if (settings.ShufflerFolder == "") settings.ShufflerFolder = @"E:\Music\Shuffler";
-                if (settings.WaPluginsFolder == "") settings.WaPluginsFolder = @"C:\Program Files\Winamp\Plugins";
-                if (settings.VstPluginsFolder == "") settings.VstPluginsFolder = @"C:\Program Files\Steinberg\VstPlugins";
-                if (settings.AnalogXScratchFolder == "") settings.AnalogXScratchFolder = @"C:\Program Files\AnalogX\Scratch";
-                if (settings.KeyFinderFolder == "") settings.KeyFinderFolder = @"C:\Program Files\KeyFinderFolder";
-                settings.Save();
-            }
-            else
-            {
-                if (settings.LibraryFolder == "") settings.LibraryFolder = FindDefaultFolder(@"Music\Library");
-                if (settings.PlaylistFolder == "") settings.PlaylistFolder = FindDefaultFolder(@"Music\Playlists");
-                if (settings.ShufflerFolder == "") settings.ShufflerFolder = FindDefaultFolder(@"Music\Shuffler");
-                if (settings.WaPluginsFolder == "") settings.WaPluginsFolder = FindDefaultFolder(@"Program Files\Winamp\Plugins");
-                if (settings.VstPluginsFolder == "") settings.VstPluginsFolder = FindDefaultFolder(@"Program Files\Steinberg\VstPlugins");
-                if (settings.AnalogXScratchFolder == "") settings.AnalogXScratchFolder = FindDefaultFolder(@"Program Files\AnalogX\Scratch");
-                if (settings.KeyFinderFolder == "") FindDefaultFolder(@"Program Files\KeyFinderFolder");
-                settings.Save();
-            }
+            if (settings.LibraryFolder == "") settings.LibraryFolder = FindDefaultFolder(@"Music\Library");
+            if (settings.ShufflerFolder == "") settings.ShufflerFolder = FindDefaultFolder(@"Music\Shuffler");
+            if (settings.WaPluginsFolder == "") settings.WaPluginsFolder = FindDefaultFolder(@"Program Files\Winamp\Plugins");
+            if (settings.VstPluginsFolder == "") settings.VstPluginsFolder = FindDefaultFolder(@"Program Files\Steinberg\VstPlugins");
+            if (settings.AnalogXScratchFolder == "") settings.AnalogXScratchFolder = FindDefaultFolder(@"Program Files\AnalogX\Scratch");
+            if (settings.KeyFinderFolder == "") FindDefaultFolder(@"Program Files\KeyFinderFolder");
+            settings.Save();
         }
 
         private static string FindDefaultFolder(string subfolder)
