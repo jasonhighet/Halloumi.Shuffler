@@ -299,7 +299,7 @@ namespace Halloumi.Shuffler.Controls
 
         private List<Track> GetAvailableTracks()
         {
-            Console.WriteLine("AVAILABLE TRACS");
+            DebugHelper.WriteLine("AVAILABLE TRACS");
             return Library.GetTracks(collectionFilter:CollectionFilter, 
                 shufflerFilter:ShufflerFilter, 
                 trackRankFilter:TrackRankFilter, 
@@ -308,7 +308,7 @@ namespace Halloumi.Shuffler.Controls
 
         private List<Track> GetDisplayedTracks()
         {
-            Console.WriteLine("DISPLAYED TRACS");
+            DebugHelper.WriteLine("DISPLAYED TRACS");
             var tracks = Library.GetTracks(GetSelectedGenres(),
                 GetSelectedArtists(),
                 GetSelectedAlbums(),
@@ -344,7 +344,7 @@ namespace Halloumi.Shuffler.Controls
         {
             if (_binding || _neverBind) return;
 
-            Console.WriteLine("BIND LIBRARY");
+            DebugHelper.WriteLine("BIND LIBRARY");
 
             var selectedGenres = GetSelectedGenres();
             var selectedArtists = GetSelectedArtists();
@@ -381,7 +381,7 @@ namespace Halloumi.Shuffler.Controls
                 SaveSettings();
             }
 
-            Console.WriteLine("END BIND LIBRARY");
+            DebugHelper.WriteLine("END BIND LIBRARY");
         }
 
         /// <summary>
@@ -621,7 +621,7 @@ namespace Halloumi.Shuffler.Controls
             if (trackModel == null) return;
             if (e.CellStyle == null) return;
 
-            if (ShufflerFilter == Library.ShufflerFilter.ShuflerTracks &&
+            if (ShufflerFilter == Library.ShufflerFilter.ShufflerTracks &&
                 (trackModel.InCount == 0 || trackModel.OutCount == 0))
             {
                 if (!e.CellStyle.Font.Italic) e.CellStyle.Font = FontHelper.ItalicizeFont(_font);
@@ -1503,15 +1503,15 @@ namespace Halloumi.Shuffler.Controls
             var comboIndex = cmbShufflerFilter.SelectedIndex;
 
             // ReSharper disable once ConvertIfStatementToSwitchStatement
-            if (comboIndex == 1) shufflerFilter = Library.ShufflerFilter.ShuflerTracks;
+            if (comboIndex == 1) shufflerFilter = Library.ShufflerFilter.ShufflerTracks;
             else if (comboIndex == 2) shufflerFilter = Library.ShufflerFilter.NonShufflerTracks;
 
-            colTrackAlbum.Visible = shufflerFilter != Library.ShufflerFilter.ShuflerTracks;
+            colTrackAlbum.Visible = shufflerFilter != Library.ShufflerFilter.ShufflerTracks;
 
-            colTrackNumber.Visible = shufflerFilter != Library.ShufflerFilter.ShuflerTracks;
-            colInCount.Visible = shufflerFilter == Library.ShufflerFilter.ShuflerTracks;
-            colOutCount.Visible = shufflerFilter == Library.ShufflerFilter.ShuflerTracks;
-            colTrackKey.Visible = shufflerFilter == Library.ShufflerFilter.ShuflerTracks;
+            colTrackNumber.Visible = shufflerFilter != Library.ShufflerFilter.ShufflerTracks;
+            colInCount.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
+            colOutCount.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
+            colTrackKey.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
 
             colUnrankedCount.Visible = false;
 

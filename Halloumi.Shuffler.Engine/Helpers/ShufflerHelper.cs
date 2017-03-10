@@ -48,7 +48,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         public static Dictionary<string, string> LoadShufflerDetails(Track track)
         {
             //if(track.Title.Contains("Escobar"))
-            //    Console.WriteLine("Stop");
+            //    DebugHelper.WriteLine("Stop");
 
             track.Key = KeyHelper.ParseKey(track.Key);
 

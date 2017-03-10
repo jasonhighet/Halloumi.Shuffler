@@ -609,7 +609,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 index++;
                 if (index >= streamSection.AudioSections.Count) return null;
 
-                Console.WriteLine(index);
+                DebugHelper.WriteLine(index);
                 return streamSection.AudioSections[index];
             }
         }

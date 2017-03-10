@@ -23,7 +23,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public enum ShufflerFilter
         {
             None,
-            ShuflerTracks,
+            ShufflerTracks,
             NonShufflerTracks
         }
 
@@ -205,7 +205,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (maxBpm == 0) maxBpm = 200;
 
-            Console.WriteLine(@"GET TRACKS!!!");
+            DebugHelper.WriteLine(@"GET TRACKS!!!");
 
             var tracks = Tracks;
             if (!string.IsNullOrEmpty(collectionFilter))
@@ -267,10 +267,13 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (shufflerFilter != ShufflerFilter.None)
             {
-                tracks = shufflerFilter == ShufflerFilter.ShuflerTracks
+                tracks = shufflerFilter == ShufflerFilter.ShufflerTracks
                     ? tracks.Where(t => t.IsShufflerTrack).ToList()
                     : tracks.Where(t => !t.IsShufflerTrack).ToList();
             }
+
+            if (shufflerFilter == ShufflerFilter.ShufflerTracks)
+                tracks = tracks.GroupBy(x => x.Description).Select(x => x.First()).ToList();
 
             return tracks;
         }
@@ -775,7 +778,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             var cover = AlbumCoverHelper.GetAlbumCover(albumName);
             if (cover != null) return cover;
 
-            Console.WriteLine("GET ALBUM TRACKS");
+            DebugHelper.WriteLine("GET ALBUM TRACKS");
             tracks = tracks?.Where(x => x.Album == albumName).ToList() ?? GetAllTracksForAlbum(albumName);
             
             if (tracks.Count == 0) return null;

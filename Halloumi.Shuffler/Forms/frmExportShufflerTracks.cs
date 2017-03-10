@@ -39,7 +39,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            _tracks = Library.GetTracks(shufflerFilter: Library.ShufflerFilter.ShuflerTracks);
+            _tracks = Library.GetTracks(shufflerFilter: Library.ShufflerFilter.ShufflerTracks);
             var sampleTracks = SampleLibrary.GetAllTracks().Where(track => _tracks.All(x => x.Filename != track.Filename));
             _tracks.AddRange(sampleTracks);
 
