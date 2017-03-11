@@ -565,6 +565,7 @@ namespace Halloumi.Shuffler.Forms
 
             fileMenuController.RecentFiles = settings.RecentFiles;
 
+            playlistControl.LoadWorkingPlaylist();
 
             _midiManager = new MidiManager();
             MidiMapper = new BassPlayerMidiMapper(BassPlayer, _midiManager);

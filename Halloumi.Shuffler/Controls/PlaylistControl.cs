@@ -16,6 +16,7 @@ using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 using CollectionHelper = Halloumi.Shuffler.AudioLibrary.Helpers.CollectionHelper;
+using System.Threading.Tasks;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -394,6 +395,7 @@ namespace Halloumi.Shuffler.Controls
             else BindData();
 
             PlaylistChanged?.Invoke(this, EventArgs.Empty);
+            Task.Run(() => SaveWorkingPlaylist());
         }
 
         private Track GetLibraryTrack(TrackModel trackModel)
@@ -713,6 +715,7 @@ namespace Halloumi.Shuffler.Controls
             BindData();
 
             PlaylistChanged?.Invoke(this, EventArgs.Empty);
+            SaveWorkingPlaylist();
         }
 
         /// <summary>
@@ -850,6 +853,7 @@ namespace Halloumi.Shuffler.Controls
             TrackModels = tracks;
             BindData();
             PlaylistChanged?.Invoke(this, EventArgs.Empty);
+            SaveWorkingPlaylist();
         }
 
         /// <summary>
@@ -1060,6 +1064,32 @@ namespace Halloumi.Shuffler.Controls
             var track = GetSelectedTrack();
             BassPlayer.ForcePlay(track.Filename);
         }
+
+        private void SaveWorkingPlaylist()
+        {
+            var playlistFiles = TrackModels.Select(x => x.Filename).ToList();
+            SerializationHelper<List<string>>.ToXmlFile(playlistFiles, WorkingPlaylistFilename);
+        }
+
+        public void LoadWorkingPlaylist()
+        {
+            if (!File.Exists(WorkingPlaylistFilename))
+                return;
+
+            var playlistFiles = SerializationHelper<List<string>>
+                .FromXmlFile(WorkingPlaylistFilename)
+                .Where(x => File.Exists(x))
+                .ToList();
+
+            TrackModels = new List<TrackModel>();
+            QueueFiles(playlistFiles);
+        }
+
+        /// <summary>
+        ///     Gets the name of the file where the track data is cached.
+        /// </summary>
+        private string WorkingPlaylistFilename
+            => Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.WorkingPlaylist.xml");
 
         private class TrackModel
         {
