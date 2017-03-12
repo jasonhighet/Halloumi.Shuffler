@@ -711,17 +711,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns>The selected genres.</returns>
         private List<string> GetSelectedGenres()
         {
-            var genres = new List<string>();
-
-            // select selected artist
-            foreach (var genre in from DataGridViewRow row in grdGenre.SelectedRows select row.Cells[0].Value.ToString()
-                )
-            {
-                genres.Add(genre);
-                if (genre == "(All)") break;
-            }
-
-            return genres;
+            return (from DataGridViewRow row in grdGenre.SelectedRows select row.Cells[0].Value.ToString()).ToList();
         }
 
         /// <summary>
@@ -739,17 +729,7 @@ namespace Halloumi.Shuffler.Controls
         /// <returns></returns>
         private List<string> GetSelectedArtists()
         {
-            var artists = new List<string>();
-
-            // select selected artist
-            foreach (
-                var artist in from DataGridViewRow row in grdArtist.SelectedRows select row.Cells[0].Value.ToString())
-            {
-                artists.Add(artist);
-                if (artist == "(All)") break;
-            }
-
-            return artists;
+            return (from DataGridViewRow row in grdArtist.SelectedRows select row.Cells[0].Value.ToString()).ToList();
         }
 
         /// <summary>
