@@ -183,24 +183,12 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         private static void SetExtendedAttributes(string trackDescription, Dictionary<string, string> attributes)
         {
-            if (AllAttributes.ContainsKey(trackDescription))
-            {
-                if (attributes.Count == 0)
-                {
-                    AllAttributes.Remove(trackDescription);
-                }
-                else
-                {
-                    var extendedAttributes = new ExtenedAttributes() { Track = trackDescription };
-                    extendedAttributes.SetAttributeDictionary(attributes);
-                    AllAttributes[trackDescription] = extendedAttributes;
-                }
-            }
-            else if (attributes.Count > 0)
-            {
-                var extendedAttributes = new ExtenedAttributes() { Track = trackDescription };
-                extendedAttributes.SetAttributeDictionary(attributes);
-            }
+            AllAttributes.Remove(trackDescription);
+            if (attributes.Count <= 0) return;
+
+            var extendedAttributes = new ExtenedAttributes() { Track = trackDescription };
+            extendedAttributes.SetAttributeDictionary(attributes);
+            AllAttributes.Add(trackDescription, extendedAttributes);
         }
 
         /// <summary>
