@@ -82,6 +82,12 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         public static string ParseKey(string key)
         {
+            key = key.Replace(" ", "");
+            key = key.Replace("#", "b");
+            key = key.Replace("maj", "");
+            key = key.Replace("min", "m");
+            key = key.Replace("M", "m");
+
             return key.Replace("#", "b").Replace(" ", "").Replace("M", "m");
         }
 
@@ -116,8 +122,13 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             var arguments = $"-f \"{trackFileName}\" -w";
 
-            Process.Start(keyFinderExe, arguments);
-            Thread.Sleep(2000);
+            var process = Process.Start(keyFinderExe, arguments);
+
+            if (process != null)
+                process.WaitForExit();
+            else
+                Thread.Sleep(2000);
+
             File.SetLastWriteTime(trackFileName, DateTime.Now);
         }
 

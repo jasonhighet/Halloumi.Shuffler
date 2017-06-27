@@ -235,7 +235,7 @@ namespace Halloumi.Shuffler.Controls
             Cursor = Cursors.WaitCursor;
             Application.DoEvents();
 
-            foreach (var track in GetSelectedTracks().Where(track => track.Key == ""))
+            foreach (var track in GetSelectedTracks())
             {
                 try
                 {
