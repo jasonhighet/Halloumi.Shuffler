@@ -245,6 +245,12 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             var entryTitle = entry.Title.ToLower();
             var entryArtist = entry.Artist.ToLower();
 
+            if (entryArtist == "various" && entryTitle.Contains("/"))
+            {
+                entryArtist = entryTitle.Split('/')[0].Trim();
+                entryTitle = entryTitle.Split('/')[1].Trim();
+            }
+
             return (IsValidLibraryTrack(entry.Path))
                 ? Library.LoadTrack(entry.Path, false)
                 : Library.GetTrack(entryArtist, entryTitle);
