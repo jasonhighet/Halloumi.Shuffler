@@ -8,6 +8,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using IdSharp.Tagging.ID3v2;
 using System.Threading.Tasks;
+using IdSharp.AudioInfo;
 
 namespace Halloumi.Shuffler.AudioLibrary.Helpers
 {
@@ -198,6 +199,11 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.OriginalDescription = track.Description;
             track.FullLength = track.Length;
 
+
+            var audioFile = AudioFile.Create(track.Filename, true);
+            track.Bitrate = audioFile.Bitrate;
+            track.Length = audioFile.TotalSeconds;
+
             if(updateLength)
                 UpdateLength(track);
 
@@ -210,28 +216,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if (track.EndBpm == 0 || track.EndBpm == 100) track.EndBpm = track.Bpm;
             if (track.StartBpm == 0 || track.StartBpm == 100) track.StartBpm = track.Bpm;
         }
-
-
-        //private static void UpdateKey(Track track)
-        //{
-        //    var attributes = ShufflerHelper.LoadShufflerDetails(track);
-        //    var attributeKey = (attributes == null) ? "" : attributes.ContainsKey("Key") ? attributes["Key"] : "";
-
-        //    if (track.Key != "" && attributeKey == "" && track.IsShufflerTrack)
-        //    {
-        //        track.Key = string.IsNullOrEmpty(attributeKey) ? track.Key : attributeKey;
-        //        ExtenedAttributesHelper.SetExtendedAttribute(track.Description, "Key", track.Key);
-        //        ExtenedAttributesHelper.SaveToDatabase();
-
-        //    }
-        //    else if (track.Key == "" && attributeKey != "")
-        //    {
-        //        track.Key = string.IsNullOrEmpty(attributeKey) ? track.Key : attributeKey;
-        //        SaveTrack(track);
-        //    }
-        //}
-
-
 
 
         /// <summary>

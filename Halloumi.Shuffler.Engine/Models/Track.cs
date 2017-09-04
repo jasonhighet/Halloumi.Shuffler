@@ -202,6 +202,8 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         /// </summary>
         public bool PowerDown { get; set; }
 
+        public decimal Bitrate { get; set; }
+
         #endregion
     }
 }

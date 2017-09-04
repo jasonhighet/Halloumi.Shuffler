@@ -69,6 +69,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\Halloumi.Common.Windows.dll</HintPath>
     </Reference>
+    <Reference Include="IdSharp.AudioInfo">
+      <HintPath>..\Components\IdSharp.AudioInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="IdSharp.Common">
+      <HintPath>..\Components\IdSharp.Common.dll</HintPath>
+    </Reference>
     <Reference Include="IdSharp.Tagging, Version=1.1.4426.18077, Culture=neutral, PublicKeyToken=9218f8c7f40da032, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\IdSharp.Tagging.dll</HintPath>
