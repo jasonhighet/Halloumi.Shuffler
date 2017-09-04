@@ -533,7 +533,7 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "Genre") trackModels = trackModels.OrderBy(t => t.Genre).ToList();
                 if (sortField == "StartBPM") trackModels = trackModels.OrderBy(t => t.StartBpm).ToList();
                 if (sortField == "EndBPM") trackModels = trackModels.OrderBy(t => t.EndBpm).ToList();
-
+                if (sortField == "Bitrate") trackModels = trackModels.OrderBy(t => t.Bitrate).ToList();
 
                 if (sortField == "InCount")
                 {
@@ -610,6 +610,7 @@ namespace Halloumi.Shuffler.Controls
             }
             else if (e.ColumnIndex == 10) e.Value = trackModel.RankDescription;
             else if (e.ColumnIndex == 11) e.Value = KeyHelper.GetDisplayKey(trackModel.Key);
+            else if (e.ColumnIndex == 12) e.Value = trackModel.Bitrate;
         }
 
         /// <summary>
@@ -1706,6 +1707,7 @@ namespace Halloumi.Shuffler.Controls
                 RankDescription = track.RankDescription;
                 Track = track;
                 Key = track.Key;
+                Bitrate = (int)decimal.Round(track.Bitrate, 0, MidpointRounding.AwayFromZero);
 
                 InCount = -1;
                 OutCount = -1;
@@ -1732,6 +1734,8 @@ namespace Halloumi.Shuffler.Controls
             public int InCount { get; set; }
 
             public int OutCount { get; set; }
+
+            public int Bitrate { get; set; }
 
             public string TrackNumberFormatted { get; }
 

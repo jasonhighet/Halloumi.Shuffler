@@ -41,6 +41,7 @@ namespace Halloumi.Shuffler.Controls
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             this.mnuGenre = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRenameGenre = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuArtist = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -77,6 +78,7 @@ namespace Halloumi.Shuffler.Controls
             this.sepOpenFileLocation = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAddToSampler = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuEditSamples = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuExportMixSectionsAsSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.pnlBackground2 = new Halloumi.Common.Windows.Controls.Panel();
             this.splLibraryMixable = new System.Windows.Forms.SplitContainer();
@@ -111,6 +113,7 @@ namespace Halloumi.Shuffler.Controls
             this.colUnrankedCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrackRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrackKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBitrate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.trackDetails = new Halloumi.Shuffler.Controls.TrackDetails();
             this.pnlDivider = new Halloumi.Common.Windows.Controls.Panel();
             this.flpToolbarRight = new System.Windows.Forms.FlowLayoutPanel();
@@ -131,7 +134,6 @@ namespace Halloumi.Shuffler.Controls
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbShufflerFilter = new Halloumi.Common.Windows.Controls.ComboBox();
             this.mixableTracks = new Halloumi.Shuffler.Controls.MixableTracks();
-            this.mnuExportMixSectionsAsSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGenre.SuspendLayout();
             this.mnuArtist.SuspendLayout();
             this.mnuAlbum.SuspendLayout();
@@ -264,7 +266,7 @@ namespace Halloumi.Shuffler.Controls
             this.mnuEditSamples,
             this.mnuExportMixSectionsAsSamples});
             this.mnuTrack.Name = "mnuTrack";
-            this.mnuTrack.Size = new System.Drawing.Size(295, 504);
+            this.mnuTrack.Size = new System.Drawing.Size(295, 476);
             // 
             // mnuPlay
             // 
@@ -283,13 +285,13 @@ namespace Halloumi.Shuffler.Controls
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(291, 6);
             // 
-            // mnuAddTrackToPlaylist
+            // mnuAddTrackToCollection
             // 
             this.mnuAddTrackToCollection.Name = "mnuAddTrackToCollection";
             this.mnuAddTrackToCollection.Size = new System.Drawing.Size(294, 26);
             this.mnuAddTrackToCollection.Text = "A&dd To Collection";
             // 
-            // mnuRemoveTrackFromPlaylist
+            // mnuRemoveTrackFromCollection
             // 
             this.mnuRemoveTrackFromCollection.Name = "mnuRemoveTrackFromCollection";
             this.mnuRemoveTrackFromCollection.Size = new System.Drawing.Size(294, 26);
@@ -437,6 +439,13 @@ namespace Halloumi.Shuffler.Controls
             this.mnuEditSamples.Size = new System.Drawing.Size(294, 26);
             this.mnuEditSamples.Text = "Edit Samples";
             this.mnuEditSamples.Click += new System.EventHandler(this.mnuEditSamples_Click);
+            // 
+            // mnuExportMixSectionsAsSamples
+            // 
+            this.mnuExportMixSectionsAsSamples.Name = "mnuExportMixSectionsAsSamples";
+            this.mnuExportMixSectionsAsSamples.Size = new System.Drawing.Size(294, 26);
+            this.mnuExportMixSectionsAsSamples.Text = "Export Mi&x Sections As Samples";
+            this.mnuExportMixSectionsAsSamples.Click += new System.EventHandler(this.mnuExportMixSectionsAsSamples_Click);
             // 
             // pnlBackground2
             // 
@@ -761,7 +770,8 @@ namespace Halloumi.Shuffler.Controls
             this.colOutCount,
             this.colUnrankedCount,
             this.colTrackRank,
-            this.colTrackKey});
+            this.colTrackKey,
+            this.colBitrate});
             this.grdTracks.ContextMenuStrip = this.mnuTrack;
             this.grdTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdTracks.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
@@ -923,6 +933,18 @@ namespace Halloumi.Shuffler.Controls
             this.colTrackKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.colTrackKey.Width = 66;
             // 
+            // colBitrate
+            // 
+            this.colBitrate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colBitrate.DataPropertyName = "Bitrate";
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.colBitrate.DefaultCellStyle = dataGridViewCellStyle11;
+            this.colBitrate.HeaderText = "KPS";
+            this.colBitrate.Name = "colBitrate";
+            this.colBitrate.ReadOnly = true;
+            this.colBitrate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colBitrate.Width = 67;
+            // 
             // trackDetails
             // 
             this.trackDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -1056,17 +1078,17 @@ namespace Halloumi.Shuffler.Controls
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label1.Size = new System.Drawing.Size(58, 26);
+            this.label1.Size = new System.Drawing.Size(79, 26);
             this.label1.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label1.TabIndex = 4;
             this.label1.Text = "Collection:";
             // 
-            // cmbPlaylist
+            // cmbCollection
             // 
             this.cmbCollection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCollection.DropDownWidth = 121;
             this.cmbCollection.ErrorProvider = null;
-            this.cmbCollection.Location = new System.Drawing.Point(405, 4);
+            this.cmbCollection.Location = new System.Drawing.Point(426, 4);
             this.cmbCollection.Margin = new System.Windows.Forms.Padding(4);
             this.cmbCollection.Name = "cmbCollection";
             this.cmbCollection.Size = new System.Drawing.Size(137, 25);
@@ -1077,7 +1099,7 @@ namespace Halloumi.Shuffler.Controls
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(546, 0);
+            this.label7.Location = new System.Drawing.Point(567, 0);
             this.label7.Margin = new System.Windows.Forms.Padding(0);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -1086,12 +1108,12 @@ namespace Halloumi.Shuffler.Controls
             this.label7.TabIndex = 17;
             this.label7.Text = "Exclude:";
             // 
-            // cmbExcludedPlaylist
+            // cmbExcludedCollection
             // 
             this.cmbExcludedCollection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbExcludedCollection.DropDownWidth = 121;
             this.cmbExcludedCollection.ErrorProvider = null;
-            this.cmbExcludedCollection.Location = new System.Drawing.Point(613, 4);
+            this.cmbExcludedCollection.Location = new System.Drawing.Point(634, 4);
             this.cmbExcludedCollection.Margin = new System.Windows.Forms.Padding(4);
             this.cmbExcludedCollection.Name = "cmbExcludedCollection";
             this.cmbExcludedCollection.Size = new System.Drawing.Size(137, 25);
@@ -1102,7 +1124,7 @@ namespace Halloumi.Shuffler.Controls
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label6.Location = new System.Drawing.Point(754, 0);
+            this.label6.Location = new System.Drawing.Point(775, 0);
             this.label6.Margin = new System.Windows.Forms.Padding(0);
             this.label6.Name = "label6";
             this.label6.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -1122,7 +1144,7 @@ namespace Halloumi.Shuffler.Controls
             "Bearable+",
             "Unranked",
             "Forbidden"});
-            this.cmbTrackRankFilter.Location = new System.Drawing.Point(802, 4);
+            this.cmbTrackRankFilter.Location = new System.Drawing.Point(823, 4);
             this.cmbTrackRankFilter.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTrackRankFilter.Name = "cmbTrackRankFilter";
             this.cmbTrackRankFilter.Size = new System.Drawing.Size(100, 25);
@@ -1133,7 +1155,7 @@ namespace Halloumi.Shuffler.Controls
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(906, 0);
+            this.label2.Location = new System.Drawing.Point(927, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -1151,7 +1173,7 @@ namespace Halloumi.Shuffler.Controls
             "",
             "Yes",
             "No"});
-            this.cmbQueued.Location = new System.Drawing.Point(974, 4);
+            this.cmbQueued.Location = new System.Drawing.Point(995, 4);
             this.cmbQueued.Margin = new System.Windows.Forms.Padding(4);
             this.cmbQueued.Name = "cmbQueued";
             this.cmbQueued.Size = new System.Drawing.Size(52, 25);
@@ -1162,7 +1184,7 @@ namespace Halloumi.Shuffler.Controls
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(1030, 0);
+            this.label3.Location = new System.Drawing.Point(1051, 0);
             this.label3.Margin = new System.Windows.Forms.Padding(0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -1180,7 +1202,7 @@ namespace Halloumi.Shuffler.Controls
             "",
             "Yes",
             "No"});
-            this.cmbShufflerFilter.Location = new System.Drawing.Point(1097, 4);
+            this.cmbShufflerFilter.Location = new System.Drawing.Point(1118, 4);
             this.cmbShufflerFilter.Margin = new System.Windows.Forms.Padding(4);
             this.cmbShufflerFilter.Name = "cmbShufflerFilter";
             this.cmbShufflerFilter.Size = new System.Drawing.Size(52, 25);
@@ -1195,13 +1217,6 @@ namespace Halloumi.Shuffler.Controls
             this.mixableTracks.PlaylistControl = null;
             this.mixableTracks.Size = new System.Drawing.Size(1347, 163);
             this.mixableTracks.TabIndex = 0;
-            // 
-            // mnuExportMixSectionsAsSamples
-            // 
-            this.mnuExportMixSectionsAsSamples.Name = "mnuExportMixSectionsAsSamples";
-            this.mnuExportMixSectionsAsSamples.Size = new System.Drawing.Size(294, 26);
-            this.mnuExportMixSectionsAsSamples.Text = "Export Mi&x Sections As Samples";
-            this.mnuExportMixSectionsAsSamples.Click += new System.EventHandler(this.mnuExportMixSectionsAsSamples_Click);
             // 
             // TrackLibraryControl
             // 
@@ -1339,6 +1354,10 @@ namespace Halloumi.Shuffler.Controls
         private Halloumi.Common.Windows.Controls.ComboBox cmbQueued;
         private Halloumi.Common.Windows.Controls.Label label3;
         private Halloumi.Common.Windows.Controls.ComboBox cmbShufflerFilter;
+        private System.Windows.Forms.ToolStripMenuItem mnuCalculateKey;
+        private System.Windows.Forms.ToolStripMenuItem mnuReloadMetadata;
+        private System.Windows.Forms.ToolStripMenuItem mnuEditSamples;
+        private System.Windows.Forms.ToolStripMenuItem mnuExportMixSectionsAsSamples;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackDescription;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackAlbum;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackGenre;
@@ -1351,9 +1370,6 @@ namespace Halloumi.Shuffler.Controls
         private System.Windows.Forms.DataGridViewTextBoxColumn colUnrankedCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackRank;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackKey;
-        private System.Windows.Forms.ToolStripMenuItem mnuCalculateKey;
-        private System.Windows.Forms.ToolStripMenuItem mnuReloadMetadata;
-        private System.Windows.Forms.ToolStripMenuItem mnuEditSamples;
-        private System.Windows.Forms.ToolStripMenuItem mnuExportMixSectionsAsSamples;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colBitrate;
     }
 }
