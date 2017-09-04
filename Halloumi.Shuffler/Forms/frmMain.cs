@@ -7,15 +7,10 @@ using System.Windows.Forms;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.Midi;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Shuffler.AudioEngine.Plugins;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
-using CollectionHelper = Halloumi.Shuffler.AudioLibrary.Helpers.CollectionHelper;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -23,27 +18,26 @@ namespace Halloumi.Shuffler.Forms
     /// </summary>
     public partial class FrmMain : BaseMinimizeToTrayForm
     {
+        private readonly ShufflerApplication _application;
         private FrmGeneratePlaylist _autoGenerateSettings;
-
-        private bool _bassPlayerOnTrackChange;
-        private FrmSampleLibrary _frmSampleLibrary;
         private FrmModuleEditor _frmModuleEditor;
 
+
+        private FrmSampleLibrary _frmSampleLibrary;
+
         private FrmGeneratePlaylist _generatePlaylist;
-
-        private MidiManager _midiManager;
-
         private FrmMonitorSettings _monitorSettings;
-
-        private frmPluginSettings _pluginSettingsForm;
 
 
         /// <summary>
         ///     Initializes a new instance of the frmMain class.
         /// </summary>
-        public FrmMain()
+        public FrmMain(ShufflerApplication application)
         {
             InitializeComponent();
+
+            _application = application;
+            _application.BaseForm = this;
 
             mnuPlugins.Click += mnuPlugins_Click;
             mnuAbout.Click += mnuAbout_Click;
@@ -72,51 +66,37 @@ namespace Halloumi.Shuffler.Forms
             mnuSkipToEnd.Click += mnuSkipToEnd_Click;
             NotifyIcon.ContextMenuStrip = notificationContextMenu;
 
-            BassPlayer = new AE.BassPlayer(Handle);
-            Library = new Library(BassPlayer);
 
-            CollectionHelper.Library = Library;
-            
-            BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
-            BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
+            var settings = Settings.Default;
+            formStateController.FormStateSettings = settings.FormStateSettings;
 
-            LoadSettings();
-
-            MixLibrary = new MixLibrary(Library.ShufflerFolder);
-
-            SampleLibrary = new SampleLibrary(BassPlayer, Library);
-
-            playlistControl.Library = Library;
-            playlistControl.MixLibrary = MixLibrary;
-            playlistControl.BassPlayer = BassPlayer;
+            playlistControl.Library = application.Library;
+            playlistControl.MixLibrary = application.MixLibrary;
+            playlistControl.BassPlayer = application.BassPlayer;
             playlistControl.ToolStripLabel = lblPlaylistStatus;
 
-            playerDetails.Library = Library;
-            playerDetails.BassPlayer = BassPlayer;
+            playerDetails.Library = application.Library;
+            playerDetails.BassPlayer = application.BassPlayer;
             playerDetails.PlaylistControl = playlistControl;
             playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
             playerDetails.SelectedViewChanged += playerDetails_SelectedViewChanged;
 
-            playerDetails.MixLibrary = MixLibrary;
-            playlistControl.MixLibrary = MixLibrary;
+            playerDetails.MixLibrary = application.MixLibrary;
+            playlistControl.MixLibrary = application.MixLibrary;
 
-            trackLibraryControl.Library = Library;
-            trackLibraryControl.BassPlayer = BassPlayer;
+            trackLibraryControl.Library = application.Library;
+            trackLibraryControl.BassPlayer = application.BassPlayer;
             trackLibraryControl.PlaylistControl = playlistControl;
-            trackLibraryControl.MixLibrary = MixLibrary;
+            trackLibraryControl.MixLibrary = application.MixLibrary;
             trackLibraryControl.ToolStripLabel = lblLibraryStatus;
             trackLibraryControl.SamplerControl = mixerControl.SamplerControl;
-            trackLibraryControl.SampleLibrary = SampleLibrary;
+            trackLibraryControl.SampleLibrary = application.SampleLibrary;
 
-            mixerControl.Library = Library;
-            mixerControl.BassPlayer = BassPlayer;
+            mixerControl.Library = application.Library;
+            mixerControl.BassPlayer = application.BassPlayer;
             mixerControl.PlaylistControl = playlistControl;
 
-            Library.LoadFromDatabase();
-
             trackLibraryControl.Initalize();
-
-            SampleLibrary.LoadFromCache();
 
             mixerControl.Initialize();
             playerDetails.Initialize();
@@ -124,34 +104,12 @@ namespace Halloumi.Shuffler.Forms
 
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
-            shufflerController.BassPlayer = BassPlayer;
+            shufflerController.BassPlayer = application.BassPlayer;
             shufflerController.Initalize();
-
-            MixLibrary.AvailableTracks = Library.GetTracks();
-            MixLibrary.LoadFromDatabase();
-            //var devices = AE.BassHelper.GetWaveOutDevices();
-            
-            ExtenedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
-            ExtenedAttributesHelper.LoadFromDatabase();
-            Library.LoadAllExtendedAttributes();
-
-            AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
-            AutomationAttributesHelper.LoadFromDatabase();
-
-            CollectionHelper.LoadFromDatabase();
 
             SetView(PlayerDetails.SelectedView.Library);
         }
 
-        public BassPlayerMidiMapper MidiMapper { get; private set; }
-
-        private MixLibrary MixLibrary { get; }
-
-        private Library Library { get; }
-
-        private SampleLibrary SampleLibrary { get; }
-
-        private AE.BassPlayer BassPlayer { get; }
 
         /// <summary>
         ///     Handles the LoadDocument event of the fileMenuController control.
@@ -175,14 +133,14 @@ namespace Halloumi.Shuffler.Forms
             if (toolStripDropDownItem == null) return;
 
             var mixRankDescription = toolStripDropDownItem.Text;
-            var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
+            var mixRank = _application.MixLibrary.GetRankFromDescription(mixRankDescription);
 
             var track = playlistControl.GetCurrentTrack();
             if (track == null)
                 return;
 
-            var tracks = new List<Track> { track };
-            Library.SetRank(tracks, (int)mixRank);
+            var tracks = new List<Track> {track};
+            _application.Library.SetRank(tracks, (int) mixRank);
         }
 
         private void mnuViewVisuals_Click(object sender, EventArgs e)
@@ -225,15 +183,15 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuCleanLibrary_Click(object sender, EventArgs e)
         {
-            Library.CleanLibrary();
+            _application.Library.CleanLibrary();
         }
 
         private void mnuUpdateDuplicateTracks_Click(object sender, EventArgs e)
         {
             var similarTracks = new FrmUpdateSimilarTracks
             {
-                BassPlayer = BassPlayer,
-                Library = Library,
+                BassPlayer = _application.BassPlayer,
+                Library = _application.Library,
                 Tracks = trackLibraryControl.DisplayedTracks.ToList()
             };
             similarTracks.ShowDialog();
@@ -251,9 +209,7 @@ namespace Halloumi.Shuffler.Forms
                 _autoGenerateSettings.SetScreenMode(FrmGeneratePlaylist.ScreenMode.AutoGenerateSettings);
             }
             if (!_autoGenerateSettings.Visible)
-            {
                 WindowHelper.ShowDialog(this, _autoGenerateSettings);
-            }
         }
 
         private void mnuAutoshuffle_Click(object sender, EventArgs e)
@@ -278,13 +234,11 @@ namespace Halloumi.Shuffler.Forms
             if (_frmSampleLibrary == null || _frmSampleLibrary.IsDisposed)
             {
                 _frmSampleLibrary = new FrmSampleLibrary();
-                _frmSampleLibrary.Initialize(BassPlayer, SampleLibrary);
+                _frmSampleLibrary.Initialize(_application.BassPlayer, _application.SampleLibrary);
             }
 
             if (!_frmSampleLibrary.Visible)
-            {
                 WindowHelper.ShowDialog(this, _frmSampleLibrary);
-            }
         }
 
         private void playerDetails_SelectedViewChanged(object sender, EventArgs e)
@@ -292,52 +246,6 @@ namespace Halloumi.Shuffler.Forms
             SetView(playerDetails.GetSelectedView());
         }
 
-        private void SetConservativeFadeOutSettings()
-        {
-            if (mnuConservativeFadeOut.Checked
-                && BassPlayer.CurrentTrack != null && BassPlayer.NextTrack != null)
-            {
-                var track1 = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
-                var track2 = Library.GetTrackByFilename(BassPlayer.NextTrack.Filename);
-                var mixRank = MixLibrary.GetMixLevel(track1, track2);
-                var hasExtendedMix = MixLibrary.HasExtendedMix(track1, track2);
-
-                if (mixRank <= 2 && !hasExtendedMix)
-                    BassPlayer.SetConservativeFadeOutSettings();
-            }
-        }
-
-
-        /// <summary>
-        ///     Shows the plugin form.
-        /// </summary>
-        private void ShowPluginForm()
-        {
-            if (_pluginSettingsForm == null || _pluginSettingsForm.IsDisposed)
-            {
-                _pluginSettingsForm = new frmPluginSettings(BassPlayer);
-            }
-            if (!_pluginSettingsForm.Visible)
-            {
-                WindowHelper.ShowDialog(this, _pluginSettingsForm);
-            }
-        }
-
-        /// <summary>
-        ///     Loads the settings.
-        /// </summary>
-        private void LoadSettings()
-        {
-            var settings = Settings.Default;
-            Library.LibraryFolder = settings.LibraryFolder;
-            ExtenedAttributesHelper.ShufflerFolder = settings.ShufflerFolder;
-            PluginHelper.WaPluginsFolder = settings.WaPluginsFolder;
-            PluginHelper.VstPluginsFolder = settings.VstPluginsFolder;
-            formStateController.FormStateSettings = settings.FormStateSettings;
-            BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
-            BassPlayer.SampleAutomationEnabled = settings.EnableSampleAutomation;
-            KeyHelper.SetApplicationFolder(settings.KeyFinderFolder);
-        }
 
         /// <summary>
         ///     Loads the UI settings.
@@ -346,229 +254,29 @@ namespace Halloumi.Shuffler.Forms
         {
             var settings = Settings.Default;
 
-            if (settings.WaPlugin != "")
-            {
-                try
-                {
-                    BassPlayer.LoadWaPlugin(settings.WaPlugin);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.MainMixerVstPlugin != "")
-            {
-                try
-                {
-                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.MainMixerVstPlugin2 != "")
-            {
-                try
-                {
-                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin2, 1);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.MainMixerVstPluginParameters != "" && BassPlayer.MainVstPlugin != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin, settings.MainMixerVstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.MainMixerVstPlugin2Parameters != "" && BassPlayer.MainVstPlugin2 != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin2,
-                        settings.MainMixerVstPlugin2Parameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.SamplerVstPlugin != "")
-            {
-                try
-                {
-                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.SamplerVstPluginParameters != "" && BassPlayer.SamplerVstPlugin != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin, settings.SamplerVstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.SamplerVstPlugin2 != "")
-            {
-                try
-                {
-                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin2, 1);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.SamplerVstPlugin2Parameters != "" && BassPlayer.SamplerVstPlugin2 != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2,
-                        settings.SamplerVstPlugin2Parameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.TrackVstPlugin != "")
-            {
-                try
-                {
-                    BassPlayer.LoadTracksVstPlugin(settings.TrackVstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.TrackVstPluginParameters != "" && BassPlayer.TrackVstPlugin != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackVstPlugin, settings.TrackVstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.TrackFxvstPlugin != "")
-            {
-                try
-                {
-                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.TrackFxvstPluginParameters != "" && BassPlayer.TrackSendFxVstPlugin != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin,
-                        settings.TrackFxvstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.TrackFxvstPlugin2 != "")
-            {
-                try
-                {
-                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin2, 1);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            if (settings.TrackFxvstPlugin2Parameters != "" && BassPlayer.TrackSendFxVstPlugin2 != null)
-            {
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2,
-                        settings.TrackFxvstPlugin2Parameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            MinimizeToTrayEnabled = (settings.MinimizeToTray);
-            mnuMinimizeToTray.Checked = (settings.MinimizeToTray);
-
-            mnuShowMixableTracks.Checked = (settings.ShowMixableTracks);
-            mnuShowTrackDetails.Checked = (settings.ShowTrackDetails);
+            MinimizeToTrayEnabled = settings.MinimizeToTray;
+            mnuMinimizeToTray.Checked = settings.MinimizeToTray;
+            mnuShowMixableTracks.Checked = settings.ShowMixableTracks;
+            mnuShowTrackDetails.Checked = settings.ShowTrackDetails;
             trackLibraryControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
             playlistControl.ShowTrackDetails = mnuShowTrackDetails.Checked;
-
             playlistControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
             trackLibraryControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
-
-            BassPlayer.LimitSongLength = settings.LimitSongLength;
             mnuConservativeFadeOut.Checked = settings.LimitSongLength;
-            BassPlayer.LimitSongLength = mnuConservativeFadeOut.Checked;
-
-            BassPlayer.SetMonitorVolume(settings.MonitorVolume);
-
             playerDetails.VisualsShown = settings.VisualsShown;
             mnuViewVisuals.Checked = settings.VisualsShown;
-
             playerDetails.AlbumArtShown = settings.AlbumArtShown;
             mnuViewAlbumArt.Checked = settings.AlbumArtShown;
-
             mnuSkipAfterMix.Checked = settings.SkipAfterMix;
 
             mixerControl.LoadSettings();
-
             trackLibraryControl.LoadUiSettings();
-
-            //this.shufflerControl.CurrentShufflerMode = settings.ShufflerMode;
 
             mnuUpdateLibraryOnStartup.Checked = settings.UpdateLibraryOnStartup;
 
             fileMenuController.RecentFiles = settings.RecentFiles;
 
             playlistControl.LoadWorkingPlaylist();
-
-            _midiManager = new MidiManager();
-            MidiMapper = new BassPlayerMidiMapper(BassPlayer, _midiManager);
         }
 
         /// <summary>
@@ -577,121 +285,18 @@ namespace Halloumi.Shuffler.Forms
         private void SaveSettings()
         {
             var settings = Settings.Default;
-
-            var winampPlugin = "";
-            if (BassPlayer.WaPlugin != null) winampPlugin = BassPlayer.WaPlugin.Location;
-            settings.WaPlugin = winampPlugin;
-
-            var mainVstPlugin = "";
-            if (BassPlayer.MainVstPlugin != null) mainVstPlugin = BassPlayer.MainVstPlugin.Location;
-            settings.MainMixerVstPlugin = mainVstPlugin;
-
-            var mainVstPlugin2 = "";
-            if (BassPlayer.MainVstPlugin2 != null) mainVstPlugin2 = BassPlayer.MainVstPlugin2.Location;
-            settings.MainMixerVstPlugin2 = mainVstPlugin2;
-
-            var mainVstPluginParameters = "";
-            if (BassPlayer.MainVstPlugin != null)
-                mainVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin);
-            settings.MainMixerVstPluginParameters = mainVstPluginParameters;
-
-            var mainVstPluginParameters2 = "";
-            if (BassPlayer.MainVstPlugin2 != null)
-                mainVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin2);
-            settings.MainMixerVstPlugin2Parameters = mainVstPluginParameters2;
-
-            var samplerVstPlugin = "";
-            if (BassPlayer.SamplerVstPlugin != null) samplerVstPlugin = BassPlayer.SamplerVstPlugin.Location;
-            settings.SamplerVstPlugin = samplerVstPlugin;
-
-            var samplerVstPluginParameters = "";
-            if (BassPlayer.SamplerVstPlugin != null)
-                samplerVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin);
-            settings.SamplerVstPluginParameters = samplerVstPluginParameters;
-
-            var samplerVstPlugin2 = "";
-            if (BassPlayer.SamplerVstPlugin2 != null) samplerVstPlugin2 = BassPlayer.SamplerVstPlugin2.Location;
-            settings.SamplerVstPlugin2 = samplerVstPlugin2;
-
-            var samplerVstPluginParameters2 = "";
-            if (BassPlayer.SamplerVstPlugin2 != null)
-                samplerVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin2);
-            settings.SamplerVstPlugin2Parameters = samplerVstPluginParameters2;
-
-            var trackVstPlugin = "";
-            if (BassPlayer.TrackVstPlugin != null) trackVstPlugin = BassPlayer.TrackVstPlugin.Location;
-            settings.TrackVstPlugin = trackVstPlugin;
-
-            var trackVstPluginParameters = "";
-            if (BassPlayer.TrackVstPlugin != null)
-                trackVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackVstPlugin);
-            settings.TrackVstPluginParameters = trackVstPluginParameters;
-
-            var trackFxVstPlugin = "";
-            if (BassPlayer.TrackSendFxVstPlugin != null) trackFxVstPlugin = BassPlayer.TrackSendFxVstPlugin.Location;
-            settings.TrackFxvstPlugin = trackFxVstPlugin;
-
-            var trackFxVstPluginParameters = "";
-            if (BassPlayer.TrackSendFxVstPlugin != null)
-                trackFxVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin);
-            settings.TrackFxvstPluginParameters = trackFxVstPluginParameters;
-
-            var trackFxVstPlugin2 = "";
-            if (BassPlayer.TrackSendFxVstPlugin2 != null) trackFxVstPlugin2 = BassPlayer.TrackSendFxVstPlugin2.Location;
-            settings.TrackFxvstPlugin2 = trackFxVstPlugin2;
-
-            var trackFxVstPluginParameters2 = "";
-            if (BassPlayer.TrackSendFxVstPlugin2 != null)
-                trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2);
-            settings.TrackFxvstPlugin2Parameters = trackFxVstPluginParameters2;
-
             settings.SkipAfterMix = mnuSkipAfterMix.Checked;
-
             settings.MinimizeToTray = MinimizeToTrayEnabled;
-            settings.LimitSongLength = BassPlayer.LimitSongLength;
             settings.FormStateSettings = formStateController.FormStateSettings;
-            settings.Volume = BassPlayer.GetMixerVolume();
-
-            settings.SamplerDelayNotes = BassPlayer.SamplerDelayNotes;
-            settings.SamplerVolume = Convert.ToInt32(BassPlayer.GetSamplerMixerVolume());
-
-            settings.TrackFxDelayNotes = BassPlayer.TrackSendFxDelayNotes;
-            settings.TrackFxVolume = Convert.ToInt32(BassPlayer.GetTrackSendFxVolume());
-
-            settings.SamplerOutput = BassPlayer.SamplerOutput;
-            settings.TrackOutput = BassPlayer.TrackOutput;
-            settings.MonitorVolume = Convert.ToInt32(BassPlayer.GetMonitorVolume());
-            settings.RawLoopOutput = BassPlayer.RawLoopOutput;
-
-            settings.EnableTrackFxAutomation = BassPlayer.TrackFxAutomationEnabled;
-            settings.EnableSampleAutomation = BassPlayer.SampleAutomationEnabled;
-
             settings.VisualsShown = playerDetails.VisualsShown;
             settings.AlbumArtShown = playerDetails.AlbumArtShown;
             settings.ShowMixableTracks = mnuShowMixableTracks.Checked;
             settings.ShowTrackDetails = mnuShowTrackDetails.Checked;
-
             settings.UpdateLibraryOnStartup = mnuUpdateLibraryOnStartup.Checked;
-
             settings.RecentFiles = fileMenuController.RecentFiles;
-
             settings.Save();
 
             trackLibraryControl.SaveSettings();
-        }
-
-        /// <summary>
-        ///     Sets the icon text.
-        /// </summary>
-        private void SetIconText()
-        {
-            if (BassPlayer.CurrentTrack != null)
-            {
-                var text = BassPlayer.CurrentTrack.Description.Replace("&", "&&");
-                if (text.Length > 63) text = text.Substring(0, 63);
-                NotifyIcon.Text = text;
-            }
-            else NotifyIcon.Text = "";
         }
 
 
@@ -701,46 +306,16 @@ namespace Halloumi.Shuffler.Forms
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             mixerControl.Unload();
-            Library.SaveToDatabase();
-            BassPlayer.Dispose();
-            _midiManager.Dispose();
+            _application.Unload();
         }
 
-        /// <summary>
-        ///     Handles the OnTrackChange event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackChange(object sender, EventArgs e)
-        {
-            //if (!this.IsHandleCreated) return;
-            if (InvokeRequired)
-            {
-                BeginInvoke(new MethodInvoker(BassPlayer_OnTrackChange));
-            }
-            else BassPlayer_OnTrackChange();
-        }
-
-        /// <summary>
-        ///     Handles the OnTrackChange event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackChange()
-        {
-            if (_bassPlayerOnTrackChange) return;
-            _bassPlayerOnTrackChange = true;
-
-            SetIconText();
-
-            _bassPlayerOnTrackChange = false;
-        }
 
         /// <summary>
         ///     Handles the Click event of the mnuVSTPluginConfig control.
         /// </summary>
         private void mnuVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.MainVstPlugin == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowVstPluginConfig(BassPlayer.MainVstPlugin);
+            _application.ShowPlugin(_application.BassPlayer.MainVstPlugin);
         }
 
         /// <summary>
@@ -748,10 +323,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuWinampDSPConfig_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.WaPlugin == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowWaPluginConfig(BassPlayer.WaPlugin);
+            _application.ShowPlugin(_application.BassPlayer.WaPlugin);
         }
 
         /// <summary>
@@ -759,10 +331,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuSamplerVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.SamplerVstPlugin == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin);
+            _application.ShowPlugin(_application.BassPlayer.SamplerVstPlugin);
         }
 
         /// <summary>
@@ -770,10 +339,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuTrackVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.TrackVstPlugin == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackVstPlugin);
+            _application.ShowPlugin(_application.BassPlayer.TrackVstPlugin);
         }
 
         /// <summary>
@@ -781,10 +347,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuTrackFXVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.TrackSendFxVstPlugin == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxVstPlugin);
+            _application.ShowPlugin(_application.BassPlayer.TrackSendFxVstPlugin);
         }
 
         /// <summary>
@@ -792,10 +355,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuTrackFXVSTPluginConfig2_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.TrackSendFxVstPlugin2 == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowVstPluginConfig(BassPlayer.TrackSendFxVstPlugin2);
+            _application.ShowPlugin(_application.BassPlayer.TrackSendFxVstPlugin2);
         }
 
         /// <summary>
@@ -803,10 +363,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuSamplerVSTPluginConfig2_Click(object sender, EventArgs e)
         {
-            if (BassPlayer.SamplerVstPlugin2 == null)
-                ShowPluginForm();
-            else
-                PluginHelper.ShowVstPluginConfig(BassPlayer.SamplerVstPlugin2);
+            _application.ShowPlugin(_application.BassPlayer.SamplerVstPlugin2);
         }
 
         /// <summary>
@@ -814,7 +371,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuPlugins_Click(object sender, EventArgs e)
         {
-            ShowPluginForm();
+            _application.ShowPluginsForm();
         }
 
         /// <summary>
@@ -843,14 +400,14 @@ namespace Halloumi.Shuffler.Forms
 
         private void SetView(PlayerDetails.SelectedView view)
         {
-            trackLibraryControl.Visible = (view == PlayerDetails.SelectedView.Library);
-            mnuViewLibrary.Checked = (view == PlayerDetails.SelectedView.Library);
+            trackLibraryControl.Visible = view == PlayerDetails.SelectedView.Library;
+            mnuViewLibrary.Checked = view == PlayerDetails.SelectedView.Library;
 
-            mixerControl.Visible = (view == PlayerDetails.SelectedView.Mixer);
-            mnuViewMixer.Checked = (view == PlayerDetails.SelectedView.Mixer);
+            mixerControl.Visible = view == PlayerDetails.SelectedView.Mixer;
+            mnuViewMixer.Checked = view == PlayerDetails.SelectedView.Mixer;
 
-            playlistControl.Visible = (view == PlayerDetails.SelectedView.Playlist);
-            mnuViewPlaylist.Checked = (view == PlayerDetails.SelectedView.Playlist);
+            playlistControl.Visible = view == PlayerDetails.SelectedView.Playlist;
+            mnuViewPlaylist.Checked = view == PlayerDetails.SelectedView.Playlist;
 
             playerDetails.SetSelectedView(view);
         }
@@ -861,24 +418,10 @@ namespace Halloumi.Shuffler.Forms
         private void mnuConservativeFadeOut_Click(object sender, EventArgs e)
         {
             mnuConservativeFadeOut.Checked = !mnuConservativeFadeOut.Checked;
-            BassPlayer.LimitSongLength = mnuConservativeFadeOut.Checked;
-            SetConservativeFadeOutSettings();
+            _application.BassPlayer.LimitSongLength = mnuConservativeFadeOut.Checked;
+            _application.UseConservativeFadeOut = mnuConservativeFadeOut.Checked;
         }
 
-        /// <summary>
-        ///     Handles the OnTrackQueued event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackQueued(object sender, EventArgs e)
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new MethodInvoker(delegate { SetConservativeFadeOutSettings(); }));
-            }
-            else
-            {
-                SetConservativeFadeOutSettings();
-            }
-        }
 
         /// <summary>
         ///     Handles the FormClosing event of the frmMain control.
@@ -931,15 +474,6 @@ namespace Halloumi.Shuffler.Forms
         {
         }
 
-        ///// <summary>
-        /////     Handles the Click event of the mnuMinimizeToTray control.
-        ///// </summary>
-        //private void mnuMinimizeToTray_Click(object sender, EventArgs e)
-        //{
-        //    MinimizeToTrayEnabled = !MinimizeToTrayEnabled;
-        //    mnuMinimizeToTray.Checked = MinimizeToTrayEnabled;
-        //    SaveSettings();
-        //}
 
         /// <summary>
         ///     Handles the Click event of the mnuMinimizeToTray control.
@@ -962,12 +496,12 @@ namespace Halloumi.Shuffler.Forms
             if (toolStripDropDownItem != null)
             {
                 var mixRankDescription = toolStripDropDownItem.Text;
-                var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
+                var mixRank = _application.MixLibrary.GetRankFromDescription(mixRankDescription);
                 playerDetails.SetCurrentMixRank((int) mixRank);
             }
             playerDetails.DisplayCurrentTrackDetails();
 
-            if (mnuSkipAfterMix.Checked) BassPlayer.SkipToEnd();
+            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToEnd();
         }
 
         /// <summary>
@@ -975,7 +509,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuSkipToEnd_Click(object sender, EventArgs e)
         {
-            BassPlayer.SkipToEnd();
+            _application.BassPlayer.SkipToEnd();
         }
 
         /// <summary>
@@ -999,7 +533,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuPlayPause_Click(object sender, EventArgs e)
         {
-            BassPlayer.Play();
+            _application.BassPlayer.Play();
         }
 
         /// <summary>
@@ -1007,7 +541,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuPause_Click(object sender, EventArgs e)
         {
-            BassPlayer.Pause();
+            _application.BassPlayer.Pause();
         }
 
         /// <summary>
@@ -1017,7 +551,7 @@ namespace Halloumi.Shuffler.Forms
         {
             var tracks = playlistControl.GetTracks();
 
-            var playlistName = (!string.IsNullOrEmpty(playlistControl.CurrentPlaylistFile))
+            var playlistName = !string.IsNullOrEmpty(playlistControl.CurrentPlaylistFile)
                 ? Path.GetFileNameWithoutExtension(playlistControl.CurrentPlaylistFile)
                 : trackLibraryControl.CollectionFilter;
 
@@ -1028,7 +562,7 @@ namespace Halloumi.Shuffler.Forms
         {
             var exportPlaylist = new FrmExportPlaylist
             {
-                Library = Library,
+                Library = _application.Library,
                 Tracks = tracks,
                 PlaylistName = playlistName
             };
@@ -1040,7 +574,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void notificationContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            if (BassPlayer.PlayState == PlayState.Playing)
+            if (_application.BassPlayer.PlayState == PlayState.Playing)
             {
                 mnuPlayPause.Visible = false;
                 mnuPause.Visible = true;
@@ -1062,8 +596,8 @@ namespace Halloumi.Shuffler.Forms
             var currentMixRank = playerDetails.GetCurrentMixRank();
             for (var i = 0; i < 6; i++)
             {
-                mnuRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
-                ((ToolStripMenuItem) mnuRank.DropDownItems[i]).Checked = ((5 - i) == currentMixRank);
+                mnuRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);
+                ((ToolStripMenuItem) mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
 
@@ -1074,13 +608,11 @@ namespace Halloumi.Shuffler.Forms
         {
             var currentMixRank = -1;
             if (playlistControl.GetCurrentTrack() != null)
-            {
                 currentMixRank = playlistControl.GetCurrentTrack().Rank;
-            }
             for (var i = 0; i < 6; i++)
             {
-                mnuTrackRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
-                ((ToolStripMenuItem) mnuTrackRank.DropDownItems[i]).Checked = ((5 - i) == currentMixRank);
+                mnuTrackRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);
+                ((ToolStripMenuItem) mnuTrackRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
 
@@ -1096,29 +628,23 @@ namespace Halloumi.Shuffler.Forms
                 _generatePlaylist.SetScreenMode(FrmGeneratePlaylist.ScreenMode.GeneratePlaylist);
             }
             if (!_generatePlaylist.Visible)
-            {
                 WindowHelper.ShowDialog(this, _generatePlaylist);
-            }
         }
 
         private void mnuMonitorSettings_Click(object sender, EventArgs e)
         {
             if (_monitorSettings == null || _monitorSettings.IsDisposed)
-            {
-                _monitorSettings = new FrmMonitorSettings {BassPlayer = BassPlayer};
-            }
+                _monitorSettings = new FrmMonitorSettings {BassPlayer = _application.BassPlayer};
             if (!_monitorSettings.Visible)
-            {
                 WindowHelper.ShowDialog(this, _monitorSettings);
-            }
         }
 
         private void mnuExportShufflerTracks_Click(object sender, EventArgs e)
         {
             var exportPlaylist = new FrmExportShufflerTracks
             {
-                Library = Library,
-                SampleLibrary = SampleLibrary
+                Library = _application.Library,
+                SampleLibrary = _application.SampleLibrary
             };
             exportPlaylist.ShowDialog();
         }
@@ -1128,13 +654,11 @@ namespace Halloumi.Shuffler.Forms
             if (_frmModuleEditor == null || _frmModuleEditor.IsDisposed)
             {
                 _frmModuleEditor = new FrmModuleEditor();
-                _frmModuleEditor.Initialize(BassPlayer, SampleLibrary, Library);
+                _frmModuleEditor.Initialize(_application.BassPlayer, _application.SampleLibrary, _application.Library);
             }
 
             if (!_frmModuleEditor.Visible)
-            {
                 WindowHelper.ShowDialog(this, _frmModuleEditor);
-            }
         }
 
         private void FrmMain_Shown(object sender, EventArgs e)
@@ -1153,12 +677,12 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuImportCollection_Click(object sender, EventArgs e)
         {
-            this.trackLibraryControl.ImportCollection();
+            trackLibraryControl.ImportCollection();
         }
 
         private void mnuDeleteCollection_Click(object sender, EventArgs e)
         {
-            this.trackLibraryControl.DeleteCollection();
+            trackLibraryControl.DeleteCollection();
         }
     }
 }

@@ -664,7 +664,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static void RemoveFromMixer(AudioStream audioStream, int mixerChannel)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded())
-                throw new Exception("Audio file null or not audio not loaded");
+                return;
+            
+                //throw new Exception("Audio file null or not audio not loaded");
 
             if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
 
@@ -737,7 +739,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static void UnloadAudio(AudioStream audioStream)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded())
-                throw new Exception("Audio file null or not audio not loaded");
+                //throw new Exception("Audio file null or not audio not loaded");
+                return;
+            
             // DebugHelper.WriteLine($"UnloadAudio {audioStream.Description}...");
 
             foreach (var channel in audioStream.Channels)

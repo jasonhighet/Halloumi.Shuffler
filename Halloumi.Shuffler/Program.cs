@@ -25,12 +25,15 @@ namespace Halloumi.Shuffler
             }
             if (settings.LibraryFolder != "")
             {
+                var application = new ShufflerApplication();
+
+
 #if DEBUG
-                Application.Run(new FrmMain());
+                Application.Run(new FrmMain(application));
 #else
                 try
                 {
-                    Application.Run(new FrmMain());
+                    Application.Run(new FrmMain(application));
                 }
                 catch (Exception exception)
                 {

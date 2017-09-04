@@ -99,6 +99,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ShufflerApplication.cs" />
     <Compile Include="Controls\DataGridView.cs" />
     <Compile Include="Controls\ListBuilder.cs">
       <SubType>UserControl</SubType>
@@ -515,9 +516,6 @@
     <None Include="Resources\player_stop.png" />
     <None Include="Resources\player_play.png" />
     <None Include="Resources\player_pause.png" />
-    <None Include="song.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj">
