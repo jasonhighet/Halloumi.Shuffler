@@ -34,8 +34,6 @@ namespace Halloumi.Shuffler
 
             LoadFromDatabase();
 
-
-            BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
         }
 
@@ -399,39 +397,11 @@ namespace Halloumi.Shuffler
         }
 
         /// <summary>
-        ///     Handles the OnTrackChange event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackChange(object sender, EventArgs e)
-        {
-            SetIconText();
-        }
-
-        /// <summary>
         ///     Handles the OnTrackQueued event of the BassPlayer control.
         /// </summary>
         private void BassPlayer_OnTrackQueued(object sender, EventArgs e)
         {
             SetConservativeFadeOutSettings();
-        }
-
-
-        /// <summary>
-        ///     Sets the icon text.
-        /// </summary>
-        private void SetIconText()
-        {
-            if (BaseForm == null) return;
-
-            if (BassPlayer.CurrentTrack != null)
-            {
-                var text = BassPlayer.CurrentTrack.Description.Replace("&", "&&");
-                if (text.Length > 63) text = text.Substring(0, 63);
-                BaseForm.NotifyIcon.Text = text;
-            }
-            else
-            {
-                BaseForm.NotifyIcon.Text = "";
-            }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
+using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
@@ -231,6 +232,21 @@ namespace Halloumi.Shuffler.Controls
                 lblCurrentTrackDetails.Text = "";
                 picCover.Image = null;
             }
+
+            var mainForm = (BaseMinimizeToTrayForm)this.ParentForm;
+            if (mainForm == null) return;
+
+            if (track != null)
+            {
+                var text = track.Description.Replace("&", "&&");
+                if (text.Length > 63) text = text.Substring(0, 63);
+                mainForm.NotifyIcon.Text = text;
+            }
+            else
+            {
+                mainForm.NotifyIcon.Text = "";
+            }
+
         }
 
         public int GetCurrentMixRank()
