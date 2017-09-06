@@ -195,7 +195,9 @@
             this.cmbFadeOutType.Items.AddRange(new object[] {
             "Default",
             "Power Down",
-            "Cut"});
+            "Cut",
+            "Quick Fade",
+            "Echo Out"});
             this.cmbFadeOutType.Location = new System.Drawing.Point(321, 3);
             this.cmbFadeOutType.Name = "cmbFadeOutType";
             this.cmbFadeOutType.Size = new System.Drawing.Size(163, 25);

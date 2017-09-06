@@ -1494,6 +1494,11 @@ namespace Halloumi.Shuffler.Controls
             colOutCount.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
             colTrackKey.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
 
+
+            colTrackStartBPM.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
+            colTrackEndBPM.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
+            colTrackRank.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
+
             colUnrankedCount.Visible = false;
 
             if (shufflerFilter == ShufflerFilter) return;

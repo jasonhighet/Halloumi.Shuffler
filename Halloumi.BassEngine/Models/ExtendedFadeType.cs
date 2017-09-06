@@ -4,6 +4,8 @@
     {
         Default,
         PowerDown,
-        Cut
+        Cut,
+        EchoOut,
+        QuickFade
     }
 }

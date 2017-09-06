@@ -1060,38 +1060,58 @@ namespace Halloumi.Shuffler.AudioEngine
             if (CurrentTrack == null || NextTrack == null) return;
             if (CurrentTrack.PowerDownOnEnd) return;
 
-            if (!BpmHelper.IsBpmInRange(CurrentTrack.EndBpm, NextTrack.StartBpm, 10))
-            {
-                if (KeyHelper.GetKeyMixRank(CurrentTrack.Key, NextTrack.Key) < 3)
-                {
-                    CurrentTrack.PowerDownOnEnd = true;
-                }
-                else
-                {
-                    CurrentTrack.EndLoopCount = 8;
-                    CurrentTrack.FadeOutEnd = CurrentTrack.FadeOutStart +
-                        CurrentTrack.SecondsToSamples(BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm) / 32);
-                }
-            }
-            else if (KeyHelper.GetKeyMixRank(CurrentTrack.Key, NextTrack.Key) < 3)
-            {
-                CurrentTrack.PowerDownOnEnd = true;
-            }
-            else
-            {
-                var newFadeOutLength = GetQuickFadeLength(CurrentTrack);
-                if (newFadeOutLength < CurrentTrack.FadeOutLengthSeconds)
-                {
-                    CurrentTrack.FadeOutEnd = CurrentTrack.FadeOutStart +
-                                              CurrentTrack.SecondsToSamples(newFadeOutLength);
-                }
-                CurrentTrack.EndLoopCount = 0;
-            }
+            var fadeType = ExtendedFadeType.QuickFade;
 
-            SetTrackSyncPositions(CurrentTrack);
+            if (KeyHelper.GetKeyMixRank(CurrentTrack.Key, NextTrack.Key) < 3)
+            {
+                fadeType = ExtendedFadeType.PowerDown;
+            }
+            else if (!BpmHelper.IsBpmInRange(CurrentTrack.EndBpm, NextTrack.StartBpm, 10))
+            {
+                fadeType = ExtendedFadeType.EchoOut;
+            }
+   
+            SetAutoFadeOutSettings(fadeType);
         }
 
+        private void SetAutoFadeOutSettings(ExtendedFadeType fadeType, Track track = null)
+        {
+            if (track == null)
+                track = CurrentTrack;
+            if(track == null)
+                return;
 
+            double newFadeOutLength;
+            switch (fadeType)
+            {
+                case ExtendedFadeType.Default:
+                    break;
+                case ExtendedFadeType.PowerDown:
+                    track.PowerDownOnEnd = true;
+                    break;
+                case ExtendedFadeType.EchoOut:
+                    track.EndLoopCount = 8;
+                    track.FadeOutEnd = track.FadeOutStart + track.SecondsToSamples(BpmHelper.GetDefaultLoopLength(track.EndBpm) / 32);
+                    break;
+                case ExtendedFadeType.Cut:
+                    newFadeOutLength = GetCutFadeLength(track);
+                    if (newFadeOutLength < track.FadeOutLengthSeconds)
+                        track.FadeOutEnd = track.FadeOutStart + track.SecondsToSamples(newFadeOutLength);
+                    track.EndLoopCount = 0;
+                    break;
+                case ExtendedFadeType.QuickFade:
+                    newFadeOutLength = GetQuickFadeLength(track);
+                    if (newFadeOutLength < track.FadeOutLengthSeconds)
+                        track.FadeOutEnd = track.FadeOutStart + track.SecondsToSamples(newFadeOutLength);
+                    track.EndLoopCount = 0;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fadeType), fadeType, null);
+            }
+
+            SetTrackSyncPositions(track);
+        }
+        
         /// <summary>
         ///     Starts the Bass audio engine.
         /// </summary>
@@ -1600,13 +1620,19 @@ namespace Halloumi.Shuffler.AudioEngine
 
                 if (IsManualMixMode)
                 {
+                    SetAutoFadeOutSettings(PreviousManaulExtendedFadeType, PreviousTrack);
                     switch (PreviousManaulExtendedFadeType)
                     {
                         case ExtendedFadeType.Cut:
-                            // set the volume slide
-                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                GetCutFadeLength(CurrentTrack));
-
+                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0, GetCutFadeLength(CurrentTrack));
+                            StopRecordingAutoExtendedMix();
+                            break;
+                        case ExtendedFadeType.QuickFade:
+                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0, GetQuickFadeLength(CurrentTrack));
+                            StopRecordingAutoExtendedMix();
+                            break;
+                        case ExtendedFadeType.EchoOut:
+                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0, BpmHelper.GetDefaultLoopLength(CurrentTrack.StartBpm) / 32 * 8);
                             StopRecordingAutoExtendedMix();
                             break;
                         case ExtendedFadeType.PowerDown:
@@ -1637,16 +1663,23 @@ namespace Halloumi.Shuffler.AudioEngine
                         {
                             case ExtendedFadeType.Default:
                                 // set the volume slide
-                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
-                                    mixAttributes.FadeEndVolume, mixAttributes.FadeLength);
+                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, mixAttributes.FadeEndVolume, mixAttributes.FadeLength);
                                 break;
                             case ExtendedFadeType.PowerDown:
                                 AudioStreamHelper.PowerDown(PreviousTrack);
                                 break;
                             case ExtendedFadeType.Cut:
-                                // set the volume slide
-                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                    GetCutFadeLength(CurrentTrack));
+                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0, GetCutFadeLength(CurrentTrack));
+                                StopRecordingAutoExtendedMix();
+                                break;
+                            case ExtendedFadeType.QuickFade:
+                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0, GetQuickFadeLength(CurrentTrack));
+                                StopRecordingAutoExtendedMix();
+                                break;
+                            case ExtendedFadeType.EchoOut:
+                                SetAutoFadeOutSettings(mixAttributes.ExtendedFadeType, PreviousTrack);
+                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0, BpmHelper.GetDefaultLoopLength(CurrentTrack.StartBpm) / 32 * 8);
+                                StopRecordingAutoExtendedMix();
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();

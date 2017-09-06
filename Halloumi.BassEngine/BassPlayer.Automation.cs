@@ -497,8 +497,7 @@ namespace Halloumi.Shuffler.AudioEngine
             if (CurrentTrack == null) return;
             if (PreviousTrack == null) return;
             if (!IsManualMixMode) return;
-            if (PreviousManaulExtendedFadeType != ExtendedFadeType.PowerDown
-                && PreviousManaulExtendedFadeType != ExtendedFadeType.Cut) return;
+            if (PreviousManaulExtendedFadeType == ExtendedFadeType.Default) return;
 
             CreateLastExtendedMixAttributes();
 
