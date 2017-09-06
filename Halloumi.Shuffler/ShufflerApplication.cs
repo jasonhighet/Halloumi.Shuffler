@@ -41,7 +41,7 @@ namespace Halloumi.Shuffler
 
         public bool UseConservativeFadeOut
         {
-            get => _useConservativeFadeOut;
+            get { return _useConservativeFadeOut; }
             set
             {
                 _useConservativeFadeOut = value;
