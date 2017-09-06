@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Halloumi.Common.Helpers;
+using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioLibrary;
 
 namespace Halloumi.Shuffler.Forms
@@ -7,33 +8,6 @@ namespace Halloumi.Shuffler.Forms
     public class Settings
     {
         private static Settings _default;
-
-        public static Settings Default => _default ?? (_default = LoadSetttings());
-
-        private static Settings LoadSetttings()
-        {
-            var settings = new Settings();
-            try
-            {
-                var filename = Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Settings.xml");
-                if (File.Exists(filename))
-                {
-                    settings = SerializationHelper<Settings>.FromXmlFile(filename);
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return settings;
-        }
-
-        public void Save()
-        {
-            var filename = Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Settings.xml");
-            SerializationHelper<Settings>.ToXmlFile(this, filename);
-        }
 
         public Settings()
         {
@@ -75,13 +49,13 @@ namespace Halloumi.Shuffler.Forms
             BypassTrackFxEffect2 = false;
             TrackFxVolume = 50;
             TrackFxDelayNotes = 0.25M;
-            SamplerOutput = AudioEngine.Channels.SoundOutput.Speakers;
-            TrackOutput = AudioEngine.Channels.SoundOutput.Speakers;
+            SamplerOutput = SoundOutput.Speakers;
+            TrackOutput = SoundOutput.Speakers;
             MonitorVolume = 5;
             MixableRankFilterIndex = 0;
             MixableKeyRankFilterIndex = 0;
             MixableViewIndex = 0;
-            RawLoopOutput = AudioEngine.Channels.SoundOutput.Speakers;
+            RawLoopOutput = SoundOutput.Speakers;
             EnableTrackFxAutomation = true;
             EnableSampleAutomation = true;
             ShufflerMode = TrackSelector.MixStrategy.None;
@@ -90,10 +64,13 @@ namespace Halloumi.Shuffler.Forms
             ImportShufflerFilesFolder = "";
             RecentFiles = "";
             ShowTrackDetails = true;
+            ShowPlayer = true;
         }
 
+        public static Settings Default => _default ?? (_default = LoadSetttings());
+
         public string LibraryFolder { get; set; }
-        
+
         public string ShufflerFolder { get; set; }
 
         public string WaPluginsFolder { get; set; }
@@ -169,9 +146,9 @@ namespace Halloumi.Shuffler.Forms
 
         public decimal TrackFxDelayNotes { get; set; }
 
-        public AudioEngine.Channels.SoundOutput SamplerOutput { get; set; }
+        public SoundOutput SamplerOutput { get; set; }
 
-        public AudioEngine.Channels.SoundOutput TrackOutput { get; set; }
+        public SoundOutput TrackOutput { get; set; }
 
         public int MonitorVolume { get; set; }
 
@@ -183,7 +160,7 @@ namespace Halloumi.Shuffler.Forms
 
         public bool MixableTracksExcludeQueued { get; set; }
 
-        public AudioEngine.Channels.SoundOutput RawLoopOutput { get; set; }
+        public SoundOutput RawLoopOutput { get; set; }
 
         public bool EnableTrackFxAutomation { get; set; }
 
@@ -203,5 +180,29 @@ namespace Halloumi.Shuffler.Forms
 
         public string RecentFiles { get; set; }
         public bool ShowTrackDetails { get; set; }
+        public bool ShowPlayer { get; set; }
+
+        private static Settings LoadSetttings()
+        {
+            var settings = new Settings();
+            try
+            {
+                var filename = Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Settings.xml");
+                if (File.Exists(filename))
+                    settings = SerializationHelper<Settings>.FromXmlFile(filename);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return settings;
+        }
+
+        public void Save()
+        {
+            var filename = Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Settings.xml");
+            SerializationHelper<Settings>.ToXmlFile(this, filename);
+        }
     }
 }

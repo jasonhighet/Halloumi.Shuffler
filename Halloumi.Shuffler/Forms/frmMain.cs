@@ -268,6 +268,9 @@ namespace Halloumi.Shuffler.Forms
             playerDetails.AlbumArtShown = settings.AlbumArtShown;
             mnuViewAlbumArt.Checked = settings.AlbumArtShown;
             mnuSkipAfterMix.Checked = settings.SkipAfterMix;
+            mnuShowPlayer.Checked = settings.ShowPlayer;
+            playerDetails.Visible = mnuShowPlayer.Checked;
+            pnlTop.AutoSize = !mnuShowPlayer.Checked;
 
             mixerControl.LoadSettings();
             trackLibraryControl.LoadUiSettings();
@@ -294,6 +297,7 @@ namespace Halloumi.Shuffler.Forms
             settings.ShowTrackDetails = mnuShowTrackDetails.Checked;
             settings.UpdateLibraryOnStartup = mnuUpdateLibraryOnStartup.Checked;
             settings.RecentFiles = fileMenuController.RecentFiles;
+            settings.ShowPlayer = mnuShowPlayer.Checked;
             settings.Save();
 
             trackLibraryControl.SaveSettings();
@@ -683,6 +687,16 @@ namespace Halloumi.Shuffler.Forms
         private void mnuDeleteCollection_Click(object sender, EventArgs e)
         {
             trackLibraryControl.DeleteCollection();
+        }
+
+        private void mnuShowPlayer_Click(object sender, EventArgs e)
+        {
+            mnuShowPlayer.Checked = !mnuShowPlayer.Checked;
+            playerDetails.Visible = mnuShowPlayer.Checked;
+            pnlTop.AutoSize = !mnuShowPlayer.Checked;
+
+            SaveSettings();
+
         }
     }
 }
