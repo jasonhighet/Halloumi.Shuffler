@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Un4seen.Bass;
 
@@ -257,7 +258,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <returns>A formatted string</returns>
         public string FormatSeconds(double seconds)
         {
-            return Utils.FixTimespan(seconds, seconds > 3600 ? "HMMSS" : "MMSS");
+            return TimeFormatHelper.GetFormattedHours(seconds);
+            //return Utils.FixTimespan(seconds, seconds > 3600 ? "HMMSS" : "MMSS");
         }
 
         /// <summary>
