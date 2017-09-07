@@ -109,6 +109,32 @@ namespace Halloumi.Shuffler.Forms
             shufflerController.Initalize();
 
             SetView(PlayerDetails.SelectedView.Library);
+
+            var newMenu = new ToolStripMenuItem(mnuPlayPause.Text, mnuPlayPause.Image);
+            newMenu.Click += mnuPlayPause_Click;
+            mnuFile.DropDownItems.Insert(0, newMenu);
+
+            newMenu = new ToolStripMenuItem(mnuPause.Text, mnuPause.Image);
+            newMenu.Click += mnuPause_Click;
+            mnuFile.DropDownItems.Insert(1, newMenu);
+
+            newMenu = new ToolStripMenuItem(mnuNext.Text, mnuNext.Image);
+            newMenu.Click += mnuNext_Click;
+            mnuFile.DropDownItems.Insert(2, newMenu);
+
+            newMenu = new ToolStripMenuItem(mnuPrevious.Text, mnuPrevious.Image);
+            newMenu.Click += mnuPrevious_Click;
+            mnuFile.DropDownItems.Insert(3, newMenu);
+
+            newMenu = new ToolStripMenuItem(mnuSkipToEnd.Text, mnuSkipToEnd.Image);
+            newMenu.Click += mnuSkipToEnd_Click;
+            mnuFile.DropDownItems.Insert(4, newMenu);
+
+            newMenu = new ToolStripMenuItem(mnuReplayMix.Text, mnuReplayMix.Image);
+            newMenu.Click += mnuReplayMix_Click;
+            mnuFile.DropDownItems.Insert(5, newMenu);
+
+            mnuFile.DropDownItems.Insert(6, new ToolStripSeparator());
         }
 
 
@@ -140,8 +166,8 @@ namespace Halloumi.Shuffler.Forms
             if (track == null)
                 return;
 
-            var tracks = new List<Track> {track};
-            _application.Library.SetRank(tracks, (int) mixRank);
+            var tracks = new List<Track> { track };
+            _application.Library.SetRank(tracks, (int)mixRank);
         }
 
         private void mnuViewVisuals_Click(object sender, EventArgs e)
@@ -502,7 +528,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 var mixRankDescription = toolStripDropDownItem.Text;
                 var mixRank = _application.MixLibrary.GetRankFromDescription(mixRankDescription);
-                playerDetails.SetCurrentMixRank((int) mixRank);
+                playerDetails.SetCurrentMixRank((int)mixRank);
             }
             playerDetails.DisplayCurrentTrackDetails();
 
@@ -602,7 +628,7 @@ namespace Halloumi.Shuffler.Forms
             for (var i = 0; i < 6; i++)
             {
                 mnuRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);
-                ((ToolStripMenuItem) mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
+                ((ToolStripMenuItem)mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
 
@@ -617,7 +643,7 @@ namespace Halloumi.Shuffler.Forms
             for (var i = 0; i < 6; i++)
             {
                 mnuTrackRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);
-                ((ToolStripMenuItem) mnuTrackRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
+                ((ToolStripMenuItem)mnuTrackRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
 
@@ -639,7 +665,7 @@ namespace Halloumi.Shuffler.Forms
         private void mnuMonitorSettings_Click(object sender, EventArgs e)
         {
             if (_monitorSettings == null || _monitorSettings.IsDisposed)
-                _monitorSettings = new FrmMonitorSettings {BassPlayer = _application.BassPlayer};
+                _monitorSettings = new FrmMonitorSettings { BassPlayer = _application.BassPlayer };
             if (!_monitorSettings.Visible)
                 WindowHelper.ShowDialog(this, _monitorSettings);
         }
@@ -699,5 +725,21 @@ namespace Halloumi.Shuffler.Forms
             SaveSettings();
 
         }
+
+        private void mnuFile_DropDownOpening(object sender, EventArgs e)
+        {
+            if (_application.BassPlayer.PlayState == PlayState.Playing)
+            {
+
+                mnuFile.DropDownItems[0].Visible = false;
+                mnuFile.DropDownItems[1].Visible = true;
+            }
+            else
+            {
+                mnuFile.DropDownItems[0].Visible = true;
+                mnuFile.DropDownItems[1].Visible = false;
+            }
+        }
+
     }
 }

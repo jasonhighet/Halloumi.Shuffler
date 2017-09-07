@@ -118,6 +118,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit2 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.lblPlayerStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblLibraryStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblPlaylistStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.fileMenuController = new Halloumi.Common.Windows.Controllers.FileMenuController(this.components);
@@ -127,7 +128,6 @@
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
-            this.lblPlayerStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
             this.pnlMenuBar.SuspendLayout();
@@ -219,6 +219,7 @@
             this.mnuFile.Name = "mnuFile";
             this.mnuFile.Size = new System.Drawing.Size(67, 33);
             this.mnuFile.Text = "&Playlist";
+            this.mnuFile.DropDownOpening += new System.EventHandler(this.mnuFile_DropDownOpening);
             // 
             // mnuBestMix
             // 
@@ -824,6 +825,14 @@
             this.statusStrip.Size = new System.Drawing.Size(1253, 25);
             this.statusStrip.TabIndex = 33;
             // 
+            // lblPlayerStatus
+            // 
+            this.lblPlayerStatus.Name = "lblPlayerStatus";
+            this.lblPlayerStatus.Size = new System.Drawing.Size(942, 20);
+            this.lblPlayerStatus.Spring = true;
+            this.lblPlayerStatus.Text = "0:00 remaining";
+            this.lblPlayerStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // lblLibraryStatus
             // 
             this.lblLibraryStatus.Name = "lblLibraryStatus";
@@ -892,14 +901,6 @@
             this.mixerControl.Size = new System.Drawing.Size(1253, 625);
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
-            // 
-            // lblPlayerStatus
-            // 
-            this.lblPlayerStatus.Name = "lblPlayerStatus";
-            this.lblPlayerStatus.Size = new System.Drawing.Size(903, 20);
-            this.lblPlayerStatus.Spring = true;
-            this.lblPlayerStatus.Text = "0:00 remaining";
-            this.lblPlayerStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FrmMain
             // 
