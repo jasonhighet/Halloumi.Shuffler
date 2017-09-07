@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioLibrary;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -8,22 +7,27 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class MixerControl : UserControl
     {
+        public MixerControl()
+        {
+            InitializeComponent();
+        }
+
         /// <summary>
-        /// Gets or sets the library.
+        ///     Gets or sets the library.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
 
         /// <summary>
-        /// Gets or sets the bass player.
+        ///     Gets or sets the bass player.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
-        /// Gets or sets the playlist control.
+        ///     Gets or sets the playlist control.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -32,11 +36,6 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SamplerControl SamplerControl { get; private set; }
-
-        public MixerControl()
-        {
-            InitializeComponent();
-        }
 
         public void Initialize()
         {
@@ -54,7 +53,7 @@ namespace Halloumi.Shuffler.Controls
         {
             SamplerControl.LoadSettings();
             trackMixerControl.LoadSettings();
-            spllLeftRight.SplitterDistance = (Width / 4) * 2;
+            spllLeftRight.SplitterDistance = Width / 4 * 2;
         }
 
         public void Unload()

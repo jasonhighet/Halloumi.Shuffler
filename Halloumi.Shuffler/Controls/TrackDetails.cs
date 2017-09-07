@@ -9,25 +9,25 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class TrackDetails : UserControl
     {
+        /// <summary>
+        ///     Gets or sets the current track description.
+        /// </summary>
+        private string _currentFilename;
+
         public TrackDetails()
         {
             InitializeComponent();
         }
 
         /// <summary>
-        /// Gets or sets the current track description.
-        /// </summary>
-        private string _currentFilename;
-
-        /// <summary>
-        /// Gets or sets the library.
+        ///     Gets or sets the library.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
 
         /// <summary>
-        /// Displays the current track details.
+        ///     Displays the current track details.
         /// </summary>
         public void DisplayTrackDetails(Track track)
         {

@@ -19,8 +19,10 @@ namespace Halloumi.Shuffler.Controls
     public partial class SampleLibraryControl : UserControl
     {
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
-        private SyncedSamplePlayer _player;
         private bool _binding;
+        private SyncedSamplePlayer _player;
+
+        private string _playingSamples;
 
         public SampleLibraryControl()
         {
@@ -48,9 +50,7 @@ namespace Halloumi.Shuffler.Controls
             cmbKey.Items.Add("");
             cmbKey.Items.Add("Atonal");
             foreach (var key in KeyHelper.GetDisplayKeys())
-            {
                 cmbKey.Items.Add(key);
-            }
 
             cmbLoopType.Items.Clear();
             cmbLoopType.Items.Add("");
@@ -91,6 +91,8 @@ namespace Halloumi.Shuffler.Controls
 
         private List<SampleModel> SampleModels { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ISampleRecipient SampleRecipient { get; set; }
 
         public void Initialize()
@@ -178,7 +180,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 _player.Pause();
             }
-            
+
 
             grdSamples.SaveSelectedRows();
 
@@ -345,7 +347,7 @@ namespace Halloumi.Shuffler.Controls
 
                 var samples = GetSelectedSamples();
                 if (samples == null || samples.Count == 0) return;
-                
+
                 _player.UnloadAll();
                 foreach (var sample in samples)
                 {
@@ -388,15 +390,14 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdSamples_SelectionChanged(object sender, EventArgs e)
         {
-            var playingSamples = string.Join(",", GetSelectedSamples().Select(x => x.TrackArtist + x.TrackTitle + x.Description));
+            var playingSamples = string.Join(",",
+                GetSelectedSamples().Select(x => x.TrackArtist + x.TrackTitle + x.Description));
 
-            if(playingSamples != _playingSamples)
+            if (playingSamples != _playingSamples)
                 PlayCurrentSamples();
 
             _playingSamples = playingSamples;
         }
-
-        private string _playingSamples;
 
         /// <summary>
         ///     Handles the TextChanged event of the txtMaxBPM control.
@@ -451,9 +452,7 @@ namespace Halloumi.Shuffler.Controls
 
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         private void mnuEditTags_Click(object sender, EventArgs e)
@@ -465,9 +464,7 @@ namespace Halloumi.Shuffler.Controls
             StopSamples();
 
             foreach (var sample in GetSelectedSamples().Where(sample => sample.Key == ""))
-            {
                 SampleLibrary.CalculateSampleKey(sample);
-            }
 
             SampleLibrary.SaveCache();
 
@@ -481,7 +478,7 @@ namespace Halloumi.Shuffler.Controls
             mnEditSample.Visible = !multiSamplesSelected;
             mnuCalculateKey.Visible = !multiSamplesSelected;
 
-            mnuImportSamples.Visible = (SampleRecipient != null);
+            mnuImportSamples.Visible = SampleRecipient != null;
         }
 
         private void mnuCopySample_Click(object sender, EventArgs e)
@@ -505,6 +502,11 @@ namespace Halloumi.Shuffler.Controls
         private void chkIncludeAntonal_CheckedChanged(object sender, EventArgs e)
         {
             SetIncludeAtonalFilter();
+        }
+
+        private void mnuImportSamples_Click(object sender, EventArgs e)
+        {
+            SampleRecipient?.ImportLibrarySamples(GetSelectedSamples());
         }
 
         private class SampleModel
@@ -536,16 +538,10 @@ namespace Halloumi.Shuffler.Controls
 
             public Sample Sample { get; }
         }
-
-        private void mnuImportSamples_Click(object sender, EventArgs e)
-        {
-            SampleRecipient?.ImportLibrarySamples(GetSelectedSamples());
-        }
     }
 
     public interface ISampleRecipient
     {
         void ImportLibrarySamples(List<Sample> librarySamples);
     }
-
 }

@@ -75,15 +75,19 @@ namespace Halloumi.Shuffler.Controls
             _bassVisuals.MaxFrequencySpectrum = Utils.FFTFrequency2Index(16000, 1024, 44100);
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool VisualsShown { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether album art is shown.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AlbumArtShown
         {
-            get { return picCover.Visible; }
-            set { picCover.Visible = value; }
+            get => picCover.Visible;
+            set => picCover.Visible = value;
         }
 
 
@@ -117,9 +121,11 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Gets or sets the playlist control.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl
         {
-            get { return _playlistControl; }
+            get => _playlistControl;
             set
             {
                 //if (_playlistControl != null) _playlistControl.PlaylistChanged -= PlaylistControl_PlaylistChanged;
@@ -197,9 +203,7 @@ namespace Halloumi.Shuffler.Controls
         {
             Track track = null;
             if (BassPlayer.CurrentTrack != null)
-            {
                 track = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
-            }
 
             if (BassPlayer.PlayState == PlayState.Playing)
             {
@@ -233,7 +237,7 @@ namespace Halloumi.Shuffler.Controls
                 picCover.Image = null;
             }
 
-            var mainForm = (BaseMinimizeToTrayForm)this.ParentForm;
+            var mainForm = (BaseMinimizeToTrayForm) ParentForm;
             if (mainForm == null) return;
 
             if (track != null)
@@ -246,7 +250,6 @@ namespace Halloumi.Shuffler.Controls
             {
                 mainForm.NotifyIcon.Text = "";
             }
-
         }
 
         public int GetCurrentMixRank()
@@ -255,9 +258,7 @@ namespace Halloumi.Shuffler.Controls
 
             Track currentTrack = null;
             if (BassPlayer.CurrentTrack != null)
-            {
                 currentTrack = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
-            }
 
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return 1;
@@ -271,9 +272,7 @@ namespace Halloumi.Shuffler.Controls
 
             Track currentTrack = null;
             if (BassPlayer.CurrentTrack != null)
-            {
                 currentTrack = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
-            }
 
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return;
@@ -317,7 +316,7 @@ namespace Halloumi.Shuffler.Controls
         private void Timer_Tick()
         {
             var form = FindForm();
-            if (form != null && (form.WindowState == FormWindowState.Minimized)) return;
+            if (form != null && form.WindowState == FormWindowState.Minimized) return;
 
             if (_timerTick) return;
             _timerTick = true;
@@ -346,13 +345,11 @@ namespace Halloumi.Shuffler.Controls
             if (BassPlayer.PlayState == PlayState.Playing)
             {
                 if (!_firstVisualShown)
-                {
                     for (var i = 0; i < 5; i++)
                     {
                         Thread.Sleep(50);
                         Application.DoEvents();
                     }
-                }
 
                 lock (BassPlayer.ExternalMixerLock)
                 {
@@ -427,9 +424,7 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnTrackChange(object sender, EventArgs e)
         {
             if (InvokeRequired)
-            {
                 BeginInvoke(new MethodInvoker(BassPlayer_OnTrackChange));
-            }
             else BassPlayer_OnTrackChange();
         }
 

@@ -74,7 +74,7 @@ namespace Halloumi.Shuffler.Controls
                     BassPlayer = BassPlayer,
                     Library = PlaylistControl.Library
                 };
-                if (i%2 != 0) player.BackColor = Color.WhiteSmoke;
+                if (i % 2 != 0) player.BackColor = Color.WhiteSmoke;
                 SamplePlayers.Add(player);
                 flpLeft.Controls.Add(player);
                 player.Visible = false;
@@ -88,9 +88,7 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnTrackSamplesChanged(object sender, EventArgs e)
         {
             if (InvokeRequired)
-            {
                 BeginInvoke(new MethodInvoker(LoadSamplePlayers));
-            }
             else LoadSamplePlayers();
         }
 

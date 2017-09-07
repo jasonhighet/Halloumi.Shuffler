@@ -7,9 +7,9 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using Halloumi.Common.Windows.Controls;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Windows.Controls;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -57,11 +57,15 @@ namespace Halloumi.Shuffler.Controls
         }
 
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TrackWaveMode Mode { get; set; }
 
         /// <summary>
         ///     Gets or sets the filename.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Filename { get; set; }
 
         /// <summary>
@@ -72,26 +76,36 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Gets or sets the zoom start.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public long ZoomStart { get; private set; }
 
         /// <summary>
         ///     Gets or sets the zoom end.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public long ZoomEnd { get; private set; }
 
         /// <summary>
         ///     Gets or sets the length of the zoom.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public long ZoomLength => ZoomEnd - ZoomStart;
 
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AE.BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass track.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Track BassTrack { get; private set; }
 
         /// <summary>
@@ -99,9 +113,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private long CurrentPosition { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowTrackFx
         {
-            get { return _showTrackFx; }
+            get => _showTrackFx;
             set
             {
                 _showTrackFx = value;
@@ -109,10 +125,16 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<TrackSample> TrackSamples { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Sample> Samples { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Sample CurrentSample { get; set; }
 
 
@@ -123,21 +145,21 @@ namespace Halloumi.Shuffler.Controls
 
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
-            mnuSetFadeInEnd.Visible = (Mode == TrackWaveMode.Shuffler);
-            mnuSetFadeInStart.Visible = (Mode == TrackWaveMode.Shuffler);
-            mnuSetFadeOutEnd.Visible = (Mode == TrackWaveMode.Shuffler);
-            mnuSetFadeOutStart.Visible = (Mode == TrackWaveMode.Shuffler);
-            mnuSetSkipStart.Visible = (Mode == TrackWaveMode.Shuffler);
-            mnuSetSkipEnd.Visible = (Mode == TrackWaveMode.Shuffler);
-            mnuSetPreFadeInStart.Visible = (Mode == TrackWaveMode.Shuffler);
+            mnuSetFadeInEnd.Visible = Mode == TrackWaveMode.Shuffler;
+            mnuSetFadeInStart.Visible = Mode == TrackWaveMode.Shuffler;
+            mnuSetFadeOutEnd.Visible = Mode == TrackWaveMode.Shuffler;
+            mnuSetFadeOutStart.Visible = Mode == TrackWaveMode.Shuffler;
+            mnuSetSkipStart.Visible = Mode == TrackWaveMode.Shuffler;
+            mnuSetSkipEnd.Visible = Mode == TrackWaveMode.Shuffler;
+            mnuSetPreFadeInStart.Visible = Mode == TrackWaveMode.Shuffler;
 
-            mnuSetSampleEnd.Visible = (Mode == TrackWaveMode.Sampler);
-            mnuSetSampleStart.Visible = (Mode == TrackWaveMode.Sampler);
-            mnuSetSampleOffset.Visible = (Mode == TrackWaveMode.Sampler);
+            mnuSetSampleEnd.Visible = Mode == TrackWaveMode.Sampler;
+            mnuSetSampleStart.Visible = Mode == TrackWaveMode.Sampler;
+            mnuSetSampleOffset.Visible = Mode == TrackWaveMode.Sampler;
 
-            mnuSetSampleEnd.Enabled = (CurrentSample != null);
-            mnuSetSampleStart.Enabled = (CurrentSample != null);
-            mnuSetSampleOffset.Enabled = (CurrentSample != null);
+            mnuSetSampleEnd.Enabled = CurrentSample != null;
+            mnuSetSampleStart.Enabled = CurrentSample != null;
+            mnuSetSampleOffset.Enabled = CurrentSample != null;
         }
 
         private void mnuSetSampleStart_Click(object sender, EventArgs e)
@@ -299,8 +321,8 @@ namespace Halloumi.Shuffler.Controls
 
                 if (CurrentPosition >= ZoomStart && CurrentPosition <= ZoomEnd)
                 {
-                    var positionPercent = ((CurrentPosition - ZoomStart) /(double)ZoomLength);
-                    var x = Convert.ToInt32(Math.Round(positionPercent*picWaveForm.Width, 0));
+                    var positionPercent = (CurrentPosition - ZoomStart) / (double) ZoomLength;
+                    var x = Convert.ToInt32(Math.Round(positionPercent * picWaveForm.Width, 0));
 
                     using (var pen = new Pen(Color.Red))
                     using (var graphics = Graphics.FromImage(bitmap))
@@ -313,10 +335,10 @@ namespace Halloumi.Shuffler.Controls
                 oldBitmap?.Dispose();
 
                 scrollBar.Maximum = (int) (BassTrack.Length - ZoomLength);
-                scrollBar.SmallChange = scrollBar.Maximum/400;
-                scrollBar.LargeChange = scrollBar.Maximum/50;
+                scrollBar.SmallChange = scrollBar.Maximum / 400;
+                scrollBar.LargeChange = scrollBar.Maximum / 50;
 
-                if (!_scrolling) scrollBar.Value = (int)ZoomStart;
+                if (!_scrolling) scrollBar.Value = (int) ZoomStart;
 
                 UpdateViewText();
             });
@@ -394,7 +416,6 @@ namespace Halloumi.Shuffler.Controls
             }
 
             if (Samples != null)
-            {
                 for (var i = 1; i <= Samples.Count; i++)
                 {
                     var sample = Samples[i - 1];
@@ -407,7 +428,6 @@ namespace Halloumi.Shuffler.Controls
                     Wave.AddMarker("S" + i + "S", sample.Start);
                     Wave.AddMarker("S" + i + "E", sample.Start + sample.Length);
                 }
-            }
 
             Wave.RemoveMarker("CSS");
             Wave.RemoveMarker("CSE");
@@ -461,7 +481,6 @@ namespace Halloumi.Shuffler.Controls
             }
 
             if (TrackSamples != null)
-            {
                 for (var i = 1; i <= TrackSamples.Count; i++)
                 {
                     var trackSample = TrackSamples[i - 1];
@@ -471,7 +490,6 @@ namespace Halloumi.Shuffler.Controls
                     Wave.AddMarker("S" + i + "S", trackSample.Start);
                     Wave.AddMarker("S" + i + "E", trackSample.Start + trackSample.Length);
                 }
-            }
 
             if (!ShowTrackFx) return;
 
@@ -488,7 +506,7 @@ namespace Halloumi.Shuffler.Controls
         private void ZoomIn()
         {
             var zoomLength = ZoomLength;
-            zoomLength = (int) (zoomLength*ZoomRatio);
+            zoomLength = (int) (zoomLength * ZoomRatio);
             Zoom(zoomLength);
         }
 
@@ -515,7 +533,7 @@ namespace Halloumi.Shuffler.Controls
         private void ZoomOut()
         {
             var zoomLength = ZoomLength;
-            zoomLength = (int) (zoomLength/ZoomRatio);
+            zoomLength = (int) (zoomLength / ZoomRatio);
             Zoom(zoomLength);
         }
 
@@ -543,8 +561,8 @@ namespace Halloumi.Shuffler.Controls
 
                 if (position >= ZoomStart && position <= ZoomEnd)
                 {
-                    var positionPercent = ((position - ZoomStart) /(double)ZoomLength);
-                    var x = Convert.ToInt32(Math.Round(positionPercent*picWaveForm.Width, 0));
+                    var positionPercent = (position - ZoomStart) / (double) ZoomLength;
+                    var x = Convert.ToInt32(Math.Round(positionPercent * picWaveForm.Width, 0));
 
                     using (var pen = new Pen(Color.Gray))
                     using (var graphics = Graphics.FromImage(bitmap))
@@ -671,8 +689,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void picWaveForm_MouseUp(object sender, MouseEventArgs e)
         {
-            var percent = e.X/(double) picWaveForm.Width;
-            var viewPercent = percent*ZoomLength;
+            var percent = e.X / (double) picWaveForm.Width;
+            var viewPercent = percent * ZoomLength;
             var position = ZoomStart + Convert.ToInt32(Math.Round(viewPercent, 0));
 
             if (ModifierKeys == Keys.Shift)

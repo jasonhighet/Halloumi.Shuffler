@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Helpers;
@@ -17,8 +18,9 @@ namespace Halloumi.Shuffler.Controls
             ToTracks
         }
 
-        private TrackLibraryControl _libraryControl;
         private bool _bindDataAllowed = true;
+
+        private TrackLibraryControl _libraryControl;
         private MixLibrary _mixLibrary;
 
         private Track _parentTrack;
@@ -34,7 +36,8 @@ namespace Halloumi.Shuffler.Controls
             grdMixableTracks.CellContentDoubleClick += grdMixableTracks_CellContentDoubleClick;
         }
 
-
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl { get; set; }
 
         private List<Track> GetMixableFromTracks(Track track, List<int> mixLevels)
@@ -77,9 +80,7 @@ namespace Halloumi.Shuffler.Controls
 
             // BindData();
             if (InvokeRequired)
-            {
                 BeginInvoke(new MethodInvoker(BindData));
-            }
             else BindData();
         }
 
@@ -118,7 +119,7 @@ namespace Halloumi.Shuffler.Controls
             if (!_bindDataAllowed) return;
 
 
-             var view = cmbView.ParseEnum<View>();
+            var view = cmbView.ParseEnum<View>();
 
             var rankFilter = cmbRank.GetTextThreadSafe();
             List<int> ranks;
@@ -175,36 +176,30 @@ namespace Halloumi.Shuffler.Controls
 
             var playListTracks = new List<Track>();
             if (PlaylistControl != null)
-            {
                 playListTracks = PlaylistControl.GetTracks();
-            }
 
-            if (minimumKeyRank == 0 && _parentTrack !=null)
-            {
+            if (minimumKeyRank == 0 && _parentTrack != null)
                 tracks = tracks
                     .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) <= 1)
                     .ToList();
-            }
             else if (minimumKeyRank != -1 && _parentTrack != null)
-            {
                 tracks = tracks
                     .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) >= minimumKeyRank)
                     .ToList();
-            }
 
             var mixableTracks = new List<MixableTrackModel>();
             foreach (var track in tracks)
             {
-                if(_parentTrack == null) continue;
+                if (_parentTrack == null) continue;
                 if (mixableTracks.Exists(mt => mt.Description == track.Description)) continue;
                 if (chkExcludeQueued.Checked && playListTracks.Exists(mt => mt.Description == track.Description))
                     continue;
 
-                var mixRank = (view == View.FromTracks)
+                var mixRank = view == View.FromTracks
                     ? _mixLibrary.GetExtendedMixLevel(track, _parentTrack)
                     : _mixLibrary.GetExtendedMixLevel(_parentTrack, track);
 
-                var mixRankDescription = (view == View.FromTracks)
+                var mixRankDescription = view == View.FromTracks
                     ? _mixLibrary.GetExtendedMixDescription(track, _parentTrack)
                     : _mixLibrary.GetExtendedMixDescription(_parentTrack, track);
 
@@ -221,10 +216,10 @@ namespace Halloumi.Shuffler.Controls
                     Key = KeyHelper.GetDisplayKey(track.Key),
                     KeyDiff = KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
                     KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track.Key, _parentTrack.Key)
-                     
                 };
 
-                mixableTrack.MixRankDescription = _mixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
+                mixableTrack.MixRankDescription =
+                    _mixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
                 var hasExtendedMix = _mixLibrary.HasExtendedMix(_parentTrack, track);
                 if (hasExtendedMix) mixableTrack.MixRankDescription += "*";
 
