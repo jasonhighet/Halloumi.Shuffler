@@ -65,6 +65,7 @@
             this.mnuViewLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewMixer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuShowPlayer = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowTrackDetails = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowMixableTracks = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewVisuals = new System.Windows.Forms.ToolStripMenuItem();
@@ -126,7 +127,7 @@
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
-            this.mnuShowPlayer = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblPlayerStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
             this.pnlMenuBar.SuspendLayout();
@@ -154,16 +155,13 @@
             // 
             // playerDetails
             // 
-            this.playerDetails.AlbumArtShown = true;
             this.playerDetails.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(72)))), ((int)(((byte)(72)))));
             this.playerDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.playerDetails.Location = new System.Drawing.Point(0, 37);
             this.playerDetails.Margin = new System.Windows.Forms.Padding(5);
             this.playerDetails.Name = "playerDetails";
-            this.playerDetails.PlaylistControl = null;
             this.playerDetails.Size = new System.Drawing.Size(1253, 112);
             this.playerDetails.TabIndex = 34;
-            this.playerDetails.VisualsShown = false;
             // 
             // pnlMenuBar
             // 
@@ -427,6 +425,13 @@
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
             this.toolStripSeparator12.Size = new System.Drawing.Size(193, 6);
+            // 
+            // mnuShowPlayer
+            // 
+            this.mnuShowPlayer.Name = "mnuShowPlayer";
+            this.mnuShowPlayer.Size = new System.Drawing.Size(196, 26);
+            this.mnuShowPlayer.Text = "Player Details";
+            this.mnuShowPlayer.Click += new System.EventHandler(this.mnuShowPlayer_Click);
             // 
             // mnuShowTrackDetails
             // 
@@ -809,6 +814,7 @@
             this.statusStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblPlayerStatus,
             this.lblLibraryStatus,
             this.lblPlaylistStatus});
             this.statusStrip.Location = new System.Drawing.Point(0, 774);
@@ -821,15 +827,15 @@
             // lblLibraryStatus
             // 
             this.lblLibraryStatus.Name = "lblLibraryStatus";
-            this.lblLibraryStatus.Size = new System.Drawing.Size(1037, 20);
-            this.lblLibraryStatus.Spring = true;
+            this.lblLibraryStatus.Size = new System.Drawing.Size(124, 20);
+            this.lblLibraryStatus.Text = "0 tracks in library.";
             this.lblLibraryStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblPlaylistStatus
             // 
             this.lblPlaylistStatus.Name = "lblPlaylistStatus";
-            this.lblPlaylistStatus.Size = new System.Drawing.Size(196, 20);
-            this.lblPlaylistStatus.Text = "0 playlist tracks. Length: 0:00";
+            this.lblPlaylistStatus.Size = new System.Drawing.Size(167, 20);
+            this.lblPlaylistStatus.Text = "0 tracks in playlist (0:00)";
             this.lblPlaylistStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // fileMenuController
@@ -861,8 +867,6 @@
             // 
             // trackLibraryControl
             // 
-            this.trackLibraryControl.AvailableTracks = ((System.Collections.Generic.List<Halloumi.Shuffler.AudioLibrary.Models.Track>)(resources.GetObject("trackLibraryControl.AvailableTracks")));
-            this.trackLibraryControl.DisplayedTracks = ((System.Collections.Generic.List<Halloumi.Shuffler.AudioLibrary.Models.Track>)(resources.GetObject("trackLibraryControl.DisplayedTracks")));
             this.trackLibraryControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trackLibraryControl.Location = new System.Drawing.Point(0, 0);
             this.trackLibraryControl.Margin = new System.Windows.Forms.Padding(5);
@@ -889,12 +893,13 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
-            // mnuShowPlayer
+            // lblPlayerStatus
             // 
-            this.mnuShowPlayer.Name = "mnuShowPlayer";
-            this.mnuShowPlayer.Size = new System.Drawing.Size(196, 26);
-            this.mnuShowPlayer.Text = "Player Details";
-            this.mnuShowPlayer.Click += new System.EventHandler(this.mnuShowPlayer_Click);
+            this.lblPlayerStatus.Name = "lblPlayerStatus";
+            this.lblPlayerStatus.Size = new System.Drawing.Size(903, 20);
+            this.lblPlayerStatus.Spring = true;
+            this.lblPlayerStatus.Text = "0:00 remaining";
+            this.lblPlayerStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FrmMain
             // 
@@ -1028,5 +1033,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuImportCollection;
         private System.Windows.Forms.ToolStripMenuItem mnuDeleteCollection;
         private System.Windows.Forms.ToolStripMenuItem mnuShowPlayer;
+        private System.Windows.Forms.ToolStripStatusLabel lblPlayerStatus;
     }
 }

@@ -134,6 +134,13 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the tool strip label.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ToolStripLabel ToolStripLabel { get; set; }
+
         public void Initialize()
         {
             var settings = Settings.Default;
@@ -332,6 +339,12 @@ namespace Halloumi.Shuffler.Controls
 
             btnPause.Visible = BassPlayer.PlayState == PlayState.Playing;
             btnPlay.Visible = BassPlayer.PlayState != PlayState.Playing;
+
+            
+
+            if (ToolStripLabel != null)
+                ToolStripLabel.Text = Visible ? "" : BassPlayer.PlayState != PlayState.Playing ? "" : lblCurrentTrackDescription.Text + " - " + position.RemainingFormatted + " remaining";
+
 
             ShowVisuals();
 

@@ -171,7 +171,7 @@
             this.lblTimeRemaining.Size = new System.Drawing.Size(76, 25);
             this.lblTimeRemaining.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.lblTimeRemaining.TabIndex = 1;
-            this.lblTimeRemaining.Text = "00:00:00";
+            this.lblTimeRemaining.Text = "00:00";
             this.lblTimeRemaining.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblTimeElapsed
@@ -185,7 +185,7 @@
             this.lblTimeElapsed.Size = new System.Drawing.Size(84, 25);
             this.lblTimeElapsed.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.lblTimeElapsed.TabIndex = 0;
-            this.lblTimeElapsed.Text = "00:00:00";
+            this.lblTimeElapsed.Text = "00:00";
             this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // picCover

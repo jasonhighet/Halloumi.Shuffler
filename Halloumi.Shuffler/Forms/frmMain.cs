@@ -80,6 +80,7 @@ namespace Halloumi.Shuffler.Forms
             playerDetails.PlaylistControl = playlistControl;
             playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
             playerDetails.SelectedViewChanged += playerDetails_SelectedViewChanged;
+            playerDetails.ToolStripLabel = lblPlayerStatus;
 
             playerDetails.MixLibrary = application.MixLibrary;
             playlistControl.MixLibrary = application.MixLibrary;

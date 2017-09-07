@@ -38,23 +38,23 @@
         /// <summary>
         ///     The length of the current track1 in a hh:mm:ss format
         /// </summary>
-        public string LengthFormatted => Track == null ? "00:00:00" : Track.ActiveLengthFormatted;
+        public string LengthFormatted => Track == null ? "00:00" : Track.ActiveLengthFormatted;
 
         /// <summary>
         ///     The elapsed time in a hh:mm:ss format
         /// </summary>
-        public string ElapsedFormatted => Track == null ? "00:00:00" : Track.FormatSeconds(Track.SamplesToSeconds(Positition));
+        public string ElapsedFormatted => Track == null ? "00:00" : Track.FormatSeconds(Track.SamplesToSeconds(Positition));
 
         /// <summary>
         ///     The elapsed time in a hh:mm:ss format
         /// </summary>
-        public string ChannelFormatted => Track == null ? "00:00:00" : Track.FormatSeconds(Track.SamplesToSeconds(ChannelPosition));
+        public string ChannelFormatted => Track == null ? "00:00" : Track.FormatSeconds(Track.SamplesToSeconds(ChannelPosition));
 
 
         /// <summary>
         ///     The time remaining for the current track1 in a hh:mm:ss format
         /// </summary>
-        public string RemainingFormatted => Track == null ? "00:00:00" : Track.FormatSeconds(Track.SamplesToSeconds(Remaining));
+        public string RemainingFormatted => Track == null ? "00:00" : Track.FormatSeconds(Track.SamplesToSeconds(Remaining));
 
 
         public override string ToString()
