@@ -144,7 +144,7 @@ namespace Halloumi.Shuffler.Controls
             if (ToolStripLabel == null) return;
 
             var text =
-                $"{TrackModels.Count} play-list tracks. Length: {TimeFormatHelper.GetFormattedHours(TrackModels.Sum(t => t.Length))}";
+                $"{TrackModels.Count} tracks in playlist ({TimeFormatHelper.GetFormattedHours(TrackModels.Sum(t => t.Length))})";
 
             ToolStripLabel.Text = text;
         }

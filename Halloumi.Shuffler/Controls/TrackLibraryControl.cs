@@ -1093,7 +1093,7 @@ namespace Halloumi.Shuffler.Controls
             if (ToolStripLabel == null) return;
 
             var text =
-                $"{libraryCount} library tracks. {availableCount} available tracks. {displayedCount} displayed tracks.";
+                $"{availableCount} tracks in library.";
 
             ToolStripLabel.Text = text;
         }
