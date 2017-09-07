@@ -140,8 +140,12 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MixLibrary MixLibrary { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Track> DisplayedTracks { get; set; }
-        
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Track> AvailableTracks { get; set; }
 
         /// <summary>
@@ -165,6 +169,8 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ToolStripLabel ToolStripLabel { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowMixableTracks
         {
             set
@@ -174,6 +180,8 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowTrackDetails
         {
             set
@@ -300,10 +308,10 @@ namespace Halloumi.Shuffler.Controls
         private List<Track> GetAvailableTracks()
         {
             DebugHelper.WriteLine("AVAILABLE TRACS");
-            return Library.GetTracks(collectionFilter:CollectionFilter, 
-                shufflerFilter:ShufflerFilter, 
-                trackRankFilter:TrackRankFilter, 
-                excludeCollectionFilter:ExcludeCollectionFilter);
+            return Library.GetTracks(collectionFilter: CollectionFilter,
+                shufflerFilter: ShufflerFilter,
+                trackRankFilter: TrackRankFilter,
+                excludeCollectionFilter: ExcludeCollectionFilter);
         }
 
         private List<Track> GetDisplayedTracks()
@@ -362,7 +370,7 @@ namespace Halloumi.Shuffler.Controls
                 var genres = Library.GetGenresFromTracks(AvailableTracks);
                 BindGenres(selectedGenres, genres);
             }
-            
+
             if (bindArtists)
             {
                 var artists = Library.GetAlbumArtistsFromTracks(DisplayedTracks);
@@ -374,7 +382,7 @@ namespace Halloumi.Shuffler.Controls
                 var albums = Library.GetAlbumsFromTracks(DisplayedTracks);
                 BindAlbums(selectedAlbums, albums);
             }
-            
+
             if (bindTracks)
             {
                 BindTracks(AvailableTracks, DisplayedTracks);
@@ -398,9 +406,7 @@ namespace Halloumi.Shuffler.Controls
             cmbCollection.Items.Clear();
             cmbCollection.Items.Add("");
             foreach (var playlist in CollectionHelper.GetAllCollections())
-            {
                 cmbCollection.Items.Add(playlist);
-            }
 
             var index = cmbCollection.FindString(selectedPlaylist);
             if (index != -1) cmbCollection.SelectedIndex = index;
@@ -423,9 +429,7 @@ namespace Halloumi.Shuffler.Controls
             cmbExcludedCollection.Items.Clear();
             cmbExcludedCollection.Items.Add("");
             foreach (var excludedExcludedPlaylist in CollectionHelper.GetAllCollections())
-            {
                 cmbExcludedCollection.Items.Add(excludedExcludedPlaylist);
-            }
 
             var index = cmbExcludedCollection.FindString(selectedExcludedPlaylist);
             if (index != -1) cmbExcludedCollection.SelectedIndex = index;
@@ -435,7 +439,7 @@ namespace Halloumi.Shuffler.Controls
 
 
         /// <summary>
-        /// Binds the genres.
+        ///     Binds the genres.
         /// </summary>
         /// <param name="selectedGenres">The selected genres.</param>
         /// <param name="genres">The genres.</param>
@@ -538,9 +542,7 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "InCount")
                 {
                     foreach (var trackModel in trackModels.Where(trackModel => trackModel.InCount == -1))
-                    {
                         trackModel.InCount = MixLibrary.GetMixInCount(trackModel.Track);
-                    }
                     trackModels = trackModels
                         .OrderByDescending(t => t.InCount)
                         .ToList();
@@ -549,9 +551,7 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "OutCount")
                 {
                     foreach (var trackModel in trackModels.Where(trackModel => trackModel.OutCount == -1))
-                    {
                         trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
-                    }
                     trackModels = trackModels
                         .OrderByDescending(t => t.OutCount)
                         .ToList();
@@ -587,14 +587,38 @@ namespace Halloumi.Shuffler.Controls
 
             var trackModel = GetTrackModelByIndex(e.RowIndex);
 
-            if (trackModel == null) e.Value = "";
-            else if (e.ColumnIndex == 0) e.Value = trackModel.Description;
-            else if (e.ColumnIndex == 1) e.Value = trackModel.Album;
-            else if (e.ColumnIndex == 2) e.Value = trackModel.Genre;
-            else if (e.ColumnIndex == 3) e.Value = trackModel.LengthFormatted;
-            else if (e.ColumnIndex == 4) e.Value = trackModel.StartBpm;
-            else if (e.ColumnIndex == 5) e.Value = trackModel.Bpm;
-            else if (e.ColumnIndex == 6) e.Value = trackModel.TrackNumberFormatted;
+            if (trackModel == null)
+            {
+                e.Value = "";
+            }
+            else if (e.ColumnIndex == 0)
+            {
+                e.Value = trackModel.Description;
+            }
+            else if (e.ColumnIndex == 1)
+            {
+                e.Value = trackModel.Album;
+            }
+            else if (e.ColumnIndex == 2)
+            {
+                e.Value = trackModel.Genre;
+            }
+            else if (e.ColumnIndex == 3)
+            {
+                e.Value = trackModel.LengthFormatted;
+            }
+            else if (e.ColumnIndex == 4)
+            {
+                e.Value = trackModel.StartBpm;
+            }
+            else if (e.ColumnIndex == 5)
+            {
+                e.Value = trackModel.Bpm;
+            }
+            else if (e.ColumnIndex == 6)
+            {
+                e.Value = trackModel.TrackNumberFormatted;
+            }
             else if (e.ColumnIndex == 7)
             {
                 if (trackModel.InCount == -1)
@@ -608,9 +632,18 @@ namespace Halloumi.Shuffler.Controls
                     trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
                 e.Value = trackModel.OutCount;
             }
-            else if (e.ColumnIndex == 10) e.Value = trackModel.RankDescription;
-            else if (e.ColumnIndex == 11) e.Value = KeyHelper.GetDisplayKey(trackModel.Key);
-            else if (e.ColumnIndex == 12) e.Value = trackModel.Bitrate;
+            else if (e.ColumnIndex == 10)
+            {
+                e.Value = trackModel.RankDescription;
+            }
+            else if (e.ColumnIndex == 11)
+            {
+                e.Value = KeyHelper.GetDisplayKey(trackModel.Key);
+            }
+            else if (e.ColumnIndex == 12)
+            {
+                e.Value = trackModel.Bitrate;
+            }
         }
 
         /// <summary>
@@ -642,7 +675,6 @@ namespace Halloumi.Shuffler.Controls
             // select selected artist
             DataGridViewRow firstRow = null;
             foreach (DataGridViewRow row in grdGenre.Rows)
-            {
                 if (selectedGenres.Contains(row.Cells[0].Value.ToString()))
                 {
                     row.Selected = true;
@@ -652,7 +684,6 @@ namespace Halloumi.Shuffler.Controls
                 {
                     row.Selected = false;
                 }
-            }
             if (firstRow != null) grdGenre.FirstDisplayedScrollingRowIndex = firstRow.Index;
             else if (grdGenre.Rows.Count > 0) grdGenre.Rows[0].Selected = true;
         }
@@ -666,7 +697,6 @@ namespace Halloumi.Shuffler.Controls
             // select selected artist
             DataGridViewRow firstRow = null;
             foreach (DataGridViewRow row in grdArtist.Rows)
-            {
                 if (selectedArtists.Contains(row.Cells[0].Value.ToString()))
                 {
                     row.Selected = true;
@@ -676,7 +706,6 @@ namespace Halloumi.Shuffler.Controls
                 {
                     row.Selected = false;
                 }
-            }
             if (firstRow != null) grdArtist.FirstDisplayedScrollingRowIndex = firstRow.Index;
             else if (grdArtist.Rows.Count > 0) grdArtist.Rows[0].Selected = true;
         }
@@ -741,9 +770,7 @@ namespace Halloumi.Shuffler.Controls
         {
             // select selected album
             foreach (var item in lstAlbum.Items.Cast<ListViewItem>().Where(item => item.Selected))
-            {
                 return item.Text;
-            }
             return "";
         }
 
@@ -832,7 +859,7 @@ namespace Halloumi.Shuffler.Controls
             if (firstTile == null) return;
 
             var tileSize = lstAlbum.LargeImageList.ImageSize.Width + 50;
-            var imageCount = (lstAlbum.Width/tileSize + 1)*(lstAlbum.Height/tileSize + 1)*3;
+            var imageCount = (lstAlbum.Width / tileSize + 1) * (lstAlbum.Height / tileSize + 1) * 3;
             if (imageCount < 20) imageCount = 20;
 
             var startIndex = firstTile.Index;
@@ -890,9 +917,7 @@ namespace Halloumi.Shuffler.Controls
             };
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         /// <summary>
@@ -911,9 +936,7 @@ namespace Halloumi.Shuffler.Controls
             var result = form.ShowDialog();
 
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         /// <summary>
@@ -928,9 +951,7 @@ namespace Halloumi.Shuffler.Controls
             };
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         /// <summary>
@@ -949,9 +970,7 @@ namespace Halloumi.Shuffler.Controls
             var result = form.ShowDialog();
 
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         /// <summary>
@@ -966,9 +985,7 @@ namespace Halloumi.Shuffler.Controls
             };
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         /// <summary>
@@ -987,9 +1004,7 @@ namespace Halloumi.Shuffler.Controls
             var result = form.ShowDialog();
 
             if (result == DialogResult.OK)
-            {
                 BindData();
-            }
         }
 
         /// <summary>
@@ -1077,7 +1092,8 @@ namespace Halloumi.Shuffler.Controls
         {
             if (ToolStripLabel == null) return;
 
-            var text = $"{libraryCount} library tracks. {availableCount} available tracks. {displayedCount} displayed tracks.";
+            var text =
+                $"{libraryCount} library tracks. {availableCount} available tracks. {displayedCount} displayed tracks.";
 
             ToolStripLabel.Text = text;
         }
@@ -1087,8 +1103,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void LoadUiSettings()
         {
-            splLeftRight.SplitterDistance = Width/5*2;
-            splLeftMiddle.SplitterDistance = Width/5*1;
+            splLeftRight.SplitterDistance = Width / 5 * 2;
+            splLeftMiddle.SplitterDistance = Width / 5 * 1;
 
             try
             {
@@ -1113,7 +1129,6 @@ namespace Halloumi.Shuffler.Controls
                 ExcludeCollectionFilter = settings.ExcludedCollection;
 
                 if (settings.SortColumnName != "")
-                {
                     for (var i = 0; i < grdTracks.Columns.Count; i++)
                     {
                         var column = grdTracks.Columns[i];
@@ -1121,7 +1136,6 @@ namespace Halloumi.Shuffler.Controls
                         grdTracks.SetSortColumn(column.Index, settings.SortOrder);
                         break;
                     }
-                }
 
                 DebugHelper.WriteLine("LoadUiSettings");
                 BindData();
@@ -1153,15 +1167,11 @@ namespace Halloumi.Shuffler.Controls
 
 
             if (cmbCollection.SelectedIndex > 0)
-            {
                 settings.Collection = cmbCollection.SelectedItem.ToString();
-            }
 
             settings.ExcludedCollection = "";
             if (cmbExcludedCollection.SelectedIndex > 0)
-            {
                 settings.ExcludedCollection = cmbExcludedCollection.SelectedItem.ToString();
-            }
 
             var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.Library.xml");
             SerializationHelper<Settings>.ToXmlFile(settings, filename);
@@ -1312,9 +1322,7 @@ namespace Halloumi.Shuffler.Controls
             if (!MessageBoxHelper.Confirm(message)) return;
 
             foreach (var track in tracks)
-            {
                 Library.RemoveShufflerDetails(track);
-            }
 
             BindData();
         }
@@ -1347,9 +1355,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var currentMixRank = -1;
             if (GetSelectedTracks().Count == 1)
-            {
                 currentMixRank = GetSelectedTrack().Rank;
-            }
             for (var i = 0; i < 6; i++)
             {
                 mnuRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
@@ -1368,9 +1374,7 @@ namespace Halloumi.Shuffler.Controls
             // generate 'add to playlist' sub menu
             mnuAddTrackToCollection.DropDownItems.Clear();
             foreach (var playlist in playlists)
-            {
                 mnuAddTrackToCollection.DropDownItems.Add(playlist, null, mnuAddTrackToPlaylist_Click);
-            }
             mnuAddTrackToCollection.DropDownItems.Add("(New Playlist)", null, mnuAddNewPlaylist_Click);
             mnuAddTrackToCollection.Visible = mnuAddTrackToCollection.DropDownItems.Count > 0;
         }
@@ -1381,9 +1385,7 @@ namespace Halloumi.Shuffler.Controls
             mnuRemoveTrackFromCollection.DropDownItems.Clear();
             var selectedPlaylists = CollectionHelper.GetCollectionsForTracks(GetSelectedTracks());
             foreach (var playlist in selectedPlaylists)
-            {
                 mnuRemoveTrackFromCollection.DropDownItems.Add(playlist, null, mnuRemoveTrackFromPlaylist_Click);
-            }
             mnuRemoveTrackFromCollection.Visible = mnuRemoveTrackFromCollection.DropDownItems.Count > 0;
         }
 
@@ -1629,14 +1631,10 @@ namespace Halloumi.Shuffler.Controls
             var track = GetSelectedTrack();
 
             if (trackDetails.Visible)
-            {
                 trackDetails.DisplayTrackDetails(track);
-            }
 
             if (!splLibraryMixable.Panel2Collapsed)
-            {
                 mixableTracks.DisplayMixableTracks(track);
-            }
         }
 
         private void RaiseSelectedTracksChanged()
@@ -1664,9 +1662,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var tracks = GetSelectedTracks().Where(t => t.IsShufflerTrack);
             foreach (var track in tracks)
-            {
                 SampleLibrary.ExportMixSectionsAsSamples(track);
-            }
         }
 
         public void ImportCollection()
@@ -1712,7 +1708,7 @@ namespace Halloumi.Shuffler.Controls
                 RankDescription = track.RankDescription;
                 Track = track;
                 Key = track.Key;
-                Bitrate = (int)decimal.Round(track.Bitrate, 0, MidpointRounding.AwayFromZero);
+                Bitrate = (int) decimal.Round(track.Bitrate, 0, MidpointRounding.AwayFromZero);
 
                 InCount = -1;
                 OutCount = -1;
@@ -1740,7 +1736,7 @@ namespace Halloumi.Shuffler.Controls
 
             public int OutCount { get; set; }
 
-            public int Bitrate { get; set; }
+            public int Bitrate { get; }
 
             public string TrackNumberFormatted { get; }
 

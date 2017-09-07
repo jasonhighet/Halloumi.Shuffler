@@ -20,9 +20,9 @@ namespace Halloumi.Shuffler.Controls
         private readonly BASSTimer _timer = new BASSTimer();
         private bool _bassPlayerOnTrackChange;
         private bool _binding;
-        private bool _bindingVolumeSlider;
-        private bool _bindingTrackFxVolumeSlider;
         private bool _bindingManualMode;
+        private bool _bindingTrackFxVolumeSlider;
+        private bool _bindingVolumeSlider;
         private decimal _lastTrackFxDelayNotes;
         private bool _timerTick;
 
@@ -74,8 +74,6 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void Initialize()
         {
-            
-
             CurrentTrack = BassPlayer.CurrentTrack;
             PreviousTrack = BassPlayer.PreviousTrack;
             NextTrack = BassPlayer.NextTrack;
@@ -134,17 +132,17 @@ namespace Halloumi.Shuffler.Controls
         {
             _binding = true;
 
-            lblPreviousTitle.Text = (PreviousTrack == null) ? "" : PreviousTrack.Description;
+            lblPreviousTitle.Text = PreviousTrack == null ? "" : PreviousTrack.Description;
             lblPreviousFadeDetails.Text = FadeOutDescription(PreviousTrack, CurrentTrack)
                                           + @" "
                                           + GetMixRankDescription(PreviousTrack, CurrentTrack);
 
-            lblCurrentTitle.Text = (CurrentTrack == null) ? "" : CurrentTrack.Description;
+            lblCurrentTitle.Text = CurrentTrack == null ? "" : CurrentTrack.Description;
             lblCurrentFadeDetails.Text = (FadeInDescription(PreviousTrack, CurrentTrack)
                                           + @"    "
                                           + FadeOutDescription(CurrentTrack, NextTrack)).Trim();
 
-            lblNextTitle.Text = (NextTrack == null) ? "" : NextTrack.Description;
+            lblNextTitle.Text = NextTrack == null ? "" : NextTrack.Description;
 
             lblNextFadeDetails.Text = FadeInDescription(CurrentTrack, NextTrack)
                                       + @" "
@@ -161,9 +159,7 @@ namespace Halloumi.Shuffler.Controls
             if (chkManualFading.Checked)
                 cmbFadeOutType.SelectedIndex = (int) BassPlayer.CurrentManualExtendedFadeType;
             else
-            {
                 cmbFadeOutType.SelectedIndex = (int) BassPlayer.GetExtendedFadeType(CurrentTrack, NextTrack);
-            }
 
             _binding = false;
         }
@@ -182,7 +178,7 @@ namespace Halloumi.Shuffler.Controls
 
             if (powerDown)
             {
-                var powerDownFadeIn = BpmHelper.GetDefaultLoopLength(track.StartBpm)/4D;
+                var powerDownFadeIn = BpmHelper.GetDefaultLoopLength(track.StartBpm) / 4D;
                 description += " (" + GetFormattedSeconds(powerDownFadeIn) + ")";
             }
             else
@@ -212,13 +208,9 @@ namespace Halloumi.Shuffler.Controls
             var description = "Fade Out: ";
 
             if (powerDown)
-            {
                 description = "PowerDown";
-            }
             else
-            {
                 description += GetFormattedSeconds(standardEndLength);
-            }
 
             var hasExtendedMix = BassPlayer.HasExtendedMixAttributes(track, nextTrack);
             if (hasExtendedMix)
@@ -348,9 +340,7 @@ namespace Halloumi.Shuffler.Controls
         private void BassPlayer_OnTrackChange(object sender, EventArgs e)
         {
             if (InvokeRequired)
-            {
                 BeginInvoke(new MethodInvoker(BassPlayer_OnTrackChange));
-            }
             else BassPlayer_OnTrackChange();
         }
 
@@ -377,9 +367,7 @@ namespace Halloumi.Shuffler.Controls
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (InvokeRequired)
-            {
                 BeginInvoke(new MethodInvoker(Timer_Tick));
-            }
             else Timer_Tick();
         }
 
@@ -393,9 +381,7 @@ namespace Halloumi.Shuffler.Controls
 
             var trackFxDelayNotes = BassPlayer.TrackSendFxDelayNotes;
             if (_lastTrackFxDelayNotes != trackFxDelayNotes)
-            {
                 BindDelayNotes();
-            }
             _lastTrackFxDelayNotes = trackFxDelayNotes;
 
             _timerTick = false;
@@ -438,7 +424,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void BassPlayer_OnManualMixModeChanged(object sender, EventArgs e)
         {
-            if(_bindingManualMode) return;
+            if (_bindingManualMode) return;
             chkManualFading.Checked = BassPlayer.IsManualMixMode;
         }
 
@@ -460,7 +446,6 @@ namespace Halloumi.Shuffler.Controls
             lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
             if (sldTrackFXVolume.Value != volume)
                 sldTrackFXVolume.Value = Convert.ToInt32(volume);
-
         }
 
         /// <summary>
