@@ -659,14 +659,17 @@ namespace Halloumi.Shuffler.Controls
             if (currentTrack == null)
                 return GetCurrentTrackIndexFromBassPlayer();
 
-            var currentBassTrackDescription = BassPlayer.CurrentTrack == null ? "" : BassPlayer.CurrentTrack.Description;
+            var currentBassTrackDescription = BassPlayer.CurrentTrack == null
+                ? ""
+                : BassPlayer.CurrentTrack.Description;
 
             if (currentBassTrackDescription == currentTrack.Description)
                 return TrackModels.IndexOf(currentTrack);
 
             var currentIndex = TrackModels.IndexOf(currentTrack);
             var match = TrackModels
-                .FirstOrDefault(t => t.Description == currentBassTrackDescription && TrackModels.IndexOf(t) >= currentIndex);
+                .FirstOrDefault(t => t.Description == currentBassTrackDescription &&
+                                     TrackModels.IndexOf(t) >= currentIndex);
 
             if (match == null)
                 return GetCurrentTrackIndexFromBassPlayer();
@@ -1062,7 +1065,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void SaveWorkingPlaylist()
         {
-            var playlistFiles = TrackModels.Select(x => x.Filename).ToList();
+            var playlistFiles = TrackModels.Select(x => x.Description).ToList();
             SerializationHelper<List<string>>.ToXmlFile(playlistFiles, WorkingPlaylistFilename);
         }
 
@@ -1073,7 +1076,9 @@ namespace Halloumi.Shuffler.Controls
 
             var playlistFiles = SerializationHelper<List<string>>
                 .FromXmlFile(WorkingPlaylistFilename)
-                .Where(x => File.Exists(x))
+                .Select(x => Library.GetTrackByDescription(x))
+                .Where(x => x != null)
+                .Select(x => x.Filename)
                 .ToList();
 
             TrackModels = new List<TrackModel>();

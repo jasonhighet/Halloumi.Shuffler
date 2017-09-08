@@ -296,7 +296,19 @@ namespace Halloumi.Shuffler.AudioLibrary
         public List<Track> GetTracksByDescription(string description)
         {
             description = description.ToLower().Trim();
-            return Tracks.Where(t => t.Description.ToLower() == description).ToList();
+            return Tracks
+                .Where(t => t.Description.ToLower() == description)
+                .OrderBy(t => t.AlbumArtist)
+                .ThenBy(t => t.Album)
+                .ThenBy(t => t.TrackNumber)
+                .ThenBy(t => t.Artist)
+                .ThenBy(t => t.Title)
+                .ToList();
+        }
+
+        public Track GetTrackByDescription(string description)
+        {
+            return GetTracksByDescription(description).FirstOrDefault();
         }
 
 
