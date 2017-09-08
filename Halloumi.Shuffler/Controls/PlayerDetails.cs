@@ -340,11 +340,19 @@ namespace Halloumi.Shuffler.Controls
             btnPause.Visible = BassPlayer.PlayState == PlayState.Playing;
             btnPlay.Visible = BassPlayer.PlayState != PlayState.Playing;
 
-            
 
             if (ToolStripLabel != null)
-                ToolStripLabel.Text = Visible ? "" : BassPlayer.PlayState != PlayState.Playing ? "" : lblCurrentTrackDescription.Text + " - " + position.RemainingFormatted + " remaining";
-
+            {
+                if (!Visible && BassPlayer.PlayState == PlayState.Playing)
+                {
+                    var text = lblCurrentTrackDescription.Text + " - " + position.ElapsedFormatted + " elapsed - " + position.RemainingFormatted + " remaining";
+                    ToolStripLabel.Text = text;
+                }
+                else
+                {
+                    ToolStripLabel.Text = "";
+                }
+            }
 
             ShowVisuals();
 
