@@ -207,6 +207,7 @@ namespace Halloumi.Shuffler.AudioEngine
             IsManualMixMode = false;
             CurrentManualExtendedFadeType = ExtendedFadeType.Default;
             PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
+            PausePreviousTrack();
             SetManualMixVolume(0);
             OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
