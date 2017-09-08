@@ -590,7 +590,7 @@ namespace Halloumi.Shuffler.Controls
             grdPlaylist.InvalidateDisplayedRows();
 
             SetToolStripLabel();
-            lblCount.Text = $"{trackCount} tracks";
+            lblCount.Text = $@"{trackCount} tracks";
         }
 
         /// <summary>
@@ -659,16 +659,21 @@ namespace Halloumi.Shuffler.Controls
             if (currentTrack == null)
                 return GetCurrentTrackIndexFromBassPlayer();
 
-            var currentBassTrack = BassPlayer.CurrentTrack == null ? "" : BassPlayer.CurrentTrack.Filename;
+            var currentBassTrackDescription = BassPlayer.CurrentTrack == null ? "" : BassPlayer.CurrentTrack.Description;
 
-            if (currentBassTrack == currentTrack.Filename) return TrackModels.IndexOf(currentTrack);
+            if (currentBassTrackDescription == currentTrack.Description)
+                return TrackModels.IndexOf(currentTrack);
 
             var currentIndex = TrackModels.IndexOf(currentTrack);
             var match = TrackModels
-                .FirstOrDefault(t => t.Filename == currentBassTrack && TrackModels.IndexOf(t) > currentIndex);
-            if (match == null) return GetCurrentTrackIndexFromBassPlayer();
+                .FirstOrDefault(t => t.Description == currentBassTrackDescription && TrackModels.IndexOf(t) >= currentIndex);
+
+            if (match == null)
+                return GetCurrentTrackIndexFromBassPlayer();
+
             currentTrack.IsCurrent = false;
             match.IsCurrent = true;
+
             return TrackModels.IndexOf(match);
         }
 
@@ -680,7 +685,7 @@ namespace Halloumi.Shuffler.Controls
                 TrackModels[0].IsCurrent = true;
                 return 0;
             }
-            var currentTrack = TrackModels.FirstOrDefault(t => t.Filename == BassPlayer.CurrentTrack.Filename);
+            var currentTrack = TrackModels.FirstOrDefault(t => t.Description == BassPlayer.CurrentTrack.Description);
             if (currentTrack == null) return -1;
             currentTrack.IsCurrent = true;
             return TrackModels.IndexOf(currentTrack);
