@@ -117,7 +117,7 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowTrackFx
         {
-            get => _showTrackFx;
+            get { return _showTrackFx; }
             set
             {
                 _showTrackFx = value;

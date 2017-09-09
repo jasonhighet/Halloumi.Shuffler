@@ -86,8 +86,8 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AlbumArtShown
         {
-            get => picCover.Visible;
-            set => picCover.Visible = value;
+            get { return picCover.Visible; }
+            set { picCover.Visible = value; }
         }
 
 
@@ -125,7 +125,7 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl
         {
-            get => _playlistControl;
+            get { return _playlistControl; }
             set
             {
                 //if (_playlistControl != null) _playlistControl.PlaylistChanged -= PlaylistControl_PlaylistChanged;
