@@ -34,7 +34,7 @@ namespace Halloumi.Shuffler.AudioEngine
             // DebugHelper.WriteLine("InitialiseRawLoopMixer");
 
             _rawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
-            _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, _speakerOutput, _monitorOutput);
+            _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, SpeakerOutput, _monitorOutput);
 
             // DebugHelper.WriteLine("END InitialiseRawLoopMixer");
         }

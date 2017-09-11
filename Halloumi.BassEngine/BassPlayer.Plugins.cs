@@ -1,5 +1,4 @@
 ﻿using System;
-using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Plugins;
@@ -11,17 +10,17 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Returns a collection of all loaded WinAmp plug-ins
         /// </summary>
-        public WaPlugin WaPlugin => _speakerOutput.WaPlugin;
+        public WaPlugin WaPlugin => SpeakerOutput.WaPlugin;
 
         /// <summary>
         ///     Returns a collection of all loaded VST plug-ins
         /// </summary>
-        public VstPlugin MainVstPlugin => _speakerOutput.GetVstPlugin(0);
+        public VstPlugin MainVstPlugin => SpeakerOutput.GetVstPlugin(0);
 
         /// <summary>
         ///     Returns a collection of all loaded VST plug-ins
         /// </summary>
-        public VstPlugin MainVstPlugin2 => _speakerOutput.GetVstPlugin(1);
+        public VstPlugin MainVstPlugin2 => SpeakerOutput.GetVstPlugin(1);
 
         /// <summary>
         ///     Returns a collection of all loaded trackFX VST plug-ins
@@ -80,14 +79,16 @@ namespace Halloumi.Shuffler.AudioEngine
                 else
                 {
                     var range = CurrentTrack.EndBpm - CurrentTrack.StartBpm;
-                    var percentComplete = (decimal) (position/(double) trackPosition.Length);
-                    bpm = CurrentTrack.StartBpm + (range*percentComplete);
+                    var percentComplete = (decimal) (position / (double) trackPosition.Length);
+                    bpm = CurrentTrack.StartBpm + range * percentComplete;
                 }
             }
 
             bpm = BpmHelper.NormaliseBpm(bpm);
             return bpm;
         }
+
+        public event EventHandler OnTrackFxVolumeChanged;
 
 
         /// <summary>
@@ -96,10 +97,10 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="location">The file location of the WinAmp DSP DLL</param>
         public WaPlugin LoadWaPlugin(string location)
         {
-            var playing = (PlayState == PlayState.Playing);
+            var playing = PlayState == PlayState.Playing;
             if (playing) Pause();
 
-            var plugin = _speakerOutput.LoadWaPlugin(location);
+            var plugin = SpeakerOutput.LoadWaPlugin(location);
 
             if (playing) Play();
 
@@ -107,19 +108,19 @@ namespace Halloumi.Shuffler.AudioEngine
         }
 
         /// <summary>
-        /// Loads a VST plug-in and applies it to the mixer
+        ///     Loads a VST plug-in and applies it to the mixer
         /// </summary>
         /// <param name="location">The file location of the VST DLL</param>
         /// <param name="index">The index.</param>
         /// <returns></returns>
         public VstPlugin LoadMainVstPlugin(string location, int index)
         {
-            return _speakerOutput.LoadVstPlugin(location, index);
+            return SpeakerOutput.LoadVstPlugin(location, index);
         }
 
 
         /// <summary>
-        /// Loads a VST plug-in and applies it to the sample mixer
+        ///     Loads a VST plug-in and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the VST DLL</param>
         /// <param name="index">The index.</param>
@@ -130,7 +131,7 @@ namespace Halloumi.Shuffler.AudioEngine
         }
 
         /// <summary>
-        /// Loads a VST plug-in and applies it to the sample mixer
+        ///     Loads a VST plug-in and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the VST DLL</param>
         /// <param name="index">The index.</param>
@@ -141,7 +142,7 @@ namespace Halloumi.Shuffler.AudioEngine
         }
 
         /// <summary>
-        /// Loads a VST plug-in and applies it to the sample mixer
+        ///     Loads a VST plug-in and applies it to the sample mixer
         /// </summary>
         /// <param name="location">The file location of the VST DLL</param>
         /// <param name="index">The index.</param>
@@ -170,10 +171,8 @@ namespace Halloumi.Shuffler.AudioEngine
             var length = positionSeconds - LastTrackFxTrigger.Start;
 
             if (length <= 0 || position >= LastTrackFxTriggerTrack.FadeOutStart)
-            {
                 length = LastTrackFxTriggerTrack.SamplesToSeconds(LastTrackFxTriggerTrack.FadeOutStart) -
                          LastTrackFxTrigger.Start;
-            }
 
             LastTrackFxTrigger.Length = length;
 
@@ -206,7 +205,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <returns>True if audio is being sent to the track FX; otherwise, false.</returns>
         public bool IsTrackFxSending()
         {
-            return (_trackSendMixer.GetVolume() != 0M);
+            return _trackSendMixer.GetVolume() != 0M;
         }
 
         /// <summary>
@@ -233,10 +232,10 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void ClearMainVstPlugin(int index)
         {
-            _speakerOutput.ClearVstPlugin(index);
+            SpeakerOutput.ClearVstPlugin(index);
         }
 
-        
+
         /// <summary>
         ///     Clears the trackFX VST plug-in.
         /// </summary>
@@ -280,7 +279,7 @@ namespace Halloumi.Shuffler.AudioEngine
         /// </summary>
         public void UnloadAllWaPlugins()
         {
-            _speakerOutput.ClearWaPlugin();
+            SpeakerOutput.ClearWaPlugin();
         }
 
 

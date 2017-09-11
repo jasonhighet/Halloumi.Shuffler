@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Channels;
-using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Players;
-
-using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Mix;
 
 namespace Halloumi.Shuffler.AudioEngine
 {
     public partial class BassPlayer
     {
-        private MixerChannel _samplerMixer;
-
         private TrackSamplePlayer _samplePlayer;
+        private MixerChannel _samplerMixer;
 
         private OutputSplitter _samplerOutputSplitter;
 
@@ -51,6 +43,11 @@ namespace Halloumi.Shuffler.AudioEngine
         }
 
 
+        public event EventHandler OnSamplerMixerVolumeChanged;
+
+        public event EventHandler OnTrackSamplesChanged;
+
+
         /// <summary>
         ///     Gets a loaded sample by its description.
         /// </summary>
@@ -69,8 +66,8 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <param name="sample">The sample.</param>
         public void PlaySample(Sample sample)
         {
-            if(sample == null) return;
-            
+            if (sample == null) return;
+
             _samplePlayer.PlaySample(sample.SampleId);
             _samplerMixer.SetPluginBpm();
             if (CurrentTrack == null) return;
@@ -78,7 +75,7 @@ namespace Halloumi.Shuffler.AudioEngine
         }
 
         /// <summary>
-        /// Plays a sample.
+        ///     Plays a sample.
         /// </summary>
         /// <param name="sampleIndex">Index of the sample.</param>
         public void PlaySample(int sampleIndex)
@@ -94,7 +91,7 @@ namespace Halloumi.Shuffler.AudioEngine
         }
 
         /// <summary>
-        /// Plays a sample.
+        ///     Plays a sample.
         /// </summary>
         /// <param name="sampleIndex">Index of the sample.</param>
         public void PauseSample(int sampleIndex)
@@ -144,9 +141,9 @@ namespace Halloumi.Shuffler.AudioEngine
 
             // create mixer channel
             _samplerMixer = new MixerChannel(this);
-            _samplerMixer.SetVolume((decimal)DefaultFadeOutStartVolume);
+            _samplerMixer.SetVolume((decimal) DefaultFadeOutStartVolume);
             _samplerMixer.CutBass();
-            _samplerOutputSplitter = new OutputSplitter(_samplerMixer, _speakerOutput, _monitorOutput);
+            _samplerOutputSplitter = new OutputSplitter(_samplerMixer, SpeakerOutput, _monitorOutput);
 
             _samplePlayer = new TrackSamplePlayer(this);
             _samplerMixer.AddInputChannel(_samplePlayer.Output);
@@ -157,7 +154,7 @@ namespace Halloumi.Shuffler.AudioEngine
         private void RefreshSamples()
         {
             if (!_samplePlayer.HaveTracksChanged(CurrentTrack, NextTrack)) return;
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 _samplePlayer.LoadSamples(CurrentTrack, NextTrack);
                 OnTrackSamplesChanged?.Invoke(this, EventArgs.Empty);

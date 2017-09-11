@@ -11,6 +11,8 @@ namespace Halloumi.Shuffler.AudioEngine
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public partial class BassPlayer
     {
+        public event EventHandler OnManualMixVolumeChanged;
+
         /// <summary>
         ///     Gets the last track FX attributes.
         /// </summary>
