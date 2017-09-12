@@ -133,12 +133,18 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets the length of the fade-in section in samples.
         /// </summary>
-        public long FadeInLength => FadeInEnd - FadeInStart;
+        public long FadeInLength
+        {
+            get { return FadeInEnd - FadeInStart; }
+        }
 
         /// <summary>
         ///     Gets the length of the fade-in section in seconds
         /// </summary>
-        public double FadeInLengthSeconds => SamplesToSeconds(FadeInLength);
+        public double FadeInLengthSeconds
+        {
+            get { return SamplesToSeconds(FadeInLength); }
+        }
 
         /// <summary>
         ///     Gets or sets the initial volume level at the start of the fade-in section as a percentage (0 - 1)
@@ -163,12 +169,18 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets the length of the fade-out section in samples.
         /// </summary>
-        public long FadeOutLength => FadeOutEnd - FadeOutStart;
+        public long FadeOutLength
+        {
+            get { return FadeOutEnd - FadeOutStart; }
+        }
 
         /// <summary>
         ///     Gets the length of the fade-out section in seconds
         /// </summary>
-        public double FadeOutLengthSeconds => SamplesToSeconds(FadeOutLength);
+        public double FadeOutLengthSeconds
+        {
+            get { return SamplesToSeconds(FadeOutLength); }
+        }
 
         /// <summary>
         ///     Gets or sets the initial volume level at the start of the fade-out section as a percentage (0 - 1)
@@ -184,59 +196,92 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         ///     Gets the length of the active section in samples
         ///     (The active section is the start of the fade-in to the start of the fade-out.)
         /// </summary>
-        public long ActiveLength => (FadeOutStart - FadeInStart) + AdditionalStartLoopLength - SkipLength;
+        public long ActiveLength
+        {
+            get { return (FadeOutStart - FadeInStart) + AdditionalStartLoopLength - SkipLength; }
+        }
 
         /// <summary>
         ///     Returns true if this track is looped at the start.
         /// </summary>
-        public bool IsLoopedAtStart => (StartLoopCount >= 2);
+        public bool IsLoopedAtStart
+        {
+            get { return (StartLoopCount >= 2); }
+        }
 
         /// <summary>
         ///     Gets the combined start loop length excluding the first loop.
         /// </summary>
-        internal long AdditionalStartLoopLength => !IsLoopedAtStart ? 0 : (StartLoopCount - 1)*FadeInLength;
+        internal long AdditionalStartLoopLength
+        {
+            get { return !IsLoopedAtStart ? 0 : (StartLoopCount - 1) * FadeInLength; }
+        }
 
         /// <summary>
         ///     Gets the combined start loop length including the first loop.
         /// </summary>
-        public long FullStartLoopLength => !IsLoopedAtStart ? FadeInLength : StartLoopCount*FadeInLength;
+        public long FullStartLoopLength
+        {
+            get { return !IsLoopedAtStart ? FadeInLength : StartLoopCount * FadeInLength; }
+        }
 
         /// <summary>
         ///     Gets the combined start loop length including the first loop in seconds.
         /// </summary>
-        public double FullStartLoopLengthSeconds => SamplesToSeconds(FullStartLoopLength);
+        public double FullStartLoopLengthSeconds
+        {
+            get { return SamplesToSeconds(FullStartLoopLength); }
+        }
 
         /// <summary>
         ///     Returns true if this track is looped at the end.
         /// </summary>
-        public bool IsLoopedAtEnd => (EndLoopCount >= 2);
+        public bool IsLoopedAtEnd
+        {
+            get { return (EndLoopCount >= 2); }
+        }
 
         /// <summary>
         ///     Gets the combined end loop length excluding the first loop.
         /// </summary>
-        internal long AdditionalEndLoopLength => !IsLoopedAtEnd ? 0 : (EndLoopCount - 1)*FadeOutLength;
+        internal long AdditionalEndLoopLength
+        {
+            get { return !IsLoopedAtEnd ? 0 : (EndLoopCount - 1) * FadeOutLength; }
+        }
 
         /// <summary>
         ///     Gets the combined end loop length including the first loop.
         /// </summary>
-        public long FullEndLoopLength => !IsLoopedAtEnd ? FadeOutLength : EndLoopCount*FadeOutLength;
+        public long FullEndLoopLength
+        {
+            get { return !IsLoopedAtEnd ? FadeOutLength : EndLoopCount * FadeOutLength; }
+        }
 
         /// <summary>
         ///     Gets the combined start loop length including the first loop in seconds.
         /// </summary>
-        public double FullEndLoopLengthSeconds => SamplesToSeconds(FullEndLoopLength);
+        public double FullEndLoopLengthSeconds
+        {
+            get { return SamplesToSeconds(FullEndLoopLength); }
+        }
 
         /// <summary>
         ///     Gets the length of the active section in seconds
         ///     (The active section is the start of the fade-in to the start of the fade-out.)
         /// </summary>
-        public double ActiveLengthSeconds => SamplesToSeconds(ActiveLength);
+        public double ActiveLengthSeconds
+        {
+            get { return SamplesToSeconds(ActiveLength); }
+        }
 
         /// <summary>
         ///     Gets the length of the active section in seconds formatted as a string
         ///     (The active section is the start of the fade-in to the start of the fade-out.)
         /// </summary>
-        public string ActiveLengthFormatted => FormatSeconds(ActiveLengthSeconds);
+        public string ActiveLengthFormatted
+        {
+            get { return FormatSeconds(ActiveLengthSeconds); }
+        }
 
         /// <summary>
         ///     Gets or sets the start of the skip section as a sample position
@@ -251,17 +296,26 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets the length of the skip section in samples.
         /// </summary>
-        public long SkipLength => SkipEnd - SkipStart;
+        public long SkipLength
+        {
+            get { return SkipEnd - SkipStart; }
+        }
 
         /// <summary>
         ///     Gets the length of the skip section in seconds
         /// </summary>
-        public double SkipLengthSeconds => SamplesToSeconds(SkipLength);
+        public double SkipLengthSeconds
+        {
+            get { return SamplesToSeconds(SkipLength); }
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether skip section should be used.
         /// </summary>
-        public bool HasSkipSection => SkipStart != 0 && SkipLength > 0;
+        public bool HasSkipSection
+        {
+            get { return SkipStart != 0 && SkipLength > 0; }
+        }
 
         /// <summary>
         ///     Gets or sets the skip sync handle
@@ -326,12 +380,18 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets the length of the pre-fade-in section in samples.
         /// </summary>
-        public long PreFadeInLength => FadeInStart - PreFadeInStart;
+        public long PreFadeInLength
+        {
+            get { return FadeInStart - PreFadeInStart; }
+        }
 
         /// <summary>
         ///     Gets the length of the pre-fade-in section in seconds
         /// </summary>
-        public double PreFadeInLengthSeconds => SamplesToSeconds(PreFadeInLength);
+        public double PreFadeInLengthSeconds
+        {
+            get { return SamplesToSeconds(PreFadeInLength); }
+        }
 
         /// <summary>
         ///     Gets or sets the BPM of the track (as specified in the MP3 tag)
@@ -394,7 +454,10 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets a value indicating whether this track is in raw-loop mode.
         /// </summary>
-        public bool IsInRawLoopMode => (RawLoopEnd != 0);
+        public bool IsInRawLoopMode
+        {
+            get { return (RawLoopEnd != 0); }
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the fade in section should loop fade in indefinitely.

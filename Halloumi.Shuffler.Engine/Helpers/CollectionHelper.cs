@@ -45,7 +45,10 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             }
         }
 
-        private static string CollectionFile => Path.Combine(Library.ShufflerFolder, "Haloumi.Shuffler.Collections.xml");
+        private static string CollectionFile
+        {
+            get { return Path.Combine(Library.ShufflerFolder, "Haloumi.Shuffler.Collections.xml"); }
+        }
 
         public static void SaveToDatabase()
         {

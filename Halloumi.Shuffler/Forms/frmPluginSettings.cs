@@ -24,35 +24,80 @@ namespace Halloumi.Shuffler.Forms
 
         private AE.BassPlayer BassPlayer { get; }
 
-        public string MainVstPluginLocation => BassPlayer.MainVstPlugin == null
-            ? ""
-            : BassPlayer.MainVstPlugin.Location;
+        public string MainVstPluginLocation
+        {
+            get
+            {
+                return BassPlayer.MainVstPlugin == null
+                    ? ""
+                    : BassPlayer.MainVstPlugin.Location;
+            }
+        }
 
-        public string MainVstPluginLocation2 => BassPlayer.MainVstPlugin2 == null
-            ? ""
-            : BassPlayer.MainVstPlugin2.Location;
+        public string MainVstPluginLocation2
+        {
+            get
+            {
+                return BassPlayer.MainVstPlugin2 == null
+                    ? ""
+                    : BassPlayer.MainVstPlugin2.Location;
+            }
+        }
 
-        public string CurrentSamplerVstPluginLocation => BassPlayer.SamplerVstPlugin == null
-            ? ""
-            : BassPlayer.SamplerVstPlugin.Location;
+        public string CurrentSamplerVstPluginLocation
+        {
+            get
+            {
+                return BassPlayer.SamplerVstPlugin == null
+                    ? ""
+                    : BassPlayer.SamplerVstPlugin.Location;
+            }
+        }
 
-        public string CurrentSamplerVstPluginLocation2 => BassPlayer.SamplerVstPlugin2 == null
-            ? ""
-            : BassPlayer.SamplerVstPlugin2.Location;
+        public string CurrentSamplerVstPluginLocation2
+        {
+            get
+            {
+                return BassPlayer.SamplerVstPlugin2 == null
+                    ? ""
+                    : BassPlayer.SamplerVstPlugin2.Location;
+            }
+        }
 
-        public string CurrentTrackVstPluginLocation => BassPlayer.TrackVstPlugin == null
-            ? ""
-            : BassPlayer.TrackVstPlugin.Location;
+        public string CurrentTrackVstPluginLocation
+        {
+            get
+            {
+                return BassPlayer.TrackVstPlugin == null
+                    ? ""
+                    : BassPlayer.TrackVstPlugin.Location;
+            }
+        }
 
-        public string CurrentTrackFxvstPluginLocation => BassPlayer.TrackSendFxVstPlugin == null
-            ? ""
-            : BassPlayer.TrackSendFxVstPlugin.Location;
+        public string CurrentTrackFxvstPluginLocation
+        {
+            get
+            {
+                return BassPlayer.TrackSendFxVstPlugin == null
+                    ? ""
+                    : BassPlayer.TrackSendFxVstPlugin.Location;
+            }
+        }
 
-        public string CurrentTrackFxvstPluginLocation2 => BassPlayer.TrackSendFxVstPlugin2 == null
-            ? ""
-            : BassPlayer.TrackSendFxVstPlugin2.Location;
+        public string CurrentTrackFxvstPluginLocation2
+        {
+            get
+            {
+                return BassPlayer.TrackSendFxVstPlugin2 == null
+                    ? ""
+                    : BassPlayer.TrackSendFxVstPlugin2.Location;
+            }
+        }
 
-        public string CurrentWaPluginLocation => BassPlayer.WaPlugin == null ? "" : BassPlayer.WaPlugin.Location;
+        public string CurrentWaPluginLocation
+        {
+            get { return BassPlayer.WaPlugin == null ? "" : BassPlayer.WaPlugin.Location; }
+        }
 
         private void cmbVSTPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {

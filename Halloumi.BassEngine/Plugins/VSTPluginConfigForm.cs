@@ -26,7 +26,10 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
 
         public bool CanClose { get; set; }
 
-        public IntPtr EditorPanelHandle => _pnlEditor.Handle;
+        public IntPtr EditorPanelHandle
+        {
+            get { return _pnlEditor.Handle; }
+        }
 
         private void Initialize(VstPlugin plugin)
         {

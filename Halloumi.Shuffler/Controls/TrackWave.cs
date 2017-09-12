@@ -92,7 +92,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public long ZoomLength => ZoomEnd - ZoomStart;
+        public long ZoomLength
+        {
+            get { return ZoomEnd - ZoomStart; }
+        }
 
         /// <summary>
         ///     Gets or sets the bass player.

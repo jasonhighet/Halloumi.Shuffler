@@ -67,7 +67,10 @@ namespace Halloumi.Shuffler.Forms
             ShowPlayer = true;
         }
 
-        public static Settings Default => _default ?? (_default = LoadSetttings());
+        public static Settings Default
+        {
+            get { return _default ?? (_default = LoadSetttings()); }
+        }
 
         public string LibraryFolder { get; set; }
 

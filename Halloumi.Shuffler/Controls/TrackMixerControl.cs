@@ -47,7 +47,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MixLibrary MixLibrary => PlaylistControl.MixLibrary;
+        public MixLibrary MixLibrary
+        {
+            get { return PlaylistControl.MixLibrary; }
+        }
 
         /// <summary>
         ///     Gets or sets the bass player.

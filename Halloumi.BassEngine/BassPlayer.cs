@@ -93,7 +93,10 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Gets the mixer lock.
         /// </summary>
-        public object ExternalMixerLock => MixerLock;
+        public object ExternalMixerLock
+        {
+            get { return MixerLock; }
+        }
 
         /// <summary>
         ///     Gets the current track.
@@ -121,7 +124,10 @@ namespace Halloumi.Shuffler.AudioEngine
         ///     Gets the active track - usually the current, unless the current
         ///     has finished playing and there was no track queued to play next.
         /// </summary>
-        public Track ActiveTrack => CurrentTrack ?? PreviousTrack;
+        public Track ActiveTrack
+        {
+            get { return CurrentTrack ?? PreviousTrack; }
+        }
 
         /// <summary>
         ///     Gets the state of the play - playing, paused, or stopped.

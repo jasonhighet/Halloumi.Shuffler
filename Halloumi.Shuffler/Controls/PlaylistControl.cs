@@ -126,7 +126,9 @@ namespace Halloumi.Shuffler.Controls
         ///     Gets the name of the file where the track data is cached.
         /// </summary>
         private string WorkingPlaylistFilename
-            => Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.WorkingPlaylist.xml");
+        {
+            get { return Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.WorkingPlaylist.xml"); }
+        }
 
         private void mnuRemoveShufflerDetails_Click(object sender, EventArgs e)
         {

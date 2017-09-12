@@ -8,7 +8,10 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 {
     public static class ShufflerHelper
     {
-        public static string ShufflerFolder => ExtenedAttributesHelper.ShufflerFolder;
+        public static string ShufflerFolder
+        {
+            get { return ExtenedAttributesHelper.ShufflerFolder; }
+        }
 
         /// <summary>
         ///     Updates the Shuffler files after a track has been changed.

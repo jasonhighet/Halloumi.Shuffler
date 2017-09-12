@@ -53,7 +53,10 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public string ShufflerFolder { get; set; }
 
-        private string MixLibraryDatabaseFile => Path.Combine(ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml");
+        private string MixLibraryDatabaseFile
+        {
+            get { return Path.Combine(ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml"); }
+        }
 
         public void SaveToDatabase()
         {

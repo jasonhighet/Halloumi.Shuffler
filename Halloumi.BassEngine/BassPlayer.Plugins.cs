@@ -10,42 +10,66 @@ namespace Halloumi.Shuffler.AudioEngine
         /// <summary>
         ///     Returns a collection of all loaded WinAmp plug-ins
         /// </summary>
-        public WaPlugin WaPlugin => SpeakerOutput.WaPlugin;
+        public WaPlugin WaPlugin
+        {
+            get { return SpeakerOutput.WaPlugin; }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded VST plug-ins
         /// </summary>
-        public VstPlugin MainVstPlugin => SpeakerOutput.GetVstPlugin(0);
+        public VstPlugin MainVstPlugin
+        {
+            get { return SpeakerOutput.GetVstPlugin(0); }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded VST plug-ins
         /// </summary>
-        public VstPlugin MainVstPlugin2 => SpeakerOutput.GetVstPlugin(1);
+        public VstPlugin MainVstPlugin2
+        {
+            get { return SpeakerOutput.GetVstPlugin(1); }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded trackFX VST plug-ins
         /// </summary>
-        public VstPlugin SamplerVstPlugin => _samplerMixer.GetVstPlugin(0);
+        public VstPlugin SamplerVstPlugin
+        {
+            get { return _samplerMixer.GetVstPlugin(0); }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded trackFX VST plug-ins
         /// </summary>
-        public VstPlugin SamplerVstPlugin2 => _samplerMixer.GetVstPlugin(1);
+        public VstPlugin SamplerVstPlugin2
+        {
+            get { return _samplerMixer.GetVstPlugin(1); }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackVstPlugin => _trackMixer.GetVstPlugin(0);
+        public VstPlugin TrackVstPlugin
+        {
+            get { return _trackMixer.GetVstPlugin(0); }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackSendFxVstPlugin => _trackSendFxMixer.GetVstPlugin(0);
+        public VstPlugin TrackSendFxVstPlugin
+        {
+            get { return _trackSendFxMixer.GetVstPlugin(0); }
+        }
 
         /// <summary>
         ///     Returns a collection of all loaded mixer VST plug-ins
         /// </summary>
-        public VstPlugin TrackSendFxVstPlugin2 => _trackSendFxMixer.GetVstPlugin(1);
+        public VstPlugin TrackSendFxVstPlugin2
+        {
+            get { return _trackSendFxMixer.GetVstPlugin(1); }
+        }
 
         public decimal TrackSendFxDelayNotes
         {
@@ -79,7 +103,7 @@ namespace Halloumi.Shuffler.AudioEngine
                 else
                 {
                     var range = CurrentTrack.EndBpm - CurrentTrack.StartBpm;
-                    var percentComplete = (decimal) (position / (double) trackPosition.Length);
+                    var percentComplete = (decimal)(position / (double)trackPosition.Length);
                     bpm = CurrentTrack.StartBpm + range * percentComplete;
                 }
             }

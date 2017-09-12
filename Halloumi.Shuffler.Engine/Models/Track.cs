@@ -168,7 +168,10 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         /// <summary>
         /// Gets the description.
         /// </summary>
-        public string Description => Artist + " - " + Title;
+        public string Description
+        {
+            get { return Artist + " - " + Title; }
+        }
 
         /// <summary>
         /// Gets description at the time the track was loaded

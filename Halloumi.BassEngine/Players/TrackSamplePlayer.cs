@@ -19,7 +19,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _bpmProvider = bpmProvider;
         }
 
-        public MixerChannel Output => _audioPlayer.Output;
+        public MixerChannel Output
+        {
+            get { return _audioPlayer.Output; }
+        }
 
         public void LoadSamples(Track currentTrack, Track nextTrack)
         {

@@ -55,6 +55,9 @@ namespace Halloumi.Shuffler.AudioEngine.Models
 
         public string SampleKey { get; set; }
 
-        public string SampleId => LinkedTrackDescription + " - " + SampleKey;
+        public string SampleId
+        {
+            get { return LinkedTrackDescription + " - " + SampleKey; }
+        }
     }
 }

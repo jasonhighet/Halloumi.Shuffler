@@ -12,7 +12,10 @@ namespace Halloumi.Shuffler.AudioEngine.Models
 
         public byte[] Data { get; set; }
 
-        public IntPtr DataPointer => DataHandle.AddrOfPinnedObject();
+        public IntPtr DataPointer
+        {
+            get { return DataHandle.AddrOfPinnedObject(); }
+        }
 
         public List<AudioStream> AudioStreams { get; set; }
 

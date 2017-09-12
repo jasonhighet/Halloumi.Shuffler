@@ -78,7 +78,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         ///     Gets the name of the file where the track data is cached.
         /// </summary>
         private static string LibraryCacheFilename
-            => Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Library.xml");
+        {
+            get { return Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Library.xml"); }
+        }
 
         /// <summary>
         ///     Gets or sets the folder where the mp3 files for the library are kept
@@ -90,7 +92,10 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Gets or sets the folder where the shuffler extended attribute files for the library are kept
         /// </summary>
-        public string ShufflerFolder => ExtenedAttributesHelper.ShufflerFolder;
+        public string ShufflerFolder
+        {
+            get { return ExtenedAttributesHelper.ShufflerFolder; }
+        }
 
 
         public Track GetTrack(string artist, string title, decimal length = 0)

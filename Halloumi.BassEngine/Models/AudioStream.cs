@@ -43,9 +43,15 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets or sets the bass channel Id for the track (set once the track is loaded by the bass engine)
         /// </summary>
-        public int Channel => Channels.Count == 0 ? int.MinValue : Channels[0];
+        public int Channel
+        {
+            get { return Channels.Count == 0 ? int.MinValue : Channels[0]; }
+        }
 
-        public int InitialChannel => Channels.Count == 0 ? int.MinValue : Channels[Channels.Count -1];
+        public int InitialChannel
+        {
+            get { return Channels.Count == 0 ? int.MinValue : Channels[Channels.Count - 1]; }
+        }
 
         /// <summary>
         ///     Gets the BPM.
@@ -80,12 +86,18 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets the length of the track in seconds.
         /// </summary>
-        public double LengthSeconds => SamplesToSeconds(Length);
+        public double LengthSeconds
+        {
+            get { return SamplesToSeconds(Length); }
+        }
 
         /// <summary>
         ///     Gets the length of the track in seconds formatted as a string.
         /// </summary>
-        public string LengthFormatted => FormatSeconds(LengthSeconds);
+        public string LengthFormatted
+        {
+            get { return FormatSeconds(LengthSeconds); }
+        }
 
         /// <summary>
         ///     Gets or sets the gain (volume adjustment) for the track

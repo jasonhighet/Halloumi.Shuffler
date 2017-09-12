@@ -13,7 +13,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _audioPlayer = new AudioPlayer(bpmProvider);
         }
 
-        public MixerChannel Output => _audioPlayer.Output;
+        public MixerChannel Output
+        {
+            get { return _audioPlayer.Output; }
+        }
 
         public void LoadAudio(string filename)
         {

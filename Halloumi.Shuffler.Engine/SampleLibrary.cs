@@ -45,7 +45,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         ///     Gets the name of the file where the sample data is cached.
         /// </summary>
         private string SampleLibraryFilename
-            => Path.Combine(TrackLibrary.ShufflerFolder, "Halloumi.Shuffler.SampleLibrary.xml");
+        {
+            get { return Path.Combine(TrackLibrary.ShufflerFolder, "Halloumi.Shuffler.SampleLibrary.xml"); }
+        }
 
         /// <summary>
         ///     Loads the library from the cache.

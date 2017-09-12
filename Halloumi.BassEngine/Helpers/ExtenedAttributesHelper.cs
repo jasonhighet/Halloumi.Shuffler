@@ -49,7 +49,10 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             SerializationHelper<List<ExtenedAttributes>>.ToXmlFile(attributes, filepath);
         }
 
-        private static string ExtendedAttributesFile => Path.Combine(ShufflerFolder, "Haloumi.Shuffler.ExtendedAtrributes.xml");
+        private static string ExtendedAttributesFile
+        {
+            get { return Path.Combine(ShufflerFolder, "Haloumi.Shuffler.ExtendedAtrributes.xml"); }
+        }
 
         /// <summary>
         ///     Gets or sets the track extended attribute folder.
