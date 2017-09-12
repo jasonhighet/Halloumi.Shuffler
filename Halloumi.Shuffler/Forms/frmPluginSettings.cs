@@ -5,6 +5,7 @@ using System.Linq;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 using AE = Halloumi.Shuffler.AudioEngine;
 
@@ -15,14 +16,14 @@ namespace Halloumi.Shuffler.Forms
     {
         private bool _binding;
 
-        public frmPluginSettings(AE.BassPlayer bassPlayer)
+        public frmPluginSettings(BassPlayer bassPlayer)
         {
             InitializeComponent();
             BassPlayer = bassPlayer;
             BindData();
         }
 
-        private AE.BassPlayer BassPlayer { get; }
+        private BassPlayer BassPlayer { get; }
 
         public string MainVstPluginLocation
         {

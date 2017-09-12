@@ -9,6 +9,7 @@ using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Controls;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;

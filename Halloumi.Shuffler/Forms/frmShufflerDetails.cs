@@ -9,6 +9,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -45,7 +46,7 @@ namespace Halloumi.Shuffler.Forms
         public Track Track { get; private set; }
 
 
-        public AE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         public string Filename { get; set; }
 

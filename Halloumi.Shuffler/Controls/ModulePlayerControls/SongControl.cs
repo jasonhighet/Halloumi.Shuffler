@@ -11,6 +11,7 @@ using Halloumi.Common.Windows.Controls;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 {

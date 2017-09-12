@@ -1,7 +1,7 @@
 ﻿using System;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Midi;
 using Halloumi.Shuffler.AudioEngine.Plugins;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -13,7 +14,7 @@ namespace Halloumi.Shuffler.Forms
 {
     public partial class FrmUpdateSimilarTracks : BaseForm
     {
-        public AE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         public Library Library { get; set; }
 

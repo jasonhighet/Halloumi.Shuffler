@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Controls;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass;
@@ -102,7 +103,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass track.

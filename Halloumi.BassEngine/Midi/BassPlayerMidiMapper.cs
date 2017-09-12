@@ -2,17 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Un4seen.Bass.AddOn.Vst;
 
 namespace Halloumi.Shuffler.AudioEngine.Midi
 {
     public class BassPlayerMidiMapper
     {
-        private readonly BassPlayer _bassPlayer;
+        private readonly BassPlayer.BassPlayer _bassPlayer;
         private readonly List<ControlMapping> _controlMappings;
         private readonly List<VstMapping> _vstMappings;
 
-        public BassPlayerMidiMapper(BassPlayer bassPlayer, MidiManager midiManager)
+        public BassPlayerMidiMapper(BassPlayer.BassPlayer bassPlayer, MidiManager midiManager)
         {
             _bassPlayer = bassPlayer;
 

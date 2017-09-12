@@ -105,8 +105,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BassPlayer.cs" />
-    <Compile Include="BassPlayer.Plugins.cs" />
+    <Compile Include="BassPlayer\BassPlayer.cs" />
+    <Compile Include="BassPlayer\BassPlayer.Plugins.cs" />
     <Compile Include="Helpers\AudioDataHelper.cs" />
     <Compile Include="Helpers\AudioStreamHelper.cs" />
     <Compile Include="Helpers\AutomationAttributesHelper.cs" />
@@ -191,8 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\AnalogXScratchHelper.cs" />
-    <Compile Include="BassPlayer.RawLoop.cs" />
-    <Compile Include="BassPlayer.Sampler.cs" />
+    <Compile Include="BassPlayer\BassPlayer.RawLoop.cs" />
+    <Compile Include="BassPlayer\BassPlayer.Sampler.cs" />
     <Compile Include="Models\SampleTrigger.cs" />
     <Compile Include="Models\TrackFXTrigger.cs" />
     <Compile Include="Models\AutomationAttributes.cs" />
@@ -203,7 +203,7 @@
     <None Include="Resources\silence.mp3" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BassPlayer.Automation.cs" />
+    <Compile Include="BassPlayer\BassPlayer.Automation.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\MonitorOutputChannel.cs" />
     <Compile Include="Channels\OutputSplitter.cs" />

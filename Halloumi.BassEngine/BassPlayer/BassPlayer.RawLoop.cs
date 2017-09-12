@@ -3,9 +3,8 @@ using System.IO;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Common.Helpers;
 
-namespace Halloumi.Shuffler.AudioEngine
+namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
     public partial class BassPlayer
     {

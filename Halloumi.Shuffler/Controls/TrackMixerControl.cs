@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioLibrary;

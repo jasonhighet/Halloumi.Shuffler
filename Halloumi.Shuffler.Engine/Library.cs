@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;

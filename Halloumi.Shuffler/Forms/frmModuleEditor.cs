@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -48,7 +49,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets the playlist control.

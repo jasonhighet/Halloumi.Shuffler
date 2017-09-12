@@ -11,7 +11,7 @@ using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
-namespace Halloumi.Shuffler.AudioEngine
+namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
     /// <summary>
     ///     Track mixing engine utilizing the Bass.Net audio engine

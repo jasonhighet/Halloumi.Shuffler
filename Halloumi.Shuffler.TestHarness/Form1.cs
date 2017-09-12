@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;

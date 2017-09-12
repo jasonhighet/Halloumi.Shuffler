@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -13,7 +14,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Initializes a new instance of the Library class.
         /// </summary>
-        public SampleLibrary(AE.BassPlayer bassPlayer, Library trackLibrary)
+        public SampleLibrary(BassPlayer bassPlayer, Library trackLibrary)
         {
             Samples = new List<Sample>();
             BassPlayer = bassPlayer;
@@ -27,7 +28,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
-        private AE.BassPlayer BassPlayer { get; }
+        private BassPlayer BassPlayer { get; }
 
         /// <summary>
         ///     Gets or sets the track library.

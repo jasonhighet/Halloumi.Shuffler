@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
@@ -33,7 +34,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
 
-        public AE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         public string Filename { get; set; }
 

@@ -6,7 +6,7 @@ using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Players;
 
-namespace Halloumi.Shuffler.AudioEngine
+namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
     public partial class BassPlayer
     {

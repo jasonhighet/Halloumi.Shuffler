@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Helpers;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -40,7 +41,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public AE.BassPlayer BassPlayer { get; set; }
+        public BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Initializes this instance.

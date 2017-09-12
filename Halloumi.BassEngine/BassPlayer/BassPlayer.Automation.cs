@@ -6,7 +6,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass.AddOn.Mix;
 
-namespace Halloumi.Shuffler.AudioEngine
+namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public partial class BassPlayer

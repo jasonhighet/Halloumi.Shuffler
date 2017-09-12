@@ -8,6 +8,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using IdSharp.Tagging.ID3v2;
 using System.Threading.Tasks;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using IdSharp.AudioInfo;
 
 namespace Halloumi.Shuffler.AudioLibrary.Helpers
