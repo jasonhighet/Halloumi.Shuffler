@@ -153,7 +153,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                 if (collectionTracks.ContainsKey(track.Description))
                     collectionTracks.Remove(track.Description);
 
-                collection.Entries.RemoveAll(x => x.Artist == track.Artist && x.Title == track.Artist);
+                collection.Entries.RemoveAll(x => x.Artist == track.Artist && x.Title == track.Title);
             }
         }
 
