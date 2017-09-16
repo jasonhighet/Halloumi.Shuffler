@@ -17,7 +17,6 @@ using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
-using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -31,7 +30,7 @@ namespace Halloumi.Shuffler.Controls
 
         private bool _loaded;
         public EventHandler PlaylistChanged;
-        public EventHandler TrackClicked;
+        ///public EventHandler TrackClicked;
 
 
         /// <summary>

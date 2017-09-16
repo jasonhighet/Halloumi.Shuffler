@@ -579,7 +579,7 @@ namespace Halloumi.Shuffler.Controls
 
             _binding = false;
 
-            RaiseSelectedTracksChanged();
+            TrackSelectionChanged();
         }
 
         private void grdTracks_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
@@ -1622,8 +1622,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdTracks_SelectionChanged(object sender, EventArgs e)
         {
-            ShowCurrentTrackDetails();
+            TrackSelectionChanged();
+        }
 
+        private void TrackSelectionChanged()
+        {
+            if (_binding || _neverBind) return;
+            ShowCurrentTrackDetails();
             RaiseSelectedTracksChanged();
         }
 
