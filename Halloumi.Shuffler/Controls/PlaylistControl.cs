@@ -153,8 +153,11 @@ namespace Halloumi.Shuffler.Controls
 
         private void SetMixAndKeyRanks()
         {
-            for (var i = 0; i < TrackModels.Count; i++)
+            //for (var i = 0; i < TrackModels.Count; i++)
+            //    UpdateMixRank(i);
+            Parallel.For(0, TrackModels.Count, i => {
                 UpdateMixRank(i);
+            });
         }
 
         private void UpdateMixRank(int rowIndex)
@@ -171,12 +174,7 @@ namespace Halloumi.Shuffler.Controls
             if (track1 == null || track2 == null)
                 return;
 
-            var mixRank = MixLibrary.GetMixLevel(track1, track2);
-            var hasExtendedMix = MixLibrary.HasExtendedMix(track1, track2);
-
-            TrackModels[rowIndex].MixRankDescription = MixLibrary.GetRankDescription(mixRank);
-            if (hasExtendedMix) TrackModels[rowIndex].MixRankDescription += "*";
-
+            TrackModels[rowIndex].MixRankDescription = MixLibrary.GetExtendedMixDescription(track1, track2);
             TrackModels[rowIndex].KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track1.Key, track2.Key);
         }
 
@@ -303,7 +301,11 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdPlaylist_SelectionChanged(object sender, EventArgs e)
         {
+            if (_binding) return;
+
+            Debug.WriteLine("start show current");
             ShowCurrentTrackDetails();
+            Debug.WriteLine("end show current");
         }
 
         private void ShowCurrentTrackDetails()
@@ -571,12 +573,14 @@ namespace Halloumi.Shuffler.Controls
         }
 
 
+        private bool _binding;
         /// <summary>
         ///     Binds the data for the user control to the controls
         /// </summary>
         private void BindData()
         {
             if (_doNotBind) return;
+            _binding = true;
 
             SetMixAndKeyRanks();
 
@@ -593,6 +597,10 @@ namespace Halloumi.Shuffler.Controls
 
             SetToolStripLabel();
             lblCount.Text = $@"{trackCount} tracks";
+
+            _binding = false;
+
+            ShowCurrentTrackDetails();
         }
 
         /// <summary>
@@ -716,7 +724,9 @@ namespace Halloumi.Shuffler.Controls
             if (tracksToRemove.Count == 0) return;
             var tracks = TrackModels.Except(tracksToRemove).ToList();
             TrackModels = tracks;
+            _binding = true;
             grdPlaylist.ClearSelectedRows();
+            _binding = false;
             SetNextBassPlayerTrack();
             BindData();
 
