@@ -373,7 +373,7 @@ namespace Halloumi.Shuffler.Controls
                         Application.DoEvents();
                     }
 
-                lock (BassPlayer.ExternalMixerLock)
+                //lock (BassPlayer.ExternalMixerLock)
                 {
                     picVisuals.Image = _bassVisuals.CreateSpectrumLine(BassPlayer.SpeakerOutput.ChannelId,
                         picVisuals.Width,
@@ -386,6 +386,7 @@ namespace Halloumi.Shuffler.Controls
                         false,
                         true,
                         false);
+                    Thread.Sleep(1);
                     _firstVisualShown = true;
                 }
             }
