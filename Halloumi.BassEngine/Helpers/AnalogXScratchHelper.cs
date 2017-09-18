@@ -83,6 +83,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Process.Start(scratchExePath);
         }
 
+        public static bool IsScratchEnabled()
+        {
+            var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
+            return File.Exists(scratchExePath);
+        }
 
         /// <summary>
         /// Determines a gain factor (normalization), so that the maximum peak level of the stream will be at 0 dB.

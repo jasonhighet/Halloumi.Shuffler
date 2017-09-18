@@ -1,5 +1,4 @@
-﻿using System;
-using Halloumi.Shuffler.AudioEngine.Helpers;
+﻿using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 
@@ -111,9 +110,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             bpm = BpmHelper.NormaliseBpm(bpm);
             return bpm;
         }
-
-        public event EventHandler OnTrackFxVolumeChanged;
-
 
         /// <summary>
         ///     Loads a WinAmp DSP plug-in and applies it to the mixer
@@ -230,25 +226,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public bool IsTrackFxSending()
         {
             return _trackSendMixer.GetVolume() != 0M;
-        }
-
-        /// <summary>
-        ///     Gets the sample mixer volume.
-        /// </summary>
-        /// <returns>A value between 0 and 100</returns>
-        public decimal GetTrackSendFxVolume()
-        {
-            return _trackSendFxMixer.GetVolume();
-        }
-
-        /// <summary>
-        ///     Sets the sample mixer volume.
-        /// </summary>
-        /// <param name="volume">The volume as a value between 0 and 100.</param>
-        public void SetTrackSendFxVolume(decimal volume)
-        {
-            _trackSendFxMixer.SetVolume(volume);
-            OnTrackFxVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
 
         /// <summary>

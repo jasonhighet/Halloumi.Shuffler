@@ -61,6 +61,7 @@ namespace Halloumi.Shuffler.Controls
             DebugHelper.WriteLine("Setting sample:" + description);
 
             lblSampleDescription.Text = description;
+            btnScratch.Visible = AnalogXScratchHelper.IsScratchEnabled();
         }
 
         public void Pause()

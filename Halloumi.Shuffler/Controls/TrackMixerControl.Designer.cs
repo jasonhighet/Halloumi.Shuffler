@@ -67,11 +67,6 @@
             this.rdbDelay3 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelay4 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelayNone = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
-            this.pnlVolume = new System.Windows.Forms.Panel();
-            this.pnlVolumeInner = new System.Windows.Forms.Panel();
-            this.sldTrackFXVolume = new Halloumi.Shuffler.Controls.Slider();
-            this.lblVolume = new Halloumi.Common.Windows.Controls.Label();
-            this.lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
             this.panel5 = new Halloumi.Common.Windows.Controls.Panel();
             this.chkEnableTrackFXAutomation = new Halloumi.Common.Windows.Controls.CheckBox();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
@@ -98,8 +93,6 @@
             this.panel6.SuspendLayout();
             this.panel7.SuspendLayout();
             this.flpCurrent.SuspendLayout();
-            this.pnlVolume.SuspendLayout();
-            this.pnlVolumeInner.SuspendLayout();
             this.panel5.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hdrTrackFX)).BeginInit();
@@ -118,11 +111,11 @@
             this.pnlTrackMixer.Controls.Add(this.linHeader);
             this.pnlTrackMixer.Controls.Add(this.pnlHeader);
             this.pnlTrackMixer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTrackMixer.Location = new System.Drawing.Point(0, 222);
+            this.pnlTrackMixer.Location = new System.Drawing.Point(0, 185);
             this.pnlTrackMixer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTrackMixer.Name = "pnlTrackMixer";
             this.pnlTrackMixer.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlTrackMixer.Size = new System.Drawing.Size(503, 379);
+            this.pnlTrackMixer.Size = new System.Drawing.Size(503, 416);
             this.pnlTrackMixer.TabIndex = 77;
             // 
             // pnlNextTrack
@@ -135,7 +128,7 @@
             this.pnlNextTrack.Margin = new System.Windows.Forms.Padding(4);
             this.pnlNextTrack.Name = "pnlNextTrack";
             this.pnlNextTrack.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlNextTrack.Size = new System.Drawing.Size(501, 68);
+            this.pnlNextTrack.Size = new System.Drawing.Size(501, 105);
             this.pnlNextTrack.TabIndex = 80;
             // 
             // lblNextFadeDetails
@@ -464,7 +457,7 @@
             // 
             this.pnlMiddleBackground.BackColor = System.Drawing.SystemColors.Control;
             this.pnlMiddleBackground.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlMiddleBackground.Location = new System.Drawing.Point(0, 216);
+            this.pnlMiddleBackground.Location = new System.Drawing.Point(0, 179);
             this.pnlMiddleBackground.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMiddleBackground.Name = "pnlMiddleBackground";
             this.pnlMiddleBackground.Padding = new System.Windows.Forms.Padding(1);
@@ -485,7 +478,7 @@
             this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(1);
-            this.panel3.Size = new System.Drawing.Size(503, 216);
+            this.panel3.Size = new System.Drawing.Size(503, 179);
             this.panel3.TabIndex = 75;
             // 
             // pnlEffectsSettings
@@ -493,13 +486,12 @@
             this.pnlEffectsSettings.BackColor = System.Drawing.Color.White;
             this.pnlEffectsSettings.Controls.Add(this.panel6);
             this.pnlEffectsSettings.Controls.Add(this.flpCurrent);
-            this.pnlEffectsSettings.Controls.Add(this.pnlVolume);
             this.pnlEffectsSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlEffectsSettings.Location = new System.Drawing.Point(1, 85);
             this.pnlEffectsSettings.Margin = new System.Windows.Forms.Padding(4);
             this.pnlEffectsSettings.Name = "pnlEffectsSettings";
             this.pnlEffectsSettings.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlEffectsSettings.Size = new System.Drawing.Size(501, 130);
+            this.pnlEffectsSettings.Size = new System.Drawing.Size(501, 93);
             this.pnlEffectsSettings.TabIndex = 83;
             // 
             // panel6
@@ -507,7 +499,7 @@
             this.panel6.BackColor = System.Drawing.Color.Transparent;
             this.panel6.Controls.Add(this.panel7);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel6.Location = new System.Drawing.Point(7, 74);
+            this.panel6.Location = new System.Drawing.Point(7, 37);
             this.panel6.Margin = new System.Windows.Forms.Padding(4);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(487, 50);
@@ -546,7 +538,7 @@
             this.flpCurrent.Controls.Add(this.rdbDelay4);
             this.flpCurrent.Controls.Add(this.rdbDelayNone);
             this.flpCurrent.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flpCurrent.Location = new System.Drawing.Point(7, 39);
+            this.flpCurrent.Location = new System.Drawing.Point(7, 6);
             this.flpCurrent.Margin = new System.Windows.Forms.Padding(4);
             this.flpCurrent.Name = "flpCurrent";
             this.flpCurrent.Size = new System.Drawing.Size(487, 34);
@@ -620,104 +612,6 @@
             this.rdbDelayNone.Tag = "0";
             this.rdbDelayNone.Values.Text = "None";
             this.rdbDelayNone.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
-            // 
-            // pnlVolume
-            // 
-            this.pnlVolume.BackColor = System.Drawing.Color.Transparent;
-            this.pnlVolume.Controls.Add(this.pnlVolumeInner);
-            this.pnlVolume.Controls.Add(this.lblVolume);
-            this.pnlVolume.Controls.Add(this.lblVolumCaption);
-            this.pnlVolume.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlVolume.Location = new System.Drawing.Point(7, 6);
-            this.pnlVolume.Margin = new System.Windows.Forms.Padding(4);
-            this.pnlVolume.Name = "pnlVolume";
-            this.pnlVolume.Size = new System.Drawing.Size(487, 33);
-            this.pnlVolume.TabIndex = 33;
-            // 
-            // pnlVolumeInner
-            // 
-            this.pnlVolumeInner.BackColor = System.Drawing.Color.Turquoise;
-            this.pnlVolumeInner.Controls.Add(this.sldTrackFXVolume);
-            this.pnlVolumeInner.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlVolumeInner.Location = new System.Drawing.Point(84, 0);
-            this.pnlVolumeInner.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlVolumeInner.Name = "pnlVolumeInner";
-            this.pnlVolumeInner.Size = new System.Drawing.Size(366, 33);
-            this.pnlVolumeInner.TabIndex = 8;
-            // 
-            // sldTrackFXVolume
-            // 
-            this.sldTrackFXVolume.Animated = false;
-            this.sldTrackFXVolume.AnimationSize = 0.2F;
-            this.sldTrackFXVolume.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
-            this.sldTrackFXVolume.AutoScrollMargin = new System.Drawing.Size(0, 0);
-            this.sldTrackFXVolume.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.sldTrackFXVolume.BackColor = System.Drawing.Color.White;
-            this.sldTrackFXVolume.BackgroundImage = null;
-            this.sldTrackFXVolume.BackGroundImage = null;
-            this.sldTrackFXVolume.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sldTrackFXVolume.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.sldTrackFXVolume.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.sldTrackFXVolume.ButtonCornerRadius = ((uint)(2u));
-            this.sldTrackFXVolume.ButtonSize = new System.Drawing.Size(24, 12);
-            this.sldTrackFXVolume.ButtonStyle = MediaSlider.MediaSlider.ButtonType.GlassInline;
-            this.sldTrackFXVolume.ContextMenuStrip = null;
-            this.sldTrackFXVolume.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.sldTrackFXVolume.LargeChange = 2;
-            this.sldTrackFXVolume.Location = new System.Drawing.Point(0, 0);
-            this.sldTrackFXVolume.Margin = new System.Windows.Forms.Padding(0);
-            this.sldTrackFXVolume.Maximum = 100;
-            this.sldTrackFXVolume.Minimum = 0;
-            this.sldTrackFXVolume.Name = "sldTrackFXVolume";
-            this.sldTrackFXVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.sldTrackFXVolume.ResizeRedraw = true;
-            this.sldTrackFXVolume.ShowButtonOnHover = false;
-            this.sldTrackFXVolume.Size = new System.Drawing.Size(366, 33);
-            this.sldTrackFXVolume.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
-            this.sldTrackFXVolume.SmallChange = 1;
-            this.sldTrackFXVolume.SmoothScrolling = false;
-            this.sldTrackFXVolume.TabIndex = 10;
-            this.sldTrackFXVolume.TickColor = System.Drawing.Color.DarkOliveGreen;
-            this.sldTrackFXVolume.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.sldTrackFXVolume.TickType = MediaSlider.MediaSlider.TickMode.Standard;
-            this.sldTrackFXVolume.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.sldTrackFXVolume.TrackDepth = 6;
-            this.sldTrackFXVolume.TrackFillColor = System.Drawing.Color.Transparent;
-            this.sldTrackFXVolume.TrackProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(228)))), ((int)(((byte)(138)))));
-            this.sldTrackFXVolume.TrackShadow = false;
-            this.sldTrackFXVolume.TrackShadowColor = System.Drawing.Color.DarkGray;
-            this.sldTrackFXVolume.TrackStyle = MediaSlider.MediaSlider.TrackType.Progress;
-            this.sldTrackFXVolume.Value = 0;
-            this.sldTrackFXVolume.WheelScrollTicks = 3;
-            // 
-            // lblVolume
-            // 
-            this.lblVolume.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblVolume.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVolume.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolume.Location = new System.Drawing.Point(450, 0);
-            this.lblVolume.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(37, 33);
-            this.lblVolume.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolume.TabIndex = 6;
-            this.lblVolume.Text = "100";
-            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblVolumCaption
-            // 
-            this.lblVolumCaption.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblVolumCaption.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblVolumCaption.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolumCaption.Location = new System.Drawing.Point(0, 0);
-            this.lblVolumCaption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolumCaption.Name = "lblVolumCaption";
-            this.lblVolumCaption.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.lblVolumCaption.Size = new System.Drawing.Size(84, 33);
-            this.lblVolumCaption.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolumCaption.TabIndex = 4;
-            this.lblVolumCaption.Text = "Volume:";
-            this.lblVolumCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panel5
             // 
@@ -851,8 +745,6 @@
             this.panel7.ResumeLayout(false);
             this.flpCurrent.ResumeLayout(false);
             this.flpCurrent.PerformLayout();
-            this.pnlVolume.ResumeLayout(false);
-            this.pnlVolumeInner.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.hdrTrackFX)).EndInit();
@@ -893,11 +785,6 @@
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay2;
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay3;
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay4;
-        private System.Windows.Forms.Panel pnlVolume;
-        private System.Windows.Forms.Panel pnlVolumeInner;
-        private Slider sldTrackFXVolume;
-        private Halloumi.Common.Windows.Controls.Label lblVolume;
-        private Halloumi.Common.Windows.Controls.Label lblVolumCaption;
         private ComponentFactory.Krypton.Toolkit.KryptonButton btnSaveLastSend;
         private Halloumi.Common.Windows.Controls.Panel panel6;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;

@@ -43,11 +43,9 @@ namespace Halloumi.Shuffler.Forms
             CutSamplerBass = true;
             BypassSamplerEffect1 = false;
             BypassSamplerEffect2 = false;
-            SamplerVolume = 50;
             SamplerDelayNotes = 0.25M;
             BypassTrackFxEffect1 = false;
             BypassTrackFxEffect2 = false;
-            TrackFxVolume = 50;
             TrackFxDelayNotes = 0.25M;
             SamplerOutput = SoundOutput.Speakers;
             TrackOutput = SoundOutput.Speakers;
@@ -137,15 +135,11 @@ namespace Halloumi.Shuffler.Forms
 
         public bool BypassSamplerEffect2 { get; set; }
 
-        public int SamplerVolume { get; set; }
-
         public decimal SamplerDelayNotes { get; set; }
 
         public bool BypassTrackFxEffect1 { get; set; }
 
         public bool BypassTrackFxEffect2 { get; set; }
-
-        public int TrackFxVolume { get; set; }
 
         public decimal TrackFxDelayNotes { get; set; }
 

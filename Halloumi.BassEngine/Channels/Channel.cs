@@ -105,7 +105,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
 
         /// <summary>
-        ///     Sets the volume.
+        ///     Sets the volume (A value between 0 and 100)
         /// </summary>
         /// <param name="volume">A value between 0 and 100</param>
         public void SetVolume(decimal volume)
@@ -114,7 +114,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         }
 
         /// <summary>
-        ///     Gets the volume.
+        ///     Gets the volume (A value between 0 and 100)
         /// </summary>
         /// <returns>A value between 0 and 100</returns>
         public decimal GetVolume()

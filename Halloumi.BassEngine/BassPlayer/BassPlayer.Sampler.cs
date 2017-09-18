@@ -42,11 +42,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             _samplePlayer.UnloadAll();
         }
 
-
-        public event EventHandler OnSamplerMixerVolumeChanged;
-
         public event EventHandler OnTrackSamplesChanged;
-
 
         /// <summary>
         ///     Gets a loaded sample by its description.
@@ -117,23 +113,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             StopRecordingSampleTrigger();
         }
 
-        /// <summary>
-        ///     Gets the sample mixer volume.
-        /// </summary>
-        public decimal GetSamplerMixerVolume()
-        {
-            return _samplerMixer.GetVolume();
-        }
-
-        /// <summary>
-        ///     Sets the sample mixer volume.
-        /// </summary>
-        /// <param name="volume">The volume as a value between 0 and 100.</param>
-        public void SetSamplerMixerVolume(decimal volume)
-        {
-            _samplerMixer.SetVolume(volume);
-            OnSamplerMixerVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
-        }
 
         private void InitialiseSampler()
         {
@@ -147,6 +126,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             _samplePlayer = new TrackSamplePlayer(this);
             _samplerMixer.AddInputChannel(_samplePlayer.Output);
+
+            _samplerMixer.SetVolume(80);
 
             // DebugHelper.WriteLine("END InitialiseSampler");
         }

@@ -298,6 +298,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             _trackSendFxMixer = new MixerChannel(this);
             _trackSendFxMixer.AddInputChannel(_trackSendMixer);
             _trackSendFxMixer.CutBass();
+            _trackSendFxMixer.SetVolume(80);
 
             // then that to the main mixer
             SpeakerOutput.AddInputChannel(_trackSendFxMixer);

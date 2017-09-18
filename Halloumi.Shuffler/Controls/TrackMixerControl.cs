@@ -86,18 +86,10 @@ namespace Halloumi.Shuffler.Controls
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
 
             BassPlayer.OnManualMixVolumeChanged += BassPlayer_OnManualMixVolumeChanged;
-            BassPlayer.OnTrackFxVolumeChanged += BassPlayer_OnTrackFxVolumeChanged;
             BassPlayer.OnManualMixModeChanged += BassPlayer_OnManualMixModeChanged;
 
             sldFader.Minimum = 0;
             sldFader.Maximum = 100;
-
-            sldTrackFXVolume.Scrolled += sldTrackFXVolume_Scrolled;
-            sldTrackFXVolume.Minimum = 0;
-            sldTrackFXVolume.Maximum = 100;
-            var volume = Convert.ToInt32(BassPlayer.GetTrackSendFxVolume());
-            lblVolume.Text = volume.ToString();
-            sldTrackFXVolume.Value = volume;
 
             rdbDelay2.Checked = true;
 
@@ -112,21 +104,6 @@ namespace Halloumi.Shuffler.Controls
             _timer.Tick += Timer_Tick;
             _timer.Interval = 200;
             _timer.Start();
-        }
-
-
-        /// <summary>
-        ///     Sets the track FX volume.
-        /// </summary>
-        /// <param name="volume">The volume.</param>
-        private void SetTrackFxVolume(decimal volume)
-        {
-            if (volume < 0 || volume > 100) return;
-
-            BassPlayer.SetTrackSendFxVolume(volume);
-            lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
-            if (sldTrackFXVolume.Value != volume)
-                sldTrackFXVolume.Value = Convert.ToInt32(volume);
         }
 
         /// <summary>
@@ -312,8 +289,6 @@ namespace Halloumi.Shuffler.Controls
                 BassPlayer.TrackSendFxDelayNotes = settings.TrackFxDelayNotes;
                 BindDelayNotes();
 
-                SetTrackFxVolume(settings.TrackFxVolume);
-
                 BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
             }
             catch
@@ -430,26 +405,6 @@ namespace Halloumi.Shuffler.Controls
         {
             if (_bindingManualMode) return;
             chkManualFading.Checked = BassPlayer.IsManualMixMode;
-        }
-
-        /// <summary>
-        ///     Handles the Scrolled event of the sldTrackFXVolume control.
-        /// </summary>
-        private void sldTrackFXVolume_Scrolled(object sender, EventArgs e)
-        {
-            _bindingTrackFxVolumeSlider = true;
-            SetTrackFxVolume(Convert.ToDecimal(sldTrackFXVolume.ScrollValue));
-            _bindingTrackFxVolumeSlider = false;
-        }
-
-
-        private void BassPlayer_OnTrackFxVolumeChanged(object sender, EventArgs e)
-        {
-            if (_bindingTrackFxVolumeSlider) return;
-            var volume = BassPlayer.GetTrackSendFxVolume();
-            lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
-            if (sldTrackFXVolume.Value != volume)
-                sldTrackFXVolume.Value = Convert.ToInt32(volume);
         }
 
         /// <summary>

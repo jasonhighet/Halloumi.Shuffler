@@ -15,8 +15,6 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class SamplerControl : UserControl
     {
-        private bool _bindingVolumeSlider;
-
         public SamplerControl()
         {
             InitializeComponent();
@@ -48,19 +46,12 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void Initialize()
         {
-            sldVolume.Scrolled += sldVolume_Slid;
-            sldVolume.Minimum = 0;
-            sldVolume.Maximum = 100;
-
-            SetVolume(Convert.ToInt32(BassPlayer.GetSamplerMixerVolume()));
-
             rdbDelay2.Checked = true;
             chkEnableAutomation.Checked = BassPlayer.SampleAutomationEnabled;
 
             LoadSamplePlayers();
 
             BassPlayer.OnTrackSamplesChanged += BassPlayer_OnTrackSamplesChanged;
-            BassPlayer.OnSamplerMixerVolumeChanged += BassPlayer_OnSamplerMixerVolumeChanged;
 
             flpLeft.SuspendLayout();
             SamplePlayers.Clear();
@@ -91,26 +82,6 @@ namespace Halloumi.Shuffler.Controls
             if (InvokeRequired)
                 BeginInvoke(new MethodInvoker(LoadSamplePlayers));
             else LoadSamplePlayers();
-        }
-
-        private void BassPlayer_OnSamplerMixerVolumeChanged(object sender, EventArgs e)
-        {
-            if (_bindingVolumeSlider) return;
-            var volume = (int) BassPlayer.GetSamplerMixerVolume();
-
-            lblVolume.Text = volume.ToString();
-            if (sldVolume.Value != volume) sldVolume.Value = volume;
-        }
-
-        private void SetVolume(int volume)
-        {
-            if (volume < 0 || volume > 100) return;
-
-            BassPlayer.SetSamplerMixerVolume(Convert.ToDecimal(volume));
-
-            volume = (int) BassPlayer.GetSamplerMixerVolume();
-            lblVolume.Text = volume.ToString();
-            if (sldVolume.Value != volume) sldVolume.Value = volume;
         }
 
         /// <summary>
@@ -156,25 +127,12 @@ namespace Halloumi.Shuffler.Controls
                 else if (settings.SamplerDelayNotes == 0.0625M) rdbDelay4.Checked = true;
                 else if (settings.SamplerDelayNotes == 0M) rdbDelayNone.Checked = true;
                 BassPlayer.SamplerDelayNotes = settings.SamplerDelayNotes;
-
-                SetVolume(settings.SamplerVolume);
             }
             catch
             {
                 // ignored
             }
         }
-
-        /// <summary>
-        ///     Handles the Slid event of the sldVolume control.
-        /// </summary>
-        private void sldVolume_Slid(object sender, EventArgs e)
-        {
-            _bindingVolumeSlider = true;
-            SetVolume(sldVolume.ScrollValue);
-            _bindingVolumeSlider = false;
-        }
-
 
         /// <summary>
         ///     Handles the CheckedChanged event of the rdbDelay control.

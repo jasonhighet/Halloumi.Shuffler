@@ -339,10 +339,7 @@ namespace Halloumi.Shuffler
             settings.Volume = BassPlayer.GetMixerVolume();
 
             settings.SamplerDelayNotes = BassPlayer.SamplerDelayNotes;
-            settings.SamplerVolume = Convert.ToInt32(BassPlayer.GetSamplerMixerVolume());
-
             settings.TrackFxDelayNotes = BassPlayer.TrackSendFxDelayNotes;
-            settings.TrackFxVolume = Convert.ToInt32(BassPlayer.GetTrackSendFxVolume());
 
             settings.SamplerOutput = BassPlayer.SamplerOutput;
             settings.TrackOutput = BassPlayer.TrackOutput;

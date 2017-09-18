@@ -41,11 +41,6 @@
             this.rdbDelay3 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelay4 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelayNone = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.pnlFader = new Halloumi.Common.Windows.Controls.Panel();
-            this.sldVolume = new Halloumi.Shuffler.Controls.Slider();
-            this.lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
-            this.lblVolume = new Halloumi.Common.Windows.Controls.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.chkEnableAutomation = new Halloumi.Common.Windows.Controls.CheckBox();
@@ -61,8 +56,6 @@
             this.pnlEffectsSettings.SuspendLayout();
             this.panel4.SuspendLayout();
             this.flpRight.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.pnlFader.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
@@ -94,11 +87,11 @@
             this.flpLeft.BackColor = System.Drawing.Color.White;
             this.flpLeft.Controls.Add(this.samplePlayer);
             this.flpLeft.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpLeft.Location = new System.Drawing.Point(1, 164);
+            this.flpLeft.Location = new System.Drawing.Point(1, 127);
             this.flpLeft.Margin = new System.Windows.Forms.Padding(4);
             this.flpLeft.Name = "flpLeft";
             this.flpLeft.Padding = new System.Windows.Forms.Padding(0, 0, 0, 12);
-            this.flpLeft.Size = new System.Drawing.Size(797, 529);
+            this.flpLeft.Size = new System.Drawing.Size(797, 566);
             this.flpLeft.TabIndex = 59;
             // 
             // samplePlayer
@@ -116,7 +109,7 @@
             // kryptonBorderEdge1
             // 
             this.kryptonBorderEdge1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.kryptonBorderEdge1.Location = new System.Drawing.Point(1, 163);
+            this.kryptonBorderEdge1.Location = new System.Drawing.Point(1, 126);
             this.kryptonBorderEdge1.Margin = new System.Windows.Forms.Padding(4);
             this.kryptonBorderEdge1.Name = "kryptonBorderEdge1";
             this.kryptonBorderEdge1.Size = new System.Drawing.Size(797, 1);
@@ -127,25 +120,24 @@
             this.pnlEffectsSettings.AutoScroll = true;
             this.pnlEffectsSettings.BackColor = System.Drawing.Color.White;
             this.pnlEffectsSettings.Controls.Add(this.panel4);
-            this.pnlEffectsSettings.Controls.Add(this.panel3);
             this.pnlEffectsSettings.Controls.Add(this.panel2);
             this.pnlEffectsSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlEffectsSettings.Location = new System.Drawing.Point(1, 29);
             this.pnlEffectsSettings.Margin = new System.Windows.Forms.Padding(4);
             this.pnlEffectsSettings.Name = "pnlEffectsSettings";
             this.pnlEffectsSettings.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlEffectsSettings.Size = new System.Drawing.Size(797, 134);
+            this.pnlEffectsSettings.Size = new System.Drawing.Size(797, 97);
             this.pnlEffectsSettings.TabIndex = 44;
             // 
             // panel4
             // 
             this.panel4.Controls.Add(this.flpRight);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(7, 91);
+            this.panel4.Location = new System.Drawing.Point(7, 52);
             this.panel4.Margin = new System.Windows.Forms.Padding(4);
             this.panel4.Name = "panel4";
             this.panel4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.panel4.Size = new System.Drawing.Size(783, 37);
+            this.panel4.Size = new System.Drawing.Size(783, 39);
             this.panel4.TabIndex = 45;
             // 
             // flpRight
@@ -233,104 +225,6 @@
             this.rdbDelayNone.Values.Text = "None";
             this.rdbDelayNone.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.pnlFader);
-            this.panel3.Controls.Add(this.lblVolumCaption);
-            this.panel3.Controls.Add(this.lblVolume);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(7, 60);
-            this.panel3.Margin = new System.Windows.Forms.Padding(4);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(783, 31);
-            this.panel3.TabIndex = 43;
-            // 
-            // pnlFader
-            // 
-            this.pnlFader.BackColor = System.Drawing.Color.White;
-            this.pnlFader.Controls.Add(this.sldVolume);
-            this.pnlFader.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlFader.Location = new System.Drawing.Point(137, 0);
-            this.pnlFader.Margin = new System.Windows.Forms.Padding(4);
-            this.pnlFader.Name = "pnlFader";
-            this.pnlFader.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlFader.Size = new System.Drawing.Size(609, 31);
-            this.pnlFader.TabIndex = 71;
-            // 
-            // sldVolume
-            // 
-            this.sldVolume.Animated = false;
-            this.sldVolume.AnimationSize = 0.2F;
-            this.sldVolume.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
-            this.sldVolume.AutoScrollMargin = new System.Drawing.Size(0, 0);
-            this.sldVolume.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.sldVolume.BackColor = System.Drawing.Color.White;
-            this.sldVolume.BackgroundImage = null;
-            this.sldVolume.BackGroundImage = null;
-            this.sldVolume.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sldVolume.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.sldVolume.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.sldVolume.ButtonCornerRadius = ((uint)(2u));
-            this.sldVolume.ButtonSize = new System.Drawing.Size(24, 12);
-            this.sldVolume.ButtonStyle = MediaSlider.MediaSlider.ButtonType.GlassInline;
-            this.sldVolume.ContextMenuStrip = null;
-            this.sldVolume.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.sldVolume.LargeChange = 2;
-            this.sldVolume.Location = new System.Drawing.Point(7, 10);
-            this.sldVolume.Margin = new System.Windows.Forms.Padding(0);
-            this.sldVolume.Maximum = 100;
-            this.sldVolume.Minimum = 0;
-            this.sldVolume.Name = "sldVolume";
-            this.sldVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.sldVolume.ResizeRedraw = true;
-            this.sldVolume.ShowButtonOnHover = false;
-            this.sldVolume.Size = new System.Drawing.Size(595, 15);
-            this.sldVolume.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
-            this.sldVolume.SmallChange = 1;
-            this.sldVolume.SmoothScrolling = false;
-            this.sldVolume.TabIndex = 10;
-            this.sldVolume.TickColor = System.Drawing.Color.DarkOliveGreen;
-            this.sldVolume.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.sldVolume.TickType = MediaSlider.MediaSlider.TickMode.Standard;
-            this.sldVolume.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.sldVolume.TrackDepth = 6;
-            this.sldVolume.TrackFillColor = System.Drawing.Color.Transparent;
-            this.sldVolume.TrackProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(228)))), ((int)(((byte)(138)))));
-            this.sldVolume.TrackShadow = false;
-            this.sldVolume.TrackShadowColor = System.Drawing.Color.DarkGray;
-            this.sldVolume.TrackStyle = MediaSlider.MediaSlider.TrackType.Progress;
-            this.sldVolume.Value = 0;
-            this.sldVolume.WheelScrollTicks = 3;
-            // 
-            // lblVolumCaption
-            // 
-            this.lblVolumCaption.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblVolumCaption.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblVolumCaption.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolumCaption.Location = new System.Drawing.Point(0, 0);
-            this.lblVolumCaption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolumCaption.Name = "lblVolumCaption";
-            this.lblVolumCaption.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.lblVolumCaption.Size = new System.Drawing.Size(137, 31);
-            this.lblVolumCaption.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolumCaption.TabIndex = 68;
-            this.lblVolumCaption.Text = "Volume:";
-            this.lblVolumCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblVolume
-            // 
-            this.lblVolume.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblVolume.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVolume.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolume.Location = new System.Drawing.Point(746, 0);
-            this.lblVolume.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(37, 31);
-            this.lblVolume.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolume.TabIndex = 69;
-            this.lblVolume.Text = "100";
-            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.panel1);
@@ -339,7 +233,7 @@
             this.panel2.Location = new System.Drawing.Point(7, 6);
             this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(783, 54);
+            this.panel2.Size = new System.Drawing.Size(783, 46);
             this.panel2.TabIndex = 38;
             // 
             // panel1
@@ -350,7 +244,7 @@
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
-            this.panel1.Size = new System.Drawing.Size(494, 54);
+            this.panel1.Size = new System.Drawing.Size(494, 46);
             this.panel1.TabIndex = 38;
             // 
             // chkEnableAutomation
@@ -361,7 +255,7 @@
             this.chkEnableAutomation.Location = new System.Drawing.Point(7, 0);
             this.chkEnableAutomation.Margin = new System.Windows.Forms.Padding(13, 4, 4, 4);
             this.chkEnableAutomation.Name = "chkEnableAutomation";
-            this.chkEnableAutomation.Size = new System.Drawing.Size(487, 46);
+            this.chkEnableAutomation.Size = new System.Drawing.Size(487, 44);
             this.chkEnableAutomation.TabIndex = 42;
             this.chkEnableAutomation.Values.Text = "Enable Automation";
             this.chkEnableAutomation.CheckedChanged += new System.EventHandler(this.chkEnableAutomation_CheckedChanged);
@@ -378,7 +272,7 @@
             this.flowLayoutPanel6.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel6.Name = "flowLayoutPanel6";
             this.flowLayoutPanel6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.flowLayoutPanel6.Size = new System.Drawing.Size(289, 54);
+            this.flowLayoutPanel6.Size = new System.Drawing.Size(289, 46);
             this.flowLayoutPanel6.TabIndex = 36;
             // 
             // btnClearSampleTriggers
@@ -457,8 +351,6 @@
             this.panel4.ResumeLayout(false);
             this.flpRight.ResumeLayout(false);
             this.flpRight.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.pnlFader.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
@@ -494,10 +386,5 @@
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay3;
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay4;
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelayNone;
-        private System.Windows.Forms.Panel panel3;
-        private Halloumi.Common.Windows.Controls.Panel pnlFader;
-        private Slider sldVolume;
-        private Halloumi.Common.Windows.Controls.Label lblVolumCaption;
-        private Halloumi.Common.Windows.Controls.Label lblVolume;
     }
 }
