@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
@@ -12,28 +13,65 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     {
         private const int DefaultSampleRate = 44100;
 
-        /// <summary>
-        ///     Initialises the Bass audio engine.
-        /// </summary>
-        public static void InitialiseAudioEngine(IntPtr windowHandle)
-        {
-            BassNet.Registration("jason.highet@gmail.com", "2X1931822152222");
+        private static bool _engineStarted;
 
-            if (!Bass.BASS_Init(-1, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, windowHandle))
+        /// <summary>
+        ///     Gets or sets the volume of the bass player as decimal 0 - 100.
+        /// </summary>
+        public static decimal Volume
+        {
+            get
             {
-                throw new Exception("Cannot create Bass Engine.");
+                var value = (decimal) (Bass.BASS_GetVolume() * 100);
+                Thread.Sleep(1);
+                return value;
             }
-            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 200);
-            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 20);
+            set
+            {
+                if (value < 0 || value > 100) return;
+                Bass.BASS_SetVolume((float) (value / 100));
+                Thread.Sleep(1);
+            }
         }
 
         /// <summary>
-        ///     Initialises the monitor device.
+        ///     Initializes the Bass audio engine.
+        /// </summary>
+        public static void StopAudioEngine(IntPtr windowHandle)
+        {
+            if (_engineStarted) return;
+
+            BassNet.Registration("jason.highet@gmail.com", "2X1931822152222");
+
+            if (!Bass.BASS_Init(-1, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, windowHandle))
+                throw new Exception("Cannot create Bass Engine.");
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 200);
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 20);
+
+            _engineStarted = true;
+        }
+
+        /// <summary>
+        ///     Stops the Bass audio engine.
+        /// </summary>
+        public static void StopAudioEngine()
+        {
+            if (!_engineStarted) return;
+
+            // DebugHelper.WriteLine("Stop Engine");
+            Bass.BASS_Stop();
+            Bass.BASS_Free();
+
+            _engineStarted = false;
+        }
+
+        /// <summary>
+        ///     Initializes the monitor device.
         /// </summary>
         /// <param name="monitorDeviceId">The monitor device Id.</param>
         public static void InitialiseMonitorDevice(int monitorDeviceId)
         {
-            if (ChannelHelper.GetWaveOutDevices().Count < 3) return;
+            if (GetWaveOutDevices().Count < 3) return;
 
             if (!Bass.BASS_Init(monitorDeviceId, DefaultSampleRate, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
@@ -42,7 +80,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Initialises the mixer channel.
+        ///     Initializes the mixer channel.
         /// </summary>
         /// <returns>The channel Id of the mixer channel</returns>
         public static int IntialiseOutputChannel()
@@ -53,7 +91,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Initialises a decoder mixer channel.
+        ///     Initializes a decoder mixer channel.
         /// </summary>
         /// <returns>The channel Id of the mixer channel</returns>
         public static int IntialiseMixerChannel()
@@ -75,7 +113,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Initialises a mono decoder mixer channel.
+        ///     Initializes a mono decoder mixer channel.
         /// </summary>
         /// <returns>The channel Id of the mixer channel</returns>
         public static int IntialiseMonoDecoderMixerChannel()
@@ -98,7 +136,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             for (var i = -1; i < deviceCount; i++)
             {
                 var waveOutCaps = new WaveOutCaps();
-                waveOutGetDevCaps(i, ref waveOutCaps, Marshal.SizeOf(typeof (WaveOutCaps)));
+                waveOutGetDevCaps(i, ref waveOutCaps, Marshal.SizeOf(typeof(WaveOutCaps)));
                 var deviceName = new string(waveOutCaps.szPname);
 
                 if (deviceName.Contains('\0'))

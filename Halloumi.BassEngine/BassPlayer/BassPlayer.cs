@@ -33,8 +33,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         private static readonly object MixerLock = new object();
 
-        private static bool _engineStarted;
-
         private readonly MonitorOutputChannel _monitorOutput;
 
         private bool _locked;
@@ -73,7 +71,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             TrackFxAutomationEnabled = false;
 
             // start audio engine
-            StartAudioEngine(windowHandle);
+            ChannelHelper.StopAudioEngine(windowHandle);
 
             SpeakerOutput = new SpeakerOutputChannel();
             _monitorOutput = new MonitorOutputChannel();
@@ -131,18 +129,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public decimal Volume
         {
-            get
-            {
-                var value = (decimal) (Bass.BASS_GetVolume() * 100);
-                Thread.Sleep(1);
-                return value;
-            }
-            set
-            {
-                if (value < 0 || value > 100) return;
-                Bass.BASS_SetVolume((float)(value / 100));
-                Thread.Sleep(1);
-            }
+            get { return ChannelHelper.Volume; }
+            set { ChannelHelper.Volume = value; }
         }
 
         /// <summary>
@@ -213,7 +201,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 UnloadTrackAudioData(track);
             CachedTracks.Clear();
 
-            StopAudioEngine();
+            ChannelHelper.StopAudioEngine();
         }
 
         public void ToggleManualMixMode()
@@ -1055,26 +1043,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             SetTrackSyncPositions(track);
         }
 
-        /// <summary>
-        ///     Starts the Bass audio engine.
-        /// </summary>
-        private static void StartAudioEngine(IntPtr windowHandle)
-        {
-            if (_engineStarted) return;
-            // DebugHelper.WriteLine("Start Engine");
-            ChannelHelper.InitialiseAudioEngine(windowHandle);
-            _engineStarted = true;
-        }
-
-        /// <summary>
-        ///     Stops the Bass audio engine.
-        /// </summary>
-        private static void StopAudioEngine()
-        {
-            // DebugHelper.WriteLine("Stop Engine");
-            Bass.BASS_Stop();
-            Bass.BASS_Free();
-        }
 
         /// <summary>
         ///     Adds to the mixer channel, and sets the sync points.

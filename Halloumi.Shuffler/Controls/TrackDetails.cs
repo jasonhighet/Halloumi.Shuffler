@@ -37,10 +37,15 @@ namespace Halloumi.Shuffler.Controls
             {
                 lblCurrentTrackDescription.Text = track.Description.Replace("&", "&&");
 
-                var details = track.Album + " - " + track.Genre + " ";
-                details += " - " + track.LengthFormatted;
-                if (track.Bpm != 0) details += " - " + track.Bpm.ToString("0.00") + " BPM";
-                if (track.Key != "") details += " - " + KeyHelper.GetDisplayKey(track.Key);
+                var details = $"{track.Album} - {track.Genre} - {track.LengthFormatted}";
+
+                if (track.Bpm != 0)
+                    details += $" - {track.Bpm:0.00} BPM";
+
+                if (track.Key != "")
+                    details += $" - {KeyHelper.GetDisplayKey(track.Key)}";
+
+                details += $" - {track.Bitrate} KPS";
 
                 lblCurrentTrackDetails.Text = details;
 
