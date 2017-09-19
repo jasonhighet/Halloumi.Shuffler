@@ -623,37 +623,15 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
 
             // DebugHelper.WriteLine($"AddToMixer {audioStream.Description} {mixerChannel} {audioStream.Channel}...");
-            AddChannelToMixer(audioStream.Channel, mixerChannel);
+
+            BassMix.BASS_Mixer_StreamAddChannel(mixerChannel, audioStream.Channel,
+                BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
+                BASSFlag.BASS_MUSIC_AUTOFREE);
+            Thread.Sleep(1);
+
+            audioStream.MixerChannel = mixerChannel;
 
             // DebugHelper.WriteLine("done");
-        }
-
-        /// <summary>
-        ///     Adds a channel to a mixer channel.
-        /// </summary>
-        /// <param name="channel">The channel.</param>
-        /// <param name="mixerChannel">The mixer channel.</param>
-        public static void AddChannelToMixer(int channel, int mixerChannel)
-        {
-            if (channel == int.MinValue) throw new Exception("Channel not initialized");
-            if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
-
-            // DebugHelper.WriteLine($"AddChannelToMixer {mixerChannel} {channel}");
-            try
-            {
-                //lock (Lock)
-                {
-                    BassMix.BASS_Mixer_StreamAddChannel(mixerChannel, channel,
-                        BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
-                        BASSFlag.BASS_MUSIC_AUTOFREE);
-                    Thread.Sleep(1);
-                }
-            }
-            catch (SEHException e)
-            {
-                // DebugHelper.WriteLine(e.Message);
-                throw new Exception(e.Message);
-            }
         }
 
         /// <summary>
@@ -668,7 +646,8 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             
                 //throw new Exception("Audio file null or not audio not loaded");
 
-            if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
+            if (mixerChannel == int.MinValue)
+                throw new Exception("Mixer channel not initialized");
 
             //lock (Lock)
             {
@@ -683,6 +662,10 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
                 Bass.BASS_ChannelLock(mixerChannel, false);
                 // DebugHelper.WriteLine("done");
+
+
+                if(audioStream.MixerChannel == mixerChannel)
+                    audioStream.MixerChannel = int.MinValue;
             }
         }
 

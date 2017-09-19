@@ -259,7 +259,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public event EventHandler OnManualMixModeChanged;
 
         /// <summary>
-        ///     Initialises the track mixer.
+        ///     Initializes the track mixer.
         /// </summary>
         private void InitialiseTrackMixer()
         {
@@ -329,17 +329,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (track.IsAudioLoaded()) return;
 
             // load audio data if not loaded
-
             WaitForLock();
             Lock();
 
-            // DebugHelper.WriteLine("Preloading track " + track.Description);
             PreloadedTrack = track;
-
             LoadTrackAudioData(track);
-
-            // DebugHelper.WriteLine("Preloading track " + track.Description + "...Done");
-
             Unlock();
         }
 
@@ -1496,7 +1490,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             PreviousManaulExtendedFadeType = CurrentManualExtendedFadeType;
             CurrentManualExtendedFadeType = GetCurrentExtendedFadeType();
 
-            if (!IsTrackInUse(oldPreviousTrack)) RemoveTrackFromMixer(oldPreviousTrack);
+            if (!IsTrackInUse(oldPreviousTrack))
+                RemoveTrackFromMixer(oldPreviousTrack);
 
             if (CurrentTrack != null)
                 RaiseOnTrackChange();
@@ -1543,24 +1538,17 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 }
                 else
                 {
-                    if (PreviousTrack.PowerDownOnEnd)
-                    {
-                        AudioStreamHelper.PowerDown(PreviousTrack);
-                    }
-                    else if (IsForceFadeNowMode)
-                    {
-                        AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
-                            PreviousTrack.FadeOutEndVolume, PreviousTrack.FadeOutLengthSeconds);
-                    }
-                    else if (HasExtendedMixAttributes())
+                    if (HasExtendedMixAttributes())
                     {
                         var mixAttributes = GetExtendedMixAttributes();
                         switch (mixAttributes.ExtendedFadeType)
                         {
                             case ExtendedFadeType.Default:
-                                // set the volume slide
-                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
-                                    mixAttributes.FadeEndVolume, mixAttributes.FadeLength);
+                                if (PreviousTrack.PowerDownOnEnd)
+                                    AudioStreamHelper.PowerDown(PreviousTrack);
+                                else
+                                    AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
+                                        mixAttributes.FadeEndVolume, mixAttributes.FadeLength);
                                 break;
                             case ExtendedFadeType.PowerDown:
                                 AudioStreamHelper.PowerDown(PreviousTrack);
@@ -1584,6 +1572,15 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+                    }
+                    else if (PreviousTrack.PowerDownOnEnd)
+                    {
+                        AudioStreamHelper.PowerDown(PreviousTrack);
+                    }
+                    else if (IsForceFadeNowMode)
+                    {
+                        AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
+                            PreviousTrack.FadeOutEndVolume, PreviousTrack.FadeOutLengthSeconds);
                     }
                     else
                     {
@@ -1672,7 +1669,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             return BpmHelper.GetDefaultLoopLength(track.EndBpm) / 2D;
         }
 
-        private double GetPowerDownFadeLength(Track track)
+        private static double GetPowerDownFadeLength(Track track)
         {
             if (track == null) return 0D;
             return BpmHelper.GetDefaultLoopLength(track.EndBpm) / 4D;

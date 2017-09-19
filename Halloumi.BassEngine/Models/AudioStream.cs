@@ -31,6 +31,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             Channels = new List<int>();
             Gain = 0;
             GainChannel = int.MinValue;
+            MixerChannel = int.MinValue;
         }
 
         public AudioData AudioData { get; set; }
@@ -47,6 +48,11 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         {
             get { return Channels.Count == 0 ? int.MinValue : Channels[0]; }
         }
+
+        /// <summary>
+        ///     Gets or sets channel of the mixer the track has been added to
+        /// </summary>
+        public int MixerChannel { get; set; }
 
         public int InitialChannel
         {

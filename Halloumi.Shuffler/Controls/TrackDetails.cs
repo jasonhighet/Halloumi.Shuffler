@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.Controls
                 if (track.Key != "")
                     details += $" - {KeyHelper.GetDisplayKey(track.Key)}";
 
-                details += $" - {track.Bitrate} KPS";
+                details += $" - {track.Bitrate:00} KPS";
 
                 lblCurrentTrackDetails.Text = details;
 
