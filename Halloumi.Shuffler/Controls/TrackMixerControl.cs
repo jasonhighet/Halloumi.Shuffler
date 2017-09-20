@@ -22,7 +22,6 @@ namespace Halloumi.Shuffler.Controls
         private bool _bassPlayerOnTrackChange;
         private bool _binding;
         private bool _bindingManualMode;
-        private bool _bindingTrackFxVolumeSlider;
         private bool _bindingVolumeSlider;
         private decimal _lastTrackFxDelayNotes;
         private bool _timerTick;

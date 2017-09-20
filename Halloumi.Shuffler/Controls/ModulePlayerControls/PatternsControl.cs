@@ -46,7 +46,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         [Browsable(false)] [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Library Library { get; set; }
 
-        private FrmVstChain _frmVstChain;
+        //private FrmVstChain _frmVstChain;
 
         public PatternsControl()
         {
