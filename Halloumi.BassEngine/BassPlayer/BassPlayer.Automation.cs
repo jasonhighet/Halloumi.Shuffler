@@ -409,12 +409,12 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 if (trigger.StartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, trigger.StartSyncId);
                     trigger.StartSyncId = int.MinValue;
                 }
                 if (trigger.EndSyncId == int.MinValue) continue;
 
-                BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
+                BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, trigger.EndSyncId);
                 trigger.EndSyncId = int.MinValue;
             }
 
@@ -422,13 +422,13 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 if (trigger.StartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.StartSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, trigger.StartSyncId);
                     trigger.StartSyncId = int.MinValue;
                 }
 
                 if (trigger.EndSyncId == int.MinValue) continue;
 
-                BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, trigger.EndSyncId);
+                BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, trigger.EndSyncId);
                 trigger.EndSyncId = int.MinValue;
             }
         }
@@ -700,9 +700,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
                 CurrentTrack.EndLoopCount = 0;
 
-                BassMix.BASS_Mixer_ChannelRemoveSync(CurrentTrack.Channel, CurrentTrack.FadeOutStartSyncId);
+                BassMix.BASS_Mixer_ChannelRemoveSync(CurrentTrack.ChannelId, CurrentTrack.FadeOutStartSyncId);
                 CurrentTrack.FadeOutStartSyncId = int.MinValue;
-                BassMix.BASS_Mixer_ChannelRemoveSync(CurrentTrack.Channel, CurrentTrack.FadeOutEndSyncId);
+                BassMix.BASS_Mixer_ChannelRemoveSync(CurrentTrack.ChannelId, CurrentTrack.FadeOutEndSyncId);
                 CurrentTrack.FadeOutEndSyncId = int.MinValue;
 
                 var position = AudioStreamHelper.GetPosition(CurrentTrack);

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Common.Helpers;
+using Halloumi.Shuffler.AudioEngine.Channels;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Fx;
 using Un4seen.Bass.AddOn.Mix;
@@ -47,7 +48,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="volume">The volume as a percentage (0 - 1).</param>
         public static void SetVolume(AudioStream audioStream, float volume)
         {
-            SetVolume(audioStream.Channel, volume);
+            SetVolume(audioStream.ChannelId, volume);
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static void SetVolume(AudioStream audioStream, decimal volume)
         {
             if (volume > 100 || volume < 0) throw new Exception("Volume not it range");
-            SetVolume(audioStream.Channel, (float)(volume / 100));
+            SetVolume(audioStream.ChannelId, (float)(volume / 100));
         }
 
 
@@ -108,7 +109,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static decimal GetVolume(AudioStream audioStream)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded()) return 0;
-            return GetVolume(audioStream.Channel);
+            return GetVolume(audioStream.ChannelId);
         }
 
         /// <summary>
@@ -150,7 +151,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             // set the volume slide
             //lock (Lock)
             {
-                Bass.BASS_ChannelSlideAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_VOL, endVolume,
+                Bass.BASS_ChannelSlideAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_VOL, endVolume,
                     miliseconds);
                 Thread.Sleep(1);
             }
@@ -179,7 +180,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <returns>The audio stream sample rate</returns>
         public static int GetSampleRate(AudioStream audioStream)
         {
-            return GetSampleRate(audioStream.Channel);
+            return GetSampleRate(audioStream.ChannelId);
         }
 
         /// <summary>
@@ -216,7 +217,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             float sampleRate = audioStream.DefaultSampleRate;
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
+                Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
                 Thread.Sleep(1);
             }
         }
@@ -236,7 +237,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var sampleRate = GetTrackTempoChangeAsSampleRate(changeTrack, matchTrack);
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
+                Bass.BASS_ChannelSetAttribute(changeTrack.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
                 Thread.Sleep(1);
             }
         }
@@ -270,7 +271,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(changeTrack.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
+                Bass.BASS_ChannelSetAttribute(changeTrack.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO, percentChange);
                 Thread.Sleep(1);
             }
         }
@@ -285,7 +286,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO, 0F);
+                Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO, 0F);
                 Thread.Sleep(1);
             }
         }
@@ -297,7 +298,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="matchBpm">The match BPM.</param>
         public static void SetTempoToMatchBpm(AudioStream audioStream, decimal matchBpm)
         {
-            if (audioStream == null || audioStream.Channel == int.MinValue) return;
+            if (audioStream == null || audioStream.ChannelId == int.MinValue) return;
             SetTempoToMatchBpm(audioStream, audioStream.Bpm, matchBpm);
         }
 
@@ -309,9 +310,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="matchBpm">The match BPM.</param>
         public static void SetTempoToMatchBpm(AudioStream audioStream, decimal streamBpm, decimal matchBpm)
         {
-            if (audioStream == null || audioStream.Channel == int.MinValue) return;
+            if (audioStream == null || audioStream.ChannelId == int.MinValue) return;
 
-            SetTempoToMatchBpm(audioStream.Channel, streamBpm, matchBpm);
+            SetTempoToMatchBpm(audioStream.ChannelId, streamBpm, matchBpm);
         }
 
         internal static void SetTempoToMatchBpm(int channel, decimal streamBpm, decimal matchBpm)
@@ -336,7 +337,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="matchBpm">The match BPM.</param>
         public static void SetPitchToMatchBpm(AudioStream audioStream, decimal matchBpm)
         {
-            if (audioStream == null || audioStream.Channel == int.MinValue) return;
+            if (audioStream == null || audioStream.ChannelId == int.MinValue) return;
             SetPitchToMatchBpm(audioStream, audioStream.Bpm, matchBpm);
         }
 
@@ -348,12 +349,12 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="matchBpm">The match BPM.</param>
         public static void SetPitchToMatchBpm(AudioStream audioStream, decimal streamBpm, decimal matchBpm)
         {
-            if (audioStream == null || audioStream.Channel == int.MinValue) return;
+            if (audioStream == null || audioStream.ChannelId == int.MinValue) return;
 
             var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, percentChange);
+                Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, percentChange);
                 Thread.Sleep(1);
             }
         }
@@ -369,7 +370,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, 0F);
+                Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, 0F);
                 Thread.Sleep(1);
             }
         }
@@ -389,7 +390,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetPosition(audioStream.Channel, samplePosition);
+                Bass.BASS_ChannelSetPosition(audioStream.ChannelId, samplePosition);
                 Thread.Sleep(1);
             }
             
@@ -407,7 +408,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (!audioStream.IsAudioLoaded()) return 0;
             //lock (Lock)
             {
-                var position = Bass.BASS_ChannelGetPosition(audioStream.Channel);
+                var position = Bass.BASS_ChannelGetPosition(audioStream.ChannelId);
                 Thread.Sleep(1);
                 return position;
             }
@@ -423,7 +424,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             //lock (Lock)
             {
                 // DebugHelper.WriteLine("Pause Audio Stream (" + audioStream.Description + ")");
-                BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);
+                BassMix.BASS_Mixer_ChannelPause(audioStream.ChannelId);
                 Thread.Sleep(1);
             }
         }
@@ -465,7 +466,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             //lock (Lock)
             {
                 // DebugHelper.WriteLine("Play Audio Stream (" + audioStream.Description + ")");
-                BassMix.BASS_Mixer_ChannelPlay(audioStream.Channel);
+                BassMix.BASS_Mixer_ChannelPlay(audioStream.ChannelId);
                 Thread.Sleep(1);
             }
         }
@@ -511,7 +512,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             //lock (Lock)
             {
-                Bass.BASS_ChannelSlideAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_VOL, 0F, interval*8);
+                Bass.BASS_ChannelSlideAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_VOL, 0F, interval*8);
                 Thread.Sleep(1);
             }
 
@@ -521,10 +522,10 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 percentValue = percentValue / 1.2;
                 interval = (int)(interval * 0.9D);
                 freq = (int)(audioStream.DefaultSampleRate * percentValue);
-                if (freq <= 100 || audioStream.Channel == int.MinValue) continue;
+                if (freq <= 100 || audioStream.ChannelId == int.MinValue) continue;
                 //lock (Lock)
                 {
-                    Bass.BASS_ChannelSlideAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_FREQ, freq, interval);
+                    Bass.BASS_ChannelSlideAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_FREQ, freq, interval);
                     Thread.Sleep(1);
                 }
                 Thread.Sleep(interval);
@@ -533,7 +534,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (!audioStream.IsAudioLoaded()) return;
             //lock (Lock)
             {
-                Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_FREQ,
+                Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_FREQ,
                     audioStream.DefaultSampleRate);
                 Thread.Sleep(1);
             }
@@ -571,7 +572,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             if (!audioStream.IsGainChannelInitialized())
             {
-                audioStream.GainChannel = Bass.BASS_ChannelSetFX(audioStream.Channel, BASSFXType.BASS_FX_BFX_VOLUME, int.MaxValue);
+                audioStream.GainChannel = Bass.BASS_ChannelSetFX(audioStream.ChannelId, BASSFXType.BASS_FX_BFX_VOLUME, int.MaxValue);
             }
 
             var volumeParameters = new BASS_BFX_VOLUME(volume, BASSFXChan.BASS_BFX_CHANALL);
@@ -607,7 +608,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (audioStream == null || !audioStream.IsAudioLoaded())
                 throw new Exception("Audio file null or not audio not loaded");
 
-            audioStream.Length = Bass.BASS_ChannelGetLength(audioStream.Channel);
+            audioStream.Length = Bass.BASS_ChannelGetLength(audioStream.ChannelId);
         }
 
         /// <summary>
@@ -615,21 +616,21 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// </summary>
         /// <param name="audioStream">The audio stream.</param>
         /// <param name="mixerChannel">The mixer channel.</param>
-        public static void AddToMixer(AudioStream audioStream, int mixerChannel)
+        public static void AddToMixer(AudioStream audioStream, MixerChannel mixerChannel)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded())
                 throw new Exception("Audio file null or not audio not loaded");
 
-            if (mixerChannel == int.MinValue) throw new Exception("Mixer channel not initialized");
+            if (mixerChannel.ChannelId == int.MinValue) throw new Exception("Mixer channel not initialized");
 
             // DebugHelper.WriteLine($"AddToMixer {audioStream.Description} {mixerChannel} {audioStream.Channel}...");
 
-            BassMix.BASS_Mixer_StreamAddChannel(mixerChannel, audioStream.Channel,
+            BassMix.BASS_Mixer_StreamAddChannel(mixerChannel.ChannelId, audioStream.ChannelId,
                 BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
                 BASSFlag.BASS_MUSIC_AUTOFREE);
             Thread.Sleep(1);
 
-            audioStream.MixerChannel = mixerChannel;
+            audioStream.MixerChannelId = mixerChannel.ChannelId;
 
             // DebugHelper.WriteLine("done");
         }
@@ -639,33 +640,33 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// </summary>
         /// <param name="audioStream">The audio stream.</param>
         /// <param name="mixerChannel">The mixer channel.</param>
-        public static void RemoveFromMixer(AudioStream audioStream, int mixerChannel)
+        public static void RemoveFromMixer(AudioStream audioStream, MixerChannel mixerChannel)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded())
                 return;
             
                 //throw new Exception("Audio file null or not audio not loaded");
 
-            if (mixerChannel == int.MinValue)
+            if (mixerChannel.ChannelId == int.MinValue)
                 throw new Exception("Mixer channel not initialized");
 
             //lock (Lock)
             {
                 // DebugHelper.WriteLine($"RemoveFromMixer {audioStream.Description} {audioStream.Channel}...");
-                BassMix.BASS_Mixer_ChannelPause(audioStream.Channel);
-                Bass.BASS_ChannelLock(mixerChannel, true);
+                BassMix.BASS_Mixer_ChannelPause(audioStream.ChannelId);
+                Bass.BASS_ChannelLock(mixerChannel.ChannelId, true);
 
-                foreach (var channel in audioStream.Channels)
+                foreach (var channel in audioStream.ChannelIds)
                 {
                     BassMix.BASS_Mixer_ChannelRemove(channel);
                 }
 
-                Bass.BASS_ChannelLock(mixerChannel, false);
+                Bass.BASS_ChannelLock(mixerChannel.ChannelId, false);
                 // DebugHelper.WriteLine("done");
 
 
-                if(audioStream.MixerChannel == mixerChannel)
-                    audioStream.MixerChannel = int.MinValue;
+                if(audioStream.MixerChannelId == mixerChannel.ChannelId)
+                    audioStream.MixerChannelId = int.MinValue;
             }
         }
 
@@ -683,31 +684,31 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             audioStream.AddChannel(channel);
 
-            if (audioStream.Channel == 0)
+            if (audioStream.ChannelId == 0)
                 throw new Exception("Cannot load " + audioStream.Filename + ". Error code: " + Bass.BASS_ErrorGetCode());
 
             // DebugHelper.WriteLine("Creating reverse FX stream " + audioStream.Description + "...");
-            audioStream.AddChannel(BassFx.BASS_FX_ReverseCreate(audioStream.Channel, 1, BASSFlag.BASS_STREAM_DECODE));
+            audioStream.AddChannel(BassFx.BASS_FX_ReverseCreate(audioStream.ChannelId, 1, BASSFlag.BASS_STREAM_DECODE));
 
-            if (audioStream.Channel == 0)
+            if (audioStream.ChannelId == 0)
                 throw new Exception("Cannot load " + audioStream.Filename + ". Error code: " + Bass.BASS_ErrorGetCode());
 
-            Bass.BASS_ChannelSetAttribute(audioStream.Channel, BASSAttribute.BASS_ATTRIB_REVERSE_DIR,
+            Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_REVERSE_DIR,
                 (float)BASSFXReverse.BASS_FX_RVS_FORWARD);
 
 
             // DebugHelper.WriteLine("Creating tempo FX stream " + audioStream.Description + "...");
 
-            audioStream.AddChannel(BassFx.BASS_FX_TempoCreate(audioStream.Channel,
+            audioStream.AddChannel(BassFx.BASS_FX_TempoCreate(audioStream.ChannelId,
                 BASSFlag.BASS_FX_FREESOURCE | BASSFlag.BASS_STREAM_DECODE));
 
-            if (audioStream.Channel == 0)
+            if (audioStream.ChannelId == 0)
                 throw new Exception("Cannot load " + audioStream.Filename + ". Error code: " + Bass.BASS_ErrorGetCode());
 
             // DebugHelper.WriteLine("Calculating track length " + audioStream.Description + "...");
 
-            audioStream.Length = Bass.BASS_ChannelGetLength(audioStream.Channel);
-            audioStream.DefaultSampleRate = GetSampleRate(audioStream.Channel);
+            audioStream.Length = Bass.BASS_ChannelGetLength(audioStream.ChannelId);
+            audioStream.DefaultSampleRate = GetSampleRate(audioStream.ChannelId);
 
             SetReplayGain(audioStream);
             SetPosition(audioStream, 0);
@@ -727,11 +728,11 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             
             // DebugHelper.WriteLine($"UnloadAudio {audioStream.Description}...");
 
-            foreach (var channel in audioStream.Channels)
+            foreach (var channel in audioStream.ChannelIds)
             {
                 Bass.BASS_StreamFree(channel);
             }
-            audioStream.Channels.Clear();
+            audioStream.ChannelIds.Clear();
 
             AudioDataHelper.UnloadAudioData(audioStream);
 
