@@ -55,7 +55,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             AudioStreamHelper.LoadAudio(audioStream);
 
             audioStream.SyncProc = OnSync;
-            AudioStreamHelper.AddToMixer(audioStream, Output.ChannelId);
+            AudioStreamHelper.AddToMixer(audioStream, Output);
             AudioStreamHelper.SetPosition(audioStream, 0);
 
             lock (_streamSections)
@@ -101,7 +101,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 streamSection.AudioStream.AudioSyncs.Clear();
             }
 
-            AudioStreamHelper.RemoveFromMixer(streamSection.AudioStream, Output.ChannelId);
+            AudioStreamHelper.RemoveFromMixer(streamSection.AudioStream, Output);
             AudioStreamHelper.UnloadAudio(streamSection.AudioStream);
 
             streamSection.AudioStream.SyncProc = null;
@@ -165,7 +165,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             var sync = GetAudioSync(audioStream, position);
             if (sync != null && sync.SyncType != SyncType.AudioStreamEvent)
             {
-                OnSync(sync.Id, audioStream.Channel, int.MinValue, IntPtr.Zero);
+                OnSync(sync.Id, audioStream.ChannelId, int.MinValue, IntPtr.Zero);
             }
         }
 
@@ -641,14 +641,14 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             lock (_streamSections)
             {
-                return _streamSections.FirstOrDefault(x => x.AudioStream.Channel == channel);
+                return _streamSections.FirstOrDefault(x => x.AudioStream.ChannelId == channel);
             }
         }
 
         private static void RemoveSyncFromStream(AudioStream audioStream, AudioSync sync)
         {
             if (sync.Id == int.MinValue) return;
-            BassMix.BASS_Mixer_ChannelRemoveSync(audioStream.Channel, sync.Id);
+            BassMix.BASS_Mixer_ChannelRemoveSync(audioStream.ChannelId, sync.Id);
             sync.Id = int.MinValue;
         }
 
@@ -662,7 +662,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (audioSync.SyncType == SyncType.Start || audioStream.DisableSyncs)
                 return;
 
-            audioSync.Id = BassMix.BASS_Mixer_ChannelSetSync(audioStream.Channel,
+            audioSync.Id = BassMix.BASS_Mixer_ChannelSetSync(audioStream.ChannelId,
                 BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME,
                 audioSync.Position,
                 audioStream.SyncProc,

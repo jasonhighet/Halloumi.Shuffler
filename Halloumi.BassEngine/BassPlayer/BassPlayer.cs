@@ -39,6 +39,10 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         private MixerChannel _trackMixer;
 
+        private MixerChannel _previousTrackMixer;
+
+        private MixerChannel _currentTrackMixer;
+
         private OutputSplitter _trackOutputSplitter;
 
         private MixerChannel _trackSendFxMixer;
@@ -265,9 +269,15 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             // DebugHelper.WriteLine("InitialiseTrackMixer");
 
-            // create mixer channel
+            _currentTrackMixer = new MixerChannel(this);
+            _previousTrackMixer = new MixerChannel(this);
+
+            // create mixer channels
             _trackMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
             _trackOutputSplitter = new OutputSplitter(_trackMixer, SpeakerOutput, _monitorOutput);
+
+            _trackMixer.AddInputChannel(_currentTrackMixer);
+            _trackMixer.AddInputChannel(_previousTrackMixer);
 
             // create clone of mixer channel and mute it
             _trackSendMixer = new MixerChannel(this);
@@ -361,7 +371,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 var oldNextTrack = NextTrack;
                 NextTrack = track;
-                if (!IsTrackInUse(oldNextTrack)) RemoveTrackFromMixer(oldNextTrack);
+                if (!IsTrackInUse(oldNextTrack))
+                    RemoveTrackFromMixers(oldNextTrack);
+
                 SetTrackSyncPositions();
             }
 
@@ -377,7 +389,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (NextTrack == null) return;
             var oldNextTrack = NextTrack;
             NextTrack = null;
-            if (!IsTrackInUse(oldNextTrack)) RemoveTrackFromMixer(oldNextTrack);
+            if (!IsTrackInUse(oldNextTrack)) RemoveTrackFromMixers(oldNextTrack);
 
             SetTrackSyncPositions(CurrentTrack);
         }
@@ -458,13 +470,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public bool IsPlaying()
         {
-            return (CurrentTrack == null ||
-                    Bass.BASS_ChannelIsActive(CurrentTrack.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
-                   &&
-                   (NextTrack == null || Bass.BASS_ChannelIsActive(NextTrack.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
-                   &&
-                   (PreviousTrack == null ||
-                    Bass.BASS_ChannelIsActive(PreviousTrack.Channel) != BASSActive.BASS_ACTIVE_STOPPED);
+            return AudioStreamHelper.IsPlaying(CurrentTrack) 
+                || AudioStreamHelper.IsPlaying(NextTrack) 
+                || AudioStreamHelper.IsPlaying(PreviousTrack);
         }
 
         /// <summary>
@@ -554,7 +562,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             AudioStreamHelper.Pause(track);
             if (IsTrackInUse(track))
-                RemoveTrackFromMixer(track);
+                RemoveTrackFromMixers(track);
+
             UnloadTrackAudioData(track);
             CachedTracks.Remove(track);
         }
@@ -629,7 +638,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             // DebugHelper.WriteLine("Unloading track Audio Data " + track.Description);
 
-            AudioStreamHelper.RemoveFromMixer(track, _trackMixer.ChannelId);
+            
+            AudioStreamHelper.RemoveFromMixer(track, _currentTrackMixer);
+            AudioStreamHelper.RemoveFromMixer(track, _previousTrackMixer);
 
             AudioStreamHelper.UnloadAudio(track);
             track.SyncProc = null;
@@ -750,11 +761,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void ClearTracks()
         {
-            RemoveTrackFromMixer(PreviousTrack);
+            RemoveTrackFromMixers(PreviousTrack);
             PreviousTrack = null;
-            RemoveTrackFromMixer(NextTrack);
+            RemoveTrackFromMixers(NextTrack);
             NextTrack = null;
-            RemoveTrackFromMixer(CurrentTrack);
+            RemoveTrackFromMixers(CurrentTrack);
             CurrentTrack = null;
         }
 
@@ -1062,7 +1073,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 lock (MixerLock)
                 {
                     // add the new track to the mixer (in paused mode)
-                    AudioStreamHelper.AddToMixer(track, _trackMixer.ChannelId);
+                    AudioStreamHelper.AddToMixer(track, _currentTrackMixer);
 
                     // set track sync event
                     track.SyncProc = OnTrackSync;
@@ -1208,7 +1219,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             lock (track)
             {
-                var syncId = BassMix.BASS_Mixer_ChannelSetSync(track.Channel,
+                var syncId = BassMix.BASS_Mixer_ChannelSetSync(track.ChannelId,
                     flags,
                     position,
                     track.SyncProc,
@@ -1270,47 +1281,47 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 if (track.FadeInStartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.FadeInStartSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeInStartSyncId);
                     track.FadeInStartSyncId = int.MinValue;
                 }
                 if (track.FadeInEndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.FadeInEndSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeInEndSyncId);
                     track.FadeInEndSyncId = int.MinValue;
                 }
                 if (track.FadeOutStartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.FadeOutStartSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeOutStartSyncId);
                     track.FadeOutStartSyncId = int.MinValue;
                 }
                 if (track.FadeOutEndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.FadeOutEndSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeOutEndSyncId);
                     track.FadeInStartSyncId = int.MinValue;
                 }
                 if (track.PreFadeInStartSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.PreFadeInStartSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.PreFadeInStartSyncId);
                     track.PreFadeInStartSyncId = int.MinValue;
                 }
                 if (track.TrackEndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.TrackEndSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.TrackEndSyncId);
                     track.TrackEndSyncId = int.MinValue;
                 }
                 if (track.RawLoopEndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.RawLoopEndSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.RawLoopEndSyncId);
                     track.TrackEndSyncId = int.MinValue;
                 }
                 if (track.ExtendedMixEndSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.ExtendedMixEndSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.ExtendedMixEndSyncId);
                     track.ExtendedMixEndSyncId = int.MinValue;
                 }
                 if (track.SkipSyncId != int.MinValue)
                 {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.Channel, track.SkipSyncId);
+                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.SkipSyncId);
                     track.SkipSyncId = int.MinValue;
                 }
             }
@@ -1322,7 +1333,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         ///     Unloads the track stream data.
         /// </summary>
         /// <param name="track">The track to unload.</param>
-        private void RemoveTrackFromMixer(Track track)
+        private void RemoveTrackFromMixers(Track track)
         {
             if (track == null) return;
             if (!track.IsAudioLoaded()) return;
@@ -1491,7 +1502,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             CurrentManualExtendedFadeType = GetCurrentExtendedFadeType();
 
             if (!IsTrackInUse(oldPreviousTrack))
-                RemoveTrackFromMixer(oldPreviousTrack);
+                RemoveTrackFromMixers(oldPreviousTrack);
 
             if (CurrentTrack != null)
                 RaiseOnTrackChange();
@@ -1920,7 +1931,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private void OnTrackSync(int handle, int channel, int data, IntPtr pointer)
         {
             var syncType = (SyncType) pointer.ToInt32();
-            var track = GetInUseTracks().FirstOrDefault(x => x.Channel == channel);
+            var track = GetInUseTracks().FirstOrDefault(x => x.ChannelId == channel);
             //var description = track != null ? "Track: " + track.Description : "";
 
             // DebugHelper.WriteLine("Event Fired: " + syncType + " " + description);

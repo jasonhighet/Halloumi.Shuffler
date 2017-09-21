@@ -50,33 +50,33 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             {
                 if (bpm == 0) bpm = BpmHelper.GetBpmFromLoopLength(length);
                 var percentChange = BpmHelper.GetAdjustedBpmPercentChange(bpm, targetBpm) / 100;
-                AudioStreamHelper.SetTempoToMatchBpm(audioStream.Channel, bpm, targetBpm);
+                AudioStreamHelper.SetTempoToMatchBpm(audioStream.ChannelId, bpm, targetBpm);
 
                 length = length * (double)(1 + percentChange);
             }
 
             const BASSEncode flags = BASSEncode.BASS_ENCODE_PCM;
-            BassEnc.BASS_Encode_Start(audioStream.Channel, outFilename, flags, null, IntPtr.Zero);
+            BassEnc.BASS_Encode_Start(audioStream.ChannelId, outFilename, flags, null, IntPtr.Zero);
 
-            var startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start);
-            var endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start + length);
+            var startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.ChannelId, start);
+            var endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.ChannelId, start + length);
             if (offset == 0 || offset == start)
             {
-                TransferBytes(audioStream.Channel, startByte, endByte);
+                TransferBytes(audioStream.ChannelId, startByte, endByte);
             }
             else
             {
-                startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, offset);
-                TransferBytes(audioStream.Channel, startByte, endByte);
+                startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.ChannelId, offset);
+                TransferBytes(audioStream.ChannelId, startByte, endByte);
 
-                startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, start);
-                endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.Channel, offset);
-                TransferBytes(audioStream.Channel, startByte, endByte);
+                startByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.ChannelId, start);
+                endByte = Bass.BASS_ChannelSeconds2Bytes(audioStream.ChannelId, offset);
+                TransferBytes(audioStream.ChannelId, startByte, endByte);
             }
 
-            BassEnc.BASS_Encode_Stop(audioStream.Channel);
+            BassEnc.BASS_Encode_Stop(audioStream.ChannelId);
 
-            Bass.BASS_StreamFree(audioStream.Channel);
+            Bass.BASS_StreamFree(audioStream.ChannelId);
         }
 
         /// <summary>

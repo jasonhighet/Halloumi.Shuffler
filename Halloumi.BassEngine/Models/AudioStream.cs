@@ -28,10 +28,10 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         protected AudioStream()
         {
             AudioSyncs = new List<AudioSync>();
-            Channels = new List<int>();
+            ChannelIds = new List<int>();
             Gain = 0;
             GainChannel = int.MinValue;
-            MixerChannel = int.MinValue;
+            MixerChannelId = int.MinValue;
         }
 
         public AudioData AudioData { get; set; }
@@ -44,19 +44,19 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets or sets the bass channel Id for the track (set once the track is loaded by the bass engine)
         /// </summary>
-        public int Channel
+        public int ChannelId
         {
-            get { return Channels.Count == 0 ? int.MinValue : Channels[0]; }
+            get { return ChannelIds.Count == 0 ? int.MinValue : ChannelIds[0]; }
         }
 
         /// <summary>
         ///     Gets or sets channel of the mixer the track has been added to
         /// </summary>
-        public int MixerChannel { get; set; }
+        public int MixerChannelId { get; set; }
 
         public int InitialChannel
         {
-            get { return Channels.Count == 0 ? int.MinValue : Channels[Channels.Count - 1]; }
+            get { return ChannelIds.Count == 0 ? int.MinValue : ChannelIds[ChannelIds.Count - 1]; }
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     Gets the channels.
         /// </summary>
-        public List<int> Channels { get; }
+        public List<int> ChannelIds { get; }
 
         /// <summary>
         ///     Gets or sets the name of the mp3 file associated with the track.
@@ -139,7 +139,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <returns></returns>
         public bool IsAudioLoaded()
         {
-            return AudioData != null && Channel != int.MinValue;
+            return AudioData != null && ChannelId != int.MinValue;
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <param name="channel">The channel.</param>
         public void AddChannel(int channel)
         {
-            Channels.Insert(0, channel);
+            ChannelIds.Insert(0, channel);
         }
 
         /// <summary>
@@ -179,8 +179,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                 }
             }
 
-            if (Channel == int.MinValue) return samples*SamplesToSecondsRatio;
-            var value = Bass.BASS_ChannelBytes2Seconds(Channel, samples);
+            if (ChannelId == int.MinValue) return samples*SamplesToSecondsRatio;
+            var value = Bass.BASS_ChannelBytes2Seconds(ChannelId, samples);
             if (value == -1)
             {
                 value = GuessSecondsFromSamples(samples);
@@ -229,8 +229,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                 }
             }
 
-            if (Channel == int.MinValue) return (long) (seconds/SamplesToSecondsRatio);
-            var value = Bass.BASS_ChannelSeconds2Bytes(Channel, seconds);
+            if (ChannelId == int.MinValue) return (long) (seconds/SamplesToSecondsRatio);
+            var value = Bass.BASS_ChannelSeconds2Bytes(ChannelId, seconds);
             if (value == -1)
             {
                 value = GuessSamplesFromSeconds(seconds);
