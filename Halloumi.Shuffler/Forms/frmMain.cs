@@ -532,7 +532,7 @@ namespace Halloumi.Shuffler.Forms
             }
             playerDetails.DisplayCurrentTrackDetails();
 
-            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToEnd();
+            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut();
         }
 
         /// <summary>
