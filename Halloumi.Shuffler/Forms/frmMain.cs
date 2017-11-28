@@ -540,7 +540,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuSkipToEnd_Click(object sender, EventArgs e)
         {
-            _application.BassPlayer.SkipToEnd();
+            _application.BassPlayer.SkipToFadeOut();
         }
 
         /// <summary>
