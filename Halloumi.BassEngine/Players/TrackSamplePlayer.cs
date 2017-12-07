@@ -26,16 +26,20 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public void LoadSamples(Track currentTrack, Track nextTrack)
         {
-            if (!HaveTracksChanged(currentTrack, nextTrack))
-                return;
+            lock (this)
+            {
+                if (!HaveTracksChanged(currentTrack, nextTrack))
+                    return;
 
-            _audioPlayer.UnloadAll();
+                _audioPlayer.UnloadAll();
 
-            _currentTrack = currentTrack;
-            _nextTrack = nextTrack;
+                _currentTrack = currentTrack;
+                _nextTrack = nextTrack;
 
-            LoadSamples(_currentTrack);
-            LoadSamples(_nextTrack);
+                LoadSamples(_currentTrack);
+                LoadSamples(_nextTrack);
+            }
+
         }
 
         public void UnloadAll()
