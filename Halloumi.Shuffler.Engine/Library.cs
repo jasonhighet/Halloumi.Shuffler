@@ -407,6 +407,11 @@ namespace Halloumi.Shuffler.AudioLibrary
             
             var files = FileSystemHelper.SearchFiles(externalFolder, "*.mp3", true);
             
+            ParallelHelper.ForEach(files, file => { ImportExternalShufflerTrack(file, externalFolder); });
+            //foreach (var file in files)
+            //{
+            //    ImportExternalShufflerTrack(file, externalFolder);
+            //}
 
 
             SaveToDatabase();
