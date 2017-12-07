@@ -21,6 +21,7 @@ namespace Halloumi.Shuffler.Forms
         private readonly ShufflerApplication _application;
         private FrmGeneratePlaylist _autoGenerateSettings;
         private FrmModuleEditor _frmModuleEditor;
+        private FrmImportShufflerTracks _frmImportShufflerTracks;
 
 
         private FrmSampleLibrary _frmSampleLibrary;
@@ -741,5 +742,15 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
+        private void mnuImportTracks_Click(object sender, EventArgs e)
+        {
+            if (_frmImportShufflerTracks == null || _frmImportShufflerTracks.IsDisposed)
+            {
+                _frmImportShufflerTracks = new FrmImportShufflerTracks {Library = _application.Library};
+            }
+
+            if (!_frmImportShufflerTracks.Visible)
+                WindowHelper.ShowDialog(this, _frmImportShufflerTracks);
+        }
     }
 }

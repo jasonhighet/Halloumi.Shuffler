@@ -128,6 +128,8 @@
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuImportTracks = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
             this.pnlMenuBar.SuspendLayout();
@@ -295,7 +297,9 @@
             this.mnuExportShufflerTracks,
             this.toolStripSeparator14,
             this.mnuImportCollection,
-            this.mnuDeleteCollection});
+            this.mnuDeleteCollection,
+            this.toolStripSeparator7,
+            this.mnuImportTracks});
             this.mnuLibrary.Name = "mnuLibrary";
             this.mnuLibrary.Size = new System.Drawing.Size(66, 33);
             this.mnuLibrary.Text = "&Library";
@@ -902,6 +906,18 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(260, 6);
+            // 
+            // mnuImportTracks
+            // 
+            this.mnuImportTracks.Name = "mnuImportTracks";
+            this.mnuImportTracks.Size = new System.Drawing.Size(263, 26);
+            this.mnuImportTracks.Text = "Import Tracks...";
+            this.mnuImportTracks.Click += new System.EventHandler(this.mnuImportTracks_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1035,5 +1051,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuDeleteCollection;
         private System.Windows.Forms.ToolStripMenuItem mnuShowPlayer;
         private System.Windows.Forms.ToolStripStatusLabel lblPlayerStatus;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem mnuImportTracks;
     }
 }

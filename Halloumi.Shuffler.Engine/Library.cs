@@ -399,6 +399,42 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
         /// <summary>
+        /// Imports the tracks.
+        /// </summary>
+        /// <param name="externalFolder">The external folder.</param>
+        public void ImportExternalShufflerTracks(string externalFolder)
+        {
+            
+            var files = FileSystemHelper.SearchFiles(externalFolder, "*.mp3", true);
+            
+
+
+            SaveToDatabase();
+        }
+
+        private void ImportExternalShufflerTrack(string file, string externalFolder)
+        {
+            var externalTrack = TrackHelper.LoadTrack(file, false);
+            var isShufflerFile = ExtenedAttributesHelper.HasExtendedAttributes(externalTrack.Description);
+
+            if (!isShufflerFile) return;
+            if (GetTrack(externalTrack.Artist, externalTrack.Title) != null) return;
+
+            var newFile = CopyExternalFileToLibraryFolder(file, externalFolder);
+            LoadTrack(newFile);
+        }
+
+        private string CopyExternalFileToLibraryFolder(string externalFile, string externalFolder)
+        {
+            var newFileName = externalFile.Replace(externalFolder, LibraryFolder);
+            var newFilePath = Path.GetDirectoryName(newFileName) + "";
+            Directory.CreateDirectory(newFilePath);
+            FileSystemHelper.Copy(externalFile, newFileName);
+            return newFilePath;
+        }
+        
+
+        /// <summary>
         ///     Cancels the import.
         /// </summary>
         public void CancelImport()
