@@ -498,8 +498,16 @@ namespace Halloumi.Shuffler.Controls
 
         private void BassPlayer_OnVolumeChanged(object sender, EventArgs e)
         {
+            if (InvokeRequired)
+                BeginInvoke(new MethodInvoker(delegate { BindVolume(); }));
+            else
+                BindVolume();
+        }
+
+        private void BindVolume()
+        {
             if (_bindingVolumeSlider) return;
-            var volume = (int) BassPlayer.GetMixerVolume();
+            var volume = (int)BassPlayer.GetMixerVolume();
             if (volume != sldVolume.Value)
                 SetVolume(volume);
         }

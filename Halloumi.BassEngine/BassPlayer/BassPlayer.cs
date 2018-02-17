@@ -1824,7 +1824,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private void RaiseOnEndFadeIn()
         {
             // DebugHelper.WriteLine("End fade in event");
-            Task.Run(() => { OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty); });
+            //Task.Run(() => {
+                OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty);
+            //});
         }
 
         /// <summary>
@@ -1833,7 +1835,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private void RaiseOnSkipToEnd()
         {
             // DebugHelper.WriteLine("Skip to end event");
-            Task.Run(() => { OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty); });
+            //Task.Run(() => {
+                OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty);
+            //});
         }
 
         /// <summary>

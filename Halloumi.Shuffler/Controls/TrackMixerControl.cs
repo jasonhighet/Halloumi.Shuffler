@@ -395,12 +395,28 @@ namespace Halloumi.Shuffler.Controls
 
         private void BassPlayer_OnManualMixVolumeChanged(object sender, EventArgs e)
         {
+            if (InvokeRequired)
+                BeginInvoke(new MethodInvoker(delegate { BindMixVolume(); }));
+            else
+                BindMixVolume();
+        }
+
+        private void BindMixVolume()
+        {
             if (_bindingVolumeSlider) return;
-            var volume = (int) BassPlayer.GetManualMixVolume();
+            var volume = (int)BassPlayer.GetManualMixVolume();
             sldFader.Value = volume;
         }
 
         private void BassPlayer_OnManualMixModeChanged(object sender, EventArgs e)
+        {
+            if (InvokeRequired)
+                BeginInvoke(new MethodInvoker(delegate { BindMixMode(); }));
+            else
+                BindMixMode();
+        }
+
+        private void BindMixMode()
         {
             if (_bindingManualMode) return;
             chkManualFading.Checked = BassPlayer.IsManualMixMode;

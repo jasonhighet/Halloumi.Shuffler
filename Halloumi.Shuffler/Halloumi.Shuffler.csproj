@@ -507,6 +507,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="MidiMapping.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\exit.png" />
     <Content Include="icon.ico" />
     <Content Include="Resources\icon.ico" />
