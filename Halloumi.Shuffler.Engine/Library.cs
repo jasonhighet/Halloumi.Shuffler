@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
-using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
@@ -794,27 +793,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns></returns>
         public bool SaveTrack(Track track, bool updateAxillaryFiles = true)
         {
-            if (!TrackHelper.SaveTrack(track)) return false;
-            if (!TrackHelper.RenameTrack(track)) return false;
-
-            //if (!updateAxillaryFiles) return true;
-            //try
-            //{
-            //    if (track.IsShufflerTrack) ShufflerHelper.RenameShufferFiles(track);
-
-            //    // if filename changed, save any associated play-list files
-            //    var playlists = PlaylistHelper.GetAllPlaylists().Where(playlist => playlist.Tracks.Contains(track));
-            //    foreach (var playlist in playlists)
-            //    {
-            //        PlaylistHelper.SavePlaylist(playlist);
-            //    }
-            //}
-            //catch
-            //{
-            //    // ignored
-            //}
-
-            return true;
+            return TrackHelper.SaveTrack(track) && TrackHelper.RenameTrack(track);
         }
 
         /// <summary>
@@ -857,5 +836,38 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
             return track;
         }
+
+        public List<Track> GetDuplicateButDifferentShufflerTracks()
+        {
+            var duplicateButDifferentTracks = new List<Track>();
+
+
+            var duplicateTracksByTitle = Tracks
+                .Where(track => track.IsShufflerTrack)
+                .GroupBy(track => track.Description)
+                .Where(group => group.Count() > 1)
+                .ToList();
+
+            foreach (var duplicateTrackByTitle in duplicateTracksByTitle)
+            {
+                var tracks = duplicateTrackByTitle.ToList();
+
+                foreach (var track in tracks)
+                {
+                    track.FullLength = Convert.ToDecimal(AudioStreamHelper.GetLength(track.Filename));
+                }
+
+                var duplicateTracksByLength = tracks
+                    .GroupBy(track => track.FullLength)
+                    .ToList();
+
+                if (duplicateTracksByLength.Count > 1)
+                    duplicateButDifferentTracks.AddRange(duplicateTracksByLength.SelectMany(x=>x));
+            }
+
+
+            return duplicateButDifferentTracks.OrderBy(x => x.Description).ToList();
+        }
+
     }
 }

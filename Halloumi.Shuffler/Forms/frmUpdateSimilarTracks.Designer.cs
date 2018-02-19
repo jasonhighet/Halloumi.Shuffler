@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlTrack = new Halloumi.Common.Windows.Controls.Panel();
             this.grdTracks = new Halloumi.Shuffler.Controls.DataGridView();
             this.colTrackDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrackAlbum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrackLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTrackNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTrackBitRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mnuTrack = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuUpdateTrackTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUpdateTrackDetails = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +56,7 @@
             this.pnlTrack.Controls.Add(this.grdTracks);
             this.pnlTrack.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTrack.Location = new System.Drawing.Point(0, 0);
-            this.pnlTrack.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlTrack.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTrack.Name = "pnlTrack";
             this.pnlTrack.Padding = new System.Windows.Forms.Padding(1);
             this.pnlTrack.Size = new System.Drawing.Size(1079, 598);
@@ -76,14 +76,14 @@
             this.colTrackDescription,
             this.colTrackAlbum,
             this.colTrackLength,
-            this.colTrackNumber});
+            this.colTrackBitRate});
             this.grdTracks.ContextMenuStrip = this.mnuTrack;
             this.grdTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdTracks.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
             this.grdTracks.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
             this.grdTracks.HideOuterBorders = true;
             this.grdTracks.Location = new System.Drawing.Point(1, 1);
-            this.grdTracks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grdTracks.Margin = new System.Windows.Forms.Padding(4);
             this.grdTracks.MergeColor = System.Drawing.Color.Gainsboro;
             this.grdTracks.Name = "grdTracks";
             this.grdTracks.ReadOnly = true;
@@ -129,17 +129,17 @@
             this.colTrackLength.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.colTrackLength.Width = 87;
             // 
-            // colTrackNumber
+            // colTrackBitRate
             // 
-            this.colTrackNumber.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colTrackNumber.DataPropertyName = "TrackNumberFormatted";
+            this.colTrackBitRate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colTrackBitRate.DataPropertyName = "BitrateFormatted";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            this.colTrackNumber.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colTrackNumber.HeaderText = "#";
-            this.colTrackNumber.Name = "colTrackNumber";
-            this.colTrackNumber.ReadOnly = true;
-            this.colTrackNumber.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colTrackNumber.Width = 51;
+            this.colTrackBitRate.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colTrackBitRate.HeaderText = "Bitrate";
+            this.colTrackBitRate.Name = "colTrackBitRate";
+            this.colTrackBitRate.ReadOnly = true;
+            this.colTrackBitRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colTrackBitRate.Width = 86;
             // 
             // mnuTrack
             // 
@@ -187,14 +187,14 @@
             this.mnuUpdateAudioData.Text = "Update &Audio Data";
             this.mnuUpdateAudioData.Click += new System.EventHandler(this.mnuUpdateAudioData_Click);
             // 
-            // frmUpdateSimilarTracks
+            // FrmUpdateSimilarTracks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1079, 598);
             this.Controls.Add(this.pnlTrack);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmUpdateSimilarTracks";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -215,7 +215,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackDescription;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackAlbum;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackLength;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTrackNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTrackBitRate;
         private System.Windows.Forms.ContextMenuStrip mnuTrack;
         private System.Windows.Forms.ToolStripMenuItem mnuUpdateTrackDetails;
         private System.Windows.Forms.ToolStripMenuItem mnuUpdateShufflerDetails;

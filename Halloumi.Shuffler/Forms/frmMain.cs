@@ -220,7 +220,6 @@ namespace Halloumi.Shuffler.Forms
             {
                 BassPlayer = _application.BassPlayer,
                 Library = _application.Library,
-                Tracks = trackLibraryControl.DisplayedTracks.ToList()
             };
             similarTracks.ShowDialog();
         }
