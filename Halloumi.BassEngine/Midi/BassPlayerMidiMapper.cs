@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Un4seen.Bass.AddOn.Vst;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Halloumi.Shuffler.AudioEngine.Midi
 {
@@ -17,42 +19,58 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
         {
             _bassPlayer = bassPlayer;
 
-            _controlMappings = new List<ControlMapping>
+            var mappingFile = "MidiMapping.json";
+            if (File.Exists(mappingFile))
             {
-                new ControlMapping {CommandName = "Play", MidiControlId = 45},
-                new ControlMapping {CommandName = "PowerDownCurrent", MidiControlId = 46},
-                new ControlMapping {CommandName = "Volume", MidiControlId = 2},
-                new ControlMapping {CommandName = "PausePrevious", MidiControlId = 23},
-                new ControlMapping {CommandName = "PowerDownPrevious", MidiControlId = 33},
-                new ControlMapping {CommandName = "ManualMixVolume", MidiControlId = 14},
-                new ControlMapping {CommandName = "FadeNow", MidiControlId = 48},
-                new ControlMapping {CommandName = "TrackSendFx", MidiControlId = 24},
-                new ControlMapping {CommandName = "ToggleManualMixMode", MidiControlId = 44},
-                new ControlMapping {CommandName = "LoopFadeInForever", MidiControlId = 49},
-                new ControlMapping {CommandName = "JumpBack", MidiControlId = 47}
-            };
+                var json = File.ReadAllText(mappingFile);
+                var midiMapping = JsonConvert.DeserializeObject<MidiMapping>(json);
 
-            for (var i = 0; i < 12; i++)
-            {
-                _controlMappings.Add(new ControlMapping
+                _controlMappings = midiMapping.Commands.Select(command => new ControlMapping()
                 {
-                    CommandName = "Sample" + (i + 1),
-                    MidiControlId = (i < 6) ? i + 26 : i + 36
-                });
+                    CommandName = command.Key,
+                    MidiControlId = midiMapping.Controls.FirstOrDefault(control => control.Key == command.Value).Value
+                }).ToList();
+
+                _vstMappings = new List<VstMapping>();
+                foreach (var vstCommand in midiMapping.VstCommands)
+                {
+                    foreach (var parameter in vstCommand.Value)
+                    {
+                        _vstMappings.Add(new VstMapping
+                        {
+                            VstPlugin = GetPluginByName(vstCommand.Key),
+                            MidiControlId = midiMapping.Controls.FirstOrDefault(control => control.Key == parameter.Value).Value,
+                            ParameterIndex = parameter.Key,
+                        });
+                    }
+                }
             }
 
-            _vstMappings = new List<VstMapping>
-            {
-                new VstMapping
-                {
-                    VstPlugin = _bassPlayer.MainVstPlugin,
-                    MidiControlId = 17,
-                    ParameterIndex = 4,
-                }
-            };
-
-
             midiManager.OnControlMessageEvent += MidiManager_OnControlMessageEvent;
+        }
+
+        private VstPlugin GetPluginByName(string name)
+        {
+            switch (name)
+            {
+                case "SamplerVstPlugin":
+                    return _bassPlayer.SamplerVstPlugin;
+                case "SamplerVstPlugin2":
+                    return _bassPlayer.SamplerVstPlugin2;
+                case "TrackVstPlugin":
+                    return _bassPlayer.TrackVstPlugin;
+                case "TrackSendFxVstPlugin":
+                    return _bassPlayer.TrackSendFxVstPlugin;
+                case "TrackSendFxVstPlugin2":
+                    return _bassPlayer.TrackSendFxVstPlugin2;
+                case "MainVstPlugin":
+                    return _bassPlayer.MainVstPlugin;
+                case "MainVstPlugin2":
+                    return _bassPlayer.MainVstPlugin2;
+                default:
+                    return _bassPlayer.MainVstPlugin;
+            }
+
         }
 
         private void MidiManager_OnControlMessageEvent(ControlMessageEventArgs e)
@@ -76,7 +94,7 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 return;
             if (vstMapping.ParameterIndex >= vstMapping.VstPlugin.Parameters.Count)
                 return;
-            
+
             var plugin = vstMapping.VstPlugin;
             var parameter = vstMapping.VstPlugin.Parameters[vstMapping.ParameterIndex];
 
@@ -187,7 +205,7 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
 
             public VstPlugin VstPlugin { get; set; }
             public int ParameterIndex { get; set; }
-            public int MinVstValue { get;  }
+            public int MinVstValue { get; }
             public int MaxVstValue { get; }
 
             public int MidiControlId { get; set; }

@@ -121,6 +121,7 @@
     <Compile Include="Helpers\ChannelHelper.cs" />
     <Compile Include="Midi\BassPlayerMidiMapper.cs" />
     <Compile Include="Midi\MidiManager.cs" />
+    <Compile Include="Midi\MidiMapping.cs" />
     <Compile Include="Models\AudioData.cs" />
     <Compile Include="Models\AudioStream.cs" />
     <Compile Include="Models\PlayState.cs" />
