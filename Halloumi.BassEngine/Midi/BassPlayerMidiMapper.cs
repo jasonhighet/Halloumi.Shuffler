@@ -117,6 +117,34 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 else
                     _bassPlayer.StopTrackFxSend();
             }
+            else if (controlMapping.CommandName == "TrackSendFxHalf")
+            {
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.StartTrackFxSendHalf();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
+            else if (controlMapping.CommandName == "TrackSendFxQuarter")
+            {
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.StartTrackFxSendQuarter();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
+            else if (controlMapping.CommandName == "TrackSendFxEighth")
+            {
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.StartTrackFxSendEighth();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
+            else if (controlMapping.CommandName == "TrackSendFxSixteenth")
+            {
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.StartTrackFxSendSixteenth();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
             else if (controlMapping.CommandName == "FadeNow")
             {
                 if (IsControlOn(midiValue, controlMapping))

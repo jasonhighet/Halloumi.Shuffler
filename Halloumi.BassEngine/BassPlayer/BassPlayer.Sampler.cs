@@ -109,6 +109,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <param name="sample">The sample.</param>
         public void PauseSample(Sample sample)
         {
+            if (sample == null)
+                return;
+
             _samplePlayer.PauseSample(sample.SampleId);
             StopRecordingSampleTrigger();
         }

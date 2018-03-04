@@ -1,6 +1,7 @@
 ﻿using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Plugins;
+using System;
 
 namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
@@ -197,6 +198,30 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             LastTrackFxTrigger.Length = length;
 
             // DebugHelper.WriteLine("End StopTrackFXSend");
+        }
+
+        public void StartTrackFxSendHalf()
+        {
+            TrackSendFxDelayNotes = 0.5M;
+            StartTrackFxSend();
+        }
+
+        public void StartTrackFxSendQuarter()
+        {
+            TrackSendFxDelayNotes = 0.25M;
+            StartTrackFxSend();
+       }
+
+        public void StartTrackFxSendEighth()
+        {
+            TrackSendFxDelayNotes = 0.125M;
+            StartTrackFxSend();
+        }
+
+        public void StartTrackFxSendSixteenth()
+        {
+            TrackSendFxDelayNotes = 0.0625M;
+            StartTrackFxSend();
         }
 
         /// <summary>
