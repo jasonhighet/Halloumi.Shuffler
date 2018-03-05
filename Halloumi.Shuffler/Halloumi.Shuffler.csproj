@@ -345,6 +345,7 @@
     <Compile Include="Forms\Settings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShufflerPlaylist.cs" />
     <EmbeddedResource Include="Controls\ListBuilder.resx">
       <DependentUpon>ListBuilder.cs</DependentUpon>
     </EmbeddedResource>
