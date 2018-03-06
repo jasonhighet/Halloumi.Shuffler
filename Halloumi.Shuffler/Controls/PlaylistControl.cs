@@ -26,13 +26,15 @@ namespace Halloumi.Shuffler.Controls
 
         private bool _bassPlayerOnTrackChange;
 
+
+        private bool _binding;
+
         private bool _doNotBind;
 
         private bool _loaded;
         public EventHandler PlaylistChanged;
-        ///public EventHandler TrackClicked;
 
-
+        /// public EventHandler TrackClicked;
         /// <summary>
         ///     Initializes a new instance of the PlaylistControl class.
         /// </summary>
@@ -155,9 +157,7 @@ namespace Halloumi.Shuffler.Controls
         {
             //for (var i = 0; i < TrackModels.Count; i++)
             //    UpdateMixRank(i);
-            Parallel.For(0, TrackModels.Count, i => {
-                UpdateMixRank(i);
-            });
+            Parallel.For(0, TrackModels.Count, UpdateMixRank);
         }
 
         private void UpdateMixRank(int rowIndex)
@@ -507,34 +507,6 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        ///     Gets the last track.
-        /// </summary>
-        /// <returns>The last track</returns>
-        public Track GetLastTrack()
-        {
-            return TrackModels.Count == 0 ? null : GetLibraryTrack(TrackModels.Last());
-        }
-
-        /// <summary>
-        ///     Gets the last track.
-        /// </summary>
-        /// <returns>The last track</returns>
-        public Track GetSecondToLastTrack()
-        {
-            return TrackModels.Count < 2 ? null : GetLibraryTrack(TrackModels[TrackModels.Count - 2]);
-        }
-
-        /// <summary>
-        ///     Removes the last track.
-        /// </summary>
-        public void RemoveLastTrack()
-        {
-            if (TrackModels.Count == 0) return;
-            var lastTrack = TrackModels.Last();
-            if (lastTrack != null) RemoveTrack(lastTrack);
-        }
-
-        /// <summary>
         ///     Gets the tracks in the play-list
         /// </summary>
         /// <returns>The tracks in the play-list</returns>
@@ -572,8 +544,6 @@ namespace Halloumi.Shuffler.Controls
             BassPlayer.ForcePlay(track.Filename);
         }
 
-
-        private bool _binding;
         /// <summary>
         ///     Binds the data for the user control to the controls
         /// </summary>
@@ -702,17 +672,6 @@ namespace Halloumi.Shuffler.Controls
             if (currentTrack == null) return -1;
             currentTrack.IsCurrent = true;
             return TrackModels.IndexOf(currentTrack);
-        }
-
-        /// <summary>
-        ///     Removes a track.
-        /// </summary>
-        /// <param name="trackToRemove">The track to remove.</param>
-        private void RemoveTrack(TrackModel trackToRemove)
-        {
-            if (trackToRemove == null) return;
-            var tracksToRemove = new[] {trackToRemove}.ToList();
-            RemoveTracks(tracksToRemove);
         }
 
         /// <summary>

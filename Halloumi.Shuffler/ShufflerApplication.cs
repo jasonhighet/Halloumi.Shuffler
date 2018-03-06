@@ -36,7 +36,7 @@ namespace Halloumi.Shuffler
 
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
 
-            Playlist = new ShufflerPlaylist(BassPlayer, Library, MixLibrary);
+            Playlist = new ShufflerPlaylist(BassPlayer, Library);
         }
 
         public BaseMinimizeToTrayForm BaseForm { get; set; }
