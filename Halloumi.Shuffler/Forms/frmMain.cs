@@ -71,9 +71,6 @@ namespace Halloumi.Shuffler.Forms
             var settings = Settings.Default;
             formStateController.FormStateSettings = settings.FormStateSettings;
 
-            playlistControl.Library = application.Library;
-            playlistControl.MixLibrary = application.MixLibrary;
-            playlistControl.BassPlayer = application.BassPlayer;
             playlistControl.ToolStripLabel = lblPlaylistStatus;
 
             playerDetails.Library = application.Library;
@@ -84,7 +81,6 @@ namespace Halloumi.Shuffler.Forms
             playerDetails.ToolStripLabel = lblPlayerStatus;
 
             playerDetails.MixLibrary = application.MixLibrary;
-            playlistControl.MixLibrary = application.MixLibrary;
 
             trackLibraryControl.Library = application.Library;
             trackLibraryControl.BassPlayer = application.BassPlayer;
@@ -102,7 +98,7 @@ namespace Halloumi.Shuffler.Forms
 
             mixerControl.Initialize();
             playerDetails.Initialize();
-            playlistControl.Initalize(trackLibraryControl);
+            playlistControl.Initalize(trackLibraryControl, application);
 
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
@@ -163,7 +159,7 @@ namespace Halloumi.Shuffler.Forms
             var mixRankDescription = toolStripDropDownItem.Text;
             var mixRank = _application.MixLibrary.GetRankFromDescription(mixRankDescription);
 
-            var track = playlistControl.GetCurrentTrack();
+            var track = playlistControl.GetSelectedTrack();
             if (track == null)
                 return;
 
@@ -305,8 +301,6 @@ namespace Halloumi.Shuffler.Forms
             mnuUpdateLibraryOnStartup.Checked = settings.UpdateLibraryOnStartup;
 
             fileMenuController.RecentFiles = settings.RecentFiles;
-
-            playlistControl.LoadWorkingPlaylist();
         }
 
         /// <summary>
@@ -582,8 +576,8 @@ namespace Halloumi.Shuffler.Forms
         {
             var tracks = playlistControl.GetTracks();
 
-            var playlistName = !string.IsNullOrEmpty(playlistControl.CurrentPlaylistFile)
-                ? Path.GetFileNameWithoutExtension(playlistControl.CurrentPlaylistFile)
+            var playlistName = !string.IsNullOrEmpty(_application.Playlist.CurrentPlaylistFile)
+                ? Path.GetFileNameWithoutExtension(_application.Playlist.CurrentPlaylistFile)
                 : trackLibraryControl.CollectionFilter;
 
             ExportTracks(tracks, playlistName);
@@ -638,8 +632,8 @@ namespace Halloumi.Shuffler.Forms
         private void BindTrackRankMenu()
         {
             var currentMixRank = -1;
-            if (playlistControl.GetCurrentTrack() != null)
-                currentMixRank = playlistControl.GetCurrentTrack().Rank;
+            if (playlistControl.GetSelectedTrack() != null)
+                currentMixRank = playlistControl.GetSelectedTrack().Rank;
             for (var i = 0; i < 6; i++)
             {
                 mnuTrackRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);

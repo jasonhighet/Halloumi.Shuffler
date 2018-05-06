@@ -217,7 +217,7 @@ namespace Halloumi.Shuffler
             SerializationHelper<List<string>>.ToXmlFile(playlistFiles, WorkingPlaylistFilename);
         }
 
-        private Track GetTrack(int index)
+        public Track GetTrack(int index)
         {
             if (index < 0 || index >= Tracks.Count)
                 return null;
@@ -240,6 +240,42 @@ namespace Halloumi.Shuffler
                 BassPlayer.PreloadTrack(preloadTrack.Filename);
             else if (BassPlayer.PreloadedTrack.Description != preloadTrack.Description)
                 BassPlayer.PreloadTrack(preloadTrack.Filename);
+        }
+
+        /// <summary>
+        ///     Gets the next track.
+        /// </summary>
+        /// <returns>The next track.</returns>
+        public Track GetCurrentTrack()
+        {
+            return GetTrack(CurrentTrackIndex);
+        }
+
+        /// <summary>
+        ///     Gets the next track.
+        /// </summary>
+        /// <returns>The next track.</returns>
+        public Track GetNextTrack()
+        {
+            return GetTrack(CurrentTrackIndex + 1);
+        }
+
+        /// <summary>
+        ///     Gets the next track.
+        /// </summary>
+        /// <returns>The next track.</returns>
+        private Track GetTrackAfterNext()
+        {
+            return GetTrack(CurrentTrackIndex + 2);
+        }
+
+        /// <summary>
+        ///     Gets the previous track.
+        /// </summary>
+        /// <returns>The previous track.</returns>
+        public Track GetPreviousTrack()
+        {
+            return GetTrack(CurrentTrackIndex - 1);
         }
 
         private void RaiseCurrentTrackChanged()
