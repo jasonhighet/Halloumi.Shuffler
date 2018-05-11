@@ -355,14 +355,20 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             foreach (var sampleModel in GetSelectedSampleModels())
             {
                 var exportFileName = Path.Combine(destinationFolder, sampleModel.Description + ".wav");
+                //AudioExportHelper.SavePartialAsWave(sampleModel.AudioFile.Path,
+                //    exportFileName,
+                //    sampleModel.Sample.Start,
+                //    sampleModel.Sample.Length,
+                //    sampleModel.Sample.Offset,
+                //    0,
+                //    sampleModel.Bpm,
+                //    ModulePlayer.Module.Bpm);
+
                 AudioExportHelper.SavePartialAsWave(sampleModel.AudioFile.Path,
                     exportFileName,
                     sampleModel.Sample.Start,
                     sampleModel.Sample.Length,
-                    sampleModel.Sample.Offset,
-                    0,
-                    sampleModel.Bpm,
-                    ModulePlayer.Module.Bpm);
+                    sampleModel.Sample.Offset);
             }
         }
 
