@@ -5,7 +5,6 @@ using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
-using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.AudioLibrary
 {
@@ -111,6 +110,12 @@ namespace Halloumi.Shuffler.AudioLibrary
             return samples;
         }
 
+
+        public List<Sample> GetSamples()
+        {
+            return Samples.ToList(); 
+        }
+
         public List<Sample> GetSamples(SampleCriteria criteria)
         {
             if (criteria.MaxBpm == 0) criteria.MaxBpm = 200;
@@ -124,9 +129,9 @@ namespace Halloumi.Shuffler.AudioLibrary
                     .Where(s => string.IsNullOrEmpty(criteria.Description) || s.Description == criteria.Description)
                     .Where(
                         s =>
-                            string.IsNullOrEmpty(criteria.Key) || (s.Key == criteria.Key && !s.IsAtonal) ||
+                            string.IsNullOrEmpty(criteria.Key) || s.Key == criteria.Key && !s.IsAtonal ||
                             criteria.IncludeAtonal && s.IsAtonal)
-                    .Where(s => !criteria.AtonalOnly || (criteria.AtonalOnly && s.IsAtonal))
+                    .Where(s => !criteria.AtonalOnly || criteria.AtonalOnly && s.IsAtonal)
                     .Where(s => !criteria.Primary.HasValue || s.IsPrimaryLoop == criteria.Primary.Value)
                     .Where(s => !criteria.LoopMode.HasValue || s.LoopMode == criteria.LoopMode)
                     .Where(s => s.Bpm >= criteria.MinBpm && s.Bpm <= criteria.MaxBpm)
@@ -141,7 +146,8 @@ namespace Halloumi.Shuffler.AudioLibrary
             samples = samples.Where(s => s.Tags.Contains(criteria.SearchText)
                                          || s.Description.ToLower().Contains(criteria.SearchText)
                                          || s.TrackArtist.ToLower().Contains(criteria.SearchText)
-                                         || s.TrackTitle.ToLower().Contains(criteria.SearchText)).ToList();
+                                         || s.TrackTitle.ToLower().Contains(criteria.SearchText))
+                .ToList();
 
             return samples;
         }
@@ -186,7 +192,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public void ExportMixSectionsAsSamples(Track track)
         {
             var existingSamples = GetTrackSamples(track);
-            if(existingSamples.Count > 0 ) return;
+            if (existingSamples.Count > 0) return;
             var samples = GetMixSectionsAsSamples(track);
             UpdateTrackSamples(track, samples);
             SaveCache();
@@ -252,12 +258,10 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             foreach (
                 var track in
-                    Samples.Select(GetTrackFromSample)
-                        .Where(track => !tracks.Contains(track))
-                        .Where(track => track != null))
-            {
+                Samples.Select(GetTrackFromSample)
+                    .Where(track => !tracks.Contains(track))
+                    .Where(track => track != null))
                 tracks.Add(track);
-            }
 
             return tracks;
         }

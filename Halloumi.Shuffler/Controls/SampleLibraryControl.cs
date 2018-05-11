@@ -198,7 +198,6 @@ namespace Halloumi.Shuffler.Controls
                 if (sortField == "Tags") sampleModels = sampleModels.OrderBy(t => t.Tags).ToList();
                 if (sortField == "BPM") sampleModels = sampleModels.OrderBy(t => t.Bpm).ToList();
                 if (sortField == "Key") sampleModels = sampleModels.OrderByDescending(t => t.Key).ToList();
-
                 if (grdSamples.SortOrder == SortOrder.Descending) sampleModels.Reverse();
             }
             SampleModels = sampleModels;
@@ -510,6 +509,50 @@ namespace Halloumi.Shuffler.Controls
             SampleRecipient?.ImportLibrarySamples(GetSelectedSamples());
         }
 
+
+
+        private void mnuExportSamples_Click(object sender, EventArgs e)
+        {
+            var samples = GetSelectedSamples();
+            if (samples == null) return;
+            ExportSamples(samples);
+        }
+
+        private void ExportSamples(List<Sample> samples)
+        {
+            StopSamples();
+
+            Cursor = Cursors.WaitCursor;
+
+
+            var folder = FileDialogHelper.OpenFolder();
+            if (folder == "") return;
+
+            ParallelHelper.ForEach(samples, sample =>
+            {
+                var track = SampleLibrary.GetTrackFromSample(sample);
+                if (track == null)
+                    return;
+
+                var outPath = Path.Combine(folder, track.Genre);
+
+                if (!Directory.Exists(outPath))
+                    Directory.CreateDirectory(outPath);
+
+                var outFile = FileSystemHelper.StripInvalidFileNameChars($"{sample.Bpm:000.00} - {sample.TrackArtist} - {sample.TrackTitle} - {sample.Description}.wav");
+
+                outPath = Path.Combine(outPath, outFile);
+
+                if (File.Exists(outPath))
+                    File.Delete(outPath);
+
+                AudioExportHelper.SavePartialAsWave(track.Filename, outPath, sample.Start, sample.Length, sample.Offset,
+                    sample.Gain);
+            });
+
+            Cursor = Cursors.Default;
+        }
+
         private class SampleModel
         {
             public SampleModel(Sample sample)
@@ -538,6 +581,11 @@ namespace Halloumi.Shuffler.Controls
             public string Key { get; }
 
             public Sample Sample { get; }
+        }
+
+        private void mnuExportAllSamples_Click(object sender, EventArgs e)
+        {
+            ExportSamples(SampleLibrary.GetSamples());
         }
     }
 

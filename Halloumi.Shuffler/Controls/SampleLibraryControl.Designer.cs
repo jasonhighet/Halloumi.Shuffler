@@ -44,9 +44,14 @@
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuExportSamples = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuImportSamples = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnEditSample = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuEditTags = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCalculateKey = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCopySample = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlSampleDetails = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlDivider = new Halloumi.Common.Windows.Controls.Panel();
@@ -70,7 +75,7 @@
             this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTags = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.mnuImportSamples = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuExportAllSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlBackground2.SuspendLayout();
             this.pnlLibraryDetails.SuspendLayout();
             this.pnlTrack.SuspendLayout();
@@ -222,39 +227,73 @@
             this.contextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuImportSamples,
+            this.mnuExportSamples,
+            this.mnuExportAllSamples,
+            this.toolStripSeparator1,
             this.mnEditSample,
             this.mnuEditTags,
+            this.toolStripSeparator2,
             this.mnuCalculateKey,
+            this.toolStripSeparator3,
             this.mnuCopySample});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(190, 162);
+            this.contextMenuStrip.Size = new System.Drawing.Size(217, 232);
             this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
+            // 
+            // mnuExportSamples
+            // 
+            this.mnuExportSamples.Name = "mnuExportSamples";
+            this.mnuExportSamples.Size = new System.Drawing.Size(216, 26);
+            this.mnuExportSamples.Text = "E&xport Samples";
+            this.mnuExportSamples.Click += new System.EventHandler(this.mnuExportSamples_Click);
+            // 
+            // mnuImportSamples
+            // 
+            this.mnuImportSamples.Name = "mnuImportSamples";
+            this.mnuImportSamples.Size = new System.Drawing.Size(216, 26);
+            this.mnuImportSamples.Text = "&Import Samples";
+            this.mnuImportSamples.Click += new System.EventHandler(this.mnuImportSamples_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
             // 
             // mnEditSample
             // 
             this.mnEditSample.Name = "mnEditSample";
-            this.mnEditSample.Size = new System.Drawing.Size(189, 26);
+            this.mnEditSample.Size = new System.Drawing.Size(216, 26);
             this.mnEditSample.Text = "Edit &Sample";
             this.mnEditSample.Click += new System.EventHandler(this.mnEditSample_Click);
             // 
             // mnuEditTags
             // 
             this.mnuEditTags.Name = "mnuEditTags";
-            this.mnuEditTags.Size = new System.Drawing.Size(189, 26);
+            this.mnuEditTags.Size = new System.Drawing.Size(216, 26);
             this.mnuEditTags.Text = "Edit &Tags";
             this.mnuEditTags.Click += new System.EventHandler(this.mnuEditTags_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(213, 6);
             // 
             // mnuCalculateKey
             // 
             this.mnuCalculateKey.Name = "mnuCalculateKey";
-            this.mnuCalculateKey.Size = new System.Drawing.Size(189, 26);
+            this.mnuCalculateKey.Size = new System.Drawing.Size(216, 26);
             this.mnuCalculateKey.Text = "Calculate &Key";
             this.mnuCalculateKey.Click += new System.EventHandler(this.mnuCalculateKey_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(213, 6);
             // 
             // mnuCopySample
             // 
             this.mnuCopySample.Name = "mnuCopySample";
-            this.mnuCopySample.Size = new System.Drawing.Size(189, 26);
+            this.mnuCopySample.Size = new System.Drawing.Size(216, 26);
             this.mnuCopySample.Text = "&Copy Sample(s)";
             this.mnuCopySample.Click += new System.EventHandler(this.mnuCopySample_Click);
             // 
@@ -545,12 +584,12 @@
             this.colTags.ReadOnly = true;
             this.colTags.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
-            // mnuImportSamples
+            // mnuExportAllSamples
             // 
-            this.mnuImportSamples.Name = "mnuImportSamples";
-            this.mnuImportSamples.Size = new System.Drawing.Size(189, 26);
-            this.mnuImportSamples.Text = "&Import Samples";
-            this.mnuImportSamples.Click += new System.EventHandler(this.mnuImportSamples_Click);
+            this.mnuExportAllSamples.Name = "mnuExportAllSamples";
+            this.mnuExportAllSamples.Size = new System.Drawing.Size(216, 26);
+            this.mnuExportAllSamples.Text = "Export All Samples";
+            this.mnuExportAllSamples.Click += new System.EventHandler(this.mnuExportAllSamples_Click);
             // 
             // SampleLibraryControl
             // 
@@ -605,13 +644,18 @@
         private System.Windows.Forms.ToolStripMenuItem mnuEditTags;
         private System.Windows.Forms.ToolStripMenuItem mnuCalculateKey;
         private System.Windows.Forms.ToolStripMenuItem mnuCopySample;
+        private Common.Windows.Controls.Label label6;
+        private Common.Windows.Controls.CheckBox chkIncludeAntonal;
+        private System.Windows.Forms.ToolStripMenuItem mnuImportSamples;
+        private System.Windows.Forms.ToolStripMenuItem mnuExportSamples;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private Common.Windows.Controls.Label label6;
-        private Common.Windows.Controls.CheckBox chkIncludeAntonal;
-        private System.Windows.Forms.ToolStripMenuItem mnuImportSamples;
+        private System.Windows.Forms.ToolStripMenuItem mnuExportAllSamples;
     }
 }

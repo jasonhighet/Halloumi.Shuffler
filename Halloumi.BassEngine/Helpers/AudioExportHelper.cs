@@ -77,6 +77,9 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             BassEnc.BASS_Encode_Stop(audioStream.ChannelId);
 
             Bass.BASS_StreamFree(audioStream.ChannelId);
+
+
+            AudioStreamHelper.UnloadAudio(audioStream);
         }
 
         /// <summary>
