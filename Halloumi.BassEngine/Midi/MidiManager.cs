@@ -9,12 +9,21 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
 
         public MidiManager()
         {
-            if (InputDevice.DeviceCount == 0)
-                return;
+            int deviceCount = InputDevice.DeviceCount;
 
-            _inDevice = new InputDevice(0);
-            _inDevice.ChannelMessageReceived += InDevice_ChannelMessageReceived;
-            _inDevice.StartRecording();
+            for (int i = 0; i < deviceCount; i++)
+            {
+                var details = InputDevice.GetDeviceCapabilities(i);
+
+                if (details.name.ToLower() != "nanokontrol")
+                    continue;
+
+                _inDevice = new InputDevice(i);
+                _inDevice.ChannelMessageReceived += InDevice_ChannelMessageReceived;
+                _inDevice.StartRecording();
+
+                break;
+            }
         }
 
         private void InDevice_ChannelMessageReceived(object sender, ChannelMessageEventArgs e)
