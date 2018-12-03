@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.Forms;
@@ -19,11 +20,11 @@ namespace Halloumi.Shuffler
 
             CommonFunctions.SetDefaultSettings();
             var settings = Settings.Default;
-            if (settings.LibraryFolder == "")
+            if (InvalidSettingsFolders(settings))
             {
                 Application.Run(new FrmSettings());
             }
-            if (settings.LibraryFolder != "")
+            if (!InvalidSettingsFolders(settings))
             {
                 var application = new ShufflerApplication();
 
@@ -41,6 +42,12 @@ namespace Halloumi.Shuffler
                 }
 #endif
             }
+        }
+
+        private static bool InvalidSettingsFolders(Settings settings)
+        {
+            return settings.LibraryFolder == "" || !Directory.Exists(settings.LibraryFolder)
+                   || settings.ShufflerFolder == "" || !Directory.Exists(settings.ShufflerFolder);
         }
     }
 }
