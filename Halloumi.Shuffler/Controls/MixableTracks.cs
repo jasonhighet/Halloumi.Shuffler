@@ -118,8 +118,13 @@ namespace Halloumi.Shuffler.Controls
         private void InsertTrack()
         {
             var track = GetSelectedTrack();
-            if (track != null)
-                PlaylistControl?.InsertTrack(track);
+            if (track == null) return;
+
+            var view = cmbView.ParseEnum<View>();
+            if(view == View.FromTracks)
+                PlaylistControl?.InsertTrackBefore(track);
+            else
+                PlaylistControl?.InsertTrackAfter(track);
         }
 
         /// <summary>

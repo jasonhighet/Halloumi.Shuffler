@@ -429,11 +429,23 @@ namespace Halloumi.Shuffler.Controls
             QueueTracks(queueTracks);
         }
 
-        public void InsertTrack(Track queueTrack)
+        public void InsertTrackBefore(Track queueTrack)
         {
             var index = 0;
             if (grdPlaylist.SelectedRows.Count > 0)
                 index = grdPlaylist.SelectedRows[0].Index;
+
+            var queueTracks = new List<Track> { queueTrack };
+            TrackModels.InsertRange(index, TrackModel.ToList(queueTracks, MixLibrary));
+            RefreshPlaylist();
+        }
+
+        public void InsertTrackAfter(Track queueTrack)
+        {
+            var index = 0;
+            if (grdPlaylist.SelectedRows.Count > 0)
+                index = grdPlaylist.SelectedRows[0].Index;
+            index++;
 
             var queueTracks = new List<Track> { queueTrack };
             TrackModels.InsertRange(index, TrackModel.ToList(queueTracks, MixLibrary));
