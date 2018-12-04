@@ -24,7 +24,6 @@ namespace Halloumi.Shuffler.Controls
         private MixLibrary _mixLibrary;
 
         private Track _parentTrack;
-        public EventHandler QueueTrack;
 
         /// <summary>
         ///     Initializes a new instance of the MixableTracks class.
@@ -106,9 +105,21 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdMixableTracks_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            QueueTrack();
+        }
+
+        private void QueueTrack()
+        {
             var track = GetSelectedTrack();
             if (track != null)
                 PlaylistControl?.QueueTrack(track);
+        }
+
+        private void InsertTrack()
+        {
+            var track = GetSelectedTrack();
+            if (track != null)
+                PlaylistControl?.InsertTrack(track);
         }
 
         /// <summary>
@@ -346,6 +357,16 @@ namespace Halloumi.Shuffler.Controls
             public string Key { get; set; }
 
             public int KeyDiff { get; set; }
+        }
+
+        private void mnuQueueTrack_Click(object sender, EventArgs e)
+        {
+            QueueTrack();
+        }
+
+        private void mnuInsertTrack_Click(object sender, EventArgs e)
+        {
+            InsertTrack();
         }
     }
 }

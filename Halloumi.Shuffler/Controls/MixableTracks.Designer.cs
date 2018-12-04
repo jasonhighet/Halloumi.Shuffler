@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -52,6 +53,9 @@
             this.cmbRank = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.chkExcludeQueued = new Halloumi.Common.Windows.Controls.CheckBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuQueueTrack = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuInsertTrack = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlContentBackground.SuspendLayout();
             this.pnlGridBorder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdMixableTracks)).BeginInit();
@@ -60,6 +64,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cmbView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKeyRank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbRank)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlContentBackground
@@ -107,6 +112,7 @@
             this.colRank,
             this.colKey,
             this.colKeyDiff});
+            this.grdMixableTracks.ContextMenuStrip = this.contextMenuStrip1;
             this.grdMixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdMixableTracks.HideOuterBorders = true;
             this.grdMixableTracks.Location = new System.Drawing.Point(1, 1);
@@ -149,7 +155,7 @@
             this.colBPM.Name = "colBPM";
             this.colBPM.ReadOnly = true;
             this.colBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colBPM.Width = 70;
+            this.colBPM.Width = 72;
             // 
             // colDiff
             // 
@@ -163,7 +169,7 @@
             this.colDiff.ReadOnly = true;
             this.colDiff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.colDiff.Visible = false;
-            this.colDiff.Width = 65;
+            this.colDiff.Width = 67;
             // 
             // colMixRank
             // 
@@ -173,7 +179,7 @@
             this.colMixRank.Name = "colMixRank";
             this.colMixRank.ReadOnly = true;
             this.colMixRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colMixRank.Width = 64;
+            this.colMixRank.Width = 66;
             // 
             // colRank
             // 
@@ -183,7 +189,7 @@
             this.colRank.Name = "colRank";
             this.colRank.ReadOnly = true;
             this.colRank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colRank.Width = 72;
+            this.colRank.Width = 74;
             // 
             // colKey
             // 
@@ -193,7 +199,7 @@
             this.colKey.Name = "colKey";
             this.colKey.ReadOnly = true;
             this.colKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.colKey.Width = 64;
+            this.colKey.Width = 66;
             // 
             // colKeyDiff
             // 
@@ -203,6 +209,7 @@
             this.colKeyDiff.Name = "colKeyDiff";
             this.colKeyDiff.ReadOnly = true;
             this.colKeyDiff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.colKeyDiff.Width = 102;
             // 
             // linLine
             // 
@@ -363,6 +370,30 @@
             this.chkExcludeQueued.Values.Text = "Hide Queued";
             this.chkExcludeQueued.CheckedChanged += new System.EventHandler(this.chkExcludeQueued_CheckedChanged);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuQueueTrack,
+            this.mnuInsertTrack});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(166, 56);
+            // 
+            // mnuQueueTrack
+            // 
+            this.mnuQueueTrack.Name = "mnuQueueTrack";
+            this.mnuQueueTrack.Size = new System.Drawing.Size(165, 26);
+            this.mnuQueueTrack.Text = "&Queue Track";
+            this.mnuQueueTrack.Click += new System.EventHandler(this.mnuQueueTrack_Click);
+            // 
+            // mnuInsertTrack
+            // 
+            this.mnuInsertTrack.Name = "mnuInsertTrack";
+            this.mnuInsertTrack.Size = new System.Drawing.Size(165, 26);
+            this.mnuInsertTrack.Text = "&Insert Track";
+            this.mnuInsertTrack.Click += new System.EventHandler(this.mnuInsertTrack_Click);
+            // 
             // MixableTracks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -380,6 +411,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cmbView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKeyRank)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbRank)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -407,7 +439,8 @@
         private Halloumi.Common.Windows.Controls.Label label1;
         private Halloumi.Common.Windows.Controls.ComboBox cmbView;
         private Halloumi.Common.Windows.Controls.Label label2;
-
-
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnuQueueTrack;
+        private System.Windows.Forms.ToolStripMenuItem mnuInsertTrack;
     }
 }

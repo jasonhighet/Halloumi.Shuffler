@@ -548,6 +548,7 @@
 if $(ConfigurationName) == Release (
     if exist "D:\Dropbox\Falafel.Shuffler" (copy $(TargetDir) "D:\Dropbox\Falafel.Shuffler")
     if exist "C:\Users\jason\Dropbox\Falafel.Shuffler" (copy $(TargetDir) "C:\Users\jason\Dropbox\Falafel.Shuffler")
+    if exist "D:\Jason\Music\Shuffler" (copy $(TargetDir) "D:\Jason\Music\Shuffler")
 )
 
 </PostBuildEvent>
