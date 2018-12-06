@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Newtonsoft.Json;
 using Sanford.Multimedia.Midi;
 
 namespace Halloumi.Shuffler.AudioEngine.Midi
@@ -9,13 +11,18 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
 
         public MidiManager()
         {
-            int deviceCount = InputDevice.DeviceCount;
+            var mappingFile = "MidiMapping.json";
+            if (!File.Exists(mappingFile)) return;
 
+            var json = File.ReadAllText(mappingFile);
+            var midiMapping = JsonConvert.DeserializeObject<MidiMapping>(json);
+
+            int deviceCount = InputDevice.DeviceCount;
             for (int i = 0; i < deviceCount; i++)
             {
                 var details = InputDevice.GetDeviceCapabilities(i);
 
-                if (details.name.ToLower() != "nanokontrol")
+                if (details.name.ToLower() != midiMapping.DeviceName.ToLower())
                     continue;
 
                 _inDevice = new InputDevice(i);
