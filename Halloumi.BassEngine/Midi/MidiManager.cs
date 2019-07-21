@@ -20,16 +20,21 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
             int deviceCount = InputDevice.DeviceCount;
             for (int i = 0; i < deviceCount; i++)
             {
-                var details = InputDevice.GetDeviceCapabilities(i);
+                try
+                {
+                    var details = InputDevice.GetDeviceCapabilities(i);
 
-                if (details.name.ToLower() != midiMapping.DeviceName.ToLower())
-                    continue;
+                    if (details.name.ToLower() != midiMapping.DeviceName.ToLower())
+                        continue;
 
-                _inDevice = new InputDevice(i);
-                _inDevice.ChannelMessageReceived += InDevice_ChannelMessageReceived;
-                _inDevice.StartRecording();
+                    _inDevice = new InputDevice(i);
+                    _inDevice.ChannelMessageReceived += InDevice_ChannelMessageReceived;
+                    _inDevice.StartRecording();
 
-                break;
+                    break;
+                }
+                catch
+                { }
             }
         }
 
