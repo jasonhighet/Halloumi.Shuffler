@@ -11,20 +11,31 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
 
         public MidiManager()
         {
-            var mappingFile = "MidiMapping.json";
+            Initialise();
+        }
+
+        public void Reset()
+        {
+            Dispose();
+            Initialise();
+        }
+
+        private void Initialise()
+        {
+            const string mappingFile = "MidiMapping.json";
             if (!File.Exists(mappingFile)) return;
 
             var json = File.ReadAllText(mappingFile);
             var midiMapping = JsonConvert.DeserializeObject<MidiMapping>(json);
 
-            int deviceCount = InputDevice.DeviceCount;
-            for (int i = 0; i < deviceCount; i++)
+            var deviceCount = InputDevice.DeviceCount;
+            for (var i = 0; i < deviceCount; i++)
             {
                 try
                 {
                     var details = InputDevice.GetDeviceCapabilities(i);
 
-                    if (details.name.ToLower() != midiMapping.DeviceName.ToLower())
+                    if (!string.Equals(details.name, midiMapping.DeviceName, StringComparison.InvariantCultureIgnoreCase))
                         continue;
 
                     _inDevice = new InputDevice(i);
@@ -33,8 +44,10 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
 
                     break;
                 }
-                catch
-                { }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
 
@@ -54,8 +67,16 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
         public void Dispose()
         {
             if (_inDevice == null) return;
-            _inDevice.StopRecording();
-            _inDevice.Dispose();
+            _inDevice.ChannelMessageReceived -= InDevice_ChannelMessageReceived;
+            try
+            {
+                _inDevice.StopRecording();
+                _inDevice.Dispose();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
             _inDevice = null;
         }
 

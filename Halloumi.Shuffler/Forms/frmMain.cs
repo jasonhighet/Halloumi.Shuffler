@@ -751,5 +751,10 @@ namespace Halloumi.Shuffler.Forms
             if (!_frmImportShufflerTracks.Visible)
                 WindowHelper.ShowDialog(this, _frmImportShufflerTracks);
         }
+
+        private void MnuResetMidi_Click(object sender, EventArgs e)
+        {
+            _application.ResetMidi();
+        }
     }
 }

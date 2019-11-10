@@ -379,6 +379,11 @@ namespace Halloumi.Shuffler
                 WindowHelper.ShowDialog(BaseForm, _pluginSettingsForm);
         }
 
+        public void ResetMidi()
+        {
+            MidiManager.Reset();
+        }
+
         private void SetConservativeFadeOutSettings()
         {
             if (!_useConservativeFadeOut) return;
