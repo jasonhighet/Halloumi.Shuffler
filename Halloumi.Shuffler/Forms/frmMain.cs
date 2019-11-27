@@ -24,6 +24,7 @@ namespace Halloumi.Shuffler.Forms
         private FrmImportShufflerTracks _frmImportShufflerTracks;
 
 
+        private FrmSampleLibrary _frmLoopLibrary;
         private FrmSampleLibrary _frmSampleLibrary;
 
         private FrmGeneratePlaylist _generatePlaylist;
@@ -92,7 +93,7 @@ namespace Halloumi.Shuffler.Forms
             trackLibraryControl.MixLibrary = application.MixLibrary;
             trackLibraryControl.ToolStripLabel = lblLibraryStatus;
             trackLibraryControl.SamplerControl = mixerControl.SamplerControl;
-            trackLibraryControl.SampleLibrary = application.SampleLibrary;
+            trackLibraryControl.TrackSampleLibrary = application.TrackSampleLibrary;
 
             mixerControl.Library = application.Library;
             mixerControl.BassPlayer = application.BassPlayer;
@@ -261,7 +262,7 @@ namespace Halloumi.Shuffler.Forms
             if (_frmSampleLibrary == null || _frmSampleLibrary.IsDisposed)
             {
                 _frmSampleLibrary = new FrmSampleLibrary();
-                _frmSampleLibrary.Initialize(_application.BassPlayer, _application.SampleLibrary);
+                _frmSampleLibrary.Initialize(_application.BassPlayer, _application.TrackSampleLibrary);
             }
 
             if (!_frmSampleLibrary.Visible)
@@ -675,7 +676,7 @@ namespace Halloumi.Shuffler.Forms
             var exportPlaylist = new FrmExportShufflerTracks
             {
                 Library = _application.Library,
-                SampleLibrary = _application.SampleLibrary
+                TrackSampleLibrary = _application.TrackSampleLibrary
             };
             exportPlaylist.ShowDialog();
         }
@@ -685,7 +686,7 @@ namespace Halloumi.Shuffler.Forms
             if (_frmModuleEditor == null || _frmModuleEditor.IsDisposed)
             {
                 _frmModuleEditor = new FrmModuleEditor();
-                _frmModuleEditor.Initialize(_application.BassPlayer, _application.SampleLibrary, _application.Library);
+                _frmModuleEditor.Initialize(_application.BassPlayer, _application.TrackSampleLibrary, _application.Library);
             }
 
             if (!_frmModuleEditor.Visible)
@@ -755,6 +756,18 @@ namespace Halloumi.Shuffler.Forms
         private void MnuResetMidi_Click(object sender, EventArgs e)
         {
             _application.ResetMidi();
+        }
+
+        private void MnuLoopLibrary_Click(object sender, EventArgs e)
+        {
+            if (_frmLoopLibrary == null || _frmLoopLibrary.IsDisposed)
+            {
+                _frmLoopLibrary = new FrmSampleLibrary();
+                _frmLoopLibrary.Initialize(_application.BassPlayer, _application.LoopLibrary);
+            }
+
+            if (!_frmLoopLibrary.Visible)
+                WindowHelper.ShowDialog(this, _frmLoopLibrary);
         }
     }
 }

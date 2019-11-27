@@ -7,6 +7,7 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -17,7 +18,7 @@ namespace Halloumi.Shuffler.Forms
             InitializeComponent();
         }
 
-        private SampleLibrary SampleLibrary { get; set; }
+        private TrackSampleLibrary TrackSampleLibrary { get; set; }
 
         private BassPlayer BassPlayer { get; set; }
 
@@ -26,26 +27,26 @@ namespace Halloumi.Shuffler.Forms
         private ModulePlayer ModulePlayer { get; set; }
 
 
-        public void Initialize(BassPlayer bassPlayer, SampleLibrary sampleLibrary, Library library)
+        public void Initialize(BassPlayer bassPlayer, TrackSampleLibrary trackSampleLibrary, Library library)
         {
             BassPlayer = bassPlayer;
-            SampleLibrary = sampleLibrary;
+            TrackSampleLibrary = trackSampleLibrary;
             Library = library;
             ModulePlayer = new ModulePlayer(library.LibraryFolder);
             ModulePlayer.CreateModule();
 
             samplesControl.BassPlayer = BassPlayer;
-            samplesControl.SampleLibrary = SampleLibrary;
+            samplesControl.TrackSampleLibrary = TrackSampleLibrary;
             samplesControl.Library = Library;
             samplesControl.ModulePlayer = ModulePlayer;
 
             songControl.BassPlayer = BassPlayer;
-            songControl.SampleLibrary = SampleLibrary;
+            songControl.TrackSampleLibrary = TrackSampleLibrary;
             songControl.Library = Library;
             songControl.ModulePlayer = ModulePlayer;
 
             patternsControl.BassPlayer = BassPlayer;
-            patternsControl.SampleLibrary = SampleLibrary;
+            patternsControl.TrackSampleLibrary = TrackSampleLibrary;
             patternsControl.Library = Library;
             patternsControl.ModulePlayer = ModulePlayer;
 

@@ -6,14 +6,14 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
-namespace Halloumi.Shuffler.AudioLibrary
+namespace Halloumi.Shuffler.AudioLibrary.Samples
 {
-    public class SampleLibrary
+    public class TrackSampleLibrary : ISampleLibrary
     {
         /// <summary>
         ///     Initializes a new instance of the Library class.
         /// </summary>
-        public SampleLibrary(BassPlayer bassPlayer, Library trackLibrary)
+        public TrackSampleLibrary(BassPlayer bassPlayer, Library trackLibrary)
         {
             Samples = new List<Sample>();
             BassPlayer = bassPlayer;
@@ -82,6 +82,8 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             var genre = track.Genre.ToLower();
             if (!sample.Tags.Contains(genre)) sample.Tags.Add(genre);
+
+            sample.Filename = track.Filename;
         }
 
         public void UpdateTrackSamples(Track track, List<Sample> trackSamples)
@@ -94,59 +96,42 @@ namespace Halloumi.Shuffler.AudioLibrary
             Samples.AddRange(trackSamples);
         }
 
-        public List<Sample> GetSamples(string trackArtist, string trackTitle, string description)
-        {
-            List<Sample> samples;
-            lock (Samples)
-            {
-                samples = Samples
-                    .Where(s => string.IsNullOrEmpty(trackArtist) || s.TrackArtist == trackArtist)
-                    .Where(s => string.IsNullOrEmpty(trackTitle) || s.TrackTitle == trackTitle)
-                    .Where(s => string.IsNullOrEmpty(description) || s.Description == description)
-                    .OrderBy(s => s.Description)
-                    .ToList();
-            }
-
-            return samples;
-        }
-
-
         public List<Sample> GetSamples()
         {
             return Samples.ToList(); 
         }
 
-        public List<Sample> GetSamples(SampleCriteria criteria)
+        public List<Sample> GetSamples(SearchCriteria searchCriteria)
         {
-            if (criteria.MaxBpm == 0) criteria.MaxBpm = 200;
+            if (searchCriteria.MaxBpm == 0) searchCriteria.MaxBpm = 200;
 
             List<Sample> samples;
             lock (Samples)
             {
                 samples = Samples
-                    .Where(s => string.IsNullOrEmpty(criteria.TrackArtist) || s.Description == criteria.TrackArtist)
-                    .Where(s => string.IsNullOrEmpty(criteria.TrackTitle) || s.TrackTitle == criteria.TrackTitle)
-                    .Where(s => string.IsNullOrEmpty(criteria.Description) || s.Description == criteria.Description)
+                    .Where(s => string.IsNullOrEmpty(searchCriteria.TrackArtist) || s.Description == searchCriteria.TrackArtist)
+                    .Where(s => string.IsNullOrEmpty(searchCriteria.TrackTitle) || s.TrackTitle == searchCriteria.TrackTitle)
+                    .Where(s => string.IsNullOrEmpty(searchCriteria.Description) || s.Description == searchCriteria.Description)
                     .Where(
                         s =>
-                            string.IsNullOrEmpty(criteria.Key) || s.Key == criteria.Key && !s.IsAtonal ||
-                            criteria.IncludeAtonal && s.IsAtonal)
-                    .Where(s => !criteria.AtonalOnly || criteria.AtonalOnly && s.IsAtonal)
-                    .Where(s => !criteria.Primary.HasValue || s.IsPrimaryLoop == criteria.Primary.Value)
-                    .Where(s => !criteria.LoopMode.HasValue || s.LoopMode == criteria.LoopMode)
-                    .Where(s => s.Bpm >= criteria.MinBpm && s.Bpm <= criteria.MaxBpm)
+                            string.IsNullOrEmpty(searchCriteria.Key) || s.Key == searchCriteria.Key && !s.IsAtonal ||
+                            searchCriteria.IncludeAtonal && s.IsAtonal)
+                    .Where(s => !searchCriteria.AtonalOnly || searchCriteria.AtonalOnly && s.IsAtonal)
+                    .Where(s => !searchCriteria.Primary.HasValue || s.IsPrimaryLoop == searchCriteria.Primary.Value)
+                    .Where(s => !searchCriteria.LoopMode.HasValue || s.LoopMode == searchCriteria.LoopMode)
+                    .Where(s => s.Bpm >= searchCriteria.MinBpm && s.Bpm <= searchCriteria.MaxBpm)
                     .OrderBy(s => s.Description)
                     .ToList();
             }
 
-            if (string.IsNullOrEmpty(criteria.SearchText))
+            if (string.IsNullOrEmpty(searchCriteria.SearchText))
                 return samples;
 
-            criteria.SearchText = criteria.SearchText.ToLower().Trim();
-            samples = samples.Where(s => s.Tags.Contains(criteria.SearchText)
-                                         || s.Description.ToLower().Contains(criteria.SearchText)
-                                         || s.TrackArtist.ToLower().Contains(criteria.SearchText)
-                                         || s.TrackTitle.ToLower().Contains(criteria.SearchText))
+            searchCriteria.SearchText = searchCriteria.SearchText.ToLower().Trim();
+            samples = samples.Where(s => s.Tags.Contains(searchCriteria.SearchText)
+                                         || s.Description.ToLower().Contains(searchCriteria.SearchText)
+                                         || s.TrackArtist.ToLower().Contains(searchCriteria.SearchText)
+                                         || s.TrackTitle.ToLower().Contains(searchCriteria.SearchText))
                 .ToList();
 
             return samples;
@@ -266,29 +251,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             return tracks;
         }
 
-        public class SampleCriteria
-        {
-            public string SearchText { get; set; }
 
-            public string Key { get; set; }
-
-            public decimal MinBpm { get; set; }
-
-            public decimal MaxBpm { get; set; }
-
-            public bool AtonalOnly { get; set; }
-
-            public bool IncludeAtonal { get; set; }
-
-            public bool? Primary { get; set; }
-
-            public LoopMode? LoopMode { get; set; }
-
-            public string TrackTitle { get; set; }
-
-            public string TrackArtist { get; set; }
-
-            public string Description { get; set; }
-        }
     }
 }

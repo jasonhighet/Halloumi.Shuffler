@@ -13,6 +13,7 @@ using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
@@ -31,7 +32,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SampleLibrary SampleLibrary { get; set; }
+        public TrackSampleLibrary TrackSampleLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the library.

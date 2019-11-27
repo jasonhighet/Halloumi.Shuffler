@@ -11,6 +11,7 @@ using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioEngine.Models.Track;
@@ -38,7 +39,7 @@ namespace Halloumi.Shuffler.Forms
 
         public string Filename { get; set; }
 
-        public SampleLibrary SampleLibrary { get; set; }
+        public TrackSampleLibrary TrackSampleLibrary { get; set; }
 
         public Library Library { get; set; }
 
@@ -115,7 +116,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnImportSamplesFromMix_Click(object sender, EventArgs e)
         {
-            var mixSamples = SampleLibrary.GetMixSectionsAsSamples(LibraryTrack);
+            var mixSamples = TrackSampleLibrary.GetMixSectionsAsSamples(LibraryTrack);
             Samples.AddRange(mixSamples);
 
             UpdateCurrentSample();
@@ -134,7 +135,7 @@ namespace Halloumi.Shuffler.Forms
             if ((Samples == null || (Samples != null && Samples.Count == 0)) && LibraryTrack != null)
             {
                 _updateSampleLibrary = true;
-                Samples = SampleLibrary
+                Samples = TrackSampleLibrary
                     .GetSamples(LibraryTrack)
                     .Select(sample => sample.Clone())
                     .ToList();
@@ -144,7 +145,7 @@ namespace Halloumi.Shuffler.Forms
                 if (LibraryTrack != null && Samples != null)
                     foreach (var sample in Samples)
                     {
-                        SampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
+                        TrackSampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
                     }
             }
 
@@ -223,8 +224,8 @@ namespace Halloumi.Shuffler.Forms
 
             if (_updateSampleLibrary)
             {
-                SampleLibrary.UpdateTrackSamples(LibraryTrack, Samples);
-                SampleLibrary.SaveCache();
+                TrackSampleLibrary.UpdateTrackSamples(LibraryTrack, Samples);
+                TrackSampleLibrary.SaveCache();
             }
 
             Close();
@@ -359,7 +360,7 @@ namespace Halloumi.Shuffler.Forms
             };
 
             if (LibraryTrack != null)
-                SampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
+                TrackSampleLibrary.UpdateSampleFromTrack(sample, LibraryTrack);
 
             Samples.Add(sample);
             CurrentSample = sample;

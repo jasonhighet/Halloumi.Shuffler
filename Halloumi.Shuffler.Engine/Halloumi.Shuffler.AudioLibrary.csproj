@@ -96,9 +96,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Samples\LoopLibrary.cs" />
     <Compile Include="Helpers\AlbumCoverHelper.cs" />
     <Compile Include="Helpers\ShufflerHelper.cs" />
     <Compile Include="Helpers\TrackHelper.cs" />
+    <Compile Include="Samples\ISampleLibrary.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\Genre.cs" />
@@ -107,9 +109,10 @@
     <Compile Include="MixLibrary.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
+    <Compile Include="Samples\SearchCriteria.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Sample.cs" />
-    <Compile Include="SampleLibrary.cs" />
+    <Compile Include="Samples\Sample.cs" />
+    <Compile Include="Samples\TrackSampleLibrary.cs" />
     <Compile Include="Models\Track.cs" />
     <Compile Include="TrackSelector.cs" />
   </ItemGroup>

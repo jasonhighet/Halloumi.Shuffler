@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Halloumi.Shuffler.AudioLibrary.Models
+namespace Halloumi.Shuffler.AudioLibrary.Samples
 {
     public class Sample
     {
@@ -45,6 +45,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         public List<string> Tags { get; set; }
 
         public float Gain { get; set; }
+        public string Filename { get; set; }
 
         public Sample Clone()
         {
@@ -62,6 +63,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
                 Bpm = Bpm,
                 Description = Description,
                 TrackLength = TrackLength,
+                Filename = Filename,
                 Tags = Tags,
                 Gain = 0F
             };

@@ -15,6 +15,7 @@ using Halloumi.Shuffler.AudioEngine.ModulePlayer;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.Controls.ModulePlayerControls
@@ -50,7 +51,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SampleLibrary SampleLibrary { get; set; }
+        public TrackSampleLibrary TrackSampleLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the library.
@@ -74,7 +75,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
 
             foreach (var librarySample in librarySamples)
             {
-                var track = SampleLibrary.GetTrackFromSample(librarySample);
+                var track = TrackSampleLibrary.GetTrackFromSample(librarySample);
                 if (track == null) continue;
 
                 var audioFile = audioFiles.FirstOrDefault(x => x.Path == track.Filename);
@@ -270,7 +271,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             {
                 BassPlayer = BassPlayer,
                 Filename = audioFile.Path,
-                SampleLibrary = SampleLibrary,
+                TrackSampleLibrary = TrackSampleLibrary,
                 Library = Library,
                 Samples = samples,
                 InitialSample = initialSample
@@ -377,7 +378,7 @@ namespace Halloumi.Shuffler.Controls.ModulePlayerControls
             if (_frmSampleLibrary == null || _frmSampleLibrary.IsDisposed)
             {
                 _frmSampleLibrary = new FrmSampleLibrary();
-                _frmSampleLibrary.Initialize(BassPlayer, SampleLibrary, this);
+                _frmSampleLibrary.Initialize(BassPlayer, TrackSampleLibrary, this);
             }
 
             if (!_frmSampleLibrary.Visible)

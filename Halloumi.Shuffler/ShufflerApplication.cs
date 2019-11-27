@@ -7,6 +7,7 @@ using Halloumi.Shuffler.AudioEngine.Midi;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler
@@ -27,10 +28,12 @@ namespace Halloumi.Shuffler
             LoadSettings();
 
             MixLibrary = new MixLibrary(Library.ShufflerFolder);
-            SampleLibrary = new SampleLibrary(BassPlayer, Library);
+            TrackSampleLibrary = new TrackSampleLibrary(BassPlayer, Library);
 
             MidiManager = new MidiManager();
             MidiMapper = new BassPlayerMidiMapper(BassPlayer, MidiManager);
+
+            LoopLibrary= new LoopLibrary(BassPlayer, @"D:\Jason\Music\Samples\Future Loops Scratch Anthology");
 
             LoadFromDatabase();
 
@@ -55,16 +58,17 @@ namespace Halloumi.Shuffler
 
         public Library Library { get; }
 
-        public SampleLibrary SampleLibrary { get; }
+        public TrackSampleLibrary TrackSampleLibrary { get; }
 
         public BassPlayer BassPlayer { get; }
 
         public MidiManager MidiManager { get; }
+        public LoopLibrary LoopLibrary { get; internal set; }
 
         private void LoadFromDatabase()
         {
             Library.LoadFromDatabase();
-            SampleLibrary.LoadFromCache();
+            TrackSampleLibrary.LoadFromCache();
 
             MixLibrary.AvailableTracks = Library.GetTracks();
             MixLibrary.LoadFromDatabase();

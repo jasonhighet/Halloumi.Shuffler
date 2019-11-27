@@ -14,7 +14,7 @@ using Halloumi.Shuffler.AudioEngine.Models;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using AE = Halloumi.Shuffler.AudioEngine;
-using Sample = Halloumi.Shuffler.AudioLibrary.Models.Sample;
+using Sample = Halloumi.Shuffler.AudioLibrary.Samples.Sample;
 
 namespace Halloumi.Shuffler.Controls
 {

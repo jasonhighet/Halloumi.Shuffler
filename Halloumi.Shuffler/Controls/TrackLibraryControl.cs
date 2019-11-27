@@ -13,6 +13,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 
@@ -132,7 +133,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SampleLibrary SampleLibrary { get; set; }
+        public TrackSampleLibrary TrackSampleLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the library.
@@ -1054,7 +1055,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 BassPlayer = BassPlayer,
                 Filename = GetSelectedTrack().Filename,
-                SampleLibrary = SampleLibrary,
+                TrackSampleLibrary = TrackSampleLibrary,
                 Library = Library
             };
 
@@ -1668,7 +1669,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var tracks = GetSelectedTracks().Where(t => t.IsShufflerTrack);
             foreach (var track in tracks)
-                SampleLibrary.ExportMixSectionsAsSamples(track);
+                TrackSampleLibrary.ExportMixSectionsAsSamples(track);
         }
 
         public void ImportCollection()

@@ -91,6 +91,8 @@
             this.mnuSamplerVSTPluginConfig2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuConservativeFadeOut = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuResetMidi = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.formStateController = new Halloumi.Common.Windows.Contollers.FormStateController(this.components);
@@ -130,8 +132,7 @@
             this.playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             this.mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
             this.shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(this.components);
-            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuResetMidi = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuLoopLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pnlMenuBar)).BeginInit();
             this.pnlMenuBar.SuspendLayout();
@@ -425,77 +426,78 @@
             this.mnuViewPlaylist.Checked = true;
             this.mnuViewPlaylist.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuViewPlaylist.Name = "mnuViewPlaylist";
-            this.mnuViewPlaylist.Size = new System.Drawing.Size(204, 26);
+            this.mnuViewPlaylist.Size = new System.Drawing.Size(224, 26);
             this.mnuViewPlaylist.Text = "&Playlist";
             // 
             // mnuViewLibrary
             // 
             this.mnuViewLibrary.Name = "mnuViewLibrary";
-            this.mnuViewLibrary.Size = new System.Drawing.Size(204, 26);
+            this.mnuViewLibrary.Size = new System.Drawing.Size(224, 26);
             this.mnuViewLibrary.Text = "Library";
             // 
             // mnuViewMixer
             // 
             this.mnuViewMixer.Name = "mnuViewMixer";
-            this.mnuViewMixer.Size = new System.Drawing.Size(204, 26);
+            this.mnuViewMixer.Size = new System.Drawing.Size(224, 26);
             this.mnuViewMixer.Text = "Mixer";
             // 
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(201, 6);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(221, 6);
             // 
             // mnuShowPlayer
             // 
             this.mnuShowPlayer.Name = "mnuShowPlayer";
-            this.mnuShowPlayer.Size = new System.Drawing.Size(204, 26);
+            this.mnuShowPlayer.Size = new System.Drawing.Size(224, 26);
             this.mnuShowPlayer.Text = "Player Details";
             this.mnuShowPlayer.Click += new System.EventHandler(this.mnuShowPlayer_Click);
             // 
             // mnuShowTrackDetails
             // 
             this.mnuShowTrackDetails.Name = "mnuShowTrackDetails";
-            this.mnuShowTrackDetails.Size = new System.Drawing.Size(204, 26);
+            this.mnuShowTrackDetails.Size = new System.Drawing.Size(224, 26);
             this.mnuShowTrackDetails.Text = "Track &Details";
             this.mnuShowTrackDetails.Click += new System.EventHandler(this.mnuShowTrackDetails_Click);
             // 
             // mnuShowMixableTracks
             // 
             this.mnuShowMixableTracks.Name = "mnuShowMixableTracks";
-            this.mnuShowMixableTracks.Size = new System.Drawing.Size(204, 26);
+            this.mnuShowMixableTracks.Size = new System.Drawing.Size(224, 26);
             this.mnuShowMixableTracks.Text = "&Mixable Tracks";
             this.mnuShowMixableTracks.Click += new System.EventHandler(this.mnuShowMixableTracks_Click);
             // 
             // mnuViewVisuals
             // 
             this.mnuViewVisuals.Name = "mnuViewVisuals";
-            this.mnuViewVisuals.Size = new System.Drawing.Size(204, 26);
+            this.mnuViewVisuals.Size = new System.Drawing.Size(224, 26);
             this.mnuViewVisuals.Text = "&Visuals";
             this.mnuViewVisuals.Click += new System.EventHandler(this.mnuViewVisuals_Click);
             // 
             // mnuViewAlbumArt
             // 
             this.mnuViewAlbumArt.Name = "mnuViewAlbumArt";
-            this.mnuViewAlbumArt.Size = new System.Drawing.Size(204, 26);
+            this.mnuViewAlbumArt.Size = new System.Drawing.Size(224, 26);
             this.mnuViewAlbumArt.Text = "&Album Art";
             this.mnuViewAlbumArt.Click += new System.EventHandler(this.mnuViewAlbumArt_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(201, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(221, 6);
             // 
             // mnuMinimizeToTray
             // 
             this.mnuMinimizeToTray.Name = "mnuMinimizeToTray";
-            this.mnuMinimizeToTray.Size = new System.Drawing.Size(204, 26);
+            this.mnuMinimizeToTray.Size = new System.Drawing.Size(224, 26);
             this.mnuMinimizeToTray.Text = "Minimi&ze To Tray";
             // 
             // mnuTracker
             // 
             this.mnuTracker.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuSampleLibrary,
-            this.mnuModuleEditor});
+            this.mnuModuleEditor,
+            this.mnuLoopLibrary});
             this.mnuTracker.Name = "mnuTracker";
             this.mnuTracker.Size = new System.Drawing.Size(78, 33);
             this.mnuTracker.Text = "&Sampler";
@@ -503,14 +505,14 @@
             // mnuSampleLibrary
             // 
             this.mnuSampleLibrary.Name = "mnuSampleLibrary";
-            this.mnuSampleLibrary.Size = new System.Drawing.Size(191, 26);
+            this.mnuSampleLibrary.Size = new System.Drawing.Size(224, 26);
             this.mnuSampleLibrary.Text = "Sample Library";
             this.mnuSampleLibrary.Click += new System.EventHandler(this.mnuSampleLibrary_Click);
             // 
             // mnuModuleEditor
             // 
             this.mnuModuleEditor.Name = "mnuModuleEditor";
-            this.mnuModuleEditor.Size = new System.Drawing.Size(191, 26);
+            this.mnuModuleEditor.Size = new System.Drawing.Size(224, 26);
             this.mnuModuleEditor.Text = "Module Editor";
             this.mnuModuleEditor.Click += new System.EventHandler(this.mnuModuleEditor_Click);
             // 
@@ -612,6 +614,18 @@
             this.mnuConservativeFadeOut.Name = "mnuConservativeFadeOut";
             this.mnuConservativeFadeOut.Size = new System.Drawing.Size(310, 26);
             this.mnuConservativeFadeOut.Text = "&Conservative Fade On Poor Mixes";
+            // 
+            // toolStripSeparator15
+            // 
+            this.toolStripSeparator15.Name = "toolStripSeparator15";
+            this.toolStripSeparator15.Size = new System.Drawing.Size(307, 6);
+            // 
+            // mnuResetMidi
+            // 
+            this.mnuResetMidi.Name = "mnuResetMidi";
+            this.mnuResetMidi.Size = new System.Drawing.Size(310, 26);
+            this.mnuResetMidi.Text = "&Reset Midi";
+            this.mnuResetMidi.Click += new System.EventHandler(this.MnuResetMidi_Click);
             // 
             // mnuHelp
             // 
@@ -922,17 +936,12 @@
             this.mixerControl.TabIndex = 1;
             this.mixerControl.Visible = false;
             // 
-            // toolStripSeparator15
+            // mnuLoopLibrary
             // 
-            this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size(307, 6);
-            // 
-            // mnuResetMidi
-            // 
-            this.mnuResetMidi.Name = "mnuResetMidi";
-            this.mnuResetMidi.Size = new System.Drawing.Size(310, 26);
-            this.mnuResetMidi.Text = "&Reset Midi";
-            this.mnuResetMidi.Click += new System.EventHandler(this.MnuResetMidi_Click);
+            this.mnuLoopLibrary.Name = "mnuLoopLibrary";
+            this.mnuLoopLibrary.Size = new System.Drawing.Size(224, 26);
+            this.mnuLoopLibrary.Text = "Loop Library";
+            this.mnuLoopLibrary.Click += new System.EventHandler(this.MnuLoopLibrary_Click);
             // 
             // FrmMain
             // 
@@ -1071,5 +1080,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuImportTracks;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
         private System.Windows.Forms.ToolStripMenuItem mnuResetMidi;
+        private System.Windows.Forms.ToolStripMenuItem mnuLoopLibrary;
     }
 }

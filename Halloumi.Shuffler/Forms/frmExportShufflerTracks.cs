@@ -9,6 +9,7 @@ using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -24,7 +25,7 @@ namespace Halloumi.Shuffler.Forms
 
         public Library Library { get; set; }
 
-        public SampleLibrary SampleLibrary { get; set; }
+        public TrackSampleLibrary TrackSampleLibrary { get; set; }
 
         /// <summary>
         ///     Handles the Load event of the frmSettings control.
@@ -40,7 +41,7 @@ namespace Halloumi.Shuffler.Forms
         private void BindData()
         {
             _tracks = Library.GetTracks(shufflerFilter: Library.ShufflerFilter.ShufflerTracks);
-            var sampleTracks = SampleLibrary.GetAllTracks().Where(track => _tracks.All(x => x.Filename != track.Filename));
+            var sampleTracks = TrackSampleLibrary.GetAllTracks().Where(track => _tracks.All(x => x.Filename != track.Filename));
             _tracks.AddRange(sampleTracks);
 
             btnOK.Enabled = _tracks.Count > 0;

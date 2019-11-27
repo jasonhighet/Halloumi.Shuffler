@@ -12,6 +12,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
 using AE = Halloumi.Shuffler.AudioEngine;
 
@@ -81,7 +82,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SampleLibrary SampleLibrary { get; set; }
+        public ISampleLibrary SampleLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass player.
@@ -119,7 +120,7 @@ namespace Halloumi.Shuffler.Controls
 
         public List<Sample> GetDisplayedSamples()
         {
-            var criteria = new SampleLibrary.SampleCriteria();
+            var criteria = new SearchCriteria();
 
             var loopTypeText = LoopFilter;
             if (loopTypeText.Contains("Primary"))
@@ -351,7 +352,11 @@ namespace Halloumi.Shuffler.Controls
                 _player.UnloadAll();
                 foreach (var sample in samples)
                 {
-                    var filename = SampleLibrary.GetTrackFromSample(sample).Filename;
+                    var track = SampleLibrary.GetTrackFromSample(sample);
+
+                    var filename = (track == null) ? sample.Filename : track.Filename;
+                    if(!File.Exists(filename))
+                        continue;
 
                     _player.AddSample(GetSampleKey(sample),
                         filename,
@@ -366,7 +371,8 @@ namespace Halloumi.Shuffler.Controls
 
         private string GetSampleKey(Sample sample)
         {
-            return SampleLibrary.GetTrackFromSample(sample).Description + " - " + sample.Description;
+            var track = SampleLibrary.GetTrackFromSample(sample);
+            return (track == null) ? sample.Filename : track.Description + " - " + sample.Description;
         }
 
         /// <summary>
@@ -432,6 +438,10 @@ namespace Halloumi.Shuffler.Controls
 
         private void EditSample()
         {
+            var trackSampleLibrary = (TrackSampleLibrary)SampleLibrary;
+            if (trackSampleLibrary == null)
+                return;
+
             var sample = GetSelectedSample();
             if (sample == null) return;
 
@@ -441,18 +451,22 @@ namespace Halloumi.Shuffler.Controls
             StopSamples();
 
             var initialSample = sample.Description;
+
+
             var form = new FrmEditTrackSamples
             {
                 BassPlayer = BassPlayer,
                 Filename = track.Filename,
-                SampleLibrary = SampleLibrary,
-                Library = SampleLibrary.TrackLibrary,
+                TrackSampleLibrary = trackSampleLibrary,
+                Library = trackSampleLibrary.TrackLibrary,
                 InitialSample = initialSample
             };
 
             var result = form.ShowDialog();
             if (result == DialogResult.OK)
                 BindData();
+
+            form.Dispose();
         }
 
         private void mnuEditTags_Click(object sender, EventArgs e)
