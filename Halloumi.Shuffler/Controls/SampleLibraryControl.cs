@@ -346,6 +346,9 @@ namespace Halloumi.Shuffler.Controls
             {
                 _player.Pause();
 
+
+                _player.SetBpm(BassPlayer.GetCurrentBpm());
+
                 var samples = GetSelectedSamples();
                 if (samples == null || samples.Count == 0) return;
 
