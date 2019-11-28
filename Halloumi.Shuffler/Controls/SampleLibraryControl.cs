@@ -574,7 +574,9 @@ namespace Halloumi.Shuffler.Controls
         {
             public SampleModel(Sample sample)
             {
-                Description = sample.TrackArtist + " - " + sample.TrackTitle + " - " + sample.Description;
+                Description = (sample.TrackTitle == sample.Description)
+                    ? sample.TrackArtist + " - " + sample.Description
+                    : sample.TrackArtist + " - " + sample.TrackTitle + " - " + sample.Description;
                 Tags = string.Join(", ", sample.Tags.ToArray());
                 LengthFormatted = TimeFormatHelper.GetFormattedHours(Convert.ToDecimal(sample.Length));
                 Length = Convert.ToDecimal(sample.Length);

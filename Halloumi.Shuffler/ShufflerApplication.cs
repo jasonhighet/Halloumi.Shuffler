@@ -33,8 +33,8 @@ namespace Halloumi.Shuffler
             MidiManager = new MidiManager();
             MidiMapper = new BassPlayerMidiMapper(BassPlayer, MidiManager);
 
-            // LoopLibrary= new LoopLibrary(BassPlayer, @"D:\Jason\Music\Samples\Future Loops Scratch Anthology");
-            LoopLibrary = new LoopLibrary(BassPlayer, @"E:\OneDrive\Music\Samples\Hiphop\Future Loops Scratch Anthology");
+            LoopLibrary= new LoopLibrary(BassPlayer, @"D:\Jason\Music\Samples\Future Loops Scratch Anthology");
+            //LoopLibrary = new LoopLibrary(BassPlayer, @"E:\OneDrive\Music\Samples\Hiphop\Future Loops Scratch Anthology");
 
             LoadFromDatabase();
 

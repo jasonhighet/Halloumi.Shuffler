@@ -35,7 +35,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _loopLength = BpmHelper.GetDefaultLoopLength(_targetBpm);
         }
 
-        public void AddSample(string sampleKey, string path, double start, double length, double offset)
+        public void AddSample(string sampleKey, string path, double start, double length, double offset, bool loopIndefinitely = true)
         {
             _sampleKeys.Add(sampleKey);
 
@@ -66,7 +66,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 calculateBpmFromLength: true,
                 targetBpm: _targetBpm);
 
-            section.LoopIndefinitely = true;
+            section.LoopIndefinitely = loopIndefinitely;
         }
 
         public List<string> GetSampleKeys()
