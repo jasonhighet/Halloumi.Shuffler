@@ -12,6 +12,7 @@ namespace Halloumi.Shuffler.Forms
         public Settings()
         {
             LibraryFolder = "";
+            LoopLibraryFolder = "";
             ShufflerFolder = "";
             WaPluginsFolder = "";
             VstPluginsFolder = "";
@@ -71,6 +72,8 @@ namespace Halloumi.Shuffler.Forms
         }
 
         public string LibraryFolder { get; set; }
+
+        public string LoopLibraryFolder { get; set; }
 
         public string ShufflerFolder { get; set; }
 

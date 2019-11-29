@@ -25,6 +25,8 @@ namespace Halloumi.Shuffler
 
             CollectionHelper.Library = Library;
 
+
+            LoopLibrary = new LoopLibrary(BassPlayer);
             LoadSettings();
 
             MixLibrary = new MixLibrary(Library.ShufflerFolder);
@@ -33,7 +35,7 @@ namespace Halloumi.Shuffler
             MidiManager = new MidiManager();
             MidiMapper = new BassPlayerMidiMapper(BassPlayer, MidiManager);
 
-            LoopLibrary= new LoopLibrary(BassPlayer, @"D:\Jason\Music\Samples\Future Loops Scratch Anthology");
+
             //LoopLibrary = new LoopLibrary(BassPlayer, @"E:\OneDrive\Music\Samples\Hiphop\Future Loops Scratch Anthology");
 
             LoadFromDatabase();
@@ -99,6 +101,7 @@ namespace Halloumi.Shuffler
         {
             var settings = Settings.Default;
             Library.LibraryFolder = settings.LibraryFolder;
+
             ExtenedAttributesHelper.ShufflerFolder = settings.ShufflerFolder;
             PluginHelper.WaPluginsFolder = settings.WaPluginsFolder;
             PluginHelper.VstPluginsFolder = settings.VstPluginsFolder;
@@ -267,6 +270,8 @@ namespace Halloumi.Shuffler
             BassPlayer.SetMonitorVolume(settings.MonitorVolume);
 
             UseConservativeFadeOut = settings.LimitSongLength;
+
+            LoopLibrary.Initialize(settings.LoopLibraryFolder);
         }
 
         public void SaveSettings()
@@ -353,6 +358,8 @@ namespace Halloumi.Shuffler
 
             settings.EnableTrackFxAutomation = BassPlayer.TrackFxAutomationEnabled;
             settings.EnableSampleAutomation = BassPlayer.SampleAutomationEnabled;
+
+            settings.LoopLibraryFolder = LoopLibrary.LoopLibraryFolder;
 
             settings.Save();
         }

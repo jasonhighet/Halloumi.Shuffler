@@ -11,15 +11,20 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
     public class LoopLibrary : ISampleLibrary
     {
         private readonly BassPlayer _bassPlayer;
-        private readonly string _folder;
+        private string _folder;
         private readonly List<Sample> _samples;
 
-        public LoopLibrary(BassPlayer bassPlayer, string folder)
+        public string LoopLibraryFolder { get { return _folder; } }
+
+        public LoopLibrary(BassPlayer bassPlayer)
         {
-            _folder = folder;
             _samples = new List<Sample>();
             _bassPlayer = bassPlayer;
+        }
 
+        public void Initialize(string folder)
+        {
+            _folder = folder;
             LoadSamples();
         }
 

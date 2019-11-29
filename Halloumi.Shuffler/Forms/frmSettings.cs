@@ -20,6 +20,7 @@ namespace Halloumi.Shuffler.Forms
             txtVSTPluginFolder.Text = settings.VstPluginsFolder;
             txtAnalogXScratchFolder.Text = settings.AnalogXScratchFolder;
             txtKeyFinderFolder.Text = settings.KeyFinderFolder;
+            txtLoopFolder.Text = settings.LoopLibraryFolder;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -31,6 +32,7 @@ namespace Halloumi.Shuffler.Forms
             settings.WaPluginsFolder = txtWinampPluginFolder.Text;
             settings.AnalogXScratchFolder = txtAnalogXScratchFolder.Text;
             settings.KeyFinderFolder = txtKeyFinderFolder.Text;
+            settings.LoopLibraryFolder = txtLoopFolder.Text;
             settings.Save();
             DialogResult = DialogResult.OK;
             Close();

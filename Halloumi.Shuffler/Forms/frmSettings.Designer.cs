@@ -32,6 +32,7 @@
             Halloumi.Common.Windows.Controls.FolderSelectButton fsbWinampPluginFolder;
             Halloumi.Common.Windows.Controls.FolderSelectButton fsbAnalogXScratchFolder;
             Halloumi.Common.Windows.Controls.FolderSelectButton fsbKeyFinderFolder;
+            Halloumi.Common.Windows.Controls.FolderSelectButton fsbLoopLibraryFolder;
             this.txtWinampPluginFolder = new Halloumi.Common.Windows.Controls.TextBox();
             this.txtAnalogXScratchFolder = new Halloumi.Common.Windows.Controls.TextBox();
             this.txtKeyFinderFolder = new Halloumi.Common.Windows.Controls.TextBox();
@@ -59,9 +60,12 @@
             this.txtLibraryFolder = new Halloumi.Common.Windows.Controls.TextBox();
             this.fsbLibraryFolder = new Halloumi.Common.Windows.Controls.FolderSelectButton();
             this.kryptonManager1 = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
+            this.label1 = new Halloumi.Common.Windows.Controls.Label();
+            this.txtLoopFolder = new Halloumi.Common.Windows.Controls.TextBox();
             fsbWinampPluginFolder = new Halloumi.Common.Windows.Controls.FolderSelectButton();
             fsbAnalogXScratchFolder = new Halloumi.Common.Windows.Controls.FolderSelectButton();
             fsbKeyFinderFolder = new Halloumi.Common.Windows.Controls.FolderSelectButton();
+            fsbLoopLibraryFolder = new Halloumi.Common.Windows.Controls.FolderSelectButton();
             this.flpButtons.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -74,7 +78,7 @@
             // fsbWinampPluginFolder
             // 
             fsbWinampPluginFolder.AssociatedControl = this.txtWinampPluginFolder;
-            fsbWinampPluginFolder.Location = new System.Drawing.Point(612, 148);
+            fsbWinampPluginFolder.Location = new System.Drawing.Point(611, 160);
             fsbWinampPluginFolder.Margin = new System.Windows.Forms.Padding(4);
             fsbWinampPluginFolder.Name = "fsbWinampPluginFolder";
             fsbWinampPluginFolder.Size = new System.Drawing.Size(36, 30);
@@ -87,20 +91,20 @@
             this.txtWinampPluginFolder.ErrorMessage = "Please enter a WinAmp plugins folder";
             this.txtWinampPluginFolder.ErrorProvider = null;
             this.txtWinampPluginFolder.IsRequired = true;
-            this.txtWinampPluginFolder.Location = new System.Drawing.Point(195, 148);
+            this.txtWinampPluginFolder.Location = new System.Drawing.Point(195, 160);
             this.txtWinampPluginFolder.Margin = new System.Windows.Forms.Padding(4);
             this.txtWinampPluginFolder.MaximumValue = 2147483647D;
             this.txtWinampPluginFolder.MinimumValue = -2147483648D;
             this.txtWinampPluginFolder.Name = "txtWinampPluginFolder";
             this.txtWinampPluginFolder.ReadOnly = true;
-            this.txtWinampPluginFolder.Size = new System.Drawing.Size(409, 27);
+            this.txtWinampPluginFolder.Size = new System.Drawing.Size(408, 27);
             this.txtWinampPluginFolder.TabIndex = 25;
             this.txtWinampPluginFolder.TabStop = false;
             // 
             // fsbAnalogXScratchFolder
             // 
             fsbAnalogXScratchFolder.AssociatedControl = this.txtAnalogXScratchFolder;
-            fsbAnalogXScratchFolder.Location = new System.Drawing.Point(612, 196);
+            fsbAnalogXScratchFolder.Location = new System.Drawing.Point(611, 212);
             fsbAnalogXScratchFolder.Margin = new System.Windows.Forms.Padding(4);
             fsbAnalogXScratchFolder.Name = "fsbAnalogXScratchFolder";
             fsbAnalogXScratchFolder.Size = new System.Drawing.Size(36, 30);
@@ -113,20 +117,20 @@
             this.txtAnalogXScratchFolder.ErrorMessage = "Please enter an AnalogX Scratch folder";
             this.txtAnalogXScratchFolder.ErrorProvider = null;
             this.txtAnalogXScratchFolder.IsRequired = true;
-            this.txtAnalogXScratchFolder.Location = new System.Drawing.Point(195, 196);
+            this.txtAnalogXScratchFolder.Location = new System.Drawing.Point(195, 212);
             this.txtAnalogXScratchFolder.Margin = new System.Windows.Forms.Padding(4);
             this.txtAnalogXScratchFolder.MaximumValue = 2147483647D;
             this.txtAnalogXScratchFolder.MinimumValue = -2147483648D;
             this.txtAnalogXScratchFolder.Name = "txtAnalogXScratchFolder";
             this.txtAnalogXScratchFolder.ReadOnly = true;
-            this.txtAnalogXScratchFolder.Size = new System.Drawing.Size(409, 27);
+            this.txtAnalogXScratchFolder.Size = new System.Drawing.Size(408, 27);
             this.txtAnalogXScratchFolder.TabIndex = 32;
             this.txtAnalogXScratchFolder.TabStop = false;
             // 
             // fsbKeyFinderFolder
             // 
             fsbKeyFinderFolder.AssociatedControl = this.txtKeyFinderFolder;
-            fsbKeyFinderFolder.Location = new System.Drawing.Point(612, 244);
+            fsbKeyFinderFolder.Location = new System.Drawing.Point(611, 264);
             fsbKeyFinderFolder.Margin = new System.Windows.Forms.Padding(4);
             fsbKeyFinderFolder.Name = "fsbKeyFinderFolder";
             fsbKeyFinderFolder.Size = new System.Drawing.Size(36, 30);
@@ -139,13 +143,13 @@
             this.txtKeyFinderFolder.ErrorMessage = "Please enter a Keyfinder folder";
             this.txtKeyFinderFolder.ErrorProvider = null;
             this.txtKeyFinderFolder.IsRequired = true;
-            this.txtKeyFinderFolder.Location = new System.Drawing.Point(195, 244);
+            this.txtKeyFinderFolder.Location = new System.Drawing.Point(195, 264);
             this.txtKeyFinderFolder.Margin = new System.Windows.Forms.Padding(4);
             this.txtKeyFinderFolder.MaximumValue = 2147483647D;
             this.txtKeyFinderFolder.MinimumValue = -2147483648D;
             this.txtKeyFinderFolder.Name = "txtKeyFinderFolder";
             this.txtKeyFinderFolder.ReadOnly = true;
-            this.txtKeyFinderFolder.Size = new System.Drawing.Size(409, 27);
+            this.txtKeyFinderFolder.Size = new System.Drawing.Size(408, 27);
             this.txtKeyFinderFolder.TabIndex = 35;
             this.txtKeyFinderFolder.TabStop = false;
             // 
@@ -187,7 +191,7 @@
             // linLine
             // 
             this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.linLine.Location = new System.Drawing.Point(0, 313);
+            this.linLine.Location = new System.Drawing.Point(0, 394);
             this.linLine.Margin = new System.Windows.Forms.Padding(4);
             this.linLine.Name = "linLine";
             this.linLine.Size = new System.Drawing.Size(695, 2);
@@ -198,7 +202,7 @@
             this.pnlButtons.BackColor = System.Drawing.SystemColors.Control;
             this.pnlButtons.Controls.Add(this.flpButtons);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 315);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 396);
             this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(695, 53);
@@ -264,7 +268,7 @@
             this.pnlMain.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
-            this.pnlMain.Size = new System.Drawing.Size(695, 313);
+            this.pnlMain.Size = new System.Drawing.Size(695, 394);
             this.pnlMain.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlMain.TabIndex = 35;
             // 
@@ -273,11 +277,9 @@
             this.tblMain.ColumnCount = 3;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.50985F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68.49015F));
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tblMain.Controls.Add(this.label7, 0, 5);
-            this.tblMain.Controls.Add(this.txtKeyFinderFolder, 0, 5);
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 61F));
+            this.tblMain.Controls.Add(this.txtLoopFolder, 1, 6);
             this.tblMain.Controls.Add(fsbKeyFinderFolder, 2, 5);
-            this.tblMain.Controls.Add(this.txtAnalogXScratchFolder, 0, 4);
             this.tblMain.Controls.Add(this.label6, 0, 4);
             this.tblMain.Controls.Add(fsbWinampPluginFolder, 2, 3);
             this.tblMain.Controls.Add(this.fsbVSTPluginFolder, 2, 2);
@@ -292,26 +294,31 @@
             this.tblMain.Controls.Add(this.txtWinampPluginFolder, 1, 3);
             this.tblMain.Controls.Add(fsbAnalogXScratchFolder, 2, 4);
             this.tblMain.Controls.Add(this.fsbLibraryFolder, 2, 0);
+            this.tblMain.Controls.Add(fsbLoopLibraryFolder, 2, 6);
+            this.tblMain.Controls.Add(this.label7, 0, 5);
+            this.tblMain.Controls.Add(this.txtKeyFinderFolder, 1, 5);
+            this.tblMain.Controls.Add(this.txtAnalogXScratchFolder, 1, 4);
+            this.tblMain.Controls.Add(this.label1, 0, 6);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(13, 12);
             this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 6;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28587F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28587F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28445F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28445F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28816F));
-            this.tblMain.Size = new System.Drawing.Size(669, 289);
+            this.tblMain.RowCount = 7;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28528F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28528F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28386F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28386F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28472F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28757F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28941F));
+            this.tblMain.Size = new System.Drawing.Size(669, 370);
             this.tblMain.TabIndex = 9;
             // 
             // label7
             // 
-            this.label7.Dock = System.Windows.Forms.DockStyle.Top;
             this.label7.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(4, 240);
+            this.label7.Location = new System.Drawing.Point(4, 260);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -322,10 +329,9 @@
             // 
             // label6
             // 
-            this.label6.Dock = System.Windows.Forms.DockStyle.Top;
             this.label6.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(4, 192);
+            this.label6.Location = new System.Drawing.Point(4, 208);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -337,7 +343,7 @@
             // fsbVSTPluginFolder
             // 
             this.fsbVSTPluginFolder.AssociatedControl = this.txtVSTPluginFolder;
-            this.fsbVSTPluginFolder.Location = new System.Drawing.Point(612, 100);
+            this.fsbVSTPluginFolder.Location = new System.Drawing.Point(611, 108);
             this.fsbVSTPluginFolder.Margin = new System.Windows.Forms.Padding(4);
             this.fsbVSTPluginFolder.Name = "fsbVSTPluginFolder";
             this.fsbVSTPluginFolder.Size = new System.Drawing.Size(36, 30);
@@ -350,20 +356,20 @@
             this.txtVSTPluginFolder.ErrorMessage = "Please enter a VST Plugins folder";
             this.txtVSTPluginFolder.ErrorProvider = null;
             this.txtVSTPluginFolder.IsRequired = true;
-            this.txtVSTPluginFolder.Location = new System.Drawing.Point(195, 100);
+            this.txtVSTPluginFolder.Location = new System.Drawing.Point(195, 108);
             this.txtVSTPluginFolder.Margin = new System.Windows.Forms.Padding(4);
             this.txtVSTPluginFolder.MaximumValue = 2147483647D;
             this.txtVSTPluginFolder.MinimumValue = -2147483648D;
             this.txtVSTPluginFolder.Name = "txtVSTPluginFolder";
             this.txtVSTPluginFolder.ReadOnly = true;
-            this.txtVSTPluginFolder.Size = new System.Drawing.Size(409, 27);
+            this.txtVSTPluginFolder.Size = new System.Drawing.Size(408, 27);
             this.txtVSTPluginFolder.TabIndex = 24;
             this.txtVSTPluginFolder.TabStop = false;
             // 
             // fsbShufflerFolder
             // 
             this.fsbShufflerFolder.AssociatedControl = this.txtShufflerFolder;
-            this.fsbShufflerFolder.Location = new System.Drawing.Point(612, 52);
+            this.fsbShufflerFolder.Location = new System.Drawing.Point(611, 56);
             this.fsbShufflerFolder.Margin = new System.Windows.Forms.Padding(4);
             this.fsbShufflerFolder.Name = "fsbShufflerFolder";
             this.fsbShufflerFolder.Size = new System.Drawing.Size(36, 30);
@@ -376,13 +382,13 @@
             this.txtShufflerFolder.ErrorMessage = "Please enter a shuffler folder";
             this.txtShufflerFolder.ErrorProvider = null;
             this.txtShufflerFolder.IsRequired = true;
-            this.txtShufflerFolder.Location = new System.Drawing.Point(195, 52);
+            this.txtShufflerFolder.Location = new System.Drawing.Point(195, 56);
             this.txtShufflerFolder.Margin = new System.Windows.Forms.Padding(4);
             this.txtShufflerFolder.MaximumValue = 2147483647D;
             this.txtShufflerFolder.MinimumValue = -2147483648D;
             this.txtShufflerFolder.Name = "txtShufflerFolder";
             this.txtShufflerFolder.ReadOnly = true;
-            this.txtShufflerFolder.Size = new System.Drawing.Size(409, 27);
+            this.txtShufflerFolder.Size = new System.Drawing.Size(408, 27);
             this.txtShufflerFolder.TabIndex = 22;
             this.txtShufflerFolder.TabStop = false;
             // 
@@ -391,7 +397,7 @@
             this.label3.Dock = System.Windows.Forms.DockStyle.Top;
             this.label3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(4, 144);
+            this.label3.Location = new System.Drawing.Point(4, 156);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -405,7 +411,7 @@
             this.title1.Dock = System.Windows.Forms.DockStyle.Top;
             this.title1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.title1.ForeColor = System.Drawing.Color.White;
-            this.title1.Location = new System.Drawing.Point(4, 48);
+            this.title1.Location = new System.Drawing.Point(4, 52);
             this.title1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.title1.Name = "title1";
             this.title1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -433,7 +439,7 @@
             this.label5.Dock = System.Windows.Forms.DockStyle.Top;
             this.label5.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(4, 96);
+            this.label5.Location = new System.Drawing.Point(4, 104);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -454,14 +460,14 @@
             this.txtLibraryFolder.MinimumValue = -2147483648D;
             this.txtLibraryFolder.Name = "txtLibraryFolder";
             this.txtLibraryFolder.ReadOnly = true;
-            this.txtLibraryFolder.Size = new System.Drawing.Size(409, 27);
+            this.txtLibraryFolder.Size = new System.Drawing.Size(408, 27);
             this.txtLibraryFolder.TabIndex = 21;
             this.txtLibraryFolder.TabStop = false;
             // 
             // fsbLibraryFolder
             // 
             this.fsbLibraryFolder.AssociatedControl = this.txtLibraryFolder;
-            this.fsbLibraryFolder.Location = new System.Drawing.Point(612, 4);
+            this.fsbLibraryFolder.Location = new System.Drawing.Point(611, 4);
             this.fsbLibraryFolder.Margin = new System.Windows.Forms.Padding(4);
             this.fsbLibraryFolder.Name = "fsbLibraryFolder";
             this.fsbLibraryFolder.Size = new System.Drawing.Size(36, 30);
@@ -473,6 +479,44 @@
             this.kryptonManager1.GlobalAllowFormChrome = false;
             this.kryptonManager1.GlobalPaletteMode = ComponentFactory.Krypton.Toolkit.PaletteModeManager.Office2010Silver;
             // 
+            // fsbLoopLibraryFolder
+            // 
+            fsbLoopLibraryFolder.AssociatedControl = this.txtLoopFolder;
+            fsbLoopLibraryFolder.Location = new System.Drawing.Point(611, 316);
+            fsbLoopLibraryFolder.Margin = new System.Windows.Forms.Padding(4);
+            fsbLoopLibraryFolder.Name = "fsbLoopLibraryFolder";
+            fsbLoopLibraryFolder.Size = new System.Drawing.Size(36, 30);
+            fsbLoopLibraryFolder.TabIndex = 37;
+            fsbLoopLibraryFolder.Values.Text = "...";
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(4, 312);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label1.Size = new System.Drawing.Size(183, 33);
+            this.label1.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
+            this.label1.TabIndex = 38;
+            this.label1.Text = "Loop Folder:";
+            // 
+            // txtLoopFolder
+            // 
+            this.txtLoopFolder.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtLoopFolder.ErrorMessage = "Please enter a Loop folder";
+            this.txtLoopFolder.ErrorProvider = null;
+            this.txtLoopFolder.Location = new System.Drawing.Point(195, 316);
+            this.txtLoopFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.txtLoopFolder.MaximumValue = 2147483647D;
+            this.txtLoopFolder.MinimumValue = -2147483648D;
+            this.txtLoopFolder.Name = "txtLoopFolder";
+            this.txtLoopFolder.ReadOnly = true;
+            this.txtLoopFolder.Size = new System.Drawing.Size(408, 27);
+            this.txtLoopFolder.TabIndex = 39;
+            this.txtLoopFolder.TabStop = false;
+            // 
             // FrmSettings
             // 
             this.AcceptButton = this.btnOK;
@@ -480,7 +524,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(695, 368);
+            this.ClientSize = new System.Drawing.Size(695, 449);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.linLine);
             this.Controls.Add(this.pnlButtons);
@@ -534,5 +578,7 @@
         private Halloumi.Common.Windows.Controls.Label label6;
         private Halloumi.Common.Windows.Controls.Label label7;
         private Halloumi.Common.Windows.Controls.TextBox txtKeyFinderFolder;
+        private Common.Windows.Controls.TextBox txtLoopFolder;
+        private Common.Windows.Controls.Label label1;
     }
 }
