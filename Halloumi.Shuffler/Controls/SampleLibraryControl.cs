@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,11 +11,8 @@ using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
-using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
-using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -22,9 +20,11 @@ namespace Halloumi.Shuffler.Controls
     {
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
         private bool _binding;
+        private bool _playing;
         private SyncedSamplePlayer _player;
 
         private string _playingSamples;
+        private bool _bindingVolumeSlider;
 
         public SampleLibraryControl()
         {
@@ -96,13 +96,52 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ISampleRecipient SampleRecipient { get; set; }
+        public bool AutoPlaySamples { get; private set; }
 
         public void Initialize()
         {
             _player = new SyncedSamplePlayer();
-            BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
+            //BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
+            BassPlayer.SamplerMixer.AddInputChannel(_player.Output);
+
+            var settings = Settings.Default;
+            _player.Output.SetVolume(settings.LoopVolume);
+            SetVolume((int)settings.LoopVolume);
+
+            sldVolume.Minimum = 0;
+            sldVolume.Maximum = 100;
+            var volume = Convert.ToInt32(_player.Output.GetVolume());
+            lblVolume.Text = volume.ToString();
+            sldVolume.Value = volume;
+            sldVolume.Scrolled += SldVolume_Slid;
+
+            this.AutoPlaySamples = false;
 
             BindData();
+        }
+
+        private void SldVolume_Slid(object sender, EventArgs e)
+        {
+            _bindingVolumeSlider = true;
+            var volume = Convert.ToDecimal(sldVolume.ScrollValue);
+            _player.Output.SetVolume(volume);
+            lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
+            _bindingVolumeSlider = false;
+        }
+
+        private void BindVolume()
+        {
+            if (_bindingVolumeSlider) return;
+            var volume = (int)BassPlayer.GetMixerVolume();
+            if (volume != sldVolume.Value)
+                SetVolume(volume);
+        }
+        private void SetVolume(int volume)
+        {
+            sldVolume.Value = volume;
+            lblVolume.Text = volume.ToString();
+            var settings = Settings.Default;
+            settings.LoopVolume = volume;
         }
 
         public void Close()
@@ -114,7 +153,9 @@ namespace Halloumi.Shuffler.Controls
         {
             lock (_player)
             {
-                _player.Pause();
+                _playing = false;
+                //_player.Pause();
+                _player.Mute();
             }
         }
 
@@ -342,13 +383,21 @@ namespace Halloumi.Shuffler.Controls
 
         private void PlayCurrentSamples()
         {
+            if (_playing) return;
+            lock (_player)
+            {
+                _playing = true;
+                _player.SetBpm(BassPlayer.GetCurrentBpm());
+                _player.Unmute();
+                _player.Play();
+            }
+        }
+
+        private void LoadCurrentSamples()
+        {
             lock (_player)
             {
                 _player.Pause();
-
-
-                _player.SetBpm(BassPlayer.GetCurrentBpm());
-
                 var samples = GetSelectedSamples();
                 if (samples == null || samples.Count == 0) return;
 
@@ -358,7 +407,7 @@ namespace Halloumi.Shuffler.Controls
                     var track = SampleLibrary.GetTrackFromSample(sample);
 
                     var filename = (track == null) ? sample.Filename : track.Filename;
-                    if(!File.Exists(filename))
+                    if (!File.Exists(filename))
                         continue;
 
                     _player.AddSample(GetSampleKey(sample),
@@ -367,8 +416,6 @@ namespace Halloumi.Shuffler.Controls
                         sample.Length,
                         sample.Offset);
                 }
-
-                _player.Play();
             }
         }
 
@@ -403,7 +450,11 @@ namespace Halloumi.Shuffler.Controls
                 GetSelectedSamples().Select(x => x.TrackArtist + x.TrackTitle + x.Description));
 
             if (playingSamples != _playingSamples)
-                PlayCurrentSamples();
+            {
+                LoadCurrentSamples();
+                if(this.AutoPlaySamples)
+                    PlayCurrentSamples();
+            }
 
             _playingSamples = playingSamples;
         }
@@ -605,6 +656,39 @@ namespace Halloumi.Shuffler.Controls
         private void mnuExportAllSamples_Click(object sender, EventArgs e)
         {
             ExportSamples(SampleLibrary.GetSamples());
+        }
+
+        private void btnPlay_MouseDown(object sender, MouseEventArgs e)
+        {
+            PlayCurrentSamples();
+        }
+
+        private void btnPlay_MouseUp(object sender, MouseEventArgs e)
+        {
+            StopSamples();
+        }
+
+        private void grdSamples_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (AutoPlaySamples)
+                return;
+
+            if(e.KeyCode != Keys.Space)
+                return;
+
+            PlayCurrentSamples();
+        }
+
+        private void grdSamples_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (AutoPlaySamples)
+                return;
+
+            if (e.KeyCode != Keys.Space)
+                return;
+
+            StopSamples();
+
         }
     }
 

@@ -83,6 +83,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             set { _samplerMixer.SyncNotes = value; }
         }
 
+        public Channels.MixerChannel SamplerMixer
+        {
+            get { return _samplerMixer; }
+        }
+
         /// <summary>
         ///     Gets the current BPM.
         /// </summary>

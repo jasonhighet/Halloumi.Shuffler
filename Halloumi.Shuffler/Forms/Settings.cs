@@ -24,6 +24,7 @@ namespace Halloumi.Shuffler.Forms
             LimitSongLength = true;
             ExportPlaylistFolder = "";
             Volume = 100;
+            LoopVolume = 100;
             ShowMixableTracks = false;
             AnalogXScratchFolder = "";
             KeyFinderFolder = "";
@@ -181,6 +182,7 @@ namespace Halloumi.Shuffler.Forms
         public string RecentFiles { get; set; }
         public bool ShowTrackDetails { get; set; }
         public bool ShowPlayer { get; set; }
+        public decimal LoopVolume { get; set; }
 
         private static Settings LoadSetttings()
         {

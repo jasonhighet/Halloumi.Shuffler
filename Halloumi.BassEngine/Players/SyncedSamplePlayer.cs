@@ -149,5 +149,25 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _targetBpm = int.MinValue;
 
         }
+
+        public void Mute()
+        {
+            foreach (var player in _channelPlayers)
+            {
+                var channelIndex = _channelPlayers.IndexOf(player);
+                var key = _sampleKeys[channelIndex];
+                player.Mute(key);
+            }
+        }
+
+        public void Unmute()
+        {
+            foreach (var player in _channelPlayers)
+            {
+                var channelIndex = _channelPlayers.IndexOf(player);
+                var key = _sampleKeys[channelIndex];
+                player.Unmute(key);
+            }
+        }
     }
 }
