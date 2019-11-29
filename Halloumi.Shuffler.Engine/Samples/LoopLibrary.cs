@@ -72,7 +72,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             var sample = new Sample
             {
                 Filename = file,
-                Description = (Path.GetFileNameWithoutExtension(file) + "").Replace(_folder, ""),
+                Description = (Path.GetFileNameWithoutExtension(file) + "").Replace(_folder, "").Replace("\\", ""),
                 IsAtonal = true,
                 IsPrimaryLoop = true,
                 Gain = 0,
@@ -84,8 +84,8 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
                 Key = "",
                 Bpm = bpm,
                 Tags = new List<string>(),
-                TrackArtist = (Path.GetDirectoryName(file) + "").Replace(_folder, ""),
-                TrackTitle = (Path.GetFileNameWithoutExtension(file) + "").Replace(_folder, ""),
+                TrackArtist = (Path.GetDirectoryName(file) + "").Replace(_folder, "").Replace("\\", ""),
+                TrackTitle = (Path.GetFileNameWithoutExtension(file) + "").Replace(_folder, "").Replace("\\", ""),
             };
 
             lock (_samples)
