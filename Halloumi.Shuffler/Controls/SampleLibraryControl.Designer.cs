@@ -29,20 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlBackground2 = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlLibraryDetails = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlTrack = new Halloumi.Common.Windows.Controls.Panel();
-            this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuImportSamples = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExportSamples = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +49,10 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCopySample = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlSampleDetails = new Halloumi.Common.Windows.Controls.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.lblVolume = new Halloumi.Common.Windows.Controls.Label();
+            this.lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
+            this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
             this.pnlDivider = new Halloumi.Common.Windows.Controls.Panel();
             this.flpToolbarRight = new System.Windows.Forms.FlowLayoutPanel();
             this.lblFilter = new Halloumi.Common.Windows.Controls.Label();
@@ -76,23 +74,26 @@
             this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTags = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnPlay = new Halloumi.Common.Windows.Controls.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.grdSamples = new Halloumi.Shuffler.Controls.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sldVolume = new Halloumi.Shuffler.Controls.Slider();
-            this.lblVolume = new Halloumi.Common.Windows.Controls.Label();
-            this.lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
+            this.btnRefresh = new Halloumi.Common.Windows.Controls.Button();
             this.pnlBackground2.SuspendLayout();
             this.pnlLibraryDetails.SuspendLayout();
             this.pnlTrack.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.pnlSampleDetails.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.pnlDivider.SuspendLayout();
             this.flpToolbarRight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKey)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbLoopType)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbTag)).BeginInit();
-            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlBackground2
@@ -133,102 +134,6 @@
             this.pnlTrack.Size = new System.Drawing.Size(1180, 511);
             this.pnlTrack.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlTrack.TabIndex = 57;
-            // 
-            // grdSamples
-            // 
-            this.grdSamples.AllowUserToAddRows = false;
-            this.grdSamples.AllowUserToDeleteRows = false;
-            this.grdSamples.AllowUserToResizeColumns = false;
-            this.grdSamples.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
-            this.grdSamples.ColumnHeadersHeight = 26;
-            this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5});
-            this.grdSamples.ContextMenuStrip = this.contextMenuStrip;
-            this.grdSamples.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdSamples.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
-            this.grdSamples.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
-            this.grdSamples.HideOuterBorders = true;
-            this.grdSamples.Location = new System.Drawing.Point(1, 1);
-            this.grdSamples.Margin = new System.Windows.Forms.Padding(4);
-            this.grdSamples.MergeColor = System.Drawing.Color.Gainsboro;
-            this.grdSamples.Name = "grdSamples";
-            this.grdSamples.ReadOnly = true;
-            this.grdSamples.RowHeadersVisible = false;
-            this.grdSamples.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grdSamples.RowTemplate.Height = 24;
-            this.grdSamples.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdSamples.Size = new System.Drawing.Size(1178, 509);
-            this.grdSamples.SortColumnIndex = 0;
-            this.grdSamples.SortOrder = System.Windows.Forms.SortOrder.None;
-            this.grdSamples.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
-            this.grdSamples.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
-            this.grdSamples.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
-            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
-            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
-            this.grdSamples.TabIndex = 53;
-            this.grdSamples.KeyDown += new System.Windows.Forms.KeyEventHandler(this.grdSamples_KeyDown);
-            this.grdSamples.KeyUp += new System.Windows.Forms.KeyEventHandler(this.grdSamples_KeyUp);
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "Description";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Description";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "BPM";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle7;
-            this.dataGridViewTextBoxColumn2.HeaderText = "BPM";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn2.Width = 72;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Key";
-            this.dataGridViewTextBoxColumn3.HeaderText = "Key";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn3.Width = 66;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "LengthFormatted";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dataGridViewTextBoxColumn4.HeaderText = "Length";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn4.Width = 87;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "Tags";
-            this.dataGridViewTextBoxColumn5.HeaderText = "Tags";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.dataGridViewTextBoxColumn5.Width = 71;
             // 
             // contextMenuStrip
             // 
@@ -316,6 +221,7 @@
             // pnlSampleDetails
             // 
             this.pnlSampleDetails.BackColor = System.Drawing.Color.Transparent;
+            this.pnlSampleDetails.Controls.Add(this.btnRefresh);
             this.pnlSampleDetails.Controls.Add(this.panel1);
             this.pnlSampleDetails.Controls.Add(this.btnPlay);
             this.pnlSampleDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -323,6 +229,57 @@
             this.pnlSampleDetails.Name = "pnlSampleDetails";
             this.pnlSampleDetails.Size = new System.Drawing.Size(1180, 54);
             this.pnlSampleDetails.TabIndex = 56;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.sldVolume);
+            this.panel1.Controls.Add(this.lblVolume);
+            this.panel1.Controls.Add(this.lblVolumCaption);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(894, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(286, 54);
+            this.panel1.TabIndex = 7;
+            // 
+            // lblVolume
+            // 
+            this.lblVolume.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblVolume.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVolume.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblVolume.Location = new System.Drawing.Point(249, 0);
+            this.lblVolume.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVolume.Name = "lblVolume";
+            this.lblVolume.Size = new System.Drawing.Size(37, 54);
+            this.lblVolume.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
+            this.lblVolume.TabIndex = 4;
+            this.lblVolume.Text = "100";
+            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblVolumCaption
+            // 
+            this.lblVolumCaption.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblVolumCaption.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVolumCaption.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblVolumCaption.Location = new System.Drawing.Point(0, 0);
+            this.lblVolumCaption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVolumCaption.Name = "lblVolumCaption";
+            this.lblVolumCaption.Size = new System.Drawing.Size(40, 54);
+            this.lblVolumCaption.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
+            this.lblVolumCaption.TabIndex = 3;
+            this.lblVolumCaption.Text = "Vol:";
+            this.lblVolumCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.Location = new System.Drawing.Point(9, 6);
+            this.btnPlay.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Padding = new System.Windows.Forms.Padding(4);
+            this.btnPlay.Size = new System.Drawing.Size(69, 40);
+            this.btnPlay.TabIndex = 6;
+            this.btnPlay.Text = "&Play";
+            this.btnPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnPlay_MouseDown);
+            this.btnPlay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnPlay_MouseUp);
             // 
             // pnlDivider
             // 
@@ -564,10 +521,10 @@
             // 
             this.colBPM.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.colBPM.DataPropertyName = "BPM";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.colBPM.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle4.Format = "N2";
+            dataGridViewCellStyle4.NullValue = null;
+            this.colBPM.DefaultCellStyle = dataGridViewCellStyle4;
             this.colBPM.HeaderText = "BPM";
             this.colBPM.Name = "colBPM";
             this.colBPM.ReadOnly = true;
@@ -586,8 +543,8 @@
             // 
             this.colLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.colLength.DataPropertyName = "LengthFormatted";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            this.colLength.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            this.colLength.DefaultCellStyle = dataGridViewCellStyle5;
             this.colLength.HeaderText = "Length";
             this.colLength.Name = "colLength";
             this.colLength.ReadOnly = true;
@@ -602,28 +559,101 @@
             this.colTags.ReadOnly = true;
             this.colTags.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
-            // btnPlay
+            // grdSamples
             // 
-            this.btnPlay.Location = new System.Drawing.Point(9, 6);
-            this.btnPlay.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
-            this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Padding = new System.Windows.Forms.Padding(4);
-            this.btnPlay.Size = new System.Drawing.Size(69, 40);
-            this.btnPlay.TabIndex = 6;
-            this.btnPlay.Text = "&Play";
-            this.btnPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnPlay_MouseDown);
-            this.btnPlay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnPlay_MouseUp);
+            this.grdSamples.AllowUserToAddRows = false;
+            this.grdSamples.AllowUserToDeleteRows = false;
+            this.grdSamples.AllowUserToResizeColumns = false;
+            this.grdSamples.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.grdSamples.ColumnHeadersHeight = 26;
+            this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1,
+            this.dataGridViewTextBoxColumn2,
+            this.dataGridViewTextBoxColumn3,
+            this.dataGridViewTextBoxColumn4,
+            this.dataGridViewTextBoxColumn5});
+            this.grdSamples.ContextMenuStrip = this.contextMenuStrip;
+            this.grdSamples.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grdSamples.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
+            this.grdSamples.GridStyles.StyleBackground = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
+            this.grdSamples.HideOuterBorders = true;
+            this.grdSamples.Location = new System.Drawing.Point(1, 1);
+            this.grdSamples.Margin = new System.Windows.Forms.Padding(4);
+            this.grdSamples.MergeColor = System.Drawing.Color.Gainsboro;
+            this.grdSamples.Name = "grdSamples";
+            this.grdSamples.ReadOnly = true;
+            this.grdSamples.RowHeadersVisible = false;
+            this.grdSamples.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grdSamples.RowTemplate.Height = 24;
+            this.grdSamples.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.grdSamples.Size = new System.Drawing.Size(1178, 509);
+            this.grdSamples.SortColumnIndex = 0;
+            this.grdSamples.SortOrder = System.Windows.Forms.SortOrder.None;
+            this.grdSamples.StateCommon.BackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridDataCellList;
+            this.grdSamples.StateCommon.DataCell.Border.Color1 = System.Drawing.Color.White;
+            this.grdSamples.StateCommon.DataCell.Border.DrawBorders = ((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders)((((ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Top | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Bottom) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Left) 
+            | ComponentFactory.Krypton.Toolkit.PaletteDrawBorders.Right)));
+            this.grdSamples.TabIndex = 53;
+            this.grdSamples.KeyDown += new System.Windows.Forms.KeyEventHandler(this.grdSamples_KeyDown);
+            this.grdSamples.KeyUp += new System.Windows.Forms.KeyEventHandler(this.grdSamples_KeyUp);
             // 
-            // panel1
+            // dataGridViewTextBoxColumn1
             // 
-            this.panel1.Controls.Add(this.sldVolume);
-            this.panel1.Controls.Add(this.lblVolume);
-            this.panel1.Controls.Add(this.lblVolumCaption);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(894, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(286, 54);
-            this.panel1.TabIndex = 7;
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Description";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Description";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "BPM";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridViewTextBoxColumn2.HeaderText = "BPM";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.dataGridViewTextBoxColumn2.Width = 72;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "Key";
+            this.dataGridViewTextBoxColumn3.HeaderText = "Key";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.dataGridViewTextBoxColumn3.Width = 66;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn4.DataPropertyName = "LengthFormatted";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewTextBoxColumn4.HeaderText = "Length";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.dataGridViewTextBoxColumn4.Width = 87;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn5.DataPropertyName = "Tags";
+            this.dataGridViewTextBoxColumn5.HeaderText = "Tags";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            this.dataGridViewTextBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.dataGridViewTextBoxColumn5.Width = 71;
             // 
             // sldVolume
             // 
@@ -632,7 +662,7 @@
             this.sldVolume.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
             this.sldVolume.AutoScrollMargin = new System.Drawing.Size(0, 0);
             this.sldVolume.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.sldVolume.BackColor = System.Drawing.SystemColors.Control;
+            this.sldVolume.BackColor = System.Drawing.SystemColors.ControlLight;
             this.sldVolume.BackgroundImage = null;
             this.sldVolume.BackGroundImage = null;
             this.sldVolume.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -670,33 +700,16 @@
             this.sldVolume.Value = 0;
             this.sldVolume.WheelScrollTicks = 3;
             // 
-            // lblVolume
+            // btnRefresh
             // 
-            this.lblVolume.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblVolume.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVolume.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolume.Location = new System.Drawing.Point(249, 0);
-            this.lblVolume.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(37, 54);
-            this.lblVolume.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolume.TabIndex = 4;
-            this.lblVolume.Text = "100";
-            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblVolumCaption
-            // 
-            this.lblVolumCaption.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblVolumCaption.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVolumCaption.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolumCaption.Location = new System.Drawing.Point(0, 0);
-            this.lblVolumCaption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolumCaption.Name = "lblVolumCaption";
-            this.lblVolumCaption.Size = new System.Drawing.Size(40, 54);
-            this.lblVolumCaption.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolumCaption.TabIndex = 3;
-            this.lblVolumCaption.Text = "Vol:";
-            this.lblVolumCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRefresh.Location = new System.Drawing.Point(80, 6);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Padding = new System.Windows.Forms.Padding(4);
+            this.btnRefresh.Size = new System.Drawing.Size(84, 40);
+            this.btnRefresh.TabIndex = 8;
+            this.btnRefresh.Text = "&Refresh";
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // SampleLibraryControl
             // 
@@ -708,16 +721,16 @@
             this.pnlBackground2.ResumeLayout(false);
             this.pnlLibraryDetails.ResumeLayout(false);
             this.pnlTrack.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).EndInit();
             this.contextMenuStrip.ResumeLayout(false);
             this.pnlSampleDetails.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.pnlDivider.ResumeLayout(false);
             this.flpToolbarRight.ResumeLayout(false);
             this.flpToolbarRight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKey)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbLoopType)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbTag)).EndInit();
-            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -771,5 +784,6 @@
         private Slider sldVolume;
         private Common.Windows.Controls.Label lblVolume;
         private Common.Windows.Controls.Label lblVolumCaption;
+        private Common.Windows.Controls.Button btnRefresh;
     }
 }

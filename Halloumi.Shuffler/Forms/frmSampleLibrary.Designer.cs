@@ -39,14 +39,15 @@
             this.sampleLibraryControl.Size = new System.Drawing.Size(1201, 566);
             this.sampleLibraryControl.TabIndex = 0;
             // 
-            // frmSampleLibrary
+            // FrmSampleLibrary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1201, 566);
             this.Controls.Add(this.sampleLibraryControl);
             this.Name = "FrmSampleLibrary";
-            this.Text = "frmSampleLibrary";
+            this.ShowIcon = false;
+            this.Text = "Sample Library";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSampleLibrary_FormClosing);
             this.ResumeLayout(false);
 

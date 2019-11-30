@@ -34,12 +34,43 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
 
         public List<Sample> GetSamples()
         {
-            return _samples.ToList();
+            return _samples.OrderByDescending(x => x.Bpm).ToList();
         }
 
         public List<Sample> GetSamples(SearchCriteria searchCriteria)
         {
-            return _samples.ToList();
+            if (searchCriteria.MaxBpm == 0) searchCriteria.MaxBpm = 200;
+
+            List<Sample> samples;
+            lock (_samples)
+            {
+                samples = _samples
+                    .Where(s => string.IsNullOrEmpty(searchCriteria.TrackArtist) || s.Description == searchCriteria.TrackArtist)
+                    .Where(s => string.IsNullOrEmpty(searchCriteria.TrackTitle) || s.TrackTitle == searchCriteria.TrackTitle)
+                    .Where(s => string.IsNullOrEmpty(searchCriteria.Description) || s.Description == searchCriteria.Description)
+                    .Where(
+                        s =>
+                            string.IsNullOrEmpty(searchCriteria.Key) || s.Key == searchCriteria.Key && !s.IsAtonal ||
+                            searchCriteria.IncludeAtonal && s.IsAtonal)
+                    .Where(s => !searchCriteria.AtonalOnly || searchCriteria.AtonalOnly && s.IsAtonal)
+                    .Where(s => !searchCriteria.Primary.HasValue || s.IsPrimaryLoop == searchCriteria.Primary.Value)
+                    .Where(s => !searchCriteria.LoopMode.HasValue || s.LoopMode == searchCriteria.LoopMode)
+                    .Where(s => s.Bpm >= searchCriteria.MinBpm && s.Bpm <= searchCriteria.MaxBpm)
+                    .OrderBy(s => s.Description)
+                    .ToList();
+            }
+
+            if (string.IsNullOrEmpty(searchCriteria.SearchText))
+                return samples.OrderByDescending(x => x.Bpm).ToList();
+
+            searchCriteria.SearchText = searchCriteria.SearchText.ToLower().Trim();
+            samples = samples.Where(s => s.Tags.Contains(searchCriteria.SearchText)
+                                         || s.Description.ToLower().Contains(searchCriteria.SearchText)
+                                         || s.TrackArtist.ToLower().Contains(searchCriteria.SearchText)
+                                         || s.TrackTitle.ToLower().Contains(searchCriteria.SearchText))
+                .ToList();
+
+            return samples.OrderByDescending(x => x.Bpm).ToList();
         }
 
         public string GetSampleFileName(Sample sample)

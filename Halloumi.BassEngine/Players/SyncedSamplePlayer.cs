@@ -154,9 +154,16 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             foreach (var player in _channelPlayers)
             {
-                var channelIndex = _channelPlayers.IndexOf(player);
-                var key = _sampleKeys[channelIndex];
-                player.Mute(key);
+                try
+                {
+                    var channelIndex = _channelPlayers.IndexOf(player);
+                    if (channelIndex >= _sampleKeys.Count)
+                        continue;
+
+                    var key = _sampleKeys[channelIndex];
+                    player.Mute(key);
+                }
+                catch { }
             }
         }
 
@@ -164,9 +171,17 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             foreach (var player in _channelPlayers)
             {
-                var channelIndex = _channelPlayers.IndexOf(player);
-                var key = _sampleKeys[channelIndex];
-                player.Unmute(key);
+                try
+                {
+                    var channelIndex = _channelPlayers.IndexOf(player);
+                    if (channelIndex >= _sampleKeys.Count)
+                        continue;
+                       
+                    var key = _sampleKeys[channelIndex];
+                    player.Unmute(key);
+                }
+                catch { }
+                
             }
         }
     }

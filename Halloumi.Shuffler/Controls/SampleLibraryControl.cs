@@ -690,6 +690,13 @@ namespace Halloumi.Shuffler.Controls
             StopSamples();
 
         }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            txtMinBPM.Text = (BassPlayer.GetCurrentBpm() * 0.9M).ToString("0");
+            txtMaxBPM.Text = (BassPlayer.GetCurrentBpm() * 1.1M).ToString("0");
+            BindData();
+        }
     }
 
     public interface ISampleRecipient
