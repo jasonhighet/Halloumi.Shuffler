@@ -61,7 +61,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             }
 
             if (string.IsNullOrEmpty(searchCriteria.SearchText))
-                return samples.OrderByDescending(x => x.Bpm).ToList();
+                return samples.OrderBy(x => x.Bpm).ToList();
 
             searchCriteria.SearchText = searchCriteria.SearchText.ToLower().Trim();
             samples = samples.Where(s => s.Tags.Contains(searchCriteria.SearchText)
@@ -70,7 +70,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
                                          || s.TrackTitle.ToLower().Contains(searchCriteria.SearchText))
                 .ToList();
 
-            return samples.OrderByDescending(x => x.Bpm).ToList();
+            return samples.OrderBy(x => x.Bpm).ToList();
         }
 
         public string GetSampleFileName(Sample sample)
