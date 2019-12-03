@@ -43,7 +43,7 @@
             this.label5 = new Halloumi.Common.Windows.Controls.Label();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.label4 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbDirection = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.cmbBmpDirection = new Halloumi.Common.Windows.Controls.ComboBox();
             this.cmbAllowBearable = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnExcludeTracks = new Halloumi.Common.Windows.Controls.FileSelectButton();
             this.txtExcludeTracks = new Halloumi.Common.Windows.Controls.TextBox();
@@ -69,11 +69,13 @@
             this.cmbKeyMixing = new Halloumi.Common.Windows.Controls.ComboBox();
             this.cmbContinueMix = new Halloumi.Common.Windows.Controls.ComboBox();
             this.lblStatus = new Halloumi.Common.Windows.Controls.Label();
+            this.label14 = new Halloumi.Common.Windows.Controls.Label();
+            this.cmbDirection = new Halloumi.Common.Windows.Controls.ComboBox();
             this.pnlButtons.SuspendLayout();
             this.flpButtons.SuspendLayout();
             this.pnlMain.SuspendLayout();
             this.tblMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbDirection)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbBmpDirection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbAllowBearable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbApproxLength)).BeginInit();
@@ -81,6 +83,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cmbTracksToGenerate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKeyMixing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbContinueMix)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbDirection)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlButtons
@@ -88,7 +91,7 @@
             this.pnlButtons.BackColor = System.Drawing.SystemColors.Control;
             this.pnlButtons.Controls.Add(this.flpButtons);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 491);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 529);
             this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(561, 53);
@@ -165,7 +168,7 @@
             // beveledLine
             // 
             this.beveledLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.beveledLine.Location = new System.Drawing.Point(0, 489);
+            this.beveledLine.Location = new System.Drawing.Point(0, 527);
             this.beveledLine.Margin = new System.Windows.Forms.Padding(4);
             this.beveledLine.Name = "beveledLine";
             this.beveledLine.Size = new System.Drawing.Size(561, 2);
@@ -181,7 +184,7 @@
             this.pnlMain.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
-            this.pnlMain.Size = new System.Drawing.Size(561, 489);
+            this.pnlMain.Size = new System.Drawing.Size(561, 527);
             this.pnlMain.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlMain.TabIndex = 42;
             // 
@@ -192,54 +195,57 @@
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 53F));
-            this.tblMain.Controls.Add(this.label5, 0, 12);
-            this.tblMain.Controls.Add(this.label1, 0, 4);
+            this.tblMain.Controls.Add(this.label5, 0, 13);
+            this.tblMain.Controls.Add(this.label1, 0, 5);
             this.tblMain.Controls.Add(this.label4, 0, 3);
-            this.tblMain.Controls.Add(this.cmbDirection, 1, 3);
-            this.tblMain.Controls.Add(this.cmbAllowBearable, 1, 4);
-            this.tblMain.Controls.Add(this.btnExcludeTracks, 3, 12);
-            this.tblMain.Controls.Add(this.txtExcludeTracks, 1, 12);
-            this.tblMain.Controls.Add(this.chkExlcudeMixesOnly, 1, 13);
-            this.tblMain.Controls.Add(this.label7, 0, 9);
+            this.tblMain.Controls.Add(this.cmbBmpDirection, 1, 3);
+            this.tblMain.Controls.Add(this.cmbAllowBearable, 1, 5);
+            this.tblMain.Controls.Add(this.btnExcludeTracks, 3, 13);
+            this.tblMain.Controls.Add(this.txtExcludeTracks, 1, 13);
+            this.tblMain.Controls.Add(this.chkExlcudeMixesOnly, 1, 14);
+            this.tblMain.Controls.Add(this.label7, 0, 10);
             this.tblMain.Controls.Add(this.label3, 0, 1);
             this.tblMain.Controls.Add(this.cmbMode, 1, 1);
-            this.tblMain.Controls.Add(this.label8, 0, 8);
-            this.tblMain.Controls.Add(this.chkRestrictGenreClumping, 1, 8);
+            this.tblMain.Controls.Add(this.label8, 0, 9);
+            this.tblMain.Controls.Add(this.chkRestrictGenreClumping, 1, 9);
             this.tblMain.Controls.Add(this.label2, 0, 2);
             this.tblMain.Controls.Add(this.cmbApproxLength, 1, 2);
-            this.tblMain.Controls.Add(this.label6, 0, 5);
-            this.tblMain.Controls.Add(this.cmbExtendedMixes, 1, 5);
-            this.tblMain.Controls.Add(this.chkRestrictArtistClumping, 1, 9);
-            this.tblMain.Controls.Add(this.label9, 0, 11);
-            this.tblMain.Controls.Add(this.chkDisplayedTracksOnly, 1, 11);
-            this.tblMain.Controls.Add(this.label10, 0, 10);
-            this.tblMain.Controls.Add(this.chkRestrictTitleClumping, 1, 10);
-            this.tblMain.Controls.Add(this.label11, 0, 7);
+            this.tblMain.Controls.Add(this.label6, 0, 6);
+            this.tblMain.Controls.Add(this.cmbExtendedMixes, 1, 6);
+            this.tblMain.Controls.Add(this.chkRestrictArtistClumping, 1, 10);
+            this.tblMain.Controls.Add(this.label9, 0, 12);
+            this.tblMain.Controls.Add(this.chkDisplayedTracksOnly, 1, 12);
+            this.tblMain.Controls.Add(this.label10, 0, 11);
+            this.tblMain.Controls.Add(this.chkRestrictTitleClumping, 1, 11);
+            this.tblMain.Controls.Add(this.label11, 0, 8);
             this.tblMain.Controls.Add(this.label13, 0, 0);
             this.tblMain.Controls.Add(this.cmbTracksToGenerate, 1, 0);
-            this.tblMain.Controls.Add(this.label12, 0, 6);
-            this.tblMain.Controls.Add(this.cmbKeyMixing, 1, 6);
-            this.tblMain.Controls.Add(this.cmbContinueMix, 1, 7);
+            this.tblMain.Controls.Add(this.label12, 0, 7);
+            this.tblMain.Controls.Add(this.cmbKeyMixing, 1, 7);
+            this.tblMain.Controls.Add(this.cmbContinueMix, 1, 8);
+            this.tblMain.Controls.Add(this.label14, 0, 4);
+            this.tblMain.Controls.Add(this.cmbDirection, 1, 4);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(13, 12);
             this.tblMain.Margin = new System.Windows.Forms.Padding(4);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 14;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.140437F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.143522F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142806F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.143052F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.143052F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.143052F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.14003F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142641F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.143052F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.145394F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142707F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142737F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.143052F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.144472F));
-            this.tblMain.Size = new System.Drawing.Size(535, 431);
+            this.tblMain.RowCount = 15;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.664586F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.667465F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.666797F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.667027F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.664177F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.667027F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.667027F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.664206F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.666643F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.667027F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.669212F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.666704F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.666732F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.667027F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.668352F));
+            this.tblMain.Size = new System.Drawing.Size(535, 469);
             this.tblMain.TabIndex = 1;
             // 
             // label5
@@ -247,7 +253,7 @@
             this.label5.Dock = System.Windows.Forms.DockStyle.Top;
             this.label5.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(4, 360);
+            this.label5.Location = new System.Drawing.Point(4, 403);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -260,7 +266,7 @@
             // 
             this.label1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(4, 120);
+            this.label1.Location = new System.Drawing.Point(4, 155);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -273,29 +279,29 @@
             // 
             this.label4.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(4, 90);
+            this.label4.Location = new System.Drawing.Point(4, 93);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
             this.label4.Size = new System.Drawing.Size(167, 30);
             this.label4.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label4.TabIndex = 20;
-            this.label4.Text = "Direction:";
+            this.label4.Text = "Bpm Direction:";
             // 
-            // cmbDirection
+            // cmbBmpDirection
             // 
-            this.cmbDirection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cmbDirection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbDirection.DropBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.InputControlCustom1;
-            this.cmbDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDirection.DropDownWidth = 264;
-            this.cmbDirection.ErrorProvider = null;
-            this.cmbDirection.IsRequired = true;
-            this.cmbDirection.Location = new System.Drawing.Point(202, 94);
-            this.cmbDirection.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbDirection.Name = "cmbDirection";
-            this.cmbDirection.Size = new System.Drawing.Size(195, 25);
-            this.cmbDirection.TabIndex = 24;
+            this.cmbBmpDirection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cmbBmpDirection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbBmpDirection.DropBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.InputControlCustom1;
+            this.cmbBmpDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBmpDirection.DropDownWidth = 264;
+            this.cmbBmpDirection.ErrorProvider = null;
+            this.cmbBmpDirection.IsRequired = true;
+            this.cmbBmpDirection.Location = new System.Drawing.Point(202, 97);
+            this.cmbBmpDirection.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbBmpDirection.Name = "cmbBmpDirection";
+            this.cmbBmpDirection.Size = new System.Drawing.Size(195, 25);
+            this.cmbBmpDirection.TabIndex = 24;
             // 
             // cmbAllowBearable
             // 
@@ -306,7 +312,7 @@
             this.cmbAllowBearable.DropDownWidth = 264;
             this.cmbAllowBearable.ErrorProvider = null;
             this.cmbAllowBearable.IsRequired = true;
-            this.cmbAllowBearable.Location = new System.Drawing.Point(202, 124);
+            this.cmbAllowBearable.Location = new System.Drawing.Point(202, 159);
             this.cmbAllowBearable.Margin = new System.Windows.Forms.Padding(4);
             this.cmbAllowBearable.Name = "cmbAllowBearable";
             this.cmbAllowBearable.Size = new System.Drawing.Size(195, 25);
@@ -317,7 +323,7 @@
             this.btnExcludeTracks.AssociatedControl = this.txtExcludeTracks;
             this.btnExcludeTracks.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnExcludeTracks.Filter = "Playlist files (*.m3u)|*.m3u";
-            this.btnExcludeTracks.Location = new System.Drawing.Point(486, 364);
+            this.btnExcludeTracks.Location = new System.Drawing.Point(486, 407);
             this.btnExcludeTracks.Margin = new System.Windows.Forms.Padding(4);
             this.btnExcludeTracks.Name = "btnExcludeTracks";
             this.btnExcludeTracks.Size = new System.Drawing.Size(45, 21);
@@ -330,7 +336,7 @@
             this.tblMain.SetColumnSpan(this.txtExcludeTracks, 2);
             this.txtExcludeTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtExcludeTracks.ErrorProvider = null;
-            this.txtExcludeTracks.Location = new System.Drawing.Point(202, 364);
+            this.txtExcludeTracks.Location = new System.Drawing.Point(202, 407);
             this.txtExcludeTracks.Margin = new System.Windows.Forms.Padding(4);
             this.txtExcludeTracks.MaximumValue = 2147483647D;
             this.txtExcludeTracks.MinimumValue = -2147483648D;
@@ -340,7 +346,7 @@
             // 
             // chkExlcudeMixesOnly
             // 
-            this.chkExlcudeMixesOnly.Location = new System.Drawing.Point(201, 392);
+            this.chkExlcudeMixesOnly.Location = new System.Drawing.Point(201, 436);
             this.chkExlcudeMixesOnly.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkExlcudeMixesOnly.Name = "chkExlcudeMixesOnly";
             this.chkExlcudeMixesOnly.Size = new System.Drawing.Size(156, 24);
@@ -351,7 +357,7 @@
             // 
             this.label7.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(4, 270);
+            this.label7.Location = new System.Drawing.Point(4, 310);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -364,7 +370,7 @@
             // 
             this.label3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(4, 30);
+            this.label3.Location = new System.Drawing.Point(4, 31);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -382,7 +388,7 @@
             this.cmbMode.DropDownWidth = 264;
             this.cmbMode.ErrorProvider = null;
             this.cmbMode.IsRequired = true;
-            this.cmbMode.Location = new System.Drawing.Point(202, 34);
+            this.cmbMode.Location = new System.Drawing.Point(202, 35);
             this.cmbMode.Margin = new System.Windows.Forms.Padding(4);
             this.cmbMode.Name = "cmbMode";
             this.cmbMode.Size = new System.Drawing.Size(195, 25);
@@ -393,7 +399,7 @@
             // 
             this.label8.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(4, 240);
+            this.label8.Location = new System.Drawing.Point(4, 279);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -404,7 +410,7 @@
             // 
             // chkRestrictGenreClumping
             // 
-            this.chkRestrictGenreClumping.Location = new System.Drawing.Point(201, 242);
+            this.chkRestrictGenreClumping.Location = new System.Drawing.Point(201, 281);
             this.chkRestrictGenreClumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkRestrictGenreClumping.Name = "chkRestrictGenreClumping";
             this.chkRestrictGenreClumping.Size = new System.Drawing.Size(190, 24);
@@ -415,7 +421,7 @@
             // 
             this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(4, 60);
+            this.label2.Location = new System.Drawing.Point(4, 62);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -433,7 +439,7 @@
             this.cmbApproxLength.DropDownWidth = 264;
             this.cmbApproxLength.ErrorProvider = null;
             this.cmbApproxLength.IsRequired = true;
-            this.cmbApproxLength.Location = new System.Drawing.Point(202, 64);
+            this.cmbApproxLength.Location = new System.Drawing.Point(202, 66);
             this.cmbApproxLength.Margin = new System.Windows.Forms.Padding(4);
             this.cmbApproxLength.Name = "cmbApproxLength";
             this.cmbApproxLength.Size = new System.Drawing.Size(195, 25);
@@ -443,7 +449,7 @@
             // 
             this.label6.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(4, 150);
+            this.label6.Location = new System.Drawing.Point(4, 186);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -465,7 +471,7 @@
             "Any",
             "Always",
             "Never"});
-            this.cmbExtendedMixes.Location = new System.Drawing.Point(202, 154);
+            this.cmbExtendedMixes.Location = new System.Drawing.Point(202, 190);
             this.cmbExtendedMixes.Margin = new System.Windows.Forms.Padding(4);
             this.cmbExtendedMixes.Name = "cmbExtendedMixes";
             this.cmbExtendedMixes.Size = new System.Drawing.Size(195, 25);
@@ -473,7 +479,7 @@
             // 
             // chkRestrictArtistClumping
             // 
-            this.chkRestrictArtistClumping.Location = new System.Drawing.Point(201, 272);
+            this.chkRestrictArtistClumping.Location = new System.Drawing.Point(201, 312);
             this.chkRestrictArtistClumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkRestrictArtistClumping.Name = "chkRestrictArtistClumping";
             this.chkRestrictArtistClumping.Size = new System.Drawing.Size(186, 24);
@@ -484,7 +490,7 @@
             // 
             this.label9.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(4, 330);
+            this.label9.Location = new System.Drawing.Point(4, 372);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
             this.label9.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -495,7 +501,7 @@
             // 
             // chkDisplayedTracksOnly
             // 
-            this.chkDisplayedTracksOnly.Location = new System.Drawing.Point(201, 332);
+            this.chkDisplayedTracksOnly.Location = new System.Drawing.Point(201, 374);
             this.chkDisplayedTracksOnly.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkDisplayedTracksOnly.Name = "chkDisplayedTracksOnly";
             this.chkDisplayedTracksOnly.Size = new System.Drawing.Size(196, 24);
@@ -506,7 +512,7 @@
             // 
             this.label10.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.Color.White;
-            this.label10.Location = new System.Drawing.Point(4, 300);
+            this.label10.Location = new System.Drawing.Point(4, 341);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
             this.label10.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -517,7 +523,7 @@
             // 
             // chkRestrictTitleClumping
             // 
-            this.chkRestrictTitleClumping.Location = new System.Drawing.Point(201, 302);
+            this.chkRestrictTitleClumping.Location = new System.Drawing.Point(201, 343);
             this.chkRestrictTitleClumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkRestrictTitleClumping.Name = "chkRestrictTitleClumping";
             this.chkRestrictTitleClumping.Size = new System.Drawing.Size(178, 24);
@@ -528,7 +534,7 @@
             // 
             this.label11.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.White;
-            this.label11.Location = new System.Drawing.Point(4, 210);
+            this.label11.Location = new System.Drawing.Point(4, 248);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
             this.label11.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -569,7 +575,7 @@
             // 
             this.label12.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.White;
-            this.label12.Location = new System.Drawing.Point(4, 180);
+            this.label12.Location = new System.Drawing.Point(4, 217);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
             this.label12.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -587,7 +593,7 @@
             this.cmbKeyMixing.DropDownWidth = 264;
             this.cmbKeyMixing.ErrorProvider = null;
             this.cmbKeyMixing.IsRequired = true;
-            this.cmbKeyMixing.Location = new System.Drawing.Point(202, 184);
+            this.cmbKeyMixing.Location = new System.Drawing.Point(202, 221);
             this.cmbKeyMixing.Margin = new System.Windows.Forms.Padding(4);
             this.cmbKeyMixing.Name = "cmbKeyMixing";
             this.cmbKeyMixing.Size = new System.Drawing.Size(195, 25);
@@ -602,7 +608,7 @@
             this.cmbContinueMix.DropDownWidth = 264;
             this.cmbContinueMix.ErrorProvider = null;
             this.cmbContinueMix.IsRequired = true;
-            this.cmbContinueMix.Location = new System.Drawing.Point(202, 214);
+            this.cmbContinueMix.Location = new System.Drawing.Point(202, 252);
             this.cmbContinueMix.Margin = new System.Windows.Forms.Padding(4);
             this.cmbContinueMix.Name = "cmbContinueMix";
             this.cmbContinueMix.Size = new System.Drawing.Size(195, 25);
@@ -613,7 +619,7 @@
             this.lblStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblStatus.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblStatus.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblStatus.Location = new System.Drawing.Point(13, 443);
+            this.lblStatus.Location = new System.Drawing.Point(13, 481);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
@@ -621,13 +627,41 @@
             this.lblStatus.TabIndex = 0;
             this.lblStatus.Text = "Generating playlist...";
             // 
-            // frmGeneratePlaylist
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.White;
+            this.label14.Location = new System.Drawing.Point(4, 124);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Name = "label14";
+            this.label14.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label14.Size = new System.Drawing.Size(167, 30);
+            this.label14.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
+            this.label14.TabIndex = 51;
+            this.label14.Text = "Direction:";
+            // 
+            // cmbDirection
+            // 
+            this.cmbDirection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cmbDirection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbDirection.DropBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.InputControlCustom1;
+            this.cmbDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDirection.DropDownWidth = 264;
+            this.cmbDirection.ErrorProvider = null;
+            this.cmbDirection.IsRequired = true;
+            this.cmbDirection.Location = new System.Drawing.Point(202, 128);
+            this.cmbDirection.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbDirection.Name = "cmbDirection";
+            this.cmbDirection.Size = new System.Drawing.Size(195, 25);
+            this.cmbDirection.TabIndex = 52;
+            // 
+            // FrmGeneratePlaylist
             // 
             this.AcceptButton = this.btnStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(561, 544);
+            this.ClientSize = new System.Drawing.Size(561, 582);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.beveledLine);
             this.Controls.Add(this.pnlButtons);
@@ -642,7 +676,7 @@
             this.pnlMain.ResumeLayout(false);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbDirection)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbBmpDirection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbAllowBearable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbApproxLength)).EndInit();
@@ -650,6 +684,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cmbTracksToGenerate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKeyMixing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbContinueMix)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbDirection)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -669,7 +704,7 @@
         private Halloumi.Common.Windows.Controls.Label label2;
         private Halloumi.Common.Windows.Controls.Label label1;
         private Halloumi.Common.Windows.Controls.Label label4;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbDirection;
+        private Halloumi.Common.Windows.Controls.ComboBox cmbBmpDirection;
         private Halloumi.Common.Windows.Controls.ComboBox cmbAllowBearable;
         private Halloumi.Common.Windows.Controls.ComboBox cmbApproxLength;
         private Halloumi.Common.Windows.Controls.Button btnStart;
@@ -696,5 +731,7 @@
         private Halloumi.Common.Windows.Controls.Label label12;
         private Halloumi.Common.Windows.Controls.ComboBox cmbKeyMixing;
         private Halloumi.Common.Windows.Controls.ComboBox cmbContinueMix;
+        private Common.Windows.Controls.Label label14;
+        private Common.Windows.Controls.ComboBox cmbDirection;
     }
 }

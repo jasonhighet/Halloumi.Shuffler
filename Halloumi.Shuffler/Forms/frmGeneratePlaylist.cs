@@ -73,11 +73,15 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void InitialiseControls()
         {
-            cmbDirection.Items.Add("Cycle");
-            cmbDirection.Items.Add("Any");
-            cmbDirection.Items.Add("Up");
-            cmbDirection.Items.Add("Down");
+            cmbDirection.Items.Add("Forwards");
+            cmbDirection.Items.Add("Backwards");
             cmbDirection.SelectedIndex = 0;
+
+            cmbBmpDirection.Items.Add("Cycle");
+            cmbBmpDirection.Items.Add("Any");
+            cmbBmpDirection.Items.Add("Up");
+            cmbBmpDirection.Items.Add("Down");
+            cmbBmpDirection.SelectedIndex = 0;
 
             cmbAllowBearable.Items.Add("After Two Good Tracks");
             cmbAllowBearable.Items.Add("After Each Good Track");
@@ -163,7 +167,8 @@ namespace Halloumi.Shuffler.Forms
             {
                 var settings = GetSettings();
 
-                cmbDirection.SelectedIndex = settings.CmbDirectionSelectedIndex;
+                cmbBmpDirection.SelectedIndex = settings.CmbBpmDirectionSelectedIndex;
+                cmbDirection.SelectedIndex = settings.CmbGenerateDirectionSelectedIndex;
                 cmbAllowBearable.SelectedIndex = settings.CmbAllowBearableSelectedIndex;
                 cmbApproxLength.SelectedIndex = settings.CmbApproxLengthSelectedIndex;
                 cmbMode.SelectedIndex = settings.CmbModeSelectedIndex;
@@ -202,8 +207,9 @@ namespace Halloumi.Shuffler.Forms
         {
             var settings = new Settings
             {
-                CmbDirectionSelectedIndex = cmbDirection.SelectedIndex,
+                CmbBpmDirectionSelectedIndex = cmbBmpDirection.SelectedIndex,
                 CmbAllowBearableSelectedIndex = cmbAllowBearable.SelectedIndex,
+                CmbGenerateDirectionSelectedIndex = cmbDirection.SelectedIndex,
                 CmbApproxLengthSelectedIndex = cmbApproxLength.SelectedIndex,
                 CmbModeSelectedIndex = cmbMode.SelectedIndex,
                 TxtExcludeTracksText = txtExcludeTracks.Text,
@@ -231,8 +237,9 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictGenreClumping.Enabled = true;
             chkRestrictTitleClumping.Enabled = true;
             chkDisplayedTracksOnly.Enabled = true;
-            cmbApproxLength.Enabled = true;
             cmbDirection.Enabled = true;
+            cmbApproxLength.Enabled = true;
+            cmbBmpDirection.Enabled = true;
             cmbAllowBearable.Enabled = true;
             cmbMode.Enabled = true;
             txtExcludeTracks.Enabled = true;
@@ -256,6 +263,7 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictArtistClumping.Enabled = enabled;
             chkRestrictGenreClumping.Enabled = enabled;
             chkRestrictTitleClumping.Enabled = enabled;
+            cmbBmpDirection.Enabled = enabled;
             cmbDirection.Enabled = enabled;
             cmbAllowBearable.Enabled = enabled;
             cmbExtendedMixes.Enabled = enabled;
@@ -271,8 +279,9 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictGenreClumping.Enabled = false;
             chkRestrictTitleClumping.Enabled = false;
             chkDisplayedTracksOnly.Enabled = false;
-            cmbApproxLength.Enabled = false;
             cmbDirection.Enabled = false;
+            cmbApproxLength.Enabled = false;
+            cmbBmpDirection.Enabled = false;
             cmbAllowBearable.Enabled = false;
             cmbMode.Enabled = false;
             txtExcludeTracks.Enabled = false;
@@ -290,21 +299,31 @@ namespace Halloumi.Shuffler.Forms
         ///     Queues the tracks.
         /// </summary>
         /// <param name="tracks">The tracks.</param>
-        private void QueueTracks(List<Track> tracks)
+        private void QueueTracks(List<Track> tracks, TrackSelector.GenerateDirection direction)
         {
             if (tracks.Count == 0) return;
 
-            var currentTrackCount = PlaylistControl.GetTracks().Count;
-            var additionalTrackCount = tracks.Count - currentTrackCount;
+            if (direction == TrackSelector.GenerateDirection.Forwards)
+            {
+                var currentTrackCount = PlaylistControl.GetTracks().Count;
+                var additionalTrackCount = tracks.Count - currentTrackCount;
 
-            if (additionalTrackCount <= 0) return;
+                if (additionalTrackCount <= 0) return;
 
-            tracks.Reverse();
-            tracks = tracks.Take(additionalTrackCount).ToList();
-            tracks.Reverse();
+                tracks.Reverse();
+                tracks = tracks.Take(additionalTrackCount).ToList();
+                tracks.Reverse();
 
-            //this.PlaylistControl.ClearTracks();
-            PlaylistControl.QueueTracks(tracks);
+                //this.PlaylistControl.ClearTracks();
+                PlaylistControl.QueueTracks(tracks);
+            }
+            else
+            {
+                this.PlaylistControl.ClearTracks();
+                PlaylistControl.QueueTracks(tracks);
+
+            }
+
         }
 
         /// <summary>
@@ -378,8 +397,13 @@ namespace Halloumi.Shuffler.Forms
                 }
             }
 
+            var bpmDirection =
+                (TrackSelector.BpmDirection) Enum.Parse(typeof(TrackSelector.BpmDirection), cmbBmpDirection.GetTextThreadSafe());
+
             var direction =
-                (TrackSelector.Direction) Enum.Parse(typeof(TrackSelector.Direction), cmbDirection.GetTextThreadSafe());
+                (TrackSelector.GenerateDirection)Enum.Parse(typeof(TrackSelector.GenerateDirection), cmbDirection.GetTextThreadSafe());
+
+
             var allowBearable =
                 (TrackSelector.AllowBearableMixStrategy)
                     Enum.Parse(typeof(TrackSelector.AllowBearableMixStrategy),
@@ -415,7 +439,7 @@ namespace Halloumi.Shuffler.Forms
             var mixPath = TrackSelector.GeneratePlayList(availableTracks,
                 LibraryControl.MixLibrary,
                 PlaylistControl.GetTracks(),
-                direction,
+                bpmDirection,
                 approxLength,
                 allowBearable,
                 strategy,
@@ -426,15 +450,16 @@ namespace Halloumi.Shuffler.Forms
                 chkRestrictTitleClumping.Checked,
                 continueMix,
                 keyMixStrategy,
-                tracksToAdd);
+                tracksToAdd,
+                direction);
 
             if (!_cancel)
             {
                 if (InvokeRequired)
                 {
-                    BeginInvoke(new MethodInvoker(() => QueueTracks(mixPath)));
+                    BeginInvoke(new MethodInvoker(() => QueueTracks(mixPath, direction)));
                 }
-                else QueueTracks(mixPath);
+                else QueueTracks(mixPath, direction);
             }
         }
 
@@ -502,7 +527,8 @@ namespace Halloumi.Shuffler.Forms
         {
             public Settings()
             {
-                CmbDirectionSelectedIndex = 0;
+                CmbBpmDirectionSelectedIndex = 0;
+                CmbGenerateDirectionSelectedIndex = 0;
                 CmbAllowBearableSelectedIndex = 0;
                 CmbApproxLengthSelectedIndex = 0;
                 CmbModeSelectedIndex = 0;
@@ -518,7 +544,9 @@ namespace Halloumi.Shuffler.Forms
                 CmbKeyMixingSelectedIndex = 0;
             }
 
-            public int CmbDirectionSelectedIndex { get; set; }
+            public int CmbBpmDirectionSelectedIndex { get; set; }
+
+            public int CmbGenerateDirectionSelectedIndex { get; set; }
 
             public int CmbAllowBearableSelectedIndex { get; set; }
 

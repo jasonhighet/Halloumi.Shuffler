@@ -163,7 +163,10 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                     var key = _sampleKeys[channelIndex];
                     player.Mute(key);
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }
         }
 

@@ -239,6 +239,29 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The preferred tracks to mix with the supplied track</returns>
+        public List<Track> GetGoodFromTracks(Track track)
+        {
+            var ranks = new[] { 5, 4, 3 }.ToList();
+            return GetMixableFromTracks(track, ranks);
+        }
+
+        /// <summary>
+        ///     Gets the preferred tracks to mix with the supplied track
+        /// </summary>
+        /// <param name="track">The track.</param>
+        /// <returns>The preferred tracks to mix with the supplied track</returns>
+        public List<Track> GetBearableFromTracks(Track track)
+        {
+            var ranks = new[] { 2 }.ToList();
+            return GetMixableFromTracks(track, ranks);
+        }
+
+
+        /// <summary>
+        ///     Gets the preferred tracks to mix with the supplied track
+        /// </summary>
+        /// <param name="track">The track.</param>
+        /// <returns>The preferred tracks to mix with the supplied track</returns>
         public List<Track> GetGoodTracks(Track track)
         {
             var ranks = new[] {5, 4, 3}.ToList();

@@ -30,12 +30,18 @@ namespace Halloumi.Shuffler.AudioLibrary
             IfPossible
         }
 
-        public enum Direction
+        public enum BpmDirection
         {
             Up,
             Down,
             Any,
             Cycle
+        }
+
+        public enum GenerateDirection
+        {
+            Backwards,
+            Forwards
         }
 
         public enum KeyMixStrategy
@@ -54,7 +60,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             Variety,
             ExtraVariety,
             Unranked,
-            SequentialUp,
             Working
         }
 
@@ -98,7 +103,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="availableTracks">The available tracks.</param>
         /// <param name="mixLibrary">The mix library.</param>
         /// <param name="currentPlaylist">The current play-list.</param>
-        /// <param name="direction">The direction.</param>
+        /// <param name="bpmDirection">The direction.</param>
         /// <param name="approximateLength">Approximate length the final play-list should be in minutes.</param>
         /// <param name="allowBearable">The allow bearable.</param>
         /// <param name="strategy">The strategy.</param>
@@ -110,6 +115,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="continueMix">The continue mix.</param>
         /// <param name="keyMixStrategy">The key mixing strategy.</param>
         /// <param name="maxTracksToAdd">The maximum number tracks to add to the existing play-list.</param>
+        /// <param name="direction">The direction</param>
         /// <returns>
         ///     A list of tracks with the best mix rank
         /// </returns>
@@ -117,7 +123,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public List<Track> GeneratePlayList(List<Track> availableTracks,
             MixLibrary mixLibrary,
             List<Track> currentPlaylist,
-            Direction direction,
+            BpmDirection bpmDirection,
             int approximateLength,
             AllowBearableMixStrategy allowBearable,
             MixStrategy strategy,
@@ -128,14 +134,15 @@ namespace Halloumi.Shuffler.AudioLibrary
             bool restrictTitleClumping,
             ContinueMix continueMix,
             KeyMixStrategy keyMixStrategy,
-            int maxTracksToAdd)
+            int maxTracksToAdd,
+            GenerateDirection direction)
         {
             if (strategy == MixStrategy.Working && currentPlaylist.Count == 0) return currentPlaylist;
 
             Track workingTrack = null;
             if (strategy == MixStrategy.Working)
             {
-                direction = Direction.Any;
+                bpmDirection = BpmDirection.Any;
                 workingTrack = currentPlaylist.Last();
             }
 
@@ -182,7 +189,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             var currentPaths = new List<TrackPath>();
             if (currentPlaylist.Count == 0)
             {
-                var trackPaths = AvailableTracks.Select(track => new TrackPath(track));
+                var trackPaths = AvailableTracks.Select(track => new TrackPath(track, direction));
                 foreach (var path in trackPaths)
                 {
                     CalculateAverageRankForPath(path);
@@ -214,19 +221,38 @@ namespace Halloumi.Shuffler.AudioLibrary
             var nextPaths = new List<TrackPath>();
             while (!IsGenerationHalted())
             {
-                ParallelHelper.ForEach(currentPaths, currentPath => GeneratePaths(direction,
-                    allowBearable,
-                    strategy,
-                    useExtendedMixes,
-                    excludedMixes,
-                    restrictArtistClumping,
-                    restrictGenreClumping,
-                    restrictTitleClumping,
-                    keyMixStrategy,
-                    workingTrack,
-                    availableTrackDescriptions,
-                    nextPaths,
-                    currentPath));
+                //ParallelHelper.ForEach(currentPaths, currentPath => GeneratePaths(bpmDirection,
+                //    allowBearable,
+                //    strategy,
+                //    useExtendedMixes,
+                //    excludedMixes,
+                //    restrictArtistClumping,
+                //    restrictGenreClumping,
+                //    restrictTitleClumping,
+                //    keyMixStrategy,
+                //    workingTrack,
+                //    availableTrackDescriptions,
+                //    nextPaths,
+                //    currentPath, 
+                //    direction));
+
+                foreach (var currentPath in currentPaths)
+                {
+                    GeneratePaths(bpmDirection,
+                        allowBearable,
+                        strategy,
+                        useExtendedMixes,
+                        excludedMixes,
+                        restrictArtistClumping,
+                        restrictGenreClumping,
+                        restrictTitleClumping,
+                        keyMixStrategy,
+                        workingTrack,
+                        availableTrackDescriptions,
+                        nextPaths,
+                        currentPath,
+                        direction);
+                }
 
                 if (IsGenerationHalted()) break;
 
@@ -262,7 +288,8 @@ namespace Halloumi.Shuffler.AudioLibrary
                  strategy == MixStrategy.ExtraVariety)
                 && resultPath != null
                 && resultPath.Tracks.Count < trackCountLimit
-                && resultPath.Tracks.Count > 0)
+                && resultPath.Tracks.Count > 0
+                && direction == GenerateDirection.Forwards)
             {
                 availableTrackDescriptions = GetDistinctTrackDescriptions(AvailableTracks);
                 var excludeTrackDescriptions = GetDistinctTrackDescriptions(resultPath.Tracks);
@@ -270,7 +297,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 var nextTrack =
                     GetBestMixTracks(currentTrack, resultPath.Tracks, allowBearable, availableTrackDescriptions,
                         excludeTrackDescriptions, restrictArtistClumping, restrictArtistClumping, restrictTitleClumping,
-                        keyMixStrategy)
+                        keyMixStrategy, direction)
                         .OrderBy(t => GetAverageTrackAndMixAndKeyRank(currentTrack, t))
                         .FirstOrDefault();
 
@@ -286,7 +313,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 return GeneratePlayList(availableTracks,
                     mixLibrary,
                     currentPlaylist,
-                    direction,
+                    bpmDirection,
                     approximateLength,
                     allowBearable,
                     strategy,
@@ -297,13 +324,14 @@ namespace Halloumi.Shuffler.AudioLibrary
                     restrictTitleClumping,
                     ContinueMix.No,
                     keyMixStrategy,
-                    maxTracksToAdd);
+                    maxTracksToAdd,
+                    direction);
             }
 
             return resultTracks;
         }
 
-        private void GeneratePaths(Direction direction,
+        private void GeneratePaths(BpmDirection bpmDirection,
             AllowBearableMixStrategy allowBearable,
             MixStrategy strategy,
             UseExtendedMixes useExtendedMixes,
@@ -315,9 +343,10 @@ namespace Halloumi.Shuffler.AudioLibrary
             Track workingTrack,
             ICollection<string> availableTrackDescriptions,
             List<TrackPath> nextPaths,
-            TrackPath currentPath)
+            TrackPath currentPath,
+            GenerateDirection direction)
         {
-            var currentTrack = currentPath.Tracks.Last();
+            var currentTrack = direction == GenerateDirection.Forwards ?  currentPath.Tracks.Last() : currentPath.Tracks.First();
 
             DebugHelper.WriteLine("Start GeneratePaths " + currentTrack.Description);
 
@@ -329,7 +358,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             {
                 mixTracks = GetBestMixTracks(currentTrack, currentPath.Tracks, allowBearable, availableTrackDescriptions,
                     excludeTrackDescriptions, restrictArtistClumping, restrictGenreClumping, restrictTitleClumping,
-                    keyMixStrategy);
+                    keyMixStrategy, direction);
             }
             else if (strategy == MixStrategy.Unranked)
             {
@@ -346,10 +375,10 @@ namespace Halloumi.Shuffler.AudioLibrary
                 mixTracks = new List<Track>();
             }
 
-            if (direction != Direction.Any)
+            if (bpmDirection != BpmDirection.Any)
             {
-                var preferredDirection = direction;
-                if (preferredDirection == Direction.Cycle)
+                var preferredDirection = bpmDirection;
+                if (preferredDirection == BpmDirection.Cycle)
                     preferredDirection = GetPreferredDirection(currentTrack, currentPath.Tracks);
 
                 var filteredTracks = FilterTracksByDirection(currentTrack, mixTracks, preferredDirection);
@@ -391,7 +420,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 .Take(max)
                 .ToList();
 
-            var trackPaths = mixTracks.Select(mixTrack => new TrackPath(mixTrack, currentPath));
+            var trackPaths = mixTracks.Select(mixTrack => new TrackPath(mixTrack, direction, currentPath));
             foreach (var newPath in trackPaths)
             {
                 lock (nextPaths)
@@ -481,6 +510,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="restrictGenreClumping">if set to true&gt; restrict genre clumping.</param>
         /// <param name="restrictTitleClumping">if set to true restrict title clumping.</param>
         /// <param name="keyMixStrategy">The key mix strategy.</param>
+        /// <param name="direction"></param>
         /// <returns>
         ///     A list of filtered mix tracks
         /// </returns>
@@ -492,10 +522,14 @@ namespace Halloumi.Shuffler.AudioLibrary
             bool restrictArtistClumping,
             bool restrictGenreClumping,
             bool restrictTitleClumping,
-            KeyMixStrategy keyMixStrategy)
+            KeyMixStrategy keyMixStrategy,
+            GenerateDirection direction)
         {
-            var mixTracks = MixLibrary
-                .GetGoodTracks(currentTrack)
+            var mixTracks = direction == GenerateDirection.Forwards
+                ? MixLibrary.GetGoodTracks(currentTrack).ToList()
+                : MixLibrary.GetGoodFromTracks(currentTrack).ToList();
+
+            mixTracks = mixTracks
                 .Where(t => !excludeTrackDescriptions.Contains(t.Description))
                 .Where(t => availableTrackDescriptions.Contains(t.Description))
                 .ToList();
@@ -508,15 +542,17 @@ namespace Halloumi.Shuffler.AudioLibrary
                 keyMixStrategy,
                 mixTracks);
 
-            var bearableAllowed = IsBearableTrackMixAllowed(currentTrack, currentPath, allowBearable, mixTracks);
+            var bearableAllowed = IsBearableTrackMixAllowed(currentTrack, currentPath, allowBearable, mixTracks, direction);
 
             if (!bearableAllowed) mixTracks.RemoveAll(t => t.Rank <= 2);
 
             if (bearableAllowed)
             {
-                var bearableTracks = MixLibrary
-                    .GetBearableTracks(currentTrack)
-                    .Where(t => !excludeTrackDescriptions.Contains(t.Description))
+                var bearableTracks = direction == GenerateDirection.Forwards
+                        ? MixLibrary.GetBearableTracks(currentTrack).ToList()
+                        : MixLibrary.GetBearableFromTracks(currentTrack).ToList();
+
+                    bearableTracks = bearableTracks.Where(t => !excludeTrackDescriptions.Contains(t.Description))
                     .Where(t => availableTrackDescriptions.Contains(t.Description))
                     .ToList();
 
@@ -611,38 +647,56 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="currentPath">The current path.</param>
         /// <param name="allowBearable">The allow bearable.</param>
         /// <param name="mixTracks">The mix tracks.</param>
+        /// <param name="direction"></param>
         /// <returns>True if a bearable track/mix is allowed.</returns>
         private bool IsBearableTrackMixAllowed(Track currentTrack,
             IReadOnlyList<Track> currentPath,
             AllowBearableMixStrategy allowBearable,
-            IReadOnlyCollection<Track> mixTracks)
+            IReadOnlyCollection<Track> mixTracks,
+            GenerateDirection direction)
         {
             var bearableAllowed = false;
 
-            switch (allowBearable)
-            {
-                case AllowBearableMixStrategy.Always:
-                    bearableAllowed = true;
-                    break;
-                case AllowBearableMixStrategy.AfterTwoGoodTracks:
-                    bearableAllowed = (!IsLastMixBearable(currentPath) && !IsPenultimateMixBearable(currentPath))
-                                      || (currentTrack.PowerDown && mixTracks.Count == 0);
-                    break;
-                case AllowBearableMixStrategy.AfterEachGoodTrack:
-                    bearableAllowed = !IsLastMixBearable(currentPath)
-                                      || (currentTrack.PowerDown && mixTracks.Count == 0);
-                    break;
-                case AllowBearableMixStrategy.Never:
-                    break;
-                case AllowBearableMixStrategy.AfterPowerDown:
-                    bearableAllowed = currentTrack.PowerDown;
-                    break;
-                case AllowBearableMixStrategy.WhenNecessary:
-                    bearableAllowed = mixTracks.Count == 0;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(allowBearable), allowBearable, null);
-            }
+                switch (allowBearable)
+                {
+                    case AllowBearableMixStrategy.Always:
+                        bearableAllowed = true;
+                        break;
+                    case AllowBearableMixStrategy.AfterTwoGoodTracks:
+                        if (direction == GenerateDirection.Forwards)
+                        {
+                            bearableAllowed = (!IsLastMixBearable(currentPath) && !IsPenultimateMixBearable(currentPath))
+                                              || (currentTrack.PowerDown && mixTracks.Count == 0);
+        
+                        }
+                        else
+                        {
+                            bearableAllowed = mixTracks.Count == 0;
+                        }
+                        break;
+                    case AllowBearableMixStrategy.AfterEachGoodTrack:
+                        if (direction == GenerateDirection.Forwards)
+                        {
+                            bearableAllowed = !IsLastMixBearable(currentPath) || (currentTrack.PowerDown && mixTracks.Count == 0);
+                        }
+                        else
+                        {
+                            bearableAllowed = mixTracks.Count == 0;
+                        }
+                        break;
+                    case AllowBearableMixStrategy.Never:
+                        break;
+                    case AllowBearableMixStrategy.AfterPowerDown:
+                        bearableAllowed = currentTrack.PowerDown;
+                        break;
+                    case AllowBearableMixStrategy.WhenNecessary:
+                        bearableAllowed = mixTracks.Count == 0;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(allowBearable), allowBearable, null);
+                }
+           
+
 
             return bearableAllowed;
         }
@@ -909,21 +963,21 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         /// <param name="currentTrack">The current track.</param>
         /// <param name="tracks">The tracks.</param>
-        /// <param name="direction">The direction.</param>
+        /// <param name="bpmDirection">The direction.</param>
         /// <returns>The filtered tracks</returns>
         private static List<Track> FilterTracksByDirection(Track currentTrack, IEnumerable<Track> tracks,
-            Direction direction)
+            BpmDirection bpmDirection)
         {
             var filteredTracks = new List<Track>(tracks);
-            switch (direction)
+            switch (bpmDirection)
             {
-                case Direction.Down:
+                case BpmDirection.Down:
                     return filteredTracks.Where(t => t.StartBpm < currentTrack.EndBpm).ToList();
-                case Direction.Up:
+                case BpmDirection.Up:
                     return filteredTracks.Where(t => t.StartBpm >= currentTrack.EndBpm).ToList();
-                case Direction.Any:
+                case BpmDirection.Any:
                     return filteredTracks;
-                case Direction.Cycle:
+                case BpmDirection.Cycle:
                     return filteredTracks;
                 default:
                     return filteredTracks;
@@ -974,17 +1028,17 @@ namespace Halloumi.Shuffler.AudioLibrary
             return mixTracks;
         }
 
-        private Direction GetPreferredDirection(Track track, List<Track> history)
+        private BpmDirection GetPreferredDirection(Track track, List<Track> history)
         {
-            if (track == null) return Direction.Up;
+            if (track == null) return BpmDirection.Up;
 
-            var direction = Direction.Any;
+            var direction = BpmDirection.Any;
 
             var fullHistory = new List<Track>(history) {track};
 
             var medianBpm = GetMedianBpm(fullHistory);
-            if (track.Bpm < medianBpm) direction = Direction.Up;
-            if (track.Bpm > medianBpm) direction = Direction.Down;
+            if (track.Bpm < medianBpm) direction = BpmDirection.Up;
+            if (track.Bpm > medianBpm) direction = BpmDirection.Down;
             return direction;
         }
 
@@ -1070,18 +1124,18 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private class TrackPath
         {
-            public TrackPath(Track newTrack, TrackPath existingTracks)
-                : this(newTrack, existingTracks.Tracks)
+            public TrackPath(Track newTrack, GenerateDirection direction, TrackPath existingTracks)
+                : this(newTrack, direction, existingTracks.Tracks)
             {
                 AverageRank = existingTracks.AverageRank;
             }
 
             public TrackPath(IReadOnlyCollection<Track> existingTracks)
-                : this(null, existingTracks)
+                : this(null, GenerateDirection.Forwards, existingTracks)
             {
             }
 
-            public TrackPath(Track newTrack, IReadOnlyCollection<Track> existingTracks = (List<Track>) null)
+            public TrackPath(Track newTrack, GenerateDirection direction, IReadOnlyCollection<Track> existingTracks = (List<Track>) null)
             {
                 Tracks = new List<Track>();
 
@@ -1091,7 +1145,14 @@ namespace Halloumi.Shuffler.AudioLibrary
                 }
 
                 if (newTrack != null)
-                    Tracks.Add(newTrack);
+                {
+                    if(direction == GenerateDirection.Forwards)
+                        Tracks.Add(newTrack);
+                    else
+                        Tracks.Insert(0, newTrack);
+                }
+
+                
 
                 AverageRank = 0;
             }

@@ -49,8 +49,8 @@ namespace Halloumi.Shuffler.TestHarness
             _library = new Library(_bassPlayer) {LibraryFolder = libraryFolder};
             _library.LoadFromDatabase();
 
-            var sampleLibrary =
-                new LoopLibrary(_bassPlayer, @"D:\Jason\Music\Samples\Future Loops Scratch Anthology");
+            //var sampleLibrary =
+            //    new LoopLibrary(_bassPlayer, @"D:\Jason\Music\Samples\Future Loops Scratch Anthology");
 
 
             Console.WriteLine();
