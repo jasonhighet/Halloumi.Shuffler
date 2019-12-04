@@ -359,8 +359,6 @@ namespace Halloumi.Shuffler
             settings.EnableTrackFxAutomation = BassPlayer.TrackFxAutomationEnabled;
             settings.EnableSampleAutomation = BassPlayer.SampleAutomationEnabled;
 
-            settings.LoopLibraryFolder = LoopLibrary.LoopLibraryFolder;
-
             settings.Save();
         }
 

@@ -1,5 +1,8 @@
-﻿using Halloumi.Shuffler.AudioEngine.Helpers;
+﻿using System;
+using System.Linq;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Vst;
 
 namespace Halloumi.Shuffler.AudioEngine.Channels
 {
@@ -8,27 +11,40 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public MonitorOutputChannel()
             : base(null)
         {
-            var waveOutDevices = ChannelHelper.GetWaveOutDevices();
+            var currentDeviceId = Bass.BASS_GetDevice();
 
-            if (waveOutDevices.Count >= 2)
+            var devices = Bass.BASS_GetDeviceInfos().ToList();
+            var monitorDevice = devices.FirstOrDefault(x => !x.IsDefault && x.name != "No sound") 
+                                ?? devices.First(x => x.name == "No sound");
+
+            var monitorDeviceId = devices.IndexOf(monitorDevice);
+            
+            ChannelHelper.InitialiseDevice(monitorDeviceId);
+
+            if (!Bass.BASS_SetDevice(monitorDeviceId))
             {
-                const int monitorDeviceId = 2;
-                ChannelHelper.InitialiseMonitorDevice(monitorDeviceId);
-
-                // create monitor mixer channel
-                ChannelId = ChannelHelper.IntialiseOutputChannel();
-
-                // set to use monitor sound card
-                Bass.BASS_ChannelSetDevice(ChannelId, monitorDeviceId);
-
-                Bass.BASS_ChannelPlay(ChannelId, false);
+                throw new Exception("Can't set device");
             }
-            else
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 200);
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 20);
+
+
+            // create monitor mixer channel
+            ChannelId = ChannelHelper.IntialiseOutputChannel();
+
+            var device = Bass.BASS_ChannelGetDevice(ChannelId);
+
+
+            if (!Bass.BASS_ChannelSetDevice(ChannelId, monitorDeviceId))
             {
-                // create monitor channel on main speaker output
-                ChannelId = ChannelHelper.IntialiseOutputChannel();
-                Bass.BASS_ChannelPlay(ChannelId, false);
+                var error = Bass.BASS_ErrorGetCode();
+                if (error != BASSError.BASS_ERROR_ALREADY)
+                    throw new Exception("Can't set device " + error);
             }
+
+            Bass.BASS_ChannelPlay(ChannelId, false);
+
+            Bass.BASS_SetDevice(currentDeviceId);
         }
     }
 }

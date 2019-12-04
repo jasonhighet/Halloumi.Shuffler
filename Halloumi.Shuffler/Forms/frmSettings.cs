@@ -33,6 +33,8 @@ namespace Halloumi.Shuffler.Forms
             settings.AnalogXScratchFolder = txtAnalogXScratchFolder.Text;
             settings.KeyFinderFolder = txtKeyFinderFolder.Text;
             settings.LoopLibraryFolder = txtLoopFolder.Text;
+
+
             settings.Save();
             DialogResult = DialogResult.OK;
             Close();
