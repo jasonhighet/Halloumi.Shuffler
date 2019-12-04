@@ -125,7 +125,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             _samplerMixer = new MixerChannel(this);
             _samplerMixer.SetVolume((decimal)DefaultFadeOutStartVolume);
             _samplerMixer.CutBass();
-            _samplerOutputSplitter = new OutputSplitter(_samplerMixer, SpeakerOutput, _monitorOutput);
+            _samplerOutputSplitter = new OutputSplitter(_samplerMixer, SpeakerOutput, MonitorOutput);
 
             _samplePlayer = new TrackSamplePlayer(this);
             _samplerMixer.AddInputChannel(_samplePlayer.Output);

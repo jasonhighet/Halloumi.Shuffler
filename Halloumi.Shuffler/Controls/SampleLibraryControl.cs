@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
+using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary.Samples;
@@ -100,17 +101,18 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initialize()
         {
-            _player = new SyncedSamplePlayer();
-            //BassPlayer.SpeakerOutput.AddInputChannel(_player.Output);
-            BassPlayer.SamplerMixer.AddInputChannel(_player.Output);
+            _player = new SyncedSamplePlayer(BassPlayer.SpeakerOutput, BassPlayer.MonitorOutput)
+            {
+                SoundOutput = SoundOutput.Speakers
+            };
 
             var settings = Settings.Default;
-            _player.Output.SetVolume(settings.LoopVolume);
+            _player.SetVolume(settings.LoopVolume);
             SetVolume((int)settings.LoopVolume);
 
             sldVolume.Minimum = 0;
             sldVolume.Maximum = 100;
-            var volume = Convert.ToInt32(_player.Output.GetVolume());
+            var volume = Convert.ToInt32(_player.GetVolume());
             lblVolume.Text = volume.ToString();
             sldVolume.Value = volume;
             sldVolume.Scrolled += SldVolume_Slid;
@@ -124,18 +126,11 @@ namespace Halloumi.Shuffler.Controls
         {
             _bindingVolumeSlider = true;
             var volume = Convert.ToDecimal(sldVolume.ScrollValue);
-            _player.Output.SetVolume(volume);
+            _player.SetVolume(volume);
             lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
             _bindingVolumeSlider = false;
         }
 
-        private void BindVolume()
-        {
-            if (_bindingVolumeSlider) return;
-            var volume = (int)BassPlayer.GetMixerVolume();
-            if (volume != sldVolume.Value)
-                SetVolume(volume);
-        }
         private void SetVolume(int volume)
         {
             sldVolume.Value = volume;

@@ -7,22 +7,49 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 {
     public class SyncedSamplePlayer : IBmpProvider
     {
+        private readonly OutputSplitter _outputSplitter;
+
         private const string PatternPlayer = "Pattern";
         private readonly AudioPlayer _mainPlayer;
         private readonly List<AudioPlayer> _channelPlayers = new List<AudioPlayer>();
         private readonly List<string> _sampleKeys =  new List<string>();
         private double _loopLength;
         private decimal _targetBpm = int.MinValue;
+        private readonly MixerChannel _mixer;
 
-        public SyncedSamplePlayer()
+        public SyncedSamplePlayer(Channel speakerOutput, Channel monitorOutput)
         {
-            Output = new MixerChannel(this);
-            _mainPlayer = new AudioPlayer();
+            _mixer = new MixerChannel(this);
 
-            Output.AddInputChannel(_mainPlayer.Output);
+            _mainPlayer = new AudioPlayer();
+            _mixer.AddInputChannel(_mainPlayer.Output);
+
+            _outputSplitter = new OutputSplitter(_mixer, speakerOutput, monitorOutput);
         }
 
-        public MixerChannel Output { get; }
+        /// <summary>
+        ///     Sets the volume (A value between 0 and 100)
+        /// </summary>
+        /// <param name="volume">A value between 0 and 100</param>
+        public void SetVolume(decimal volume)
+        {
+            _mixer.SetVolume(volume);
+        }
+
+        /// <summary>
+        ///     Gets the volume (A value between 0 and 100)
+        /// </summary>
+        /// <returns>A value between 0 and 100</returns>
+        public decimal GetVolume()
+        {
+           return _mixer.GetVolume();
+        }
+
+        public SoundOutput SoundOutput
+        {
+            get { return _outputSplitter.SoundOutput; }
+            set { _outputSplitter.SoundOutput = value; }
+        }
 
         public decimal GetCurrentBpm()
         {
@@ -48,7 +75,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             if (_sampleKeys.Count > _channelPlayers.Count)
             {
                 channelPlayer = new AudioPlayer();
-                Output.AddInputChannel(channelPlayer.Output);
+                _mixer.AddInputChannel(channelPlayer.Output);
                 _channelPlayers.Add(channelPlayer);
             }
             else

@@ -19,8 +19,6 @@ namespace Halloumi.Shuffler.TestHarness
     {
         private BassPlayer _bassPlayer;
         private Library _library;
-        private ModulePlayer _modulePlayer;
-        private TrackSampleLibrary _trackSampleLibrary;
 
         public Form1()
         {

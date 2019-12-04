@@ -1,10 +1,8 @@
 ﻿using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Controls;
-using Halloumi.Shuffler.Controls.ModulePlayerControls;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms

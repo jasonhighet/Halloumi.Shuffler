@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
@@ -20,7 +19,6 @@ namespace Halloumi.Shuffler.Forms
     {
         private readonly ShufflerApplication _application;
         private FrmGeneratePlaylist _autoGenerateSettings;
-        private FrmModuleEditor _frmModuleEditor;
         private FrmImportShufflerTracks _frmImportShufflerTracks;
 
 
@@ -679,18 +677,6 @@ namespace Halloumi.Shuffler.Forms
                 TrackSampleLibrary = _application.TrackSampleLibrary
             };
             exportPlaylist.ShowDialog();
-        }
-
-        private void mnuModuleEditor_Click(object sender, EventArgs e)
-        {
-            if (_frmModuleEditor == null || _frmModuleEditor.IsDisposed)
-            {
-                _frmModuleEditor = new FrmModuleEditor();
-                _frmModuleEditor.Initialize(_application.BassPlayer, _application.TrackSampleLibrary, _application.Library);
-            }
-
-            if (!_frmModuleEditor.Visible)
-                WindowHelper.ShowDialog(this, _frmModuleEditor);
         }
 
         private void FrmMain_Shown(object sender, EventArgs e)

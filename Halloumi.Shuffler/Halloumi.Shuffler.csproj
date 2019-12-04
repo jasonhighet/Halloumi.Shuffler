@@ -114,24 +114,6 @@
     <Compile Include="Controls\ListBuilder.Designer.cs">
       <DependentUpon>ListBuilder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ModulePlayerControls\SamplesControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ModulePlayerControls\SamplesControl.Designer.cs">
-      <DependentUpon>SamplesControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ModulePlayerControls\PatternsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ModulePlayerControls\PatternsControl.Designer.cs">
-      <DependentUpon>PatternsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ModulePlayerControls\SongControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ModulePlayerControls\SongControl.Designer.cs">
-      <DependentUpon>SongControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SecondsComboBox.cs" />
     <Compile Include="Controls\TrackLibraryControl.cs">
       <SubType>UserControl</SubType>
@@ -245,12 +227,6 @@
     <Compile Include="Forms\frmGeneratePlaylist.Designer.cs">
       <DependentUpon>frmGeneratePlaylist.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmModuleEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmModuleEditor.Designer.cs">
-      <DependentUpon>frmModuleEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\frmMonitorSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -348,15 +324,6 @@
     <EmbeddedResource Include="Controls\ListBuilder.resx">
       <DependentUpon>ListBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ModulePlayerControls\SamplesControl.resx">
-      <DependentUpon>SamplesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ModulePlayerControls\PatternsControl.resx">
-      <DependentUpon>PatternsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ModulePlayerControls\SongControl.resx">
-      <DependentUpon>SongControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\TrackLibraryControl.resx">
       <DependentUpon>TrackLibraryControl.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -432,9 +399,6 @@
     <EmbeddedResource Include="Forms\frmGeneratePlaylist.resx">
       <DependentUpon>frmGeneratePlaylist.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmModuleEditor.resx">
-      <DependentUpon>frmModuleEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMonitorSettings.resx">
       <DependentUpon>frmMonitorSettings.cs</DependentUpon>

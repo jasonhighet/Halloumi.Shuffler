@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
@@ -32,8 +31,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private static List<Track> _recentTracks = new List<Track>();
 
         private static readonly object MixerLock = new object();
-
-        private readonly MonitorOutputChannel _monitorOutput;
+        public MonitorOutputChannel MonitorOutput { get; }
 
         private bool _locked;
 
@@ -78,7 +76,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             ChannelHelper.StopAudioEngine(windowHandle);
 
             SpeakerOutput = new SpeakerOutputChannel();
-            _monitorOutput = new MonitorOutputChannel();
+            MonitorOutput = new MonitorOutputChannel();
 
             PlayState = PlayState.Stopped;
 
@@ -274,7 +272,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             // create mixer channels
             _trackMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
-            _trackOutputSplitter = new OutputSplitter(_trackMixer, SpeakerOutput, _monitorOutput);
+            _trackOutputSplitter = new OutputSplitter(_trackMixer, SpeakerOutput, MonitorOutput);
 
             _trackMixer.AddInputChannel(_currentTrackMixer);
             _trackMixer.AddInputChannel(_previousTrackMixer);
@@ -853,7 +851,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <returns>A value between 0 and 100</returns>
         public decimal GetMonitorVolume()
         {
-            return _monitorOutput.GetVolume();
+            return MonitorOutput.GetVolume();
         }
 
         /// <summary>
@@ -862,7 +860,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <param name="volume">The volume as a value between 0 and 100.</param>
         public void SetMonitorVolume(decimal volume)
         {
-            _monitorOutput.SetVolume(volume);
+            MonitorOutput.SetVolume(volume);
         }
 
         /// <summary>

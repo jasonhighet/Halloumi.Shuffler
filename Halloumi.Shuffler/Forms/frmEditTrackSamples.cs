@@ -10,7 +10,6 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;

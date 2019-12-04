@@ -76,7 +76,6 @@
             this.mnuMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTracker = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuModuleEditor = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMonitorSettings = new System.Windows.Forms.ToolStripMenuItem();
@@ -496,7 +495,6 @@
             // 
             this.mnuTracker.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuSampleLibrary,
-            this.mnuModuleEditor,
             this.mnuLoopLibrary});
             this.mnuTracker.Name = "mnuTracker";
             this.mnuTracker.Size = new System.Drawing.Size(78, 33);
@@ -508,13 +506,6 @@
             this.mnuSampleLibrary.Size = new System.Drawing.Size(224, 26);
             this.mnuSampleLibrary.Text = "Sample Library";
             this.mnuSampleLibrary.Click += new System.EventHandler(this.mnuSampleLibrary_Click);
-            // 
-            // mnuModuleEditor
-            // 
-            this.mnuModuleEditor.Name = "mnuModuleEditor";
-            this.mnuModuleEditor.Size = new System.Drawing.Size(224, 26);
-            this.mnuModuleEditor.Text = "Module Editor";
-            this.mnuModuleEditor.Click += new System.EventHandler(this.mnuModuleEditor_Click);
             // 
             // mnuOptions
             // 
@@ -1069,7 +1060,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuTracker;
         private System.Windows.Forms.ToolStripMenuItem mnuSampleLibrary;
         private System.Windows.Forms.ToolStripMenuItem mnuExportShufflerTracks;
-        private System.Windows.Forms.ToolStripMenuItem mnuModuleEditor;
         private System.Windows.Forms.ToolStripMenuItem mnuShowTrackDetails;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripMenuItem mnuImportCollection;
