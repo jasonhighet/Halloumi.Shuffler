@@ -8,7 +8,9 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public MonitorOutputChannel()
             : base(null)
         {
-            if (ChannelHelper.GetWaveOutDevices().Count >= 2)
+            var waveOutDevices = ChannelHelper.GetWaveOutDevices();
+
+            if (waveOutDevices.Count >= 2)
             {
                 const int monitorDeviceId = 2;
                 ChannelHelper.InitialiseMonitorDevice(monitorDeviceId);

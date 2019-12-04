@@ -106,6 +106,8 @@ namespace Halloumi.Shuffler.Controls
                 SoundOutput = SoundOutput.Speakers
             };
 
+            cmbOutput.SelectedIndex = 0;
+
             var settings = Settings.Default;
             _player.SetVolume(settings.LoopVolume);
             SetVolume((int)settings.LoopVolume);
@@ -691,6 +693,12 @@ namespace Halloumi.Shuffler.Controls
             txtMinBPM.Text = (BassPlayer.GetCurrentBpm() * 0.9M).ToString("0");
             txtMaxBPM.Text = (BassPlayer.GetCurrentBpm() * 1.1M).ToString("0");
             BindData();
+        }
+
+        private void CmbOutput_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var outputType = cmbOutput.ParseEnum<SoundOutput>();
+            _player.SoundOutput = outputType;
         }
     }
 
