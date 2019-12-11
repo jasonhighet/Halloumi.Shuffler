@@ -76,11 +76,11 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             switch (inputChannel.OutputType)
             {
                 case MixerChannelOutputType.SingleOutput:
-                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, inputChannel.ChannelId);
+                    ChannelHelper.AddChannelToMixer(ChannelId, inputChannel.ChannelId);
                     break;
                 case MixerChannelOutputType.MultipleOutputs:
                     var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.ChannelId);
-                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, splitOutputChannel);
+                    ChannelHelper.AddChannelToMixer(ChannelId, splitOutputChannel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -92,11 +92,11 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             switch (inputChannel.OutputType)
             {
                 case MixerChannelOutputType.SingleOutput:
-                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, inputChannel.ChannelId);
+                    ChannelHelper.AddChannelToMixer(ChannelId, inputChannel.ChannelId);
                     break;
                 case MixerChannelOutputType.MultipleOutputs:
                     var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.ChannelId);
-                    ChannelHelper.AddChannelToDecoderMixer(ChannelId, splitOutputChannel);
+                    ChannelHelper.AddChannelToMixer(ChannelId, splitOutputChannel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

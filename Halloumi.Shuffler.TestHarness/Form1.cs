@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
-using Halloumi.Shuffler.AudioEngine;
-using Halloumi.Shuffler.AudioEngine.BassPlayer;
+using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioEngine.ModulePlayer;
-using Halloumi.Shuffler.AudioEngine.Players;
-using Halloumi.Shuffler.AudioEngine.Plugins;
-using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.AudioLibrary.Models;
-using Halloumi.Shuffler.AudioLibrary.Samples;
+using Un4seen.Bass;
+using Un4seen.Bass.Misc;
 
 namespace Halloumi.Shuffler.TestHarness
 {
@@ -28,9 +21,45 @@ namespace Halloumi.Shuffler.TestHarness
 
             AudioEngineHelper.StartAudioEngine(Handle);
 
+            var monitorDevice = AudioEngineHelper.GetMonitorDevice() ?? AudioEngineHelper.GetMainDevice();
+            Bass.BASS_SetDevice(AudioEngineHelper.GetMainDevice().Id);
 
+
+            //var channelId = Bass.BASS_StreamCreateFile(@"D:\Jason\Music\Library\Beastwars\Beastwars\01 - Beastwars - Damn the Sky.mp3", 0, 0, BASSFlag.BASS_SAMPLE_FLOAT);
+
+            //var file = AudioStreamHelper.LoadAudio()
+
+
+            //var mixerChannel = new MixerChannel();
             
 
+            //var output = new SpeakerOutputChannel();
+            //output.AddInputChannel(mixerChannel);
+
+
+
+
+
+
+
+
+
+            //var info = Bass.BASS_GetInfo();
+
+            //var streamCopy = new DSP_StreamCopy
+            //{
+            //    OutputLatency = info.latency,
+            //    ChannelHandle = channelId,
+            //    SourceMixerStream = mixerId,
+            //    DSPPriority = -1000,
+            //    StreamCopyDevice = monitorDevice.Id
+            //};
+            //streamCopy.StreamCopyFlags = streamCopy.ChannelInfo.flags;
+
+
+
+            //Bass.BASS_ChannelPlay(channelId, false);
+            //streamCopy.Start();
         }
     }
 }

@@ -131,8 +131,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public decimal Volume
         {
-            get { return ChannelHelper.Volume; }
-            set { ChannelHelper.Volume = value; }
+            get { return AudioEngineHelper.Volume; }
+            set { AudioEngineHelper.Volume = value; }
         }
 
         /// <summary>

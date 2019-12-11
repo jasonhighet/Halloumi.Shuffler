@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Un4seen.Bass;
 
 namespace Halloumi.Shuffler.AudioEngine.Helpers
@@ -9,6 +10,25 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     {
         private const int DefaultSampleRate = 44100;
         private static bool _engineStarted;
+
+        /// <summary>
+        ///     Gets or sets the volume of the bass player as decimal 0 - 100.
+        /// </summary>
+        public static decimal Volume
+        {
+            get
+            {
+                var value = (decimal)(Bass.BASS_GetVolume() * 100);
+                Thread.Sleep(1);
+                return value;
+            }
+            set
+            {
+                if (value < 0 || value > 100) return;
+                Bass.BASS_SetVolume((float)(value / 100));
+                Thread.Sleep(1);
+            }
+        }
 
         /// <summary>
         ///     Initializes the Bass audio engine.
