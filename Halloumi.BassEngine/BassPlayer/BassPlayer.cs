@@ -73,7 +73,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             TrackFxAutomationEnabled = false;
 
             // start audio engine
-            ChannelHelper.StopAudioEngine(windowHandle);
+            AudioEngineHelper.StartAudioEngine(windowHandle);
 
             SpeakerOutput = new SpeakerOutputChannel();
             MonitorOutput = new MonitorOutputChannel();
@@ -203,7 +203,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 UnloadTrackAudioData(track);
             CachedTracks.Clear();
 
-            ChannelHelper.StopAudioEngine();
+            AudioEngineHelper.StopAudioEngine();
         }
 
         public void ToggleManualMixMode()

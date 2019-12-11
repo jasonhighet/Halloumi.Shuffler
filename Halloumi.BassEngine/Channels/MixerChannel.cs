@@ -12,7 +12,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public MixerChannel(IBmpProvider bpmProvider = null, MixerChannelOutputType outputType = MixerChannelOutputType.SingleOutput)
             : base(bpmProvider)
         {
-            ChannelId = ChannelHelper.IntialiseMixerChannel();
+            ChannelId = ChannelHelper.InitializeMixerChannel();
             OutputType = outputType;
             SetVolume(100);
         }
