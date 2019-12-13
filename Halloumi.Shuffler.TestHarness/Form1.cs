@@ -21,8 +21,8 @@ namespace Halloumi.Shuffler.TestHarness
 
             AudioEngineHelper.StartAudioEngine(Handle);
 
-            var monitorDevice = AudioEngineHelper.GetMonitorDevice() ?? AudioEngineHelper.GetMainDevice();
-            Bass.BASS_SetDevice(AudioEngineHelper.GetMainDevice().Id);
+            //var monitorDevice = AudioEngineHelper.GetMonitorDevice() ?? AudioEngineHelper.GetMainDevice();
+            //Bass.BASS_SetDevice(AudioEngineHelper.GetMainDevice().Id);
 
 
             //var channelId = Bass.BASS_StreamCreateFile(@"D:\Jason\Music\Library\Beastwars\Beastwars\01 - Beastwars - Damn the Sky.mp3", 0, 0, BASSFlag.BASS_SAMPLE_FLOAT);

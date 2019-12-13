@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlBackground2 = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlLibraryDetails = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlTrack = new Halloumi.Common.Windows.Controls.Panel();
@@ -55,6 +55,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCopySample = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlSampleDetails = new Halloumi.Common.Windows.Controls.Panel();
+            this.label7 = new Halloumi.Common.Windows.Controls.Label();
+            this.cmbOutput = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnRefresh = new Halloumi.Common.Windows.Controls.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.sldVolume = new Halloumi.Shuffler.Controls.Slider();
@@ -82,21 +84,20 @@
             this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTags = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label7 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbOutput = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.btnLink = new Halloumi.Common.Windows.Controls.Button();
             this.pnlBackground2.SuspendLayout();
             this.pnlLibraryDetails.SuspendLayout();
             this.pnlTrack.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.pnlSampleDetails.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).BeginInit();
             this.panel1.SuspendLayout();
             this.pnlDivider.SuspendLayout();
             this.flpToolbarRight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cmbKey)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbLoopType)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbTag)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlBackground2
@@ -144,8 +145,8 @@
             this.grdSamples.AllowUserToDeleteRows = false;
             this.grdSamples.AllowUserToResizeColumns = false;
             this.grdSamples.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.grdSamples.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.grdSamples.ColumnHeadersHeight = 26;
             this.grdSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
@@ -194,10 +195,10 @@
             // 
             this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn2.DataPropertyName = "BPM";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle2.Format = "N2";
+            dataGridViewCellStyle2.NullValue = null;
+            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewTextBoxColumn2.HeaderText = "BPM";
             this.dataGridViewTextBoxColumn2.MinimumWidth = 6;
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
@@ -220,8 +221,8 @@
             // 
             this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn4.DataPropertyName = "LengthFormatted";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewTextBoxColumn4.HeaderText = "Length";
             this.dataGridViewTextBoxColumn4.MinimumWidth = 6;
             this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
@@ -326,6 +327,7 @@
             // pnlSampleDetails
             // 
             this.pnlSampleDetails.BackColor = System.Drawing.Color.Transparent;
+            this.pnlSampleDetails.Controls.Add(this.btnLink);
             this.pnlSampleDetails.Controls.Add(this.label7);
             this.pnlSampleDetails.Controls.Add(this.cmbOutput);
             this.pnlSampleDetails.Controls.Add(this.btnRefresh);
@@ -336,6 +338,38 @@
             this.pnlSampleDetails.Name = "pnlSampleDetails";
             this.pnlSampleDetails.Size = new System.Drawing.Size(1158, 54);
             this.pnlSampleDetails.TabIndex = 56;
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label7.Location = new System.Drawing.Point(686, 11);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.label7.Size = new System.Drawing.Size(71, 33);
+            this.label7.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
+            this.label7.TabIndex = 9;
+            this.label7.Text = "Output:";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // cmbOutput
+            // 
+            this.cmbOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOutput.DropDownWidth = 72;
+            this.cmbOutput.ErrorProvider = null;
+            this.cmbOutput.Items.AddRange(new object[] {
+            "Speakers",
+            "Monitor",
+            "Both"});
+            this.cmbOutput.Location = new System.Drawing.Point(765, 15);
+            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbOutput.Name = "cmbOutput";
+            this.cmbOutput.Size = new System.Drawing.Size(96, 25);
+            this.cmbOutput.TabIndex = 10;
+            this.cmbOutput.SelectedIndexChanged += new System.EventHandler(this.CmbOutput_SelectedIndexChanged);
             // 
             // btnRefresh
             // 
@@ -685,10 +719,10 @@
             // 
             this.colBPM.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.colBPM.DataPropertyName = "BPM";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.colBPM.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle4.Format = "N2";
+            dataGridViewCellStyle4.NullValue = null;
+            this.colBPM.DefaultCellStyle = dataGridViewCellStyle4;
             this.colBPM.HeaderText = "BPM";
             this.colBPM.MinimumWidth = 6;
             this.colBPM.Name = "colBPM";
@@ -711,8 +745,8 @@
             // 
             this.colLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.colLength.DataPropertyName = "LengthFormatted";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            this.colLength.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            this.colLength.DefaultCellStyle = dataGridViewCellStyle5;
             this.colLength.HeaderText = "Length";
             this.colLength.MinimumWidth = 6;
             this.colLength.Name = "colLength";
@@ -731,37 +765,16 @@
             this.colTags.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.colTags.Width = 125;
             // 
-            // label7
+            // btnLink
             // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(686, 11);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label7.Name = "label7";
-            this.label7.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.label7.Size = new System.Drawing.Size(71, 33);
-            this.label7.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Output:";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // cmbOutput
-            // 
-            this.cmbOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOutput.DropDownWidth = 72;
-            this.cmbOutput.ErrorProvider = null;
-            this.cmbOutput.Items.AddRange(new object[] {
-            "Speakers",
-            "Monitor",
-            "Both"});
-            this.cmbOutput.Location = new System.Drawing.Point(765, 15);
-            this.cmbOutput.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbOutput.Name = "cmbOutput";
-            this.cmbOutput.Size = new System.Drawing.Size(96, 25);
-            this.cmbOutput.TabIndex = 10;
-            this.cmbOutput.SelectedIndexChanged += new System.EventHandler(this.CmbOutput_SelectedIndexChanged);
+            this.btnLink.Location = new System.Drawing.Point(166, 6);
+            this.btnLink.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnLink.Name = "btnLink";
+            this.btnLink.Padding = new System.Windows.Forms.Padding(4);
+            this.btnLink.Size = new System.Drawing.Size(84, 40);
+            this.btnLink.TabIndex = 11;
+            this.btnLink.Text = "&Link";
+            this.btnLink.Click += new System.EventHandler(this.BtnLink_Click);
             // 
             // SampleLibraryControl
             // 
@@ -776,6 +789,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.grdSamples)).EndInit();
             this.contextMenuStrip.ResumeLayout(false);
             this.pnlSampleDetails.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).EndInit();
             this.panel1.ResumeLayout(false);
             this.pnlDivider.ResumeLayout(false);
             this.flpToolbarRight.ResumeLayout(false);
@@ -783,7 +797,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.cmbKey)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbLoopType)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbTag)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbOutput)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -840,5 +853,6 @@
         private Common.Windows.Controls.Button btnRefresh;
         private Common.Windows.Controls.Label label7;
         private Common.Windows.Controls.ComboBox cmbOutput;
+        private Common.Windows.Controls.Button btnLink;
     }
 }

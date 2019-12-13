@@ -272,6 +272,7 @@ namespace Halloumi.Shuffler
             UseConservativeFadeOut = settings.LimitSongLength;
 
             LoopLibrary.Initialize(settings.LoopLibraryFolder);
+            BassPlayer.LoopFolder = settings.LoopLibraryFolder;
         }
 
         public void SaveSettings()

@@ -6,6 +6,11 @@ namespace Halloumi.Shuffler.AudioEngine.Models
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public class TrackSample
     {
+        public TrackSample()
+        {
+            IsExternalLoop = false;
+        }
+
         public double Start { get; set; }
 
         public double Length { get; set; }
@@ -16,11 +21,17 @@ namespace Halloumi.Shuffler.AudioEngine.Models
 
         public string Description { get; set; }
 
+        public bool IsExternalLoop { get; set; }
+
         /// <summary>
         ///     Gets the BPM of the sample
         /// </summary>
-        public decimal CalculateBpm(Track track)
+        public decimal CalculateBpm(Track track = null)
         {
+            if (track == null || IsExternalLoop)
+            {
+                return BpmHelper.GetBpmFromLoopLength(Length);
+            }
             if (Key == "PreFadeIn")
             {
                 return track.StartBpm;
@@ -41,7 +52,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                 Length = Length,
                 IsLooped = IsLooped,
                 Key = Key,
-                Description = Description
+                Description = Description,
+                IsExternalLoop = IsExternalLoop
             };
         }
     }

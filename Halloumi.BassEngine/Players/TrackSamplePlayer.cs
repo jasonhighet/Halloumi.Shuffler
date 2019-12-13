@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
@@ -11,13 +13,16 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private readonly AudioPlayer _audioPlayer;
         private Track _currentTrack;
         private Track _nextTrack;
+        public string LoopFolder { get; set; }
+
         private readonly IBmpProvider _bpmProvider;
 
-        public TrackSamplePlayer(IBmpProvider bpmProvider = null)
+        public TrackSamplePlayer(IBmpProvider bpmProvider)
         {
             _audioPlayer = new AudioPlayer(bpmProvider);
             _bpmProvider = bpmProvider;
         }
+
 
         public MixerChannel Output
         {
@@ -42,11 +47,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         }
 
-        public void UnloadAll()
-        {
-            _audioPlayer.UnloadAll();
-        }
-
         private void LoadSamples(Track track)
         {
             if (track == null)
@@ -65,12 +65,16 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             var sampleId = track.Description + " - " + trackSample.Key;
 
-            var sample = (Sample) _audioPlayer.Load(sampleId, track.Filename);
+            var filename = trackSample.IsExternalLoop ? Path.Combine(LoopFolder, trackSample.Key) : track.Filename;
+            if(!File.Exists(filename))
+                return;
+
+            var sample = (Sample) _audioPlayer.Load(sampleId, filename);
 
             sample.LinkedTrackDescription = track.Description;
-            sample.Gain = track.Gain;
+            sample.Gain = trackSample.IsExternalLoop ? 0 : track.Gain;
             sample.SampleKey = trackSample.Key;
-            sample.IsLooped = trackSample.IsLooped;
+            sample.IsLooped = trackSample.IsExternalLoop || trackSample.IsLooped;
             sample.Bpm = trackSample.CalculateBpm(track);
             sample.Description = trackSample.Description;
 
@@ -128,10 +132,21 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         private static IEnumerable<TrackSample> GetAdditionalTrackSamples(string trackDescription)
         {
+            var additionalSamples = new List<TrackSample>();
+
             var attributes = AutomationAttributesHelper.GetAutomationAttributes(trackDescription);
 
-            return attributes?.TrackSamples?.OrderBy(t => t.Description).ToList() 
-                ?? new List<TrackSample>();
+            if (attributes?.TrackSamples != null && attributes.TrackSamples.Count > 0)
+            {
+                additionalSamples.AddRange(attributes.TrackSamples.OrderBy(t => t.Description).ToList());
+            }
+
+            if (attributes?.LoopSamples != null && attributes.LoopSamples.Count > 0)
+            {
+                additionalSamples.AddRange(attributes.LoopSamples.OrderBy(t => t.Description).ToList());
+            }
+
+            return additionalSamples;
         }
 
         public void PlaySample(string sampleId)

@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using Un4seen.Bass.AddOn.Tags;
 using System.Collections.Generic;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
