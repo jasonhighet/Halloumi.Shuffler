@@ -14,8 +14,8 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             var currentDeviceId = Bass.BASS_GetDevice();
 
             var devices = Bass.BASS_GetDeviceInfos().ToList();
-            var monitorDevice = devices.FirstOrDefault(x => !x.IsDefault && x.name != "No sound") 
-                                ?? devices.First(x => x.name == "No sound");
+            var monitorDevice = devices.FirstOrDefault(x => !x.IsDefault && x.name != "No sound")
+                                ?? devices.FirstOrDefault(x => x.IsDefault && x.name != "No sound");
 
             var monitorDeviceId = devices.IndexOf(monitorDevice);
             
