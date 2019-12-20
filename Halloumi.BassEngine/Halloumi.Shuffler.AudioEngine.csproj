@@ -111,6 +111,7 @@
     <Compile Include="Helpers\AudioStreamHelper.cs" />
     <Compile Include="Helpers\AutomationAttributesHelper.cs" />
     <Compile Include="Helpers\BpmHelper.cs" />
+    <Compile Include="Helpers\AudioEngineHelper.cs" />
     <Compile Include="Helpers\ExtenedAttributesHelper.cs" />
     <Compile Include="Helpers\SilenceHelper.cs" />
     <Compile Include="Helpers\TagHelper.cs" />

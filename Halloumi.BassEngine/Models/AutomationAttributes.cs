@@ -13,6 +13,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             SampleTriggers = new List<SampleTrigger>();
             ExtendedMixes = new List<ExtendedMixAttributes>();
             TrackSamples = new List<TrackSample>();
+            LoopSamples = new List<TrackSample>();
         }
 
         public string Track { get; set; }
@@ -26,6 +27,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
 
         public List<TrackSample> TrackSamples { get; set; }
 
+        public List<TrackSample> LoopSamples { get; set; }
+
         public AutomationAttributes Clone()
         {
             return new AutomationAttributes()
@@ -35,6 +38,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                 SampleTriggers = SampleTriggers.Select(x => x.Clone()).ToList(),
                 TrackFXTriggers = TrackFXTriggers.Select(x=>x.Clone()).ToList(),
                 TrackSamples = TrackSamples.Select(x => x.Clone()).ToList(),
+                LoopSamples = LoopSamples.Select(x => x.Clone()).ToList(),
             };
         }
 

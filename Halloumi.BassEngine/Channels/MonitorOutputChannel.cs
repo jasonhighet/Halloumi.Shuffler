@@ -3,6 +3,7 @@ using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Vst;
+using Un4seen.Bass.Misc;
 
 namespace Halloumi.Shuffler.AudioEngine.Channels
 {
@@ -11,40 +12,21 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         public MonitorOutputChannel()
             : base(null)
         {
-            var currentDeviceId = Bass.BASS_GetDevice();
+            var monitorDevice = AudioEngineHelper.GetMonitorDevice() ?? AudioEngineHelper.GetMainDevice();
 
-            var devices = Bass.BASS_GetDeviceInfos().ToList();
-            var monitorDevice = devices.FirstOrDefault(x => !x.IsDefault && x.name != "No sound")
-                                ?? devices.FirstOrDefault(x => x.IsDefault && x.name != "No sound");
+            ChannelId = ChannelHelper.InitializeMixerChannel();
+            var info = Bass.BASS_GetInfo();
 
-            var monitorDeviceId = devices.IndexOf(monitorDevice);
-            
-            ChannelHelper.InitialiseDevice(monitorDeviceId);
-
-            if (!Bass.BASS_SetDevice(monitorDeviceId))
+            var streamCopy = new DSP_StreamCopy
             {
-                throw new Exception("Can't set device");
-            }
-            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 200);
-            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 20);
+                OutputLatency = info.latency,
+                ChannelHandle = ChannelId,
+                DSPPriority = -1000,
+                StreamCopyDevice = monitorDevice.Id
+            };
 
-
-            // create monitor mixer channel
-            ChannelId = ChannelHelper.IntialiseOutputChannel();
-
-            var device = Bass.BASS_ChannelGetDevice(ChannelId);
-
-
-            if (!Bass.BASS_ChannelSetDevice(ChannelId, monitorDeviceId))
-            {
-                var error = Bass.BASS_ErrorGetCode();
-                if (error != BASSError.BASS_ERROR_ALREADY)
-                    throw new Exception("Can't set device " + error);
-            }
-
-            Bass.BASS_ChannelPlay(ChannelId, false);
-
-            Bass.BASS_SetDevice(currentDeviceId);
+            streamCopy.StreamCopyFlags = streamCopy.ChannelInfo.flags;
+            streamCopy.Start();
         }
     }
 }

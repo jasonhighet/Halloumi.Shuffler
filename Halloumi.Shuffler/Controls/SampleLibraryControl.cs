@@ -700,6 +700,21 @@ namespace Halloumi.Shuffler.Controls
             var outputType = cmbOutput.ParseEnum<SoundOutput>();
             _player.SoundOutput = outputType;
         }
+
+        private void BtnLink_Click(object sender, EventArgs e)
+        {
+            var track = BassPlayer.CurrentTrack;
+            var sample = GetSelectedSample();
+
+            var loopFolder = BassPlayer.LoopFolder;
+            if (!loopFolder.EndsWith(@"\"))
+                loopFolder += @"\";
+
+            var sampleKey = sample.Filename.Replace(loopFolder, "");
+
+            BassPlayer.LinkLoopSampleToTrack(sampleKey, track);
+
+        }
     }
 
     public interface ISampleRecipient

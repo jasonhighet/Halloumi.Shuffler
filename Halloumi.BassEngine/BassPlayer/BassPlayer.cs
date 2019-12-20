@@ -73,7 +73,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             TrackFxAutomationEnabled = false;
 
             // start audio engine
-            ChannelHelper.StopAudioEngine(windowHandle);
+            AudioEngineHelper.StartAudioEngine(windowHandle);
 
             SpeakerOutput = new SpeakerOutputChannel();
             MonitorOutput = new MonitorOutputChannel();
@@ -131,8 +131,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public decimal Volume
         {
-            get { return ChannelHelper.Volume; }
-            set { ChannelHelper.Volume = value; }
+            get { return AudioEngineHelper.Volume; }
+            set { AudioEngineHelper.Volume = value; }
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 UnloadTrackAudioData(track);
             CachedTracks.Clear();
 
-            ChannelHelper.StopAudioEngine();
+            AudioEngineHelper.StopAudioEngine();
         }
 
         public void ToggleManualMixMode()

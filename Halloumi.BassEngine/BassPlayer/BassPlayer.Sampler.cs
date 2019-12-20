@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Halloumi.Shuffler.AudioEngine.Channels;
+using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioEngine.Players;
 
@@ -33,13 +35,10 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             set { _trackOutputSplitter.SoundOutput = value; }
         }
 
-
-        /// <summary>
-        ///     Unloads the samples.
-        /// </summary>
-        public void UnloadSamples()
+        public string LoopFolder
         {
-            _samplePlayer.UnloadAll();
+            get { return _samplePlayer.LoopFolder; }
+            set { _samplePlayer.LoopFolder = value; }
         }
 
         public event EventHandler OnTrackSamplesChanged;
@@ -123,14 +122,14 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             // create mixer channel
             _samplerMixer = new MixerChannel(this);
-            _samplerMixer.SetVolume((decimal)DefaultFadeOutStartVolume);
+            _samplerMixer.SetVolume((decimal) DefaultFadeOutStartVolume);
             _samplerMixer.CutBass();
             _samplerOutputSplitter = new OutputSplitter(_samplerMixer, SpeakerOutput, MonitorOutput);
 
             _samplePlayer = new TrackSamplePlayer(this);
             _samplerMixer.AddInputChannel(_samplePlayer.Output);
 
-            _samplerMixer.SetVolume(80);
+            _samplerMixer.SetVolume(50);
 
             // DebugHelper.WriteLine("END InitialiseSampler");
         }
@@ -148,6 +147,42 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public List<Sample> GetSamples()
         {
             return _samplePlayer.GetSamples();
+        }
+
+        public void LinkLoopSampleToTrack(string loopKey, Track track)
+        {
+            var filename = Path.Combine(LoopFolder, loopKey);
+            if (!File.Exists(filename) || track == null)
+                return;
+
+            var length = AudioStreamHelper.GetLength(filename);
+
+            var attributes = AutomationAttributesHelper.GetAutomationAttributes(track.Description);
+
+            var description = Path.GetFileNameWithoutExtension(filename)
+                .Replace("_", " ")
+                .Replace("-", " ")
+                .Replace(".", " ");
+
+
+            attributes.LoopSamples.Add(new TrackSample
+            {
+                Description = description,
+                IsExternalLoop = true,
+                Key = loopKey,
+                Length = length,
+                IsLooped = true,
+                Start = 0
+            });
+
+            AutomationAttributesHelper.SaveAutomationAttributes(track.Description, attributes);
+
+            if (track == CurrentTrack || track == NextTrack)
+                Task.Run(() =>
+                {
+                    _samplePlayer.LoadSamples(CurrentTrack, NextTrack);
+                    OnTrackSamplesChanged?.Invoke(this, EventArgs.Empty);
+                });
         }
     }
 }
