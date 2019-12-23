@@ -299,6 +299,9 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         {
             plugin.Parameters = new List<VstPlugin.VstPluginParameter>();
 
+            if (plugin.Name.Contains("mania"))
+                Console.WriteLine("mani");
+
             var parameterCount = BassVst.BASS_VST_GetParamCount(plugin.Id);
             for (var i = 0; i < parameterCount; i++)
             {
@@ -345,9 +348,19 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                     SyncUsingLogScale = true,
                     VariableSyncNotes = true,
                     DefaultSyncNotes = (1M/4M)
+                },
+                new
+                {
+                    PluginName = "Echomania v1_2",
+                    ParameterName = "coarse/n",
+                    SyncToBpm = true,
+                    MinSyncMilliSeconds = 20M,
+                    MaxSyncMilliSeconds = 2000M,
+                    SyncUsingLogScale = false,
+                    VariableSyncNotes = true,
+                    DefaultSyncNotes = (1M/4M)
                 }
             }.ToList();
-
 
             var presetParameter = presetParameters
                 .FirstOrDefault(p => string.Equals(plugin.Name, p.PluginName, StringComparison.CurrentCultureIgnoreCase)

@@ -25,7 +25,6 @@ namespace Halloumi.Shuffler.Controls
         private SyncedSamplePlayer _player;
 
         private string _playingSamples;
-        private bool _bindingVolumeSlider;
 
         public SampleLibraryControl()
         {
@@ -126,11 +125,9 @@ namespace Halloumi.Shuffler.Controls
 
         private void SldVolume_Slid(object sender, EventArgs e)
         {
-            _bindingVolumeSlider = true;
             var volume = Convert.ToDecimal(sldVolume.ScrollValue);
             _player.SetVolume(volume);
             lblVolume.Text = volume.ToString(CultureInfo.InvariantCulture);
-            _bindingVolumeSlider = false;
         }
 
         private void SetVolume(int volume)
