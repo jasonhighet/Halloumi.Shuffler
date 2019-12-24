@@ -10,31 +10,25 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
 {
     public class LoopLibrary : ISampleLibrary
     {
-        private readonly BassPlayer _bassPlayer;
         private string _folder;
         private readonly List<Sample> _samples;
-
-        public string LoopLibraryFolder { get { return _folder; } }
 
         public LoopLibrary(BassPlayer bassPlayer)
         {
             _samples = new List<Sample>();
-            _bassPlayer = bassPlayer;
         }
 
         public void Initialize(string folder)
         {
             _folder = folder;
-            LoadSamples();
-        }
-
-        public void SaveCache()
-        {
         }
 
         public List<Sample> GetSamples()
         {
-            return _samples.OrderByDescending(x => x.Bpm).ToList();
+            lock (_samples)
+            {
+                return _samples.OrderByDescending(x => x.Bpm).ToList();
+            }
         }
 
         public List<Sample> GetSamples(SearchCriteria searchCriteria)
@@ -87,12 +81,14 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             return null;
         }
 
-        private void LoadSamples()
+        public void LoadFromFiles()
         {
+            lock (_samples)
+            {
+                _samples.Clear();
+            }
             var files = FileSystemHelper.SearchFiles(_folder, "*.wav", true);
-
             ParallelHelper.ForEach(files, LoadSample);
-            //foreach (var file in files) LoadSample(file);
         }
 
         private void LoadSample(string file)
@@ -123,6 +119,45 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             {
                 _samples.Add(sample);
             }
+        }
+
+        public void LoadFromCache()
+        {
+            if (!File.Exists(LibraryCacheFilename)) return;
+            try
+            {
+                var samples = SerializationHelper<List<Sample>>.FromXmlFile(LibraryCacheFilename);
+                lock (_samples)
+                {
+                    _samples.Clear();
+                    _samples.AddRange(samples.ToArray());
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+
+        /// <summary>
+        ///     Saves the track details to a cache file
+        /// </summary>
+        public void SaveToCache()
+        {
+            lock (_samples)
+            {
+                SerializationHelper<List<Sample>>.ToXmlFile(_samples, LibraryCacheFilename);
+            }
+        }
+
+
+        /// <summary>
+        ///     Gets the name of the file where the track data is cached.
+        /// </summary>
+        private static string LibraryCacheFilename
+        {
+            get { return Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.LoopLibrary.xml"); }
         }
     }
 }

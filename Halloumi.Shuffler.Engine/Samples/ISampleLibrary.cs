@@ -8,7 +8,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
         /// <summary>
         ///     Saves the sample details to a cache file
         /// </summary>
-        void SaveCache();
+        void SaveToCache();
 
         List<Sample> GetSamples();
         List<Sample> GetSamples(SearchCriteria searchCriteria);
@@ -16,5 +16,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
         void CalculateSampleKey(Sample sample);
 
         Track GetTrackFromSample(Sample sample);
+
+        void LoadFromCache();
+
+        void LoadFromFiles();
     }
 }

@@ -65,10 +65,38 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             }
         }
 
+        public void LoadFromFiles()
+        {
+
+            //lock (Samples)
+            //{
+            //    Samples.Clear();
+            //}
+
+            //var tracks = TrackLibrary.GetTracks().Where(t => t.IsShufflerTrack);
+            //foreach(var track in tracks)
+            //{
+            //    if(!File.Exists(track.Filename))
+            //        continue;
+
+            //    var existingSamples = GetTrackSamples(track);
+            //    if (existingSamples.Count > 0)
+            //        continue;
+
+            //    var samples = GetMixSectionsAsSamples(track);
+            //    samples.ForEach(x => UpdateSampleFromTrack(x, track));
+
+            //    lock (Samples)
+            //    {
+            //        Samples.AddRange(samples);
+            //    }
+            //};
+        }
+
         /// <summary>
         ///     Saves the sample details to a cache file
         /// </summary>
-        public void SaveCache()
+        public void SaveToCache()
         {
             SerializationHelper<List<Sample>>.ToXmlFile(Samples, SampleLibraryFilename);
         }
@@ -180,7 +208,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             if (existingSamples.Count > 0) return;
             var samples = GetMixSectionsAsSamples(track);
             UpdateTrackSamples(track, samples);
-            SaveCache();
+            SaveToCache();
         }
 
         public List<Sample> GetMixSectionsAsSamples(Track track)

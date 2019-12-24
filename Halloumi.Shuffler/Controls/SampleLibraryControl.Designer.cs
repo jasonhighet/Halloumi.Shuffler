@@ -55,6 +55,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCopySample = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlSampleDetails = new Halloumi.Common.Windows.Controls.Panel();
+            this.btnLink = new Halloumi.Common.Windows.Controls.Button();
             this.label7 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbOutput = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnRefresh = new Halloumi.Common.Windows.Controls.Button();
@@ -74,7 +75,7 @@
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbKey = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label6 = new Halloumi.Common.Windows.Controls.Label();
-            this.chkIncludeAntonal = new Halloumi.Common.Windows.Controls.CheckBox();
+            this.chkIncludeAtonal = new Halloumi.Common.Windows.Controls.CheckBox();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbLoopType = new Halloumi.Common.Windows.Controls.ComboBox();
             this.label2 = new Halloumi.Common.Windows.Controls.Label();
@@ -84,7 +85,7 @@
             this.colKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTags = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnLink = new Halloumi.Common.Windows.Controls.Button();
+            this.btnReloadLibrary = new Halloumi.Common.Windows.Controls.Button();
             this.pnlBackground2.SuspendLayout();
             this.pnlLibraryDetails.SuspendLayout();
             this.pnlTrack.SuspendLayout();
@@ -327,6 +328,7 @@
             // pnlSampleDetails
             // 
             this.pnlSampleDetails.BackColor = System.Drawing.Color.Transparent;
+            this.pnlSampleDetails.Controls.Add(this.btnReloadLibrary);
             this.pnlSampleDetails.Controls.Add(this.btnLink);
             this.pnlSampleDetails.Controls.Add(this.label7);
             this.pnlSampleDetails.Controls.Add(this.cmbOutput);
@@ -338,6 +340,17 @@
             this.pnlSampleDetails.Name = "pnlSampleDetails";
             this.pnlSampleDetails.Size = new System.Drawing.Size(1158, 54);
             this.pnlSampleDetails.TabIndex = 56;
+            // 
+            // btnLink
+            // 
+            this.btnLink.Location = new System.Drawing.Point(166, 6);
+            this.btnLink.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnLink.Name = "btnLink";
+            this.btnLink.Padding = new System.Windows.Forms.Padding(4);
+            this.btnLink.Size = new System.Drawing.Size(84, 40);
+            this.btnLink.TabIndex = 11;
+            this.btnLink.Text = "&Link";
+            this.btnLink.Click += new System.EventHandler(this.BtnLink_Click);
             // 
             // label7
             // 
@@ -503,7 +516,7 @@
             this.flpToolbarRight.Controls.Add(this.label3);
             this.flpToolbarRight.Controls.Add(this.cmbKey);
             this.flpToolbarRight.Controls.Add(this.label6);
-            this.flpToolbarRight.Controls.Add(this.chkIncludeAntonal);
+            this.flpToolbarRight.Controls.Add(this.chkIncludeAtonal);
             this.flpToolbarRight.Controls.Add(this.label1);
             this.flpToolbarRight.Controls.Add(this.cmbLoopType);
             this.flpToolbarRight.Controls.Add(this.label2);
@@ -634,17 +647,17 @@
             this.label6.Size = new System.Drawing.Size(116, 26);
             this.label6.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label6.TabIndex = 18;
-            this.label6.Text = "Include Antonal:";
+            this.label6.Text = "Include Atonal:";
             // 
-            // chkIncludeAntonal
+            // chkIncludeAtonal
             // 
-            this.chkIncludeAntonal.Location = new System.Drawing.Point(655, 10);
-            this.chkIncludeAntonal.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-            this.chkIncludeAntonal.Name = "chkIncludeAntonal";
-            this.chkIncludeAntonal.Size = new System.Drawing.Size(19, 13);
-            this.chkIncludeAntonal.TabIndex = 19;
-            this.chkIncludeAntonal.Values.Text = "";
-            this.chkIncludeAntonal.CheckedChanged += new System.EventHandler(this.chkIncludeAntonal_CheckedChanged);
+            this.chkIncludeAtonal.Location = new System.Drawing.Point(655, 10);
+            this.chkIncludeAtonal.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.chkIncludeAtonal.Name = "chkIncludeAtonal";
+            this.chkIncludeAtonal.Size = new System.Drawing.Size(19, 13);
+            this.chkIncludeAtonal.TabIndex = 19;
+            this.chkIncludeAtonal.Values.Text = "";
+            this.chkIncludeAtonal.CheckedChanged += new System.EventHandler(this.chkIncludeAtonal_CheckedChanged);
             // 
             // label1
             // 
@@ -765,16 +778,17 @@
             this.colTags.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.colTags.Width = 125;
             // 
-            // btnLink
+            // btnReloadLibrary
             // 
-            this.btnLink.Location = new System.Drawing.Point(166, 6);
-            this.btnLink.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
-            this.btnLink.Name = "btnLink";
-            this.btnLink.Padding = new System.Windows.Forms.Padding(4);
-            this.btnLink.Size = new System.Drawing.Size(84, 40);
-            this.btnLink.TabIndex = 11;
-            this.btnLink.Text = "&Link";
-            this.btnLink.Click += new System.EventHandler(this.BtnLink_Click);
+            this.btnReloadLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnReloadLibrary.Location = new System.Drawing.Point(545, 6);
+            this.btnReloadLibrary.Margin = new System.Windows.Forms.Padding(0, 2, 2, 0);
+            this.btnReloadLibrary.Name = "btnReloadLibrary";
+            this.btnReloadLibrary.Padding = new System.Windows.Forms.Padding(4);
+            this.btnReloadLibrary.Size = new System.Drawing.Size(146, 40);
+            this.btnReloadLibrary.TabIndex = 12;
+            this.btnReloadLibrary.Text = "&Reload Library";
+            this.btnReloadLibrary.Click += new System.EventHandler(this.BtnReloadLibrary_Click);
             // 
             // SampleLibraryControl
             // 
@@ -833,7 +847,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuCalculateKey;
         private System.Windows.Forms.ToolStripMenuItem mnuCopySample;
         private Common.Windows.Controls.Label label6;
-        private Common.Windows.Controls.CheckBox chkIncludeAntonal;
+        private Common.Windows.Controls.CheckBox chkIncludeAtonal;
         private System.Windows.Forms.ToolStripMenuItem mnuImportSamples;
         private System.Windows.Forms.ToolStripMenuItem mnuExportSamples;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -854,5 +868,6 @@
         private Common.Windows.Controls.Label label7;
         private Common.Windows.Controls.ComboBox cmbOutput;
         private Common.Windows.Controls.Button btnLink;
+        private Common.Windows.Controls.Button btnReloadLibrary;
     }
 }

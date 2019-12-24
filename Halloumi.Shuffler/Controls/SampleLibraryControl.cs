@@ -73,7 +73,7 @@ namespace Halloumi.Shuffler.Controls
 
         private string KeyFilter { get; set; }
 
-        private bool IncludeAntonalFilter { get; set; }
+        private bool IncludeAtonalFilter { get; set; }
 
         private string LoopFilter { get; set; }
 
@@ -186,7 +186,7 @@ namespace Halloumi.Shuffler.Controls
                 criteria.AtonalOnly = false;
             }
 
-            criteria.IncludeAtonal = IncludeAntonalFilter;
+            criteria.IncludeAtonal = IncludeAtonalFilter;
 
             criteria.MaxBpm = MaxBpm;
             criteria.MinBpm = MinBpm;
@@ -353,10 +353,10 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetIncludeAtonalFilter()
         {
-            if (IncludeAntonalFilter == chkIncludeAntonal.Checked)
+            if (IncludeAtonalFilter == chkIncludeAtonal.Checked)
                 return;
 
-            IncludeAntonalFilter = chkIncludeAntonal.Checked;
+            IncludeAtonalFilter = chkIncludeAtonal.Checked;
             BindData();
         }
 
@@ -528,7 +528,7 @@ namespace Halloumi.Shuffler.Controls
             foreach (var sample in GetSelectedSamples().Where(sample => sample.Key == ""))
                 SampleLibrary.CalculateSampleKey(sample);
 
-            SampleLibrary.SaveCache();
+            SampleLibrary.SaveToCache();
 
             BindData();
         }
@@ -561,7 +561,7 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
-        private void chkIncludeAntonal_CheckedChanged(object sender, EventArgs e)
+        private void chkIncludeAtonal_CheckedChanged(object sender, EventArgs e)
         {
             SetIncludeAtonalFilter();
         }
@@ -711,6 +711,18 @@ namespace Halloumi.Shuffler.Controls
 
             BassPlayer.LinkLoopSampleToTrack(sampleKey, track);
 
+        }
+
+        private void BtnReloadLibrary_Click(object sender, EventArgs e)
+        {
+            StopSamples();
+
+            Cursor = Cursors.WaitCursor;
+
+            SampleLibrary.LoadFromFiles();
+            BindSamples();
+
+            Cursor = Cursors.Default;
         }
     }
 

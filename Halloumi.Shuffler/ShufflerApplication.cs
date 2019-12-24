@@ -84,12 +84,15 @@ namespace Halloumi.Shuffler
             AutomationAttributesHelper.LoadFromDatabase();
 
             CollectionHelper.LoadFromDatabase();
+
+            LoopLibrary.LoadFromCache();
         }
 
         public void Unload()
         {
             SaveSettings();
             Library.SaveToDatabase();
+            LoopLibrary.SaveToCache();
             BassPlayer.Dispose();
             MidiManager.Dispose();
         }
