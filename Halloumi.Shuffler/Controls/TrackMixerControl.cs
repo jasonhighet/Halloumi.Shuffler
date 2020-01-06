@@ -244,6 +244,8 @@ namespace Halloumi.Shuffler.Controls
             else if (BassPlayer.TrackSendFxDelayNotes == 0.125M) rdbDelay3.Checked = true;
             else if (BassPlayer.TrackSendFxDelayNotes == 0.0625M) rdbDelay4.Checked = true;
             else if (BassPlayer.TrackSendFxDelayNotes == 0M) rdbDelayNone.Checked = true;
+            else if (BassPlayer.TrackSendFxDelayNotes == 0.375M) rdbDelay5.Checked = true;
+            else if (BassPlayer.TrackSendFxDelayNotes == 0.1875M) rdbDelay6.Checked = true;
             else rdbDelay2.Checked = true;
 
             _binding = false;

@@ -76,6 +76,8 @@
             this.kryptonBorderEdge1 = new ComponentFactory.Krypton.Toolkit.KryptonBorderEdge();
             this.hdrTrackFX = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             this.lblTrackFX = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
+            this.rdbDelay5 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
+            this.rdbDelay6 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.pnlTrackMixer.SuspendLayout();
             this.pnlNextTrack.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -115,7 +117,7 @@
             this.pnlTrackMixer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTrackMixer.Name = "pnlTrackMixer";
             this.pnlTrackMixer.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlTrackMixer.Size = new System.Drawing.Size(503, 416);
+            this.pnlTrackMixer.Size = new System.Drawing.Size(597, 416);
             this.pnlTrackMixer.TabIndex = 77;
             // 
             // pnlNextTrack
@@ -128,7 +130,7 @@
             this.pnlNextTrack.Margin = new System.Windows.Forms.Padding(4);
             this.pnlNextTrack.Name = "pnlNextTrack";
             this.pnlNextTrack.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlNextTrack.Size = new System.Drawing.Size(501, 105);
+            this.pnlNextTrack.Size = new System.Drawing.Size(595, 105);
             this.pnlNextTrack.TabIndex = 80;
             // 
             // lblNextFadeDetails
@@ -139,7 +141,7 @@
             this.lblNextFadeDetails.Location = new System.Drawing.Point(7, 31);
             this.lblNextFadeDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblNextFadeDetails.Name = "lblNextFadeDetails";
-            this.lblNextFadeDetails.Size = new System.Drawing.Size(487, 25);
+            this.lblNextFadeDetails.Size = new System.Drawing.Size(581, 25);
             this.lblNextFadeDetails.TabIndex = 64;
             this.lblNextFadeDetails.Text = "Fade In: 00          Mix Rank: Good*";
             // 
@@ -151,7 +153,7 @@
             this.lblNextTitle.Location = new System.Drawing.Point(7, 6);
             this.lblNextTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblNextTitle.Name = "lblNextTitle";
-            this.lblNextTitle.Size = new System.Drawing.Size(487, 25);
+            this.lblNextTitle.Size = new System.Drawing.Size(581, 25);
             this.lblNextTitle.TabIndex = 62;
             this.lblNextTitle.Text = "Some Dumb Cop Gave Me 2 Tickets Already (Instrumental)";
             // 
@@ -166,7 +168,7 @@
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.panel1.Size = new System.Drawing.Size(501, 91);
+            this.panel1.Size = new System.Drawing.Size(595, 91);
             this.panel1.TabIndex = 67;
             // 
             // flpFadeOutSettings
@@ -177,7 +179,7 @@
             this.flpFadeOutSettings.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flpFadeOutSettings.Location = new System.Drawing.Point(7, 56);
             this.flpFadeOutSettings.Name = "flpFadeOutSettings";
-            this.flpFadeOutSettings.Size = new System.Drawing.Size(487, 35);
+            this.flpFadeOutSettings.Size = new System.Drawing.Size(581, 35);
             this.flpFadeOutSettings.TabIndex = 60;
             // 
             // cmbFadeOutType
@@ -191,7 +193,7 @@
             "Cut",
             "Quick Fade",
             "Echo Out"});
-            this.cmbFadeOutType.Location = new System.Drawing.Point(321, 3);
+            this.cmbFadeOutType.Location = new System.Drawing.Point(415, 3);
             this.cmbFadeOutType.Name = "cmbFadeOutType";
             this.cmbFadeOutType.Size = new System.Drawing.Size(163, 25);
             this.cmbFadeOutType.TabIndex = 0;
@@ -201,7 +203,7 @@
             // 
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(195, 0);
+            this.label2.Location = new System.Drawing.Point(289, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
@@ -219,7 +221,7 @@
             this.lblCurrentFadeDetails.Location = new System.Drawing.Point(7, 31);
             this.lblCurrentFadeDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblCurrentFadeDetails.Name = "lblCurrentFadeDetails";
-            this.lblCurrentFadeDetails.Size = new System.Drawing.Size(487, 25);
+            this.lblCurrentFadeDetails.Size = new System.Drawing.Size(581, 25);
             this.lblCurrentFadeDetails.TabIndex = 59;
             this.lblCurrentFadeDetails.Text = "Fade Out: 00";
             this.lblCurrentFadeDetails.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -232,7 +234,7 @@
             this.lblCurrentTitle.Location = new System.Drawing.Point(7, 6);
             this.lblCurrentTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblCurrentTitle.Name = "lblCurrentTitle";
-            this.lblCurrentTitle.Size = new System.Drawing.Size(487, 25);
+            this.lblCurrentTitle.Size = new System.Drawing.Size(581, 25);
             this.lblCurrentTitle.TabIndex = 57;
             this.lblCurrentTitle.Text = "Some Dumb Cop Gave Me 2 Tickets Already (Instrumental)";
             this.lblCurrentTitle.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -246,7 +248,7 @@
             this.pnlFader.Margin = new System.Windows.Forms.Padding(4);
             this.pnlFader.Name = "pnlFader";
             this.pnlFader.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlFader.Size = new System.Drawing.Size(501, 27);
+            this.pnlFader.Size = new System.Drawing.Size(595, 27);
             this.pnlFader.TabIndex = 66;
             // 
             // sldFader
@@ -276,7 +278,7 @@
             this.sldFader.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.sldFader.ResizeRedraw = true;
             this.sldFader.ShowButtonOnHover = false;
-            this.sldFader.Size = new System.Drawing.Size(487, 15);
+            this.sldFader.Size = new System.Drawing.Size(581, 15);
             this.sldFader.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
             this.sldFader.SmallChange = 1;
             this.sldFader.SmoothScrolling = false;
@@ -305,7 +307,7 @@
             this.pnlPreviousTrack.Margin = new System.Windows.Forms.Padding(4);
             this.pnlPreviousTrack.Name = "pnlPreviousTrack";
             this.pnlPreviousTrack.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlPreviousTrack.Size = new System.Drawing.Size(501, 105);
+            this.pnlPreviousTrack.Size = new System.Drawing.Size(595, 105);
             this.pnlPreviousTrack.TabIndex = 65;
             // 
             // flpPreviousTrackButtons
@@ -316,7 +318,7 @@
             this.flpPreviousTrackButtons.Location = new System.Drawing.Point(7, 56);
             this.flpPreviousTrackButtons.Margin = new System.Windows.Forms.Padding(4);
             this.flpPreviousTrackButtons.Name = "flpPreviousTrackButtons";
-            this.flpPreviousTrackButtons.Size = new System.Drawing.Size(487, 45);
+            this.flpPreviousTrackButtons.Size = new System.Drawing.Size(581, 45);
             this.flpPreviousTrackButtons.TabIndex = 55;
             // 
             // btnPreviousPowerOff
@@ -347,7 +349,7 @@
             this.lblPreviousFadeDetails.Location = new System.Drawing.Point(7, 31);
             this.lblPreviousFadeDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPreviousFadeDetails.Name = "lblPreviousFadeDetails";
-            this.lblPreviousFadeDetails.Size = new System.Drawing.Size(487, 25);
+            this.lblPreviousFadeDetails.Size = new System.Drawing.Size(581, 25);
             this.lblPreviousFadeDetails.TabIndex = 51;
             this.lblPreviousFadeDetails.Text = "Fade In: 00          Fade Out: 00";
             // 
@@ -359,7 +361,7 @@
             this.lblPreviousTitle.Location = new System.Drawing.Point(7, 6);
             this.lblPreviousTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPreviousTitle.Name = "lblPreviousTitle";
-            this.lblPreviousTitle.Size = new System.Drawing.Size(487, 25);
+            this.lblPreviousTitle.Size = new System.Drawing.Size(581, 25);
             this.lblPreviousTitle.TabIndex = 47;
             this.lblPreviousTitle.Text = "Some Dumb Cop Gave Me 2 Tickets Already (Instrumental)";
             // 
@@ -373,7 +375,7 @@
             this.pnlEnable.Margin = new System.Windows.Forms.Padding(4);
             this.pnlEnable.Name = "pnlEnable";
             this.pnlEnable.Padding = new System.Windows.Forms.Padding(13, 6, 7, 6);
-            this.pnlEnable.Size = new System.Drawing.Size(501, 58);
+            this.pnlEnable.Size = new System.Drawing.Size(595, 58);
             this.pnlEnable.TabIndex = 42;
             // 
             // chkManualFading
@@ -399,12 +401,12 @@
             this.flowLayoutPanel5.Location = new System.Drawing.Point(13, 6);
             this.flowLayoutPanel5.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(481, 46);
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(575, 46);
             this.flowLayoutPanel5.TabIndex = 17;
             // 
             // btnClearMix
             // 
-            this.btnClearMix.Location = new System.Drawing.Point(394, 4);
+            this.btnClearMix.Location = new System.Drawing.Point(488, 4);
             this.btnClearMix.Margin = new System.Windows.Forms.Padding(4);
             this.btnClearMix.Name = "btnClearMix";
             this.btnClearMix.Size = new System.Drawing.Size(83, 38);
@@ -414,7 +416,7 @@
             // 
             // btnSaveMix
             // 
-            this.btnSaveMix.Location = new System.Drawing.Point(303, 4);
+            this.btnSaveMix.Location = new System.Drawing.Point(397, 4);
             this.btnSaveMix.Margin = new System.Windows.Forms.Padding(4);
             this.btnSaveMix.Name = "btnSaveMix";
             this.btnSaveMix.Size = new System.Drawing.Size(83, 38);
@@ -428,7 +430,7 @@
             this.linHeader.Location = new System.Drawing.Point(1, 28);
             this.linHeader.Margin = new System.Windows.Forms.Padding(4);
             this.linHeader.Name = "linHeader";
-            this.linHeader.Size = new System.Drawing.Size(501, 1);
+            this.linHeader.Size = new System.Drawing.Size(595, 1);
             this.linHeader.Text = "kryptonBorderEdge1";
             // 
             // pnlHeader
@@ -439,7 +441,7 @@
             this.pnlHeader.Margin = new System.Windows.Forms.Padding(4);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridHeaderColumnCustom1;
-            this.pnlHeader.Size = new System.Drawing.Size(501, 27);
+            this.pnlHeader.Size = new System.Drawing.Size(595, 27);
             this.pnlHeader.TabIndex = 1;
             // 
             // lblHeader
@@ -461,7 +463,7 @@
             this.pnlMiddleBackground.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMiddleBackground.Name = "pnlMiddleBackground";
             this.pnlMiddleBackground.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlMiddleBackground.Size = new System.Drawing.Size(503, 6);
+            this.pnlMiddleBackground.Size = new System.Drawing.Size(597, 6);
             this.pnlMiddleBackground.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlMiddleBackground.TabIndex = 76;
             // 
@@ -478,7 +480,7 @@
             this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(1);
-            this.panel3.Size = new System.Drawing.Size(503, 179);
+            this.panel3.Size = new System.Drawing.Size(597, 179);
             this.panel3.TabIndex = 75;
             // 
             // pnlEffectsSettings
@@ -491,7 +493,7 @@
             this.pnlEffectsSettings.Margin = new System.Windows.Forms.Padding(4);
             this.pnlEffectsSettings.Name = "pnlEffectsSettings";
             this.pnlEffectsSettings.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.pnlEffectsSettings.Size = new System.Drawing.Size(501, 93);
+            this.pnlEffectsSettings.Size = new System.Drawing.Size(595, 93);
             this.pnlEffectsSettings.TabIndex = 83;
             // 
             // panel6
@@ -502,7 +504,7 @@
             this.panel6.Location = new System.Drawing.Point(7, 37);
             this.panel6.Margin = new System.Windows.Forms.Padding(4);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(487, 50);
+            this.panel6.Size = new System.Drawing.Size(581, 50);
             this.panel6.TabIndex = 80;
             // 
             // panel7
@@ -513,13 +515,13 @@
             this.panel7.Margin = new System.Windows.Forms.Padding(4);
             this.panel7.Name = "panel7";
             this.panel7.Padding = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.panel7.Size = new System.Drawing.Size(487, 50);
+            this.panel7.Size = new System.Drawing.Size(581, 50);
             this.panel7.TabIndex = 17;
             // 
             // btnTrackFX
             // 
             this.btnTrackFX.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnTrackFX.Location = new System.Drawing.Point(309, 6);
+            this.btnTrackFX.Location = new System.Drawing.Point(403, 6);
             this.btnTrackFX.Margin = new System.Windows.Forms.Padding(4);
             this.btnTrackFX.Name = "btnTrackFX";
             this.btnTrackFX.Size = new System.Drawing.Size(171, 38);
@@ -534,14 +536,16 @@
             this.flpCurrent.Controls.Add(this.label1);
             this.flpCurrent.Controls.Add(this.rdbDelay1);
             this.flpCurrent.Controls.Add(this.rdbDelay2);
+            this.flpCurrent.Controls.Add(this.rdbDelay5);
             this.flpCurrent.Controls.Add(this.rdbDelay3);
+            this.flpCurrent.Controls.Add(this.rdbDelay6);
             this.flpCurrent.Controls.Add(this.rdbDelay4);
             this.flpCurrent.Controls.Add(this.rdbDelayNone);
             this.flpCurrent.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpCurrent.Location = new System.Drawing.Point(7, 6);
             this.flpCurrent.Margin = new System.Windows.Forms.Padding(4);
             this.flpCurrent.Name = "flpCurrent";
-            this.flpCurrent.Size = new System.Drawing.Size(487, 34);
+            this.flpCurrent.Size = new System.Drawing.Size(581, 34);
             this.flpCurrent.TabIndex = 35;
             // 
             // label1
@@ -582,7 +586,7 @@
             // 
             // rdbDelay3
             // 
-            this.rdbDelay3.Location = new System.Drawing.Point(196, 4);
+            this.rdbDelay3.Location = new System.Drawing.Point(256, 4);
             this.rdbDelay3.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay3.Name = "rdbDelay3";
             this.rdbDelay3.Size = new System.Drawing.Size(46, 24);
@@ -593,7 +597,7 @@
             // 
             // rdbDelay4
             // 
-            this.rdbDelay4.Location = new System.Drawing.Point(250, 4);
+            this.rdbDelay4.Location = new System.Drawing.Point(370, 4);
             this.rdbDelay4.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay4.Name = "rdbDelay4";
             this.rdbDelay4.Size = new System.Drawing.Size(55, 24);
@@ -604,7 +608,7 @@
             // 
             // rdbDelayNone
             // 
-            this.rdbDelayNone.Location = new System.Drawing.Point(313, 4);
+            this.rdbDelayNone.Location = new System.Drawing.Point(433, 4);
             this.rdbDelayNone.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelayNone.Name = "rdbDelayNone";
             this.rdbDelayNone.Size = new System.Drawing.Size(61, 24);
@@ -623,7 +627,7 @@
             this.panel5.Margin = new System.Windows.Forms.Padding(4);
             this.panel5.Name = "panel5";
             this.panel5.Padding = new System.Windows.Forms.Padding(13, 6, 7, 6);
-            this.panel5.Size = new System.Drawing.Size(501, 56);
+            this.panel5.Size = new System.Drawing.Size(595, 56);
             this.panel5.TabIndex = 82;
             // 
             // chkEnableTrackFXAutomation
@@ -650,12 +654,12 @@
             this.flowLayoutPanel6.Location = new System.Drawing.Point(13, 6);
             this.flowLayoutPanel6.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel6.Name = "flowLayoutPanel6";
-            this.flowLayoutPanel6.Size = new System.Drawing.Size(481, 44);
+            this.flowLayoutPanel6.Size = new System.Drawing.Size(575, 44);
             this.flowLayoutPanel6.TabIndex = 16;
             // 
             // btnClearSends
             // 
-            this.btnClearSends.Location = new System.Drawing.Point(394, 4);
+            this.btnClearSends.Location = new System.Drawing.Point(488, 4);
             this.btnClearSends.Margin = new System.Windows.Forms.Padding(4);
             this.btnClearSends.Name = "btnClearSends";
             this.btnClearSends.Size = new System.Drawing.Size(83, 38);
@@ -665,7 +669,7 @@
             // 
             // btnRemoveLastSend
             // 
-            this.btnRemoveLastSend.Location = new System.Drawing.Point(303, 4);
+            this.btnRemoveLastSend.Location = new System.Drawing.Point(397, 4);
             this.btnRemoveLastSend.Margin = new System.Windows.Forms.Padding(4);
             this.btnRemoveLastSend.Name = "btnRemoveLastSend";
             this.btnRemoveLastSend.Size = new System.Drawing.Size(83, 38);
@@ -675,7 +679,7 @@
             // 
             // btnSaveLastSend
             // 
-            this.btnSaveLastSend.Location = new System.Drawing.Point(212, 4);
+            this.btnSaveLastSend.Location = new System.Drawing.Point(306, 4);
             this.btnSaveLastSend.Margin = new System.Windows.Forms.Padding(4);
             this.btnSaveLastSend.Name = "btnSaveLastSend";
             this.btnSaveLastSend.Size = new System.Drawing.Size(83, 38);
@@ -689,7 +693,7 @@
             this.kryptonBorderEdge1.Location = new System.Drawing.Point(1, 28);
             this.kryptonBorderEdge1.Margin = new System.Windows.Forms.Padding(4);
             this.kryptonBorderEdge1.Name = "kryptonBorderEdge1";
-            this.kryptonBorderEdge1.Size = new System.Drawing.Size(501, 1);
+            this.kryptonBorderEdge1.Size = new System.Drawing.Size(595, 1);
             this.kryptonBorderEdge1.Text = "kryptonBorderEdge1";
             // 
             // hdrTrackFX
@@ -700,7 +704,7 @@
             this.hdrTrackFX.Margin = new System.Windows.Forms.Padding(4);
             this.hdrTrackFX.Name = "hdrTrackFX";
             this.hdrTrackFX.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.GridHeaderColumnCustom1;
-            this.hdrTrackFX.Size = new System.Drawing.Size(501, 27);
+            this.hdrTrackFX.Size = new System.Drawing.Size(595, 27);
             this.hdrTrackFX.TabIndex = 1;
             // 
             // lblTrackFX
@@ -714,6 +718,28 @@
             this.lblTrackFX.TabIndex = 0;
             this.lblTrackFX.Values.Text = "Track FX";
             // 
+            // rdbDelay5
+            // 
+            this.rdbDelay5.Location = new System.Drawing.Point(196, 4);
+            this.rdbDelay5.Margin = new System.Windows.Forms.Padding(4);
+            this.rdbDelay5.Name = "rdbDelay5";
+            this.rdbDelay5.Size = new System.Drawing.Size(52, 24);
+            this.rdbDelay5.TabIndex = 67;
+            this.rdbDelay5.Tag = "0.375";
+            this.rdbDelay5.Values.Text = "1/4•";
+            this.rdbDelay5.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
+            // 
+            // rdbDelay6
+            // 
+            this.rdbDelay6.Location = new System.Drawing.Point(310, 4);
+            this.rdbDelay6.Margin = new System.Windows.Forms.Padding(4);
+            this.rdbDelay6.Name = "rdbDelay6";
+            this.rdbDelay6.Size = new System.Drawing.Size(52, 24);
+            this.rdbDelay6.TabIndex = 68;
+            this.rdbDelay6.Tag = "0.1875";
+            this.rdbDelay6.Values.Text = "1/8•";
+            this.rdbDelay6.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
+            // 
             // TrackMixerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -723,7 +749,7 @@
             this.Controls.Add(this.panel3);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TrackMixerControl";
-            this.Size = new System.Drawing.Size(503, 601);
+            this.Size = new System.Drawing.Size(597, 601);
             this.pnlTrackMixer.ResumeLayout(false);
             this.pnlTrackMixer.PerformLayout();
             this.pnlNextTrack.ResumeLayout(false);
@@ -803,5 +829,7 @@
         private Halloumi.Common.Windows.Controls.ComboBox cmbFadeOutType;
         private Halloumi.Common.Windows.Controls.Label label2;
         private System.Windows.Forms.FlowLayoutPanel flpFadeOutSettings;
+        private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay5;
+        private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay6;
     }
 }

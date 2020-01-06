@@ -38,7 +38,9 @@
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.rdbDelay1 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelay2 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
+            this.rdbDelay5 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelay3 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
+            this.rdbDelay6 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelay4 = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.rdbDelayNone = new ComponentFactory.Krypton.Toolkit.KryptonRadioButton();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -146,7 +148,9 @@
             this.flpRight.Controls.Add(this.label1);
             this.flpRight.Controls.Add(this.rdbDelay1);
             this.flpRight.Controls.Add(this.rdbDelay2);
+            this.flpRight.Controls.Add(this.rdbDelay5);
             this.flpRight.Controls.Add(this.rdbDelay3);
+            this.flpRight.Controls.Add(this.rdbDelay6);
             this.flpRight.Controls.Add(this.rdbDelay4);
             this.flpRight.Controls.Add(this.rdbDelayNone);
             this.flpRight.Dock = System.Windows.Forms.DockStyle.Top;
@@ -192,9 +196,20 @@
             this.rdbDelay2.Values.Text = "1/4";
             this.rdbDelay2.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
             // 
+            // rdbDelay5
+            // 
+            this.rdbDelay5.Location = new System.Drawing.Point(249, 4);
+            this.rdbDelay5.Margin = new System.Windows.Forms.Padding(4);
+            this.rdbDelay5.Name = "rdbDelay5";
+            this.rdbDelay5.Size = new System.Drawing.Size(52, 24);
+            this.rdbDelay5.TabIndex = 63;
+            this.rdbDelay5.Tag = "0.375";
+            this.rdbDelay5.Values.Text = "1/4•";
+            this.rdbDelay5.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
+            // 
             // rdbDelay3
             // 
-            this.rdbDelay3.Location = new System.Drawing.Point(249, 4);
+            this.rdbDelay3.Location = new System.Drawing.Point(309, 4);
             this.rdbDelay3.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay3.Name = "rdbDelay3";
             this.rdbDelay3.Size = new System.Drawing.Size(46, 24);
@@ -203,9 +218,20 @@
             this.rdbDelay3.Values.Text = "1/8";
             this.rdbDelay3.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
             // 
+            // rdbDelay6
+            // 
+            this.rdbDelay6.Location = new System.Drawing.Point(363, 4);
+            this.rdbDelay6.Margin = new System.Windows.Forms.Padding(4);
+            this.rdbDelay6.Name = "rdbDelay6";
+            this.rdbDelay6.Size = new System.Drawing.Size(52, 24);
+            this.rdbDelay6.TabIndex = 64;
+            this.rdbDelay6.Tag = "0.1875";
+            this.rdbDelay6.Values.Text = "1/8•";
+            this.rdbDelay6.CheckedChanged += new System.EventHandler(this.rdbDelay_CheckedChanged);
+            // 
             // rdbDelay4
             // 
-            this.rdbDelay4.Location = new System.Drawing.Point(303, 4);
+            this.rdbDelay4.Location = new System.Drawing.Point(423, 4);
             this.rdbDelay4.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelay4.Name = "rdbDelay4";
             this.rdbDelay4.Size = new System.Drawing.Size(55, 24);
@@ -216,7 +242,7 @@
             // 
             // rdbDelayNone
             // 
-            this.rdbDelayNone.Location = new System.Drawing.Point(366, 4);
+            this.rdbDelayNone.Location = new System.Drawing.Point(486, 4);
             this.rdbDelayNone.Margin = new System.Windows.Forms.Padding(4);
             this.rdbDelayNone.Name = "rdbDelayNone";
             this.rdbDelayNone.Size = new System.Drawing.Size(61, 24);
@@ -386,5 +412,7 @@
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay3;
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay4;
         private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelayNone;
+        private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay5;
+        private ComponentFactory.Krypton.Toolkit.KryptonRadioButton rdbDelay6;
     }
 }
