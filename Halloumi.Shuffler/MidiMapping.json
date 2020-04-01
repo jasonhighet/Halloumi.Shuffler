@@ -8,28 +8,34 @@
     "ManualMixVolume": "1slider1",
     "FadeNow": "next",
     "TrackSendFxHalf": "1topbut2",
-    "TrackSendFxQuarter": "1botbut2",
-    "TrackSendFxEighth": "1topbut3",
-    "TrackSendFxSixteenth": "1botbut3",
+    "TrackSendFxQuarter": "1topbut3",
+    "TrackSendFxDottedQuarter": "1topbut4",
+    "TrackSendFxEighth": "1botbut2",
+    "TrackSendFxDottedEighth": "1botbut3",
+    "TrackSendFxSixteenth": "1botbut4",
     "ToggleManualMixMode": "record",
     "LoopFadeInForever": "return",
     "JumpBack": "prev",
-    "Sample1": "1topbut4",
-    "Sample2": "1topbut5",
-    "Sample3": "1topbut6",
-    "Sample4": "1topbut7",
-    "Sample5": "1topbut8",
-    "Sample6": "1topbut9",
-    "Sample7": "1botbut4",
-    "Sample8": "1botbut5",
-    "Sample9": "1botbut6",
-    "Sample10": "1botbut7",
-    "Sample11": "1botbut8",
-    "Sample12": "1botbut9"
+    "1Sample1": "1topbut5",
+    "1Sample2": "1topbut6",
+    "1Sample3": "1topbut7",
+    "1Sample4": "1topbut8",
+    "1Sample5": "1topbut9",
+    "2Sample1": "1botbut5",
+    "2Sample2": "1botbut6",
+    "2Sample3": "1botbut7",
+    "2Sample4": "1botbut8",
+    "2Sample5": "1botbut9"
   },
   "VstCommands": {
     "MainVstPlugin": {
-      "4": "1knob1"
+      "4": "1knob1",
+      "5": "1knob2"
+    },
+    "TrackVstPlugin": {
+      "2": "1knob3",
+      "13": "1knob4",
+      "14": "1knob5"
     }
   },
   "Controls": {

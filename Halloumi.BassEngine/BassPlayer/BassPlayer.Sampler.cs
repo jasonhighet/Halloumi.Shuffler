@@ -78,11 +78,34 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             PlaySample(GetSample(sampleIndex));
         }
 
+        public void PlaySample(int trackSample, int sampleIndex)
+        {
+            PlaySample(GetSample(trackSample, sampleIndex));
+        }
+
         private Sample GetSample(int sampleIndex)
         {
             var samples = _samplePlayer.GetSamples();
             if (sampleIndex >= samples.Count || sampleIndex < 0) return null;
             return samples[sampleIndex];
+        }
+
+        private Sample GetSample(int trackIndex, int sampleIndex)
+        {
+            if (trackIndex == 0)
+                return null;
+
+            var samples = _samplePlayer.GetSamples();
+            var currentTrack = samples[0].LinkedTrackDescription;
+            var nextTrackIndex = samples.IndexOf(samples.FirstOrDefault(x => x.LinkedTrackDescription != currentTrack));
+
+            if (trackIndex == 1 && sampleIndex < nextTrackIndex)
+                return GetSample(sampleIndex);
+            else if (trackIndex == 2)
+                return GetSample(sampleIndex + nextTrackIndex - 1);
+            else
+                return null;
+
         }
 
         /// <summary>
@@ -92,6 +115,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void PauseSample(int sampleIndex)
         {
             PauseSample(GetSample(sampleIndex));
+        }
+
+        public void PauseSample(int trackIndex, int sampleIndex)
+        {
+            PauseSample(GetSample(trackIndex, sampleIndex));
         }
 
         /// <summary>

@@ -138,6 +138,20 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 else
                     _bassPlayer.StopTrackFxSend();
             }
+            else if (controlMapping.CommandName == "TrackSendFxDottedQuarter")
+            {
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.StartTrackFxSendDottedQuarter();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
+            else if (controlMapping.CommandName == "TrackSendFxDottedEighth")
+            {
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.StartTrackFxSendDottedEighth();
+                else
+                    _bassPlayer.StopTrackFxSend();
+            }
             else if (controlMapping.CommandName == "TrackSendFxSixteenth")
             {
                 if (IsControlOn(midiValue, controlMapping))
@@ -198,6 +212,23 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 else
                     _bassPlayer.PauseSample(index);
             }
+            else if (controlMapping.CommandName.StartsWith("1Sample"))
+            {
+                var index = int.Parse(controlMapping.CommandName.Replace("1Sample", ""));
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.PlaySample(1, index);
+                else
+                    _bassPlayer.PauseSample(1, index);
+            }
+            else if (controlMapping.CommandName.StartsWith("2Sample"))
+            {
+                var index = int.Parse(controlMapping.CommandName.Replace("2Sample", ""));
+                if (IsControlOn(midiValue, controlMapping))
+                    _bassPlayer.PlaySample(2, index);
+                else
+                    _bassPlayer.PauseSample(2, index);
+            }
+
         }
 
         private static bool IsControlOn(int value, ControlMapping controlMapping)

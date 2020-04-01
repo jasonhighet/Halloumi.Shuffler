@@ -359,6 +359,17 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                     SyncUsingLogScale = false,
                     VariableSyncNotes = true,
                     DefaultSyncNotes = (1M/4M)
+                },
+                new
+                {
+                    PluginName = "Outerspace X86",
+                    ParameterName = "Repeat R",
+                    SyncToBpm = true,
+                    MinSyncMilliSeconds = 500M,
+                    MaxSyncMilliSeconds = 175M,
+                    SyncUsingLogScale = false,
+                    VariableSyncNotes = true,
+                    DefaultSyncNotes = (1M/4M)
                 }
             }.ToList();
 
@@ -434,6 +445,13 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         {
             var minMs = (double) parameter.MinSyncMilliSeconds;
             var maxMs = (double) parameter.MaxSyncMilliSeconds;
+
+            if (minMs > maxMs)
+            {
+                minMs = (double)parameter.MaxSyncMilliSeconds;
+                maxMs = (double)parameter.MinSyncMilliSeconds;
+            }
+
 
             if (syncLength < minMs) syncLength = minMs;
             if (syncLength > maxMs) syncLength = maxMs;

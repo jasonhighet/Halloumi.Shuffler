@@ -222,6 +222,21 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             StartTrackFxSend();
         }
 
+        public void StartTrackFxSendDottedEighth()
+        {
+            TrackSendFxDelayNotes = 0.1875M;
+            StartTrackFxSend();
+        }
+
+        public void StartTrackFxSendDottedQuarter()
+        {
+            TrackSendFxDelayNotes = 0.375M;
+            StartTrackFxSend();
+        }
+
+
+
+
         public void StartTrackFxSendSixteenth()
         {
             TrackSendFxDelayNotes = 0.0625M;
