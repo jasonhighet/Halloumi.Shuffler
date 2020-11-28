@@ -1002,7 +1002,7 @@ namespace Halloumi.Shuffler.Controls
         private void BindTrackRankMenu()
         {
             var currentTrackRank = -1;
-            if (GetSelectedTracks().Count == 1)
+            if (GetSelectedTrack() != null)
                 currentTrackRank = GetSelectedTrack().Rank;
             for (var i = 0; i < 6; i++)
             {

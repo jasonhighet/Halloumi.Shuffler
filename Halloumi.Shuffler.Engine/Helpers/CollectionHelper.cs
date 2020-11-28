@@ -201,6 +201,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// <returns>A list of play-lists that contain the track</returns>
         public static List<string> GetCollectionsTrackIsntIn(Track track)
         {
+            if (track == null) return new List<string>();
             return
             (
                 from collectionTracks
@@ -220,6 +221,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// <returns>A list of play-lists that contain the track</returns>
         public static List<string> GetCollectionsForTrack(Track track)
         {
+            if (track == null)
+                return new List<string>();
+
             return 
             (
                 from collectionTracks 
