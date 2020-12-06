@@ -208,7 +208,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 if (_parentTrack == null) continue;
                 if (mixableTracks.Exists(mt => mt.Description == track.Description)) continue;
-                if (chkExcludeQueued.Checked && playListTracks.Exists(mt => mt.Description == track.Description))
+                if (chkExcludeQueued.Checked && playListTracks.Exists(mt => mt != null && mt.Description == track.Description))
                     continue;
 
                 var mixRank = view == View.FromTracks
