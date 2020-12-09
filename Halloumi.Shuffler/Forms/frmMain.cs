@@ -179,6 +179,7 @@ namespace Halloumi.Shuffler.Forms
         private void mnuLibrary_DropDownOpening(object sender, EventArgs e)
         {
             mnuUpdateLibrary.Enabled = !trackLibraryControl.IsLibraryUpdating();
+            mnuUpdateLibraryFolder.Enabled = !trackLibraryControl.IsLibraryUpdating();
             mnuCancelLibraryUpdate.Enabled = trackLibraryControl.IsLibraryUpdating();
         }
 
@@ -754,6 +755,18 @@ namespace Halloumi.Shuffler.Forms
 
             if (!_frmLoopLibrary.Visible)
                 WindowHelper.ShowDialog(this, _frmLoopLibrary);
+        }
+
+        private void mnuUpdateLibraryFolder_Click(object sender, EventArgs e)
+        {
+            var folder = FileDialogHelper.OpenFolder();
+            if (!folder.StartsWith(_application.Library.LibraryFolder))
+            {
+                MessageBoxHelper.Show("Folder must be in library");
+                return;
+            }
+
+            _application.Library.ImportTracks(folder);
         }
     }
 }
