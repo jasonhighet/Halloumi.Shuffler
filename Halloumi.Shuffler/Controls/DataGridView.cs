@@ -16,9 +16,10 @@ namespace Halloumi.Shuffler.Controls
             ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(DataGridView_ColumnHeaderMouseClick);
             ColumnHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(DataGridView_ColumnHeaderMouseDoubleClick);
             SortColumnIndex = -1;
-            base.ColumnHeadersHeight = 26;
+            base.ColumnHeadersHeight = 44;
             DoubleBuffered = true;
 
+            this.RowTemplate.Height = 44;
             //this.MouseDown += new MouseEventHandler(DataGridView_MouseDown);
             //this.DragDrop += new DragEventHandler(DataGridView_DragDrop);
             //this.DragOver += new DragEventHandler(DataGridView_DragOver);

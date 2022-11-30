@@ -94,14 +94,14 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MixLibrary MixLibrary { get; set; }
+        public Halloumi.Shuffler.AudioLibrary.MixLibrary MixLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the library.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Library Library { get; set; }
+        public Halloumi.Shuffler.AudioLibrary.Library Library { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass player.
@@ -346,8 +346,8 @@ namespace Halloumi.Shuffler.Controls
         }
 
         public void Initalize(TrackLibraryControl trackLibraryControl)
-        {
-            trackDetails.Library = Library;
+        { 
+            //trackDetails.SetLibrary(Library);
             trackDetails.DisplayTrackDetails(null);
 
             mixableTracks.PlaylistControl = this;
@@ -1126,7 +1126,7 @@ namespace Halloumi.Shuffler.Controls
 
         private class TrackModel
         {
-            private TrackModel(Track track, MixLibrary mixLibrary)
+            private TrackModel(Track track, Halloumi.Shuffler.AudioLibrary.MixLibrary mixLibrary)
             {
                 Description = track.Description;
                 Filename = track.Filename;
@@ -1158,7 +1158,7 @@ namespace Halloumi.Shuffler.Controls
 
             public string KeyRankDescription { get; set; }
 
-            public static IEnumerable<TrackModel> ToList(IEnumerable<Track> tracks, MixLibrary mixLibrary)
+            public static IEnumerable<TrackModel> ToList(IEnumerable<Track> tracks, Halloumi.Shuffler.AudioLibrary.MixLibrary mixLibrary)
             {
                 return tracks.Select(t => new TrackModel(t, mixLibrary)).ToList();
             }

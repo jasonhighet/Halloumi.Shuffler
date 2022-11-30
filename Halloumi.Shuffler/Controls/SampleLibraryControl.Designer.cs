@@ -168,7 +168,7 @@
             this.grdSamples.RowHeadersVisible = false;
             this.grdSamples.RowHeadersWidth = 51;
             this.grdSamples.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grdSamples.RowTemplate.Height = 24;
+            this.grdSamples.RowTemplate.Height = 44;
             this.grdSamples.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grdSamples.Size = new System.Drawing.Size(1156, 505);
             this.grdSamples.SortColumnIndex = 0;

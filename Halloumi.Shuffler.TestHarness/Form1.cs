@@ -17,7 +17,6 @@ namespace Halloumi.Shuffler.TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DebugHelper.DebugMode = true;
 
             AudioEngineHelper.StartAudioEngine(Handle);
 

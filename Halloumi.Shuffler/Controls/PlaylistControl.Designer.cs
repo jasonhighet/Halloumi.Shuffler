@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            var dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            var dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.mnuTrack = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuPlay = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep1 = new System.Windows.Forms.ToolStripSeparator();
@@ -64,13 +64,6 @@
             this.pnlTop = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlGrid = new Halloumi.Common.Windows.Controls.Panel();
             this.grdPlaylist = new Halloumi.Shuffler.Controls.DataGridView();
-            this.colTrack = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEndBPM = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMix = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTrackRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTrackKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colKeyDiff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.linLine = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.pnlButtons = new Halloumi.Common.Windows.Controls.Panel();
             this.flpLeft = new System.Windows.Forms.FlowLayoutPanel();
@@ -83,6 +76,13 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackDetails = new Halloumi.Shuffler.Controls.TrackDetails();
             this.mixableTracks = new Halloumi.Shuffler.Controls.MixableTracks();
+            this.colTrack = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEndBPM = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMix = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTrackRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTrackKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colKeyDiff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mnuTrack.SuspendLayout();
             this.pnlContentBackground.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splTopBottom)).BeginInit();
@@ -119,70 +119,70 @@
             this.mnuMixRank,
             this.mnuPreviewMix});
             this.mnuTrack.Name = "mnuTrack";
-            this.mnuTrack.Size = new System.Drawing.Size(242, 268);
+            this.mnuTrack.Size = new System.Drawing.Size(316, 388);
             // 
             // mnuPlay
             // 
             this.mnuPlay.Name = "mnuPlay";
-            this.mnuPlay.Size = new System.Drawing.Size(241, 24);
+            this.mnuPlay.Size = new System.Drawing.Size(315, 36);
             this.mnuPlay.Text = "&Play";
             // 
             // mnuSep1
             // 
             this.mnuSep1.Name = "mnuSep1";
-            this.mnuSep1.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep1.Size = new System.Drawing.Size(312, 6);
             // 
-            // mnuAddTrackToPlaylist
+            // mnuAddTrackToCollection
             // 
             this.mnuAddTrackToCollection.Name = "mnuAddTrackToCollection";
-            this.mnuAddTrackToCollection.Size = new System.Drawing.Size(241, 24);
+            this.mnuAddTrackToCollection.Size = new System.Drawing.Size(315, 36);
             this.mnuAddTrackToCollection.Text = "A&dd To Collection";
             // 
-            // mnuRemoveTrackFromPlaylist
+            // mnuRemoveTrackFromCollection
             // 
             this.mnuRemoveTrackFromCollection.Name = "mnuRemoveTrackFromCollection";
-            this.mnuRemoveTrackFromCollection.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveTrackFromCollection.Size = new System.Drawing.Size(315, 36);
             this.mnuRemoveTrackFromCollection.Text = "&Remove From Collection";
             // 
             // mnuSep2
             // 
             this.mnuSep2.Name = "mnuSep2";
-            this.mnuSep2.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep2.Size = new System.Drawing.Size(312, 6);
             // 
             // mnuOpenFileLocation
             // 
             this.mnuOpenFileLocation.Name = "mnuOpenFileLocation";
-            this.mnuOpenFileLocation.Size = new System.Drawing.Size(241, 24);
+            this.mnuOpenFileLocation.Size = new System.Drawing.Size(315, 36);
             this.mnuOpenFileLocation.Text = "Open File &Location";
             // 
             // mnuSep3
             // 
             this.mnuSep3.Name = "mnuSep3";
-            this.mnuSep3.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep3.Size = new System.Drawing.Size(312, 6);
             // 
             // mnuUpdateTrackDetails
             // 
             this.mnuUpdateTrackDetails.Name = "mnuUpdateTrackDetails";
-            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateTrackDetails.Size = new System.Drawing.Size(315, 36);
             this.mnuUpdateTrackDetails.Text = "Update &Track Details";
             // 
             // mnuUpdateShufflerDetails
             // 
             this.mnuUpdateShufflerDetails.Name = "mnuUpdateShufflerDetails";
-            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuUpdateShufflerDetails.Size = new System.Drawing.Size(315, 36);
             this.mnuUpdateShufflerDetails.Text = "Update &Shuffler Details...";
             // 
             // mnuRemoveShufflerDetails
             // 
             this.mnuRemoveShufflerDetails.Name = "mnuRemoveShufflerDetails";
-            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(241, 24);
+            this.mnuRemoveShufflerDetails.Size = new System.Drawing.Size(315, 36);
             this.mnuRemoveShufflerDetails.Text = "&Remove Shuffler Details";
             this.mnuRemoveShufflerDetails.Click += new System.EventHandler(this.mnuRemoveShufflerDetails_Click);
             // 
             // mnuSep4
             // 
             this.mnuSep4.Name = "mnuSep4";
-            this.mnuSep4.Size = new System.Drawing.Size(238, 6);
+            this.mnuSep4.Size = new System.Drawing.Size(312, 6);
             // 
             // mnuTrackRank
             // 
@@ -194,48 +194,48 @@
             this.toolStripMenuItem5,
             this.toolStripMenuItem6});
             this.mnuTrackRank.Name = "mnuTrackRank";
-            this.mnuTrackRank.Size = new System.Drawing.Size(241, 24);
+            this.mnuTrackRank.Size = new System.Drawing.Size(315, 36);
             this.mnuTrackRank.Text = "Trac&k Rating";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuItem1.Text = "toolStripMenuItem1";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuItem2.Text = "toolStripMenuItem2";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuItem3.Text = "toolStripMenuItem3";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuItem4.Text = "toolStripMenuItem4";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuItem5.Text = "toolStripMenuItem5";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(211, 24);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(315, 40);
             this.toolStripMenuItem6.Text = "toolStripMenuItem6";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.mnuTrackRank_Click);
             // 
@@ -249,55 +249,55 @@
             this.toolStripMenuItem11,
             this.toolStripMenuItem12});
             this.mnuMixRank.Name = "mnuMixRank";
-            this.mnuMixRank.Size = new System.Drawing.Size(241, 24);
+            this.mnuMixRank.Size = new System.Drawing.Size(315, 36);
             this.mnuMixRank.Text = "Mi&x Rating";
             // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(326, 40);
             this.toolStripMenuItem7.Text = "toolStripMenuItem7";
             this.toolStripMenuItem7.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(326, 40);
             this.toolStripMenuItem8.Text = "toolStripMenuItem8";
             this.toolStripMenuItem8.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(326, 40);
             this.toolStripMenuItem9.Text = "toolStripMenuItem9";
             this.toolStripMenuItem9.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem10
             // 
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(326, 40);
             this.toolStripMenuItem10.Text = "toolStripMenuItem10";
             this.toolStripMenuItem10.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem11
             // 
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(326, 40);
             this.toolStripMenuItem11.Text = "toolStripMenuItem11";
             this.toolStripMenuItem11.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // toolStripMenuItem12
             // 
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(219, 24);
+            this.toolStripMenuItem12.Size = new System.Drawing.Size(326, 40);
             this.toolStripMenuItem12.Text = "toolStripMenuItem12";
             this.toolStripMenuItem12.Click += new System.EventHandler(this.mnuMixRank_Click);
             // 
             // mnuPreviewMix
             // 
             this.mnuPreviewMix.Name = "mnuPreviewMix";
-            this.mnuPreviewMix.Size = new System.Drawing.Size(241, 24);
+            this.mnuPreviewMix.Size = new System.Drawing.Size(315, 36);
             this.mnuPreviewMix.Text = "Pre&view Mix";
             // 
             // pnlContentBackground
@@ -306,10 +306,10 @@
             this.pnlContentBackground.Controls.Add(this.splTopBottom);
             this.pnlContentBackground.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContentBackground.Location = new System.Drawing.Point(0, 0);
-            this.pnlContentBackground.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlContentBackground.Margin = new System.Windows.Forms.Padding(6);
             this.pnlContentBackground.Name = "pnlContentBackground";
-            this.pnlContentBackground.Padding = new System.Windows.Forms.Padding(5);
-            this.pnlContentBackground.Size = new System.Drawing.Size(881, 455);
+            this.pnlContentBackground.Padding = new System.Windows.Forms.Padding(7, 8, 7, 8);
+            this.pnlContentBackground.Size = new System.Drawing.Size(1211, 682);
             this.pnlContentBackground.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlContentBackground.TabIndex = 12;
             // 
@@ -317,7 +317,8 @@
             // 
             this.splTopBottom.Cursor = System.Windows.Forms.Cursors.Default;
             this.splTopBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splTopBottom.Location = new System.Drawing.Point(5, 5);
+            this.splTopBottom.Location = new System.Drawing.Point(7, 8);
+            this.splTopBottom.Margin = new System.Windows.Forms.Padding(4);
             this.splTopBottom.Name = "splTopBottom";
             this.splTopBottom.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -328,8 +329,8 @@
             // splTopBottom.Panel2
             // 
             this.splTopBottom.Panel2.Controls.Add(this.mixableTracks);
-            this.splTopBottom.Size = new System.Drawing.Size(871, 445);
-            this.splTopBottom.SplitterDistance = 323;
+            this.splTopBottom.Size = new System.Drawing.Size(1197, 666);
+            this.splTopBottom.SplitterDistance = 483;
             this.splTopBottom.TabIndex = 0;
             // 
             // pnlTop
@@ -340,9 +341,9 @@
             this.pnlTop.Controls.Add(this.trackDetails);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlTop.Margin = new System.Windows.Forms.Padding(6);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(871, 323);
+            this.pnlTop.Size = new System.Drawing.Size(1197, 483);
             this.pnlTop.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlTop.TabIndex = 11;
             // 
@@ -357,8 +358,8 @@
             this.pnlGrid.Location = new System.Drawing.Point(0, 0);
             this.pnlGrid.Margin = new System.Windows.Forms.Padding(0);
             this.pnlGrid.Name = "pnlGrid";
-            this.pnlGrid.Padding = new System.Windows.Forms.Padding(1);
-            this.pnlGrid.Size = new System.Drawing.Size(871, 245);
+            this.pnlGrid.Padding = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.pnlGrid.Size = new System.Drawing.Size(1197, 365);
             this.pnlGrid.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlGrid.TabIndex = 15;
             // 
@@ -371,7 +372,7 @@
             this.grdPlaylist.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.grdPlaylist.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.grdPlaylist.ColumnHeadersHeight = 26;
+            this.grdPlaylist.ColumnHeadersHeight = 44;
             this.grdPlaylist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colTrack,
             this.colLength,
@@ -383,16 +384,17 @@
             this.grdPlaylist.ContextMenuStrip = this.mnuTrack;
             this.grdPlaylist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdPlaylist.HideOuterBorders = true;
-            this.grdPlaylist.Location = new System.Drawing.Point(1, 1);
-            this.grdPlaylist.Margin = new System.Windows.Forms.Padding(4);
+            this.grdPlaylist.Location = new System.Drawing.Point(1, 2);
+            this.grdPlaylist.Margin = new System.Windows.Forms.Padding(6);
             this.grdPlaylist.MergeColor = System.Drawing.Color.Gainsboro;
             this.grdPlaylist.Name = "grdPlaylist";
             this.grdPlaylist.ReadOnly = true;
             this.grdPlaylist.RowHeadersVisible = false;
+            this.grdPlaylist.RowHeadersWidth = 72;
             this.grdPlaylist.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grdPlaylist.RowTemplate.Height = 24;
+            this.grdPlaylist.RowTemplate.Height = 44;
             this.grdPlaylist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdPlaylist.Size = new System.Drawing.Size(869, 189);
+            this.grdPlaylist.Size = new System.Drawing.Size(1195, 281);
             this.grdPlaylist.SortColumnIndex = -1;
             this.grdPlaylist.SortOrder = System.Windows.Forms.SortOrder.None;
             this.grdPlaylist.StateCommon.Background.Color1 = System.Drawing.Color.White;
@@ -404,81 +406,13 @@
             this.grdPlaylist.TabIndex = 49;
             this.grdPlaylist.VirtualMode = true;
             // 
-            // colTrack
-            // 
-            this.colTrack.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colTrack.DataPropertyName = "Description";
-            this.colTrack.HeaderText = "Track";
-            this.colTrack.Name = "colTrack";
-            this.colTrack.ReadOnly = true;
-            // 
-            // colLength
-            // 
-            this.colLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colLength.DataPropertyName = "LengthFormatted";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            this.colLength.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colLength.HeaderText = "Length";
-            this.colLength.Name = "colLength";
-            this.colLength.ReadOnly = true;
-            this.colLength.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.colLength.Width = 62;
-            // 
-            // colEndBPM
-            // 
-            this.colEndBPM.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colEndBPM.DataPropertyName = "BPM";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = null;
-            this.colEndBPM.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colEndBPM.HeaderText = "BPM";
-            this.colEndBPM.Name = "colEndBPM";
-            this.colEndBPM.ReadOnly = true;
-            this.colEndBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.colEndBPM.Width = 47;
-            // 
-            // colMix
-            // 
-            this.colMix.DataPropertyName = "MixRankDescription";
-            this.colMix.HeaderText = "Mix";
-            this.colMix.Name = "colMix";
-            this.colMix.ReadOnly = true;
-            // 
-            // colTrackRank
-            // 
-            this.colTrackRank.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colTrackRank.DataPropertyName = "TrackRankDescription";
-            this.colTrackRank.HeaderText = "Rank";
-            this.colTrackRank.Name = "colTrackRank";
-            this.colTrackRank.ReadOnly = true;
-            this.colTrackRank.Width = 68;
-            // 
-            // colTrackKey
-            // 
-            this.colTrackKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colTrackKey.DataPropertyName = "Key";
-            this.colTrackKey.HeaderText = "Key";
-            this.colTrackKey.Name = "colTrackKey";
-            this.colTrackKey.ReadOnly = true;
-            this.colTrackKey.Width = 60;
-            // 
-            // colKeyDiff
-            // 
-            this.colKeyDiff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colKeyDiff.DataPropertyName = "KeyRank";
-            this.colKeyDiff.HeaderText = "Key Rank";
-            this.colKeyDiff.Name = "colKeyDiff";
-            this.colKeyDiff.ReadOnly = true;
-            this.colKeyDiff.Width = 96;
-            // 
             // linLine
             // 
             this.linLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.linLine.Location = new System.Drawing.Point(1, 190);
-            this.linLine.Margin = new System.Windows.Forms.Padding(4);
+            this.linLine.Location = new System.Drawing.Point(1, 283);
+            this.linLine.Margin = new System.Windows.Forms.Padding(6);
             this.linLine.Name = "linLine";
-            this.linLine.Size = new System.Drawing.Size(869, 2);
+            this.linLine.Size = new System.Drawing.Size(1195, 2);
             this.linLine.TabIndex = 48;
             // 
             // pnlButtons
@@ -487,10 +421,10 @@
             this.pnlButtons.Controls.Add(this.flpLeft);
             this.pnlButtons.Controls.Add(this.flpButtons);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(1, 192);
-            this.pnlButtons.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlButtons.Location = new System.Drawing.Point(1, 285);
+            this.pnlButtons.Margin = new System.Windows.Forms.Padding(6);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(869, 52);
+            this.pnlButtons.Size = new System.Drawing.Size(1195, 78);
             this.pnlButtons.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlButtons.TabIndex = 47;
             // 
@@ -500,21 +434,21 @@
             this.flpLeft.Controls.Add(this.lblCount);
             this.flpLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.flpLeft.Location = new System.Drawing.Point(0, 0);
-            this.flpLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.flpLeft.Margin = new System.Windows.Forms.Padding(6);
             this.flpLeft.Name = "flpLeft";
-            this.flpLeft.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
-            this.flpLeft.Size = new System.Drawing.Size(132, 52);
+            this.flpLeft.Padding = new System.Windows.Forms.Padding(4, 3, 10, 3);
+            this.flpLeft.Size = new System.Drawing.Size(182, 78);
             this.flpLeft.TabIndex = 18;
             // 
             // lblCount
             // 
             this.lblCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCount.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblCount.Location = new System.Drawing.Point(7, 2);
-            this.lblCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCount.Location = new System.Drawing.Point(10, 3);
+            this.lblCount.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblCount.Name = "lblCount";
-            this.lblCount.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.lblCount.Size = new System.Drawing.Size(107, 33);
+            this.lblCount.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.lblCount.Size = new System.Drawing.Size(147, 50);
             this.lblCount.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.lblCount.TabIndex = 7;
             this.lblCount.Text = "0 tracks";
@@ -529,46 +463,46 @@
             this.flpButtons.Controls.Add(this.btnOpen);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(489, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4);
+            this.flpButtons.Location = new System.Drawing.Point(673, 0);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(6);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Padding = new System.Windows.Forms.Padding(3, 2, 7, 2);
-            this.flpButtons.Size = new System.Drawing.Size(380, 52);
+            this.flpButtons.Padding = new System.Windows.Forms.Padding(4, 3, 10, 3);
+            this.flpButtons.Size = new System.Drawing.Size(522, 78);
             this.flpButtons.TabIndex = 16;
             // 
             // btnRemove
             // 
-            this.btnRemove.Location = new System.Drawing.Point(284, 7);
-            this.btnRemove.Margin = new System.Windows.Forms.Padding(5);
+            this.btnRemove.Location = new System.Drawing.Point(390, 11);
+            this.btnRemove.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(81, 38);
+            this.btnRemove.Size = new System.Drawing.Size(111, 57);
             this.btnRemove.TabIndex = 10;
             this.btnRemove.Text = "Remove";
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(193, 7);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(5);
+            this.btnClear.Location = new System.Drawing.Point(265, 11);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(81, 38);
+            this.btnClear.Size = new System.Drawing.Size(111, 57);
             this.btnClear.TabIndex = 11;
             this.btnClear.Text = "Clear";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(102, 7);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(5);
+            this.btnSave.Location = new System.Drawing.Point(140, 11);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(81, 38);
+            this.btnSave.Size = new System.Drawing.Size(111, 57);
             this.btnSave.TabIndex = 12;
             this.btnSave.Text = "Save";
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(11, 7);
-            this.btnOpen.Margin = new System.Windows.Forms.Padding(5);
+            this.btnOpen.Location = new System.Drawing.Point(15, 11);
+            this.btnOpen.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(81, 38);
+            this.btnOpen.Size = new System.Drawing.Size(111, 57);
             this.btnOpen.TabIndex = 13;
             this.btnOpen.Text = "Open";
             // 
@@ -576,37 +510,112 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 245);
+            this.panel1.Location = new System.Drawing.Point(0, 365);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(871, 5);
+            this.panel1.Size = new System.Drawing.Size(1197, 8);
             this.panel1.TabIndex = 14;
             // 
             // trackDetails
             // 
             this.trackDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackDetails.Location = new System.Drawing.Point(0, 250);
+            this.trackDetails.Location = new System.Drawing.Point(0, 373);
+            this.trackDetails.Margin = new System.Windows.Forms.Padding(6);
             this.trackDetails.Name = "trackDetails";
-            this.trackDetails.Size = new System.Drawing.Size(871, 73);
+            this.trackDetails.Size = new System.Drawing.Size(1197, 110);
             this.trackDetails.TabIndex = 12;
             // 
             // mixableTracks
             // 
             this.mixableTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mixableTracks.Location = new System.Drawing.Point(0, 0);
-            this.mixableTracks.Margin = new System.Windows.Forms.Padding(4);
+            this.mixableTracks.Margin = new System.Windows.Forms.Padding(6);
             this.mixableTracks.Name = "mixableTracks";
-            this.mixableTracks.PlaylistControl = null;
-            this.mixableTracks.Size = new System.Drawing.Size(871, 117);
+            this.mixableTracks.Size = new System.Drawing.Size(1197, 178);
             this.mixableTracks.TabIndex = 0;
+            // 
+            // colTrack
+            // 
+            this.colTrack.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colTrack.DataPropertyName = "Description";
+            this.colTrack.HeaderText = "Track";
+            this.colTrack.MinimumWidth = 9;
+            this.colTrack.Name = "colTrack";
+            this.colTrack.ReadOnly = true;
+            // 
+            // colLength
+            // 
+            this.colLength.DataPropertyName = "LengthFormatted";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            this.colLength.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colLength.HeaderText = "Length";
+            this.colLength.MinimumWidth = 90;
+            this.colLength.Name = "colLength";
+            this.colLength.ReadOnly = true;
+            this.colLength.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colLength.Width = 90;
+            // 
+            // colEndBPM
+            // 
+            this.colEndBPM.DataPropertyName = "BPM";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = null;
+            this.colEndBPM.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colEndBPM.HeaderText = "BPM";
+            this.colEndBPM.MinimumWidth = 90;
+            this.colEndBPM.Name = "colEndBPM";
+            this.colEndBPM.ReadOnly = true;
+            this.colEndBPM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colEndBPM.Width = 90;
+            // 
+            // colMix
+            // 
+            this.colMix.DataPropertyName = "MixRankDescription";
+            this.colMix.HeaderText = "Mix";
+            this.colMix.MinimumWidth = 9;
+            this.colMix.Name = "colMix";
+            this.colMix.ReadOnly = true;
+            this.colMix.Width = 175;
+            // 
+            // colTrackRank
+            // 
+            this.colTrackRank.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colTrackRank.DataPropertyName = "TrackRankDescription";
+            this.colTrackRank.HeaderText = "Rank";
+            this.colTrackRank.MinimumWidth = 9;
+            this.colTrackRank.Name = "colTrackRank";
+            this.colTrackRank.ReadOnly = true;
+            this.colTrackRank.Width = 104;
+            // 
+            // colTrackKey
+            // 
+            this.colTrackKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colTrackKey.DataPropertyName = "Key";
+            this.colTrackKey.HeaderText = "Key";
+            this.colTrackKey.MinimumWidth = 9;
+            this.colTrackKey.Name = "colTrackKey";
+            this.colTrackKey.ReadOnly = true;
+            this.colTrackKey.Width = 91;
+            // 
+            // colKeyDiff
+            // 
+            this.colKeyDiff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colKeyDiff.DataPropertyName = "KeyRank";
+            this.colKeyDiff.HeaderText = "Key Rank";
+            this.colKeyDiff.MinimumWidth = 9;
+            this.colKeyDiff.Name = "colKeyDiff";
+            this.colKeyDiff.ReadOnly = true;
+            this.colKeyDiff.Width = 143;
             // 
             // PlaylistControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlContentBackground);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "PlaylistControl";
-            this.Size = new System.Drawing.Size(881, 455);
+            this.Size = new System.Drawing.Size(1211, 682);
             this.mnuTrack.ResumeLayout(false);
             this.pnlContentBackground.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splTopBottom.Panel1)).EndInit();

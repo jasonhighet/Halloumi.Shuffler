@@ -19,12 +19,12 @@ namespace Halloumi.Shuffler.Controls
             InitializeComponent();
         }
 
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Library Library { get; set; }
+        //private Library _library = null;
+
+        //public void SetLibrary(Library library)
+        //{
+        //    _library = library;
+        //}
 
         /// <summary>
         ///     Displays the current track details.
@@ -49,7 +49,7 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                picCover.Image = Library.GetAlbumCover(track.Album);
+                //picCover.Image = _library.GetAlbumCover(track.Album);
 
                 _currentFilename = track.Filename;
             }

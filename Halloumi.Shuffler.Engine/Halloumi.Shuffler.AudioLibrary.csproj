@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Halloumi.Shuffler.AudioLibrary</RootNamespace>
     <AssemblyName>Halloumi.Shuffler.AudioLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -62,12 +62,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>
-    <Reference Include="Halloumi.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Halloumi.Common">
       <HintPath>..\Components\Halloumi.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Halloumi.Common.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Halloumi.Common.Windows">
       <HintPath>..\Components\Halloumi.Common.Windows.dll</HintPath>
     </Reference>
     <Reference Include="IdSharp.AudioInfo">
@@ -79,6 +77,9 @@
     <Reference Include="IdSharp.Tagging, Version=1.1.4426.18077, Culture=neutral, PublicKeyToken=9218f8c7f40da032, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Components\IdSharp.Tagging.dll</HintPath>
+    </Reference>
+    <Reference Include="Sanford.Multimedia.Midi, Version=6.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sanford.Multimedia.Midi.6.6.2\lib\net20\Sanford.Multimedia.Midi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -121,6 +122,9 @@
       <Project>{b2b7650c-8209-4d48-aadf-5a1e76928b7e}</Project>
       <Name>Halloumi.Shuffler.AudioEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

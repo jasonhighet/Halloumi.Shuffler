@@ -298,7 +298,7 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initalize()
         {
-            trackDetails.Library = Library;
+            //trackDetails.SetLibrary(Library);
 
             mixableTracks.PlaylistControl = PlaylistControl;
             mixableTracks.Initialize(MixLibrary, this);
@@ -1794,6 +1794,11 @@ namespace Halloumi.Shuffler.Controls
             public string SortColumnName { get; set; }
 
             public SortOrder SortOrder { get; set; }
+        }
+
+        private void lblFilter_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine(lblFilter.Visible);
         }
     }
 }

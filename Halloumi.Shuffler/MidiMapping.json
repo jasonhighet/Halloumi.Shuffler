@@ -1,5 +1,5 @@
 ﻿{
-  "DeviceName": "nanoKONTROL 1 SLIDER/KNOB",
+  "DeviceName": "nanoKONTROL",
   "Commands": {
     "Play": "play",
     "PowerDownCurrent": "stop",
