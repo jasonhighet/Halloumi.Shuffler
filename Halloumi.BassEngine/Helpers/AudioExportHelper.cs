@@ -104,7 +104,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             var totalTransferLength = endByte - startByte;
 
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
+            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTE);
             while (totalTransferLength > 0)
             {
                 var buffer = new byte[65536];
@@ -183,7 +183,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             // plug in the source
             BassMix.BASS_Mixer_StreamAddChannel(mixer, channel,
-                BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN);
+                BASSFlag.BASS_MIXER_CHAN_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN);
 
             AudioStreamHelper.SetReplayGain(mixer, gain);
 
@@ -196,7 +196,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             var totalTransferLength = Bass.BASS_ChannelSeconds2Bytes(mixer, length);
 
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
+            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTE);
             while (totalTransferLength > 0)
             {
                 var buffer = new byte[65536];
@@ -236,7 +236,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             var totalTransferLength = endByte - startByte;
 
-            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTES);
+            Bass.BASS_ChannelSetPosition(channel, startByte, BASSMode.BASS_POS_BYTE);
             while (totalTransferLength > 0)
             {
                 var buffer = new byte[65536];

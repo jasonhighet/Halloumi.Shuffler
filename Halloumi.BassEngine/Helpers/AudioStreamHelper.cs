@@ -628,7 +628,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             // DebugHelper.WriteLine($"AddToMixer {audioStream.Description} {mixerChannel} {audioStream.Channel}...");
 
             BassMix.BASS_Mixer_StreamAddChannel(mixerChannel.ChannelId, audioStream.ChannelId,
-                BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
+                BASSFlag.BASS_MIXER_CHAN_PAUSE | BASSFlag.BASS_MIXER_CHAN_DOWNMIX | BASSFlag.BASS_MIXER_NORAMPIN |
                 BASSFlag.BASS_MUSIC_AUTOFREE);
             Thread.Sleep(1);
 

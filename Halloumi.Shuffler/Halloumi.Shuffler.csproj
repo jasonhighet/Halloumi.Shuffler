@@ -542,9 +542,7 @@
     <PostBuildEvent>copy $(SolutionDir)\Components\Bass.Net\*.dll $(TargetDir)
 
 if $(ConfigurationName) == Release (
-    if exist "D:\Dropbox\Falafel.Shuffler" (copy $(TargetDir) "D:\Dropbox\Falafel.Shuffler")
-    if exist "C:\Users\jason\Dropbox\Falafel.Shuffler" (copy $(TargetDir) "C:\Users\jason\Dropbox\Falafel.Shuffler")
-    if exist "D:\Jason\Music\Shuffler" (copy $(TargetDir) "D:\Jason\Music\Shuffler")
+    if exist "C:\Users\jason\Shuffler" (copy $(TargetDir) "C:\Users\jason\Shuffler")
 )
 
 </PostBuildEvent>

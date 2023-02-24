@@ -36,7 +36,11 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                     var details = InputDevice.GetDeviceCapabilities(i);
 
                     if (!string.Equals(details.name, midiMapping.DeviceName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        File.WriteAllText("Midi" + i.ToString() + ".txt", details.name);
                         continue;
+                    }
+                        
 
                     _inDevice = new InputDevice(i);
                     _inDevice.ChannelMessageReceived += InDevice_ChannelMessageReceived;
