@@ -614,19 +614,32 @@ namespace Halloumi.Shuffler.AudioLibrary
             SaveToDatabase();
         }
 
-
         public void CopyAudioFromAnotherTrack(Track destinationTrack, Track sourceTrack)
         {
+            CopyAudioFromAnotherTrack(destinationTrack, sourceTrack.Filename);
+        }
+
+
+        public void CopyAudioFromAnotherTrack(Track destinationTrack, string sourceFilename)
+        {
+            if (!sourceFilename.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("The source filename must be an MP3 file.", nameof(sourceFilename));
+            }
+
+            // Backup existing destination track file
             File.Move(destinationTrack.Filename, destinationTrack.Filename + ".old");
 
             try
             {
-                File.Copy(sourceTrack.Filename, destinationTrack.Filename);
+                // Copy source track file to destination
+                File.Copy(sourceFilename, destinationTrack.Filename);
             }
             catch (Exception)
             {
                 try
                 {
+                    // Restore original destination track file if copy fails
                     File.Move(destinationTrack.Filename + ".old", destinationTrack.Filename);
                 }
                 catch
@@ -636,21 +649,26 @@ namespace Halloumi.Shuffler.AudioLibrary
                 throw;
             }
 
-            var title = destinationTrack.Title;
-            var album = destinationTrack.Album;
-            var albumArtist = destinationTrack.AlbumArtist;
-            var artist = destinationTrack.Artist;
-            var genre = destinationTrack.Genre;
-            var trackNumber = destinationTrack.TrackNumber;
+            // Update track details
+            UpdateTrackDetails(destinationTrack, destinationTrack.Artist, destinationTrack.Title,
+                destinationTrack.Album, destinationTrack.AlbumArtist, destinationTrack.Genre,
+                destinationTrack.TrackNumber, false);
 
-            UpdateTrackDetails(destinationTrack, artist, title, album, albumArtist, genre, trackNumber, false);
-
+            // Set album cover if available
             var albumCover = AlbumCoverHelper.GetAlbumCover(destinationTrack.Album);
-            if (albumCover != null) AlbumCoverHelper.SetTrackAlbumCover(destinationTrack, albumCover);
+            if (albumCover != null)
+            {
+                AlbumCoverHelper.SetTrackAlbumCover(destinationTrack, albumCover);
+            }
+
+            // Clean up by deleting old backup file
             File.Delete(destinationTrack.Filename + ".old");
 
+            // Optionally, load the track
             LoadTrack(destinationTrack.Filename);
         }
+
+
 
         /// <summary>
         ///     Updates the track title

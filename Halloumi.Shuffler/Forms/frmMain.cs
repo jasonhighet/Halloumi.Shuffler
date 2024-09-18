@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;

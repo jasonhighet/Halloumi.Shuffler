@@ -7,6 +7,7 @@ using System.Threading;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
+using Halloumi.Shuffler.AudioEngine.SectionDetector;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 
@@ -595,6 +596,13 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 track.FadeOutEndVolume = (float) (DefaultFadeOutEndVolume / 100);
 
                 ExtenedAttributesHelper.LoadExtendedAttributes(track);
+
+                if (track.StartBpm == 0 || track.EndBpm == 0) 
+                {
+                    var bpm = BPMGuestimator.EstimateBPM(track.Filename);
+                    track.StartBpm = Convert.ToDecimal(bpm);
+                    track.EndBpm = Convert.ToDecimal(bpm);
+                }
 
                 if (track.FadeOutStart == 0)
                     if (LimitSongLength && track.LengthSeconds > MaxSongLength)

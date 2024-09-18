@@ -11,9 +11,9 @@ using Halloumi.Common.Windows.Controls;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
+using Halloumi.Shuffler.AudioEngine.SectionDetector;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
-using AE = Halloumi.Shuffler.AudioEngine;
 using Sample = Halloumi.Shuffler.AudioLibrary.Samples.Sample;
 
 namespace Halloumi.Shuffler.Controls
@@ -41,6 +41,9 @@ namespace Halloumi.Shuffler.Controls
 
 
         public EventHandler PositionsChanged;
+
+        //private List<SectionDetector.SectionInfo> _songSections;
+        private List<Double> _beats;
 
 
         /// <summary>
@@ -98,19 +101,10 @@ namespace Halloumi.Shuffler.Controls
             get { return ZoomEnd - ZoomStart; }
         }
 
-        /// <summary>
-        ///     Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BassPlayer BassPlayer { get; set; }
+        private BassPlayer BassPlayer { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the bass track.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Track BassTrack { get; private set; }
+
+        private Track BassTrack { get; set; }
 
         /// <summary>
         ///     Gets or sets the current position.
@@ -131,15 +125,15 @@ namespace Halloumi.Shuffler.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<TrackSample> TrackSamples { get; set; }
+        private List<TrackSample> TrackSamples { get; set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Sample> Samples { get; set; }
+        private List<Sample> Samples { get; set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Sample CurrentSample { get; set; }
+        private Sample CurrentSample { get; set; }
 
 
         private void picWaveForm_DoubleClick(object sender, EventArgs e)
@@ -212,6 +206,14 @@ namespace Halloumi.Shuffler.Controls
         {
             Filename = fileName;
             BassTrack = BassPlayer.LoadRawLoopTrack(Filename);
+
+            var isShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(BassTrack.Description);
+            if (!isShufflerTrack) BassTrack.TagBpm = BpmHelper.NormaliseBpm(Convert.ToDecimal(BPMGuestimator.EstimateBPM(BassTrack.Filename)));
+
+
+            //var bpm = BPMGuestimator.EstimateBPM(fileName);
+            //_beats = BeatDetector2.DetectBeats(fileName, bpm);
+            //_songSections = SectionDetector.SplitIntoSections(fileName, _beats);
 
             LoadTrackWaveData();
             DrawWave();
@@ -445,6 +447,7 @@ namespace Halloumi.Shuffler.Controls
                 Wave.AddMarker("CSO", CurrentSample.Offset);
 
             Wave.AddMarker("CSE", CurrentSample.Start + CurrentSample.Length);
+
         }
 
         private void SetShufflerMarkers()
@@ -495,6 +498,16 @@ namespace Halloumi.Shuffler.Controls
                     Wave.AddMarker("S" + i + "E", trackSample.Start + trackSample.Length);
                 }
 
+
+
+            //foreach (var beat in _beats)
+            //{
+            //    var i = _beats.IndexOf(beat);
+            //    Wave.RemoveMarker("B" + i.ToString());
+            //    Wave.AddMarker("B" + i, BassTrack.SecondsToSamples(beat));
+            //}
+
+
             if (!ShowTrackFx) return;
 
             foreach (var trackFx in attributes.TrackFXTriggers)
@@ -502,6 +515,9 @@ namespace Halloumi.Shuffler.Controls
                 Wave.AddMarker("TS" + attributes.TrackFXTriggers.IndexOf(trackFx), trackFx.Start);
                 Wave.AddMarker("TE" + attributes.TrackFXTriggers.IndexOf(trackFx), trackFx.Start + trackFx.Length);
             }
+
+
+
         }
 
         /// <summary>
@@ -598,6 +614,9 @@ namespace Halloumi.Shuffler.Controls
         {
             BeginInvoke((MethodInvoker) delegate
             {
+
+                if(CurrentPosition >= ZoomEnd) CurrentPosition = ZoomStart;
+                if (CurrentPosition < ZoomStart) CurrentPosition = ZoomStart;
                 BassPlayer.SetRawLoopPositions(ZoomStart, ZoomEnd, CurrentPosition);
                 BassPlayer.PlayRawLoop();
                 _timer.Enabled = true;
@@ -844,6 +863,63 @@ namespace Halloumi.Shuffler.Controls
             var zoomLength = ZoomLength;
             ZoomStart += zoomLength;
             Zoom(zoomLength);
+        }
+
+        private void mnuMoveFadeInStart_Click(object sender, EventArgs e)
+        {
+            var currentStart = BassTrack.FadeInStart;
+            var currentEnd = BassTrack.FadeInEnd;
+            var length = currentEnd - currentStart;
+
+            BassTrack.FadeInStart = CurrentPosition;
+            BassTrack.FadeInEnd = CurrentPosition + length;
+
+            UpdatePositions();
+        }
+
+        private void mnuMoveFadeOutStart_Click(object sender, EventArgs e)
+        {
+            var currentStart = BassTrack.FadeOutStart;
+            var currentEnd = BassTrack.FadeOutEnd;
+            var length = currentEnd - currentStart;
+
+            BassTrack.FadeOutStart = CurrentPosition;
+            BassTrack.FadeOutEnd = CurrentPosition + length;
+
+            UpdatePositions();
+        }
+
+        private void mnuMoveSkipStart_Click(object sender, EventArgs e)
+        {
+            var currentStart = BassTrack.SkipStart;
+            var currentEnd = BassTrack.SkipEnd;
+            var length = currentEnd - currentStart;
+
+            BassTrack.SkipStart = CurrentPosition;
+            BassTrack.SkipEnd = CurrentPosition + length;
+
+            UpdatePositions();
+        }
+
+        public void SetModeAndBassPlayer(TrackWaveMode sampler, BassPlayer bassPlayer)
+        {
+            this.Mode = sampler; ;
+            this.BassPlayer = bassPlayer;
+        }
+
+        public void SetCurrentSample(Sample currentSample)
+        {
+            this.CurrentSample = currentSample;
+        }
+
+        internal void SetSamples(List<Sample> samples)
+        {
+           this.Samples = samples;
+        }
+
+        internal void SetTrackSamples(List<TrackSample> currentSamples)
+        {
+            this.TrackSamples = currentSamples;
         }
     }
 }

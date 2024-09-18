@@ -933,20 +933,16 @@
             // 
             // trackWave
             // 
-            this.trackWave.BassPlayer = null;
             this.tblMain.SetColumnSpan(this.trackWave, 3);
-            this.trackWave.CurrentSample = null;
             this.trackWave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trackWave.Filename = null;
             this.trackWave.Location = new System.Drawing.Point(5, 5);
             this.trackWave.Margin = new System.Windows.Forms.Padding(5);
             this.trackWave.Mode = Halloumi.Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler;
             this.trackWave.Name = "trackWave";
-            this.trackWave.Samples = null;
             this.trackWave.ShowTrackFx = false;
             this.trackWave.Size = new System.Drawing.Size(1609, 306);
             this.trackWave.TabIndex = 45;
-            this.trackWave.TrackSamples = null;
             // 
             // FrmEditTrackSamples
             // 

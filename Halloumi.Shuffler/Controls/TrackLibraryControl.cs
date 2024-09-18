@@ -65,6 +65,7 @@ namespace Halloumi.Shuffler.Controls
             mnuUpdateArtist.Click += mnuUpdateArtist_Click;
             mnuUpdateAlbumArtist.Click += mnuUpdateAlbumArtist_Click;
             mnuUpdateTrackDetails.Click += mnuUpdateTrackDetails_Click;
+            mnuUpdateAudio.Click += mnuUpdateAudio_Click;
             mnuUpdateShufflerDetails.Click += mnuUpdateShufflerDetails_Click;
             mnuRemoveShufflerDetails.Click += mnuRemoveShufflerDetails_Click;
             mnuQueue.Click += mnuQueue_Click;
@@ -1024,6 +1025,71 @@ namespace Halloumi.Shuffler.Controls
             if (result == DialogResult.OK) BindData();
         }
 
+        private string _initialFolder = string.Empty;
+        private void UpdateTrackAudio()
+        {
+            var track = GetSelectedTrack();
+            if (track == null) return;
+
+            // Create the OpenFileDialog and set its properties
+            using (var openFileDialog = new OpenFileDialog
+            {
+                Filter = "MP3 files (*.mp3)|*.mp3",
+                Title = "Select an MP3 file",
+                InitialDirectory = !string.IsNullOrEmpty(_initialFolder) && System.IO.Directory.Exists(_initialFolder)
+                    ? _initialFolder
+                    : string.Empty
+            })
+            {
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                // Get the selected file path
+                string selectedFilePath = openFileDialog.FileName;
+
+                // Ensure the selected file is an MP3 file
+                if (!selectedFilePath.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("The selected file must be an MP3 file.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Extract filenames (without paths) for the confirmation dialog
+                string sourceFileName = System.IO.Path.GetFileName(selectedFilePath);
+                string destinationFileName = System.IO.Path.GetFileName(track.Filename);
+
+                // Show confirmation dialog
+                DialogResult result = MessageBox.Show(
+                    $"Are you sure you want to copy the audio from '{sourceFileName}' to '{destinationFileName}'?",
+                    "Confirm File Copy",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result != DialogResult.Yes) return;
+
+                // Update the last selected folder in settings
+                _initialFolder = System.IO.Path.GetDirectoryName(selectedFilePath);
+
+                Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
+                try
+                {
+                    Library.CopyAudioFromAnotherTrack(track, selectedFilePath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while copying the audio file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    Cursor = Cursors.Default;
+                    Application.DoEvents();
+                }
+
+                BindData(false, false, false);
+            }
+        }
+
         /// <summary>
         ///     Updates the shuffler details.
         /// </summary>
@@ -1305,6 +1371,14 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
+        ///     Handles the Click event of the mnuUpdateAudio control.
+        /// </summary>
+        public void mnuUpdateAudio_Click(object sender, EventArgs e)
+        {
+            UpdateTrackAudio();
+        }
+
+        /// <summary>
         ///     Handles the Click event of the mnuUpdateShufflerDetails control.
         /// </summary>
         private void mnuUpdateShufflerDetails_Click(object sender, EventArgs e)
@@ -1338,6 +1412,7 @@ namespace Halloumi.Shuffler.Controls
             mnuUpdateArtist.Visible = GetSelectedTracks().Count > 1;
             mnuUpdateGenre.Visible = GetSelectedTracks().Count > 1;
             mnuUpdateTrackDetails.Visible = GetSelectedTracks().Count == 1;
+            mnuUpdateAudio.Visible = GetSelectedTracks().Count == 1;
             mnuUpdateShufflerDetails.Visible = GetSelectedTracks().Count == 1;
             mnuEditSamples.Visible = GetSelectedTracks().Count == 1;
             mnuAddToSampler.Visible = false;

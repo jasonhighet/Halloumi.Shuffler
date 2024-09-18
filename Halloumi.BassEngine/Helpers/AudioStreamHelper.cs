@@ -376,7 +376,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
             if (samplePosition < 0 || samplePosition > audioStream.Length) return;
 
-            //var secondPosition = TimeFormatHelper.GetFormattedSeconds(audioStream.SamplesToSeconds(samplePosition));
+          //  var secondPosition = TimeFormatHelper.GetFormattedSeconds(audioStream.SamplesToSeconds(samplePosition));
             // DebugHelper.WriteLine($"SetPosition {audioStream.Description} {secondPosition} {samplePosition}");
 
             //lock (Lock)
@@ -416,7 +416,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             {
                 // DebugHelper.WriteLine("Pause Audio Stream (" + audioStream.Description + ")");
                 BassMix.BASS_Mixer_ChannelPause(audioStream.ChannelId);
-                Thread.Sleep(1);
+                Thread.Sleep(10);
             }
         }
 

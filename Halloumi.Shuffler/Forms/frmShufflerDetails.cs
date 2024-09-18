@@ -11,6 +11,7 @@ using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using AE = Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler.AudioEngine.SectionDetector;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -202,7 +203,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void Initialise()
         {
-            trackWave.BassPlayer = BassPlayer;
+            trackWave.SetModeAndBassPlayer(Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler, BassPlayer);
+
             Track = trackWave.LoadTrack(Filename);
             AutomationAttributes = AutomationAttributesHelper.GetAutomationAttributes(Track.Description);
 
@@ -213,7 +215,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 CurrentSamples.Add(trackSample.Clone());
             }
-            trackWave.TrackSamples = CurrentSamples;
+            trackWave.SetTrackSamples(CurrentSamples);
 
             SetControlStates();
             BindData();
@@ -363,6 +365,11 @@ namespace Halloumi.Shuffler.Forms
             foreach (var sample in CurrentSamples.Where(sample => sample.Length != 0 || sample.Start != 0))
             {
                 AutomationAttributes.TrackSamples.Add(sample);
+            }
+
+            if (Track.Key == "")
+            {
+                KeyHelper.CalculateKey(Track.Filename);
             }
 
             ExtenedAttributesHelper.SaveExtendedAttributes(Track);
@@ -807,6 +814,28 @@ namespace Halloumi.Shuffler.Forms
             else if (trackFx.DelayNotes == 0.125M) rdbDelay3.Checked = true;
             else if (trackFx.DelayNotes == 0.0625M) rdbDelay4.Checked = true;
             else rdbDelay2.Checked = true;
+        }
+
+        private void btnCopyLeft_Click(object sender, EventArgs e)
+        {
+            cmbCustomFadeOutLength.Seconds = cmbCustomFadeInLength.Seconds;
+            UpdateData();
+        }
+
+        private void btnCopyRight_Click(object sender, EventArgs e)
+        {
+            cmbCustomFadeInLength.Seconds = cmbCustomFadeOutLength.Seconds;
+            UpdateData();
+        }
+
+        private void cmbCustomFadeInLength_Leave(object sender, EventArgs e)
+        {
+            UpdateData();
+        }
+
+        private void cmbCustomFadeOutLength_Leave(object sender, EventArgs e)
+        {
+            UpdateData();
         }
     }
 }

@@ -65,13 +65,13 @@ namespace Halloumi.Shuffler.Forms
             if (lstSamples.SelectedItems.Count == 0)
             {
                 CurrentSample = null;
-                trackWave.CurrentSample = null;
+                trackWave.SetCurrentSample(null);
             }
             else
             {
                 var description = lstSamples.SelectedItems[0].Text;
                 CurrentSample = Samples.FirstOrDefault(s => s.Description == description);
-                trackWave.CurrentSample = CurrentSample;
+                trackWave.SetCurrentSample(CurrentSample);
             }
             trackWave.RefreshPositions();
             BindSample();
@@ -124,8 +124,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void Initialise()
         {
-            trackWave.Mode = TrackWave.TrackWaveMode.Sampler;
-            trackWave.BassPlayer = BassPlayer;
+            trackWave.SetModeAndBassPlayer(TrackWave.TrackWaveMode.Sampler, BassPlayer);
+
             Track = trackWave.LoadTrack(Filename);
             LibraryTrack = Library.GetTrackByFilename(Filename) ?? Library.LoadNonLibraryTrack(Filename);
 
@@ -149,7 +149,7 @@ namespace Halloumi.Shuffler.Forms
             }
 
 
-            trackWave.Samples = Samples;
+            trackWave.SetSamples(Samples);
 
             btnImportSamplesFromMix.Visible = LibraryTrack != null && LibraryTrack.IsShufflerTrack;
 
@@ -363,8 +363,8 @@ namespace Halloumi.Shuffler.Forms
 
             Samples.Add(sample);
             CurrentSample = sample;
-            trackWave.CurrentSample = sample;
-            trackWave.Samples = Samples;
+            trackWave.SetCurrentSample(sample);
+            trackWave.SetSamples(Samples);
 
             sample.Start = start;
             sample.Length = length;
@@ -384,7 +384,7 @@ namespace Halloumi.Shuffler.Forms
 
             Samples.Remove(CurrentSample);
             CurrentSample = null;
-            trackWave.CurrentSample = null;
+            trackWave.SetCurrentSample(null);
             trackWave.RefreshPositions();
 
             BindData();

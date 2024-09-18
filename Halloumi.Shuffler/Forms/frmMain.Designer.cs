@@ -145,7 +145,7 @@
             // kryptonManager
             // 
             this.kryptonManager.GlobalAllowFormChrome = false;
-            this.kryptonManager.GlobalPaletteMode = ComponentFactory.Krypton.Toolkit.PaletteModeManager.Office2010Silver;
+            this.kryptonManager.GlobalPaletteMode = ComponentFactory.Krypton.Toolkit.PaletteModeManager.ProfessionalOffice2003;
             // 
             // pnlTop
             // 
