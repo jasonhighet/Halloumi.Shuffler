@@ -49,7 +49,7 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MixLibrary MixLibrary
         {
-            get { return PlaylistControl.MixLibrary; }
+            get { return PlaylistControl.GetMixLibrary(); }
         }
 
         /// <summary>

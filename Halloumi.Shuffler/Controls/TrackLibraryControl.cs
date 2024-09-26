@@ -15,6 +15,7 @@ using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
+using static Halloumi.Shuffler.AudioLibrary.Library;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
@@ -1095,19 +1096,26 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void UpdateShufflerDetails()
         {
-            if (GetSelectedTrack() == null) return;
-
-            var form = new FrmShufflerDetails
+            var track = GetSelectedTrack();
+            if (track == null) return;
+            if (FrmShufflerDetails.OpenForm(track.Filename, BassPlayer, Library) == DialogResult.OK)
             {
-                BassPlayer = BassPlayer,
-                Filename = GetSelectedTrack().Filename
-            };
+                BindData();
 
-            var result = form.ShowDialog();
-            if (result != DialogResult.OK) return;
-            Library.LoadTrack(GetSelectedTrack().Filename);
-            BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
-            BindData();
+                ShufflerDetailsUpdatedEvent?.Invoke(this, new FileEventArgs(track.Filename)); 
+            }
+        }
+
+        public event EventHandler<FileEventArgs> ShufflerDetailsUpdatedEvent;
+
+        public class FileEventArgs : EventArgs
+        {
+            public string FileName { get; }
+
+            public FileEventArgs(string fileName)
+            {
+                FileName = fileName;
+            }
         }
 
         /// <summary>
@@ -1554,6 +1562,15 @@ namespace Halloumi.Shuffler.Controls
             SetShufflerFilter();
         }
 
+        public void SetShufflerFilter(Library.ShufflerFilter filter) 
+        {
+            int comboIndex = 0;
+            if (filter == ShufflerFilter.ShufflerTracks) comboIndex = 1;
+            if (filter == ShufflerFilter.NonShufflerTracks) comboIndex = 2;
+            if (filter == ShufflerFilter.None) comboIndex = 0;
+            cmbShufflerFilter.SelectedIndex = comboIndex;
+        }
+
         /// <summary>
         ///     Sets the shuffler filter.
         /// </summary>
@@ -1561,8 +1578,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var shufflerFilter = Library.ShufflerFilter.None;
             var comboIndex = cmbShufflerFilter.SelectedIndex;
-
-            // ReSharper disable once ConvertIfStatementToSwitchStatement
+            
             if (comboIndex == 1) shufflerFilter = Library.ShufflerFilter.ShufflerTracks;
             else if (comboIndex == 2) shufflerFilter = Library.ShufflerFilter.NonShufflerTracks;
 

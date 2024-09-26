@@ -97,21 +97,21 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Library Library { get; set; }
+        private Library Library { get; set; }
 
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BassPlayer BassPlayer { get; set; }
+        private BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets or sets the mix library
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MixLibrary MixLibrary { get; set; }
+        private MixLibrary MixLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the timer.
@@ -124,7 +124,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public PlaylistControl PlaylistControl
+        private PlaylistControl PlaylistControl
         {
             get { return _playlistControl; }
             set
@@ -142,8 +142,14 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ToolStripLabel ToolStripLabel { get; set; }
 
-        public void Initialize()
+        public void Initialize(ShufflerApplication application, PlaylistControl playlistControl)
         {
+            this.Library = application.Library;
+            this.BassPlayer = application.BassPlayer;
+            this.PlaylistControl = playlistControl;
+            this.MixLibrary = application.MixLibrary;
+
+
             var settings = Settings.Default;
             BassPlayer.SetMixerVolume(settings.Volume);
 
@@ -535,5 +541,6 @@ namespace Halloumi.Shuffler.Controls
             if (index != tabButtons.CheckedIndex)
                 tabButtons.CheckedIndex = (int) selectedView;
         }
+
     }
 }

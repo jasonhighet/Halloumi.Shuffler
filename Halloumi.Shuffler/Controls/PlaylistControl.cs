@@ -94,21 +94,23 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Halloumi.Shuffler.AudioLibrary.MixLibrary MixLibrary { get; set; }
+        private Halloumi.Shuffler.AudioLibrary.MixLibrary MixLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the library.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Halloumi.Shuffler.AudioLibrary.Library Library { get; set; }
+        private Halloumi.Shuffler.AudioLibrary.Library Library { get; set; }
+
+        public Library GetLibrary() => Library;
 
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BassPlayer BassPlayer { get; set; }
+        private BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets the tracks.
@@ -289,6 +291,13 @@ namespace Halloumi.Shuffler.Controls
             return TrackModels[index];
         }
 
+        public void QueueWorkingFile(string filename)
+        {
+            ClearTracks();
+            QueueFiles(new List<string> {filename});
+        }
+
+
         public void QueueFiles(List<string> files)
         {
             var tracks = files.Select(file => Library.GetTrackByFilename(file)).Where(track => track != null).ToList();
@@ -345,8 +354,12 @@ namespace Halloumi.Shuffler.Controls
             return TrackModels.Count - (GetCurrentTrackIndex() + 1);
         }
 
-        public void Initalize(TrackLibraryControl trackLibraryControl)
-        { 
+        public void Initalize(TrackLibraryControl trackLibraryControl, ShufflerApplication application)
+        {
+            this.Library = application.Library;
+            this.MixLibrary = application.MixLibrary;
+            this.BassPlayer = application.BassPlayer;
+
             //trackDetails.SetLibrary(Library);
             trackDetails.DisplayTrackDetails(null);
 
@@ -772,24 +785,32 @@ namespace Halloumi.Shuffler.Controls
             Process.Start(directoryName);
         }
 
+
         /// <summary>
         ///     Updates the shuffler details.
         /// </summary>
         private void UpdateShufflerDetails()
         {
-            if (GetSelectedTrack() == null) return;
-
-            var form = new FrmShufflerDetails
+            var track = GetSelectedTrack();
+            if (track == null) return;
+            if (FrmShufflerDetails.OpenForm(track.Filename, BassPlayer, Library) == DialogResult.OK)
             {
-                BassPlayer = BassPlayer,
-                Filename = GetSelectedTrack().Filename
-            };
+                BindData();
 
-            var result = form.ShowDialog();
-            if (result != DialogResult.OK) return;
-            Library.LoadTrack(GetSelectedTrack().Filename);
-            BassPlayer.ReloadTrack(GetSelectedTrack().Filename);
-            BindData();
+                ShufflerDetailsUpdatedEvent?.Invoke(this, new FileEventArgs(track.Filename));
+            }
+        }
+
+        public event EventHandler<FileEventArgs> ShufflerDetailsUpdatedEvent;
+
+        public class FileEventArgs : EventArgs
+        {
+            public string FileName { get; }
+
+            public FileEventArgs(string fileName)
+            {
+                FileName = fileName;
+            }
         }
 
         /// <summary>
@@ -1122,6 +1143,11 @@ namespace Halloumi.Shuffler.Controls
 
             TrackModels = new List<TrackModel>();
             QueueFiles(playlistFiles);
+        }
+
+        public MixLibrary GetMixLibrary()
+        {
+            return MixLibrary;
         }
 
         private class TrackModel

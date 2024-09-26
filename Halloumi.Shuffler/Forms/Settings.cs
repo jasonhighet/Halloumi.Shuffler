@@ -184,6 +184,8 @@ namespace Halloumi.Shuffler.Forms
         public bool ShowPlayer { get; set; }
         public decimal LoopVolume { get; set; }
 
+        public bool ShuffleAfterShuffling { get; set; }
+
         private static Settings LoadSetttings()
         {
             var settings = new Settings();

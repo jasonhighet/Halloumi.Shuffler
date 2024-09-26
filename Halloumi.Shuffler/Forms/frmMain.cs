@@ -20,7 +20,7 @@ namespace Halloumi.Shuffler.Forms
     {
         private readonly ShufflerApplication _application;
         private FrmGeneratePlaylist _autoGenerateSettings;
-        private FrmImportShufflerTracks _frmImportShufflerTracks;
+        private frmImportShufflerTracks _frmImportShufflerTracks;
 
 
         private FrmSampleLibrary _frmLoopLibrary;
@@ -46,6 +46,7 @@ namespace Halloumi.Shuffler.Forms
             mnuExit.Click += mnuExit_Click;
             mnuExportPlaylistTracks.Click += mnuExportPlaylistTracks_Click;
             mnuConservativeFadeOut.Click += mnuConservativeFadeOut_Click;
+            mnuShuffleAfterShuffling.Click += mnuShuffleAfterShuffling_Click;
 
             mnuWinampDSPConfig.Click += mnuWinampDSPConfig_Click;
             mnuVSTPluginConfig.Click += mnuVSTPluginConfig_Click;
@@ -69,22 +70,23 @@ namespace Halloumi.Shuffler.Forms
 
 
             var settings = Settings.Default;
+            
             formStateController.FormStateSettings = settings.FormStateSettings;
 
-            playlistControl.Library = application.Library;
-            playlistControl.MixLibrary = application.MixLibrary;
-            playlistControl.BassPlayer = application.BassPlayer;
             playlistControl.ToolStripLabel = lblPlaylistStatus;
 
-            playerDetails.Library = application.Library;
-            playerDetails.BassPlayer = application.BassPlayer;
-            playerDetails.PlaylistControl = playlistControl;
+            playlistControl.Initalize(trackLibraryControl, application);
+            playlistControl.ShufflerDetailsUpdatedEvent += playlistControl_ShufflerDetailsUpdatedEvent;
+
+            playerDetails.Initialize(application, playlistControl);
+
             playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
             playerDetails.SelectedViewChanged += playerDetails_SelectedViewChanged;
             playerDetails.ToolStripLabel = lblPlayerStatus;
+            
 
-            playerDetails.MixLibrary = application.MixLibrary;
-            playlistControl.MixLibrary = application.MixLibrary;
+
+            
 
             trackLibraryControl.Library = application.Library;
             trackLibraryControl.BassPlayer = application.BassPlayer;
@@ -93,16 +95,16 @@ namespace Halloumi.Shuffler.Forms
             trackLibraryControl.ToolStripLabel = lblLibraryStatus;
             trackLibraryControl.SamplerControl = mixerControl.SamplerControl;
             trackLibraryControl.TrackSampleLibrary = application.TrackSampleLibrary;
+            trackLibraryControl.ShufflerDetailsUpdatedEvent += trackLibraryControl_ShufflerDetailsUpdatedEvent;
 
             mixerControl.Library = application.Library;
             mixerControl.BassPlayer = application.BassPlayer;
             mixerControl.PlaylistControl = playlistControl;
 
             trackLibraryControl.Initalize();
-
             mixerControl.Initialize();
-            playerDetails.Initialize();
-            playlistControl.Initalize(trackLibraryControl);
+            
+            
 
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
@@ -136,6 +138,24 @@ namespace Halloumi.Shuffler.Forms
             mnuFile.DropDownItems.Insert(5, newMenu);
 
             mnuFile.DropDownItems.Insert(6, new ToolStripSeparator());
+        }
+
+        private void mnuShuffleAfterShuffling_Click(object sender, EventArgs e)
+        {
+            mnuShuffleAfterShuffling.Checked = !mnuShuffleAfterShuffling.Checked;
+            _application.ShuffleAfterShuffling = mnuShuffleAfterShuffling.Checked;
+        }
+
+        private void trackLibraryControl_ShufflerDetailsUpdatedEvent(object sender, TrackLibraryControl.FileEventArgs e)
+        {
+            if(_application.ShuffleAfterShuffling)
+                QueueWorking(e.FileName);
+        }
+
+        private void playlistControl_ShufflerDetailsUpdatedEvent(object sender, PlaylistControl.FileEventArgs e)
+        {
+            if (_application.ShuffleAfterShuffling)
+                QueueWorking(e.FileName);
         }
 
 
@@ -269,7 +289,7 @@ namespace Halloumi.Shuffler.Forms
                 WindowHelper.ShowDialog(this, _frmSampleLibrary);
         }
 
-        private void playerDetails_SelectedViewChanged(object sender, EventArgs e)
+        private void playerDetails_SelectedViewChanged(object sender,EventArgs e)
         {
             SetView(playerDetails.GetSelectedView());
         }
@@ -291,6 +311,7 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
             trackLibraryControl.ShowMixableTracks = mnuShowMixableTracks.Checked;
             mnuConservativeFadeOut.Checked = settings.LimitSongLength;
+            mnuShuffleAfterShuffling.Checked = settings.ShuffleAfterShuffling;
             playerDetails.VisualsShown = settings.VisualsShown;
             mnuViewVisuals.Checked = settings.VisualsShown;
             playerDetails.AlbumArtShown = settings.AlbumArtShown;
@@ -650,6 +671,11 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuGeneratePlaylist_Click(object sender, EventArgs e)
         {
+            OpenGeneratePlaylistForm();
+        }
+
+        private void OpenGeneratePlaylistForm()
+        {
             if (_generatePlaylist == null || _generatePlaylist.IsDisposed)
             {
                 _generatePlaylist = new FrmGeneratePlaylist
@@ -734,7 +760,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_frmImportShufflerTracks == null || _frmImportShufflerTracks.IsDisposed)
             {
-                _frmImportShufflerTracks = new FrmImportShufflerTracks {Library = _application.Library};
+                _frmImportShufflerTracks = new frmImportShufflerTracks {Library = _application.Library};
             }
 
             if (!_frmImportShufflerTracks.Visible)
@@ -768,6 +794,14 @@ namespace Halloumi.Shuffler.Forms
             }
 
             _application.Library.ImportTracks(folder);
+        }
+
+        private void QueueWorking(string filename) 
+        {
+            playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
+            trackLibraryControl.SetShufflerFilter(AudioLibrary.Library.ShufflerFilter.ShufflerTracks);
+            playlistControl.QueueWorkingFile(filename); 
+            OpenGeneratePlaylistForm();
         }
     }
 }

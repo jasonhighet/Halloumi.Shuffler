@@ -45,6 +45,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.0</LangVersion>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,6 +56,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.0</LangVersion>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +67,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.0</LangVersion>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -76,6 +79,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <WarningLevel>3</WarningLevel>
     <LangVersion>7.0</LangVersion>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bass.Net, Version=2.4.6.4, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
@@ -122,11 +126,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\FrmImportShufflerTracks.cs">
+    <Compile Include="Forms\frmImportShufflerTracks.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FrmImportShufflerTracks.Designer.cs">
-      <DependentUpon>FrmImportShufflerTracks.cs</DependentUpon>
+    <Compile Include="Forms\frmImportShufflerTracks.Designer.cs">
+      <DependentUpon>frmImportShufflerTracks.cs</DependentUpon>
     </Compile>
     <Compile Include="ShufflerApplication.cs" />
     <Compile Include="Controls\DataGridView.cs" />
@@ -406,8 +410,8 @@
       <DependentUpon>frmEditTrackSamples.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmImportShufflerTracks.resx">
-      <DependentUpon>FrmImportShufflerTracks.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmImportShufflerTracks.resx">
+      <DependentUpon>frmImportShufflerTracks.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmExportShufflerTracks.resx">

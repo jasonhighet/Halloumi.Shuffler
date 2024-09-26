@@ -5,9 +5,9 @@ using Halloumi.Shuffler.AudioLibrary;
 
 namespace Halloumi.Shuffler.Forms
 {
-    public partial class FrmImportShufflerTracks : BaseForm
+    public partial class frmImportShufflerTracks : BaseForm
     {
-        public FrmImportShufflerTracks()
+        public frmImportShufflerTracks()
         {
             InitializeComponent();
         }

@@ -12,6 +12,7 @@ using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.SectionDetector;
+using Halloumi.Shuffler.AudioLibrary;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -42,6 +43,28 @@ namespace Halloumi.Shuffler.Forms
             cmbSampleLength.TextChanged += cmbSampleLength_TextChanged;
             chkLoopSample.CheckedChanged += chkLoopSample_CheckedChanged;
 
+        }
+
+        public static DialogResult OpenForm(string filename, BassPlayer bassPlayer, Library library)
+        {
+            var track = library.GetTrackByFilename(filename);
+
+            if (track == null) return DialogResult.Cancel;
+
+            var form = new FrmShufflerDetails
+            {
+                BassPlayer = bassPlayer,
+                Filename = filename
+            };
+
+            var result = form.ShowDialog();
+            if (result == DialogResult.OK) 
+            
+            {
+                library.LoadTrack(filename);
+                bassPlayer.ReloadTrack(filename);
+            }
+            return result;
         }
 
         public Track Track { get; private set; }
@@ -366,11 +389,8 @@ namespace Halloumi.Shuffler.Forms
             {
                 AutomationAttributes.TrackSamples.Add(sample);
             }
-
-            if (Track.Key == "")
-            {
-                KeyHelper.CalculateKey(Track.Filename);
-            }
+                       
+            KeyHelper.CalculateKey(Track.Filename);
 
             ExtenedAttributesHelper.SaveExtendedAttributes(Track);
             AutomationAttributesHelper.SaveAutomationAttributes(Track.Description, AutomationAttributes);
@@ -836,6 +856,11 @@ namespace Halloumi.Shuffler.Forms
         private void cmbCustomFadeOutLength_Leave(object sender, EventArgs e)
         {
             UpdateData();
+        }
+
+        private void btnSaveAndShuffle_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

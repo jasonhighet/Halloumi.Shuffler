@@ -67,6 +67,7 @@ namespace Halloumi.Shuffler
 
         public MidiManager MidiManager { get; }
         public LoopLibrary LoopLibrary { get; internal set; }
+        public bool ShuffleAfterShuffling { get; internal set; }
 
         private void LoadFromDatabase()
         {
@@ -276,6 +277,8 @@ namespace Halloumi.Shuffler
 
             LoopLibrary.Initialize(settings.LoopLibraryFolder);
             BassPlayer.LoopFolder = settings.LoopLibraryFolder;
+
+            ShuffleAfterShuffling = settings.ShuffleAfterShuffling;
         }
 
         public void SaveSettings()
@@ -349,6 +352,7 @@ namespace Halloumi.Shuffler
                 trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2);
             settings.TrackFxvstPlugin2Parameters = trackFxVstPluginParameters2;
 
+            settings.ShuffleAfterShuffling = ShuffleAfterShuffling;
             settings.LimitSongLength = UseConservativeFadeOut;
             settings.Volume = BassPlayer.GetMixerVolume();
 

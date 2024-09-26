@@ -63,9 +63,11 @@ namespace Halloumi.Shuffler.Forms
 
         private void frmGeneratePlaylist_Load(object sender, EventArgs e)
         {
-            if (_screenMode != ScreenMode.AutoGeneratePlaylist) return;
-            Opacity = 0;
-            StartGeneratingPlaylist();
+            if (_screenMode == ScreenMode.AutoGeneratePlaylist)
+            {
+                Opacity = 0;
+                StartGeneratingPlaylist();
+            }
         }
 
         /// <summary>

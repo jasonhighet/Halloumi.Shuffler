@@ -1,6 +1,6 @@
 ﻿namespace Halloumi.Shuffler.Forms
 {
-    partial class FrmImportShufflerTracks
+    partial class frmImportShufflerTracks
     {
         /// <summary>
         /// Required designer variable.

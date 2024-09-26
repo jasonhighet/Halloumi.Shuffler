@@ -45,20 +45,12 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void UpdateShufflerDetails()
         {
-            var selectedTrack = GetSelectedTrack();
-            if (selectedTrack == null) return;
+            if (GetSelectedTrack() == null) return;
 
-            var form = new FrmShufflerDetails
+            if (FrmShufflerDetails.OpenForm(GetSelectedTrack().Filename, BassPlayer, Library) == DialogResult.OK)
             {
-                BassPlayer = BassPlayer,
-                Filename = selectedTrack.Filename
-            };
-
-            var result = form.ShowDialog();
-            if (result != DialogResult.OK) return;
-            Library.LoadTrack(selectedTrack.Filename);
-            BassPlayer.ReloadTrack(selectedTrack.Filename);
-            BindData();
+                BindData();
+            }
         }
 
         /// <summary>
