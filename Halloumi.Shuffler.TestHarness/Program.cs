@@ -64,8 +64,8 @@ namespace Halloumi.Shuffler.TestHarness
 
 
 
-            var csvFilePath = @"C:\Users\jason\OneDrive\Music\Library\Disco Doesn't Suck\Disco Doesnt Suck.csv";
-            var audioFilePath = @"C:\Users\jason\OneDrive\Desktop\dds6.wav";
+            var csvFilePath = @"C:\Users\jason\OneDrive\Music\Library\Techstep Drum & Bass\TechstepDrumBass.csv";
+            var audioFilePath = @"C:\Users\jason\OneDrive\Desktop\techdb3.wav";
             AudioSplitter.AudioSplitter.SplitWavByCsv(audioFilePath, csvFilePath);
 
 

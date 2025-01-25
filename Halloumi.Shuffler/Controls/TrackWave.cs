@@ -921,5 +921,37 @@ namespace Halloumi.Shuffler.Controls
         {
             this.TrackSamples = currentSamples;
         }
+
+        private void mnuMoveFadeInEnd_Click(object sender, EventArgs e)
+        {
+            var currentStart = BassTrack.FadeInStart;
+            var currentEnd = BassTrack.FadeInEnd;
+            var length = currentEnd - currentStart;
+
+            var newStart = CurrentPosition - length;
+            var newEnd = CurrentPosition;
+            if (newStart < 0) return;
+
+            BassTrack.FadeInStart = CurrentPosition - length;
+            BassTrack.FadeInEnd = CurrentPosition; ;
+
+            UpdatePositions();
+        }
+
+        private void mnuMoveFadeOutEnd_Click(object sender, EventArgs e)
+        {
+            var currentStart = BassTrack.FadeOutStart;
+            var currentEnd = BassTrack.FadeOutEnd;
+            var length = currentEnd - currentStart;
+
+            var newStart = CurrentPosition - length;    
+            var newEnd = CurrentPosition;
+            if (newStart < 0) return;
+
+            BassTrack.FadeOutStart = CurrentPosition - length;
+            BassTrack.FadeOutEnd = CurrentPosition; 
+
+            UpdatePositions();
+        }
     }
 }

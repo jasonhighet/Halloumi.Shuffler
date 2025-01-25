@@ -26,7 +26,7 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
             double totalDuration = Bass.BASS_ChannelBytes2Seconds(stream, Bass.BASS_ChannelGetLength(stream, BASSMode.BASS_POS_BYTE));
 
             // Detect beats and calculate BPM in the start, middle, and end sections
-            var bpmStart = DetectAndCalculateBPM(stream, 0, SECONDS_TO_SAMPLE);
+            var bpmStart = DetectAndCalculateBPM(stream, 10, SECONDS_TO_SAMPLE);
             var bpmMiddle = DetectAndCalculateBPM(stream, totalDuration / 2 - SECONDS_TO_SAMPLE / 2, SECONDS_TO_SAMPLE);
             var bpmEnd = DetectAndCalculateBPM(stream, totalDuration - SECONDS_TO_SAMPLE, SECONDS_TO_SAMPLE);
 
@@ -37,6 +37,33 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
             Bass.BASS_StreamFree(stream);
 
             return averageBPM;
+        }
+
+        public static double EstimateBPM(string filePath, double startSec)
+        {
+            int stream = Bass.BASS_StreamCreateFile(filePath, 0L, 0L, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_SAMPLE_FLOAT);
+            if (stream == 0)
+            {
+                throw new Exception("Error loading file.");
+            }
+
+            // Get total duration of the track
+            double totalDuration = Bass.BASS_ChannelBytes2Seconds(stream, Bass.BASS_ChannelGetLength(stream, BASSMode.BASS_POS_BYTE));
+
+            if (startSec + SECONDS_TO_SAMPLE > totalDuration)
+            {
+                startSec = totalDuration - SECONDS_TO_SAMPLE;   
+            }
+
+            if (startSec < 0)
+                startSec = 0;
+
+            var bpm = DetectAndCalculateBPM(stream, startSec, SECONDS_TO_SAMPLE);
+
+              // Free resources
+            Bass.BASS_StreamFree(stream);
+
+            return bpm;
         }
 
         // Function to detect beats in a section and calculate BPM based on the intervals between them

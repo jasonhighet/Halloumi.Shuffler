@@ -72,9 +72,11 @@ namespace Halloumi.Shuffler.TestHarness.AudioSplitter
                 long start = FindSongStart(stream);
                 if (start == currentPosition && currentPosition != 0)
                 {
-                    Console.WriteLine($"Warning: No sound detected at position {currentPosition}. Stopping processing.");
+                    double positionInSeconds = Bass.BASS_ChannelBytes2Seconds(stream, currentPosition);
+                    Console.WriteLine($"Warning: No sound detected at position {positionInSeconds:F2} seconds. Stopping processing.");
                     break;
                 }
+
 
                 long end = FindSongEndFromStart(stream, start, song.Length);
                 Bass.BASS_ChannelSetPosition(stream, start);

@@ -374,6 +374,7 @@ namespace Halloumi.Shuffler.Forms
             lblEndBPM.Text = endBpm.ToString("0.00");
 
             PopulateVolumeDropDown(cmbPreFadeInStartVolume);
+
         }
 
         /// <summary>
@@ -839,12 +840,14 @@ namespace Halloumi.Shuffler.Forms
         private void btnCopyLeft_Click(object sender, EventArgs e)
         {
             cmbCustomFadeOutLength.Seconds = cmbCustomFadeInLength.Seconds;
+            RefreshBpmDropdowns();
             UpdateData();
         }
 
         private void btnCopyRight_Click(object sender, EventArgs e)
         {
             cmbCustomFadeInLength.Seconds = cmbCustomFadeOutLength.Seconds;
+            RefreshBpmDropdowns();
             UpdateData();
         }
 
@@ -861,6 +864,51 @@ namespace Halloumi.Shuffler.Forms
         private void btnSaveAndShuffle_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnCalcStartBPM_Click(object sender, EventArgs e)
+        {
+            var bpm = (decimal)BPMGuestimator.EstimateBPM(Track.Filename, Track.SamplesToSeconds(Track.FadeInStart));
+            bpm = BpmHelper.NormaliseBpm(bpm);
+            var length = BpmHelper.GetDefaultLoopLength(bpm);
+
+            cmbCustomFadeInLength.Seconds = length;
+
+            RefreshBpmDropdowns();
+
+
+            UpdateData();
+        }
+
+        private void RefreshBpmDropdowns()
+        {
+
+            if (cmbCustomFadeInLength.Seconds != 0) 
+            {
+                var bpm = BpmHelper.GetBpmFromLoopLength(cmbCustomFadeInLength.Seconds);
+                bpm = BpmHelper.NormaliseBpm(bpm);
+                var loopLengths = BpmHelper.GetLoopLengths(bpm);
+                cmbCustomFadeInLength.PopulateItemsFromSecondsList(loopLengths);
+            }
+            if (cmbCustomFadeOutLength.Seconds != 0)
+            {
+                var bpm = BpmHelper.GetBpmFromLoopLength(cmbCustomFadeOutLength.Seconds);
+                bpm = BpmHelper.NormaliseBpm(bpm);
+                var loopLengths = BpmHelper.GetLoopLengths(bpm);
+                cmbCustomFadeOutLength.PopulateItemsFromSecondsList(loopLengths);
+            }
+        }
+
+        private void btnCalcEndBPM_Click(object sender, EventArgs e)
+        {
+            var bpm = (decimal)BPMGuestimator.EstimateBPM(Track.Filename, Track.SamplesToSeconds(Track.FadeOutStart));
+            bpm = BpmHelper.NormaliseBpm(bpm);
+            var length = BpmHelper.GetDefaultLoopLength(bpm);
+
+            cmbCustomFadeOutLength.Seconds = length;
+            RefreshBpmDropdowns();
+
+            UpdateData();
         }
     }
 }
