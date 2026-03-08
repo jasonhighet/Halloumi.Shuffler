@@ -288,6 +288,66 @@ namespace Halloumi.Shuffler.AudioLibrary
             return tracks;
         }
 
+        /// <summary>
+        ///     Gets a filtered and sorted list of tracks using a <see cref="TrackFilter"/> and
+        ///     optional <see cref="TrackSort"/>.
+        ///     Delegates filtering to the existing overload — the existing signature is unchanged.
+        ///     Note: <see cref="TrackSortField.MixInCount"/> and <see cref="TrackSortField.MixOutCount"/>
+        ///     require MixLibrary and are handled by ShufflerApplication, not here.
+        /// </summary>
+        public List<Track> GetTracks(TrackFilter filter, TrackSort sort = null)
+        {
+            var tracks = GetTracks(
+                genreFilters:            filter.Genres,
+                artistFilter:            filter.Artists,
+                albumFilter:             filter.Albums,
+                searchFilter:            filter.SearchText,
+                collectionFilter:        filter.Collection,
+                shufflerFilter:          filter.ShufflerFilter,
+                minBpm:                  filter.MinBpm,
+                maxBpm:                  filter.MaxBpm,
+                trackRankFilter:         filter.TrackRankFilter,
+                excludeCollectionFilter: filter.ExcludeCollection);
+
+            if (sort == null || sort.Field == TrackSortField.Default)
+                return tracks;
+
+            switch (sort.Field)
+            {
+                case TrackSortField.Description:
+                    tracks = tracks.OrderBy(t => t.Description).ToList();
+                    break;
+                case TrackSortField.Album:
+                    tracks = tracks.OrderBy(t => t.Album).ToList();
+                    break;
+                case TrackSortField.Length:
+                    tracks = tracks.OrderBy(t => t.Length).ToList();
+                    break;
+                case TrackSortField.Genre:
+                    tracks = tracks.OrderBy(t => t.Genre).ToList();
+                    break;
+                case TrackSortField.StartBpm:
+                    tracks = tracks.OrderBy(t => t.StartBpm).ToList();
+                    break;
+                case TrackSortField.EndBpm:
+                    tracks = tracks.OrderBy(t => t.EndBpm).ToList();
+                    break;
+                case TrackSortField.Bitrate:
+                    tracks = tracks.OrderBy(t => t.Bitrate).ToList();
+                    break;
+                case TrackSortField.Key:
+                    tracks = tracks.OrderByDescending(t => t.Key).ToList();
+                    break;
+                case TrackSortField.Rank:
+                    tracks = tracks.OrderByDescending(t => t.Rank).ToList();
+                    break;
+                // MixInCount / MixOutCount: handled by ShufflerApplication (needs MixLibrary)
+            }
+
+            if (sort.Descending) tracks.Reverse();
+            return tracks;
+        }
+
         private static HashSet<string> GetHashSet(List<string> list)
         {
             if (list == null) list = new List<string>();

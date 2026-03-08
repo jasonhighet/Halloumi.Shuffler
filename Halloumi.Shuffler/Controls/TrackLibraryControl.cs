@@ -144,6 +144,13 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MixLibrary MixLibrary { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the application facade used to call GetTracks with filter + sort.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication ShufflerApplication { get; set; }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Track> DisplayedTracks { get; set; }
@@ -312,36 +319,38 @@ namespace Halloumi.Shuffler.Controls
         private List<Track> GetAvailableTracks()
         {
             DebugHelper.WriteLine("AVAILABLE TRACS");
-            return Library.GetTracks(collectionFilter: CollectionFilter,
-                shufflerFilter: ShufflerFilter,
-                trackRankFilter: TrackRankFilter,
-                excludeCollectionFilter: ExcludeCollectionFilter);
+            var filter = new TrackFilter
+            {
+                Collection        = CollectionFilter,
+                ExcludeCollection = ExcludeCollectionFilter,
+                ShufflerFilter    = ShufflerFilter,
+                TrackRankFilter   = TrackRankFilter
+            };
+            return ShufflerApplication.GetTracks(filter);
         }
 
         private List<Track> GetDisplayedTracks()
         {
             DebugHelper.WriteLine("DISPLAYED TRACS");
-            var tracks = Library.GetTracks(GetSelectedGenres(),
-                GetSelectedArtists(),
-                GetSelectedAlbums(),
-                SearchFilter,
-                CollectionFilter,
-                ShufflerFilter,
-                MinBpm,
-                MaxBpm,
-                TrackRankFilter,
-                ExcludeCollectionFilter);
+            var filter = new TrackFilter
+            {
+                Genres            = GetSelectedGenres(),
+                Artists           = GetSelectedArtists(),
+                Albums            = GetSelectedAlbums(),
+                SearchText        = SearchFilter,
+                Collection        = CollectionFilter,
+                ExcludeCollection = ExcludeCollectionFilter,
+                ShufflerFilter    = ShufflerFilter,
+                MinBpm            = MinBpm,
+                MaxBpm            = MaxBpm,
+                TrackRankFilter   = TrackRankFilter,
+                Queued            = GetQueuedFilter()
+            };
 
-            if (PlaylistControl == null || cmbQueued.Text == "") return tracks;
-            var queuedTracks = PlaylistControl.GetTracks();
+            var sort = BuildTrackSort();
+            var playlist = PlaylistControl?.GetTracks();
 
-            // ReSharper disable once ConvertIfStatementToSwitchStatement
-            if (cmbQueued.Text == @"Yes")
-                tracks = tracks.Where(t => queuedTracks.Contains(t)).ToList();
-            else if (cmbQueued.Text == @"No")
-                tracks = tracks.Except(queuedTracks).ToList();
-
-            return tracks;
+            return ShufflerApplication.GetTracks(filter, sort, playlist);
         }
 
         /// <summary>
@@ -532,41 +541,8 @@ namespace Halloumi.Shuffler.Controls
                 .Select(t => new TrackModel(t))
                 .ToList();
 
-            if (grdTracks.SortedColumn != null)
-            {
-                var sortField = grdTracks.SortedColumn.DataPropertyName;
-                if (sortField == "Description") trackModels = trackModels.OrderBy(t => t.Description).ToList();
-                if (sortField == "Album") trackModels = trackModels.OrderBy(t => t.Album).ToList();
-                if (sortField == "LengthFormatted") trackModels = trackModels.OrderBy(t => t.Length).ToList();
-                if (sortField == "Genre") trackModels = trackModels.OrderBy(t => t.Genre).ToList();
-                if (sortField == "StartBPM") trackModels = trackModels.OrderBy(t => t.StartBpm).ToList();
-                if (sortField == "EndBPM") trackModels = trackModels.OrderBy(t => t.EndBpm).ToList();
-                if (sortField == "Bitrate") trackModels = trackModels.OrderBy(t => t.Bitrate).ToList();
-
-                if (sortField == "InCount")
-                {
-                    foreach (var trackModel in trackModels.Where(trackModel => trackModel.InCount == -1))
-                        trackModel.InCount = MixLibrary.GetMixInCount(trackModel.Track);
-                    trackModels = trackModels
-                        .OrderByDescending(t => t.InCount)
-                        .ToList();
-                }
-
-                if (sortField == "OutCount")
-                {
-                    foreach (var trackModel in trackModels.Where(trackModel => trackModel.OutCount == -1))
-                        trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
-                    trackModels = trackModels
-                        .OrderByDescending(t => t.OutCount)
-                        .ToList();
-                }
-
-                if (sortField == "RankDescription")
-                    trackModels = trackModels.OrderByDescending(t => t.Track.Rank).ToList();
-                if (sortField == "Key") trackModels = trackModels.OrderByDescending(t => t.Key).ToList();
-
-                if (grdTracks.SortOrder == SortOrder.Descending) trackModels.Reverse();
-            }
+            // Sorting is handled by ShufflerApplication.GetTracks — the displayedTracks list
+            // is already in the correct order when it arrives here.
             TrackModels = trackModels;
 
             if (trackModels.Count != grdTracks.RowCount)
@@ -1600,6 +1576,47 @@ namespace Halloumi.Shuffler.Controls
             ShufflerFilter = shufflerFilter;
             DebugHelper.WriteLine("setShufflerFilter");
             BindData();
+        }
+
+        /// <summary>
+        ///     Maps the cmbQueued combo box selection to a <see cref="TrackFilter.QueuedFilter"/> value.
+        /// </summary>
+        private TrackFilter.QueuedFilter GetQueuedFilter()
+        {
+            if (PlaylistControl == null || cmbQueued.Text == "") return TrackFilter.QueuedFilter.Any;
+            if (cmbQueued.Text == @"Yes") return TrackFilter.QueuedFilter.Queued;
+            if (cmbQueued.Text == @"No")  return TrackFilter.QueuedFilter.NotQueued;
+            return TrackFilter.QueuedFilter.Any;
+        }
+
+        /// <summary>
+        ///     Maps the currently sorted grid column and sort direction to a <see cref="TrackSort"/>.
+        /// </summary>
+        private TrackSort BuildTrackSort()
+        {
+            if (grdTracks.SortedColumn == null) return new TrackSort();
+
+            var field = TrackSortField.Default;
+            switch (grdTracks.SortedColumn.DataPropertyName)
+            {
+                case "Description":     field = TrackSortField.Description; break;
+                case "Album":           field = TrackSortField.Album;        break;
+                case "LengthFormatted": field = TrackSortField.Length;       break;
+                case "Genre":           field = TrackSortField.Genre;        break;
+                case "StartBPM":        field = TrackSortField.StartBpm;     break;
+                case "EndBPM":          field = TrackSortField.EndBpm;       break;
+                case "Bitrate":         field = TrackSortField.Bitrate;      break;
+                case "Key":             field = TrackSortField.Key;          break;
+                case "InCount":         field = TrackSortField.MixInCount;   break;
+                case "OutCount":        field = TrackSortField.MixOutCount;  break;
+                case "RankDescription": field = TrackSortField.Rank;         break;
+            }
+
+            return new TrackSort
+            {
+                Field      = field,
+                Descending = grdTracks.SortOrder == SortOrder.Descending
+            };
         }
 
         /// <summary>

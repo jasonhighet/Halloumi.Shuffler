@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
@@ -7,6 +9,7 @@ using Halloumi.Shuffler.AudioEngine.Midi;
 using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
+using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Forms;
 
@@ -422,6 +425,54 @@ namespace Halloumi.Shuffler
         private void BassPlayer_OnTrackQueued(object sender, EventArgs e)
         {
             SetConservativeFadeOutSettings();
+        }
+
+        /// <summary>
+        ///     Returns a filtered and sorted list of tracks.
+        ///     Handles <see cref="TrackSortField.MixInCount"/> and <see cref="TrackSortField.MixOutCount"/>
+        ///     sorts (which require MixLibrary) and the <see cref="TrackFilter.QueuedFilter"/> intersection
+        ///     (which requires a playlist snapshot) — neither of which can be done in the Library layer.
+        /// </summary>
+        /// <param name="filter">Filter parameters.</param>
+        /// <param name="sort">Optional sort; defaults to library default sort when null.</param>
+        /// <param name="currentPlaylist">
+        ///     Snapshot of the current playlist, used only when <paramref name="filter"/>.Queued is not Any.
+        ///     Pass null or an empty list to skip the queued filter.
+        /// </param>
+        public List<Track> GetTracks(
+            TrackFilter filter,
+            TrackSort sort = null,
+            List<Track> currentPlaylist = null)
+        {
+            List<Track> tracks;
+
+            // MixInCount / MixOutCount sorts need MixLibrary — cannot be done in Library layer
+            if (sort != null &&
+                (sort.Field == TrackSortField.MixInCount || sort.Field == TrackSortField.MixOutCount))
+            {
+                tracks = Library.GetTracks(filter);
+                tracks = sort.Field == TrackSortField.MixInCount
+                    ? tracks.OrderByDescending(t => MixLibrary.GetMixInCount(t)).ToList()
+                    : tracks.OrderByDescending(t => MixLibrary.GetMixOutCount(t)).ToList();
+
+                if (sort.Descending) tracks.Reverse();
+            }
+            else
+            {
+                tracks = Library.GetTracks(filter, sort);
+            }
+
+            // Queued filter — intersect or exclude based on playlist membership
+            if (currentPlaylist != null &&
+                currentPlaylist.Count > 0 &&
+                filter.Queued != TrackFilter.QueuedFilter.Any)
+            {
+                tracks = filter.Queued == TrackFilter.QueuedFilter.Queued
+                    ? tracks.Where(t => currentPlaylist.Contains(t)).ToList()
+                    : tracks.Except(currentPlaylist).ToList();
+            }
+
+            return tracks;
         }
     }
 }
