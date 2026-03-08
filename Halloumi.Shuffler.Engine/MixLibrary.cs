@@ -28,7 +28,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private readonly Dictionary<string, List<MixRanking>> _fromMixes = new Dictionary<string, List<MixRanking>>();
 
-        private readonly List<string> _loadedTracks = new List<string>();
+        private readonly HashSet<string> _loadedTracks = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         private readonly Dictionary<string, List<MixRanking>> _toMixes = new Dictionary<string, List<MixRanking>>();
 
@@ -87,17 +87,18 @@ namespace Halloumi.Shuffler.AudioLibrary
             {
                 DebugHelper.WriteLine("LoadMixRankings - " + trackMixes.Track);
 
-                //lock (_loadedTracks)
-                //{
-                    _loadedTracks.Add(trackMixes.Track);
-                //}
-
                 var mixRankings =
                     trackMixes.MixRankings.Select(mixRanking => MixRanking.FromString(mixRanking, trackMixes.Track))
-                        .Where(mixRank => mixRank != null);
-                foreach (var mixRank in mixRankings)
+                        .Where(mixRank => mixRank != null)
+                        .ToList();
+
+                lock (_toMixes)
                 {
-                    SetMixLevel(mixRank.FromTrack, mixRank.ToTrack, mixRank.MixLevel);
+                    _loadedTracks.Add(trackMixes.Track);
+                    foreach (var mixRank in mixRankings)
+                    {
+                        SetMixLevel(mixRank.FromTrack, mixRank.ToTrack, mixRank.MixLevel);
+                    }
                 }
             });
         }
@@ -294,7 +295,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             // excluded all ranked tracks and current track
             var toMixes = GetToMixes(track.Description);
-            var excludeTracks = GetToTracksFromMixes(toMixes).Select(t => t.Description).ToList();
+            var excludeTracks = new HashSet<string>(GetToTracksFromMixes(toMixes).Select(t => t.Description), StringComparer.OrdinalIgnoreCase);
             excludeTracks.Add(track.Description);
 
             // find tracks in range
@@ -310,7 +311,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             // excluded all ranked tracks and current track
             var fromMixes = GetFromMixes(track.Description);
-            var excludeTracks = GetFromTracksFromMixes(fromMixes).Select(t => t.Description).ToList();
+            var excludeTracks = new HashSet<string>(GetFromTracksFromMixes(fromMixes).Select(t => t.Description), StringComparer.OrdinalIgnoreCase);
             excludeTracks.Add(track.Description);
 
             // find tracks in range
@@ -384,7 +385,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private List<Track> GetToTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
-            var toTracks = mixRankings.Select(r => r.ToTrack).ToList();
+            var toTracks = new HashSet<string>(mixRankings.Select(r => r.ToTrack), StringComparer.OrdinalIgnoreCase);
             return AvailableTracks.Where(t => toTracks.Contains(t.Description)).ToList();
         }
 
@@ -401,7 +402,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private List<Track> GetFromTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
-            var fromTracks = mixRankings.Select(r => r.FromTrack).ToList();
+            var fromTracks = new HashSet<string>(mixRankings.Select(r => r.FromTrack), StringComparer.OrdinalIgnoreCase);
             return AvailableTracks.Where(t => fromTracks.Contains(t.Description)).ToList();
         }
 

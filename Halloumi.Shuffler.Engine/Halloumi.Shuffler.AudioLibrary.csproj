@@ -41,6 +41,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Bass.Net">
       <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>

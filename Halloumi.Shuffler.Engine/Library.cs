@@ -6,6 +6,7 @@ using System.Linq;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioLibrary.Database;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using TrackHelper = Halloumi.Shuffler.AudioLibrary.Helpers.TrackHelper;
@@ -50,6 +51,10 @@ namespace Halloumi.Shuffler.AudioLibrary
         private const string NoValue = "(None)";
 
         private bool _cancelImport;
+
+        // O(1) lookup index — kept in sync with Tracks inside every lock(Tracks) block
+        private readonly Dictionary<string, Track> _tracksByFilename =
+            new Dictionary<string, Track>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         ///     Initializes a new instance of the Library class.
@@ -324,14 +329,12 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <returns>The associated track, or null if it doesn't exist</returns>
         public Track GetTrackByFilename(string filename)
         {
-            filename = filename.ToLower().Trim();
-
+            filename = filename.Trim();
             lock (Tracks)
             {
-                var track = Tracks.FirstOrDefault(t => t.Filename.ToLower() == filename);
+                _tracksByFilename.TryGetValue(filename, out var track);
                 if (track != null && !File.Exists(track.Filename))
                     track = null;
-
                 return track;
             }
         }
@@ -348,9 +351,17 @@ namespace Halloumi.Shuffler.AudioLibrary
             var track = GetTrackByFilename(filename);
 
             if (track == null)
+            {
                 track = LoadNewTrack(filename);
+            }
             else
-                TrackHelper.LoadTrack(track, updateLength);
+            {
+                // Only re-read ID3 tags and recalculate length if the file has changed.
+                // This avoids opening a BASS stream (UpdateLength) for every existing track on every import.
+                var lastModified = File.GetLastWriteTime(filename);
+                if (lastModified != track.LastModified)
+                    TrackHelper.LoadTrack(track, updateLength);
+            }
 
             ShufflerHelper.LoadShufflerDetails(track);
 
@@ -375,18 +386,20 @@ namespace Halloumi.Shuffler.AudioLibrary
             _cancelImport = false;
 
             var files = FileSystemHelper.SearchFiles(folder, "*.mp3", true);
+            var filesSet = new HashSet<string>(files, StringComparer.OrdinalIgnoreCase);
 
             // remove tracks that don't exist in file system
             var currentTracks = Tracks.Where(t => t.Filename.StartsWith(folder)).ToList();
             var missingTracks =
                 currentTracks.TakeWhile(track => !_cancelImport)
-                    .Where(track => !files.Contains(track.Filename))
+                    .Where(track => !filesSet.Contains(track.Filename))
                     .ToList();
             lock (Tracks)
             {
                 foreach (var track in missingTracks.TakeWhile(track => !_cancelImport))
                 {
                     Tracks.Remove(track);
+                    _tracksByFilename.Remove(track.Filename);
 
                     if (_cancelImport) break;
                 }
@@ -718,26 +731,44 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
         /// <summary>
-        ///     Saves the track details to a cache file
+        ///     Saves the track details to the SQLite database.
         /// </summary>
         public void SaveToDatabase()
         {
-            SerializationHelper<List<Track>>.ToXmlFile(Tracks, LibraryCacheFilename);
+            LibraryDatabase.SaveTracks(Tracks);
         }
 
         /// <summary>
-        ///     Loads the library from the cache.
+        ///     Loads the library from the SQLite database.
+        ///     Falls back to the legacy XML cache on first run to migrate existing data.
         /// </summary>
         public void LoadFromDatabase()
         {
-            if (!File.Exists(LibraryCacheFilename)) return;
             try
             {
-                var tracks = SerializationHelper<List<Track>>.FromXmlFile(LibraryCacheFilename);
-                lock (Tracks)
+                if (LibraryDatabase.Exists())
                 {
-                    Tracks.Clear();
-                    Tracks.AddRange(tracks.ToArray());
+                    var tracks = LibraryDatabase.LoadTracks();
+                    lock (Tracks)
+                    {
+                        Tracks.Clear();
+                        _tracksByFilename.Clear();
+                        Tracks.AddRange(tracks);
+                        foreach (var t in tracks) _tracksByFilename[t.Filename] = t;
+                    }
+                }
+                else if (File.Exists(LibraryCacheFilename))
+                {
+                    // One-time migration from legacy XML
+                    var tracks = SerializationHelper<List<Track>>.FromXmlFile(LibraryCacheFilename);
+                    lock (Tracks)
+                    {
+                        Tracks.Clear();
+                        _tracksByFilename.Clear();
+                        Tracks.AddRange(tracks);
+                        foreach (var t in tracks) _tracksByFilename[t.Filename] = t;
+                    }
+                    LibraryDatabase.SaveTracks(Tracks);
                 }
             }
             catch
@@ -786,6 +817,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 foreach (var track in tracksToRemove)
                 {
                     Tracks.Remove(track);
+                    _tracksByFilename.Remove(track.Filename);
                 }
             }
 
@@ -851,6 +883,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             lock (Tracks)
             {
                 Tracks.Add(track);
+                _tracksByFilename[track.Filename] = track;
             }
             return track;
         }
