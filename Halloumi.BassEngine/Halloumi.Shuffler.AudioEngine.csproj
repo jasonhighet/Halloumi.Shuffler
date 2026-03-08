@@ -1,82 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B2B7650C-8209-4D48-AADF-5A1E76928B7E}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Halloumi.Shuffler.AudioEngine</RootNamespace>
+    <TargetFramework>net48</TargetFramework>
     <AssemblyName>Halloumi.Shuffler.AudioEngine</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <RootNamespace>Halloumi.Shuffler.AudioEngine</RootNamespace>
+    <LangVersion>7.0</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>x86;AnyCPU</Platforms>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Bass.Net, Version=2.4.6.4, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Bass.Net">
       <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>
     <Reference Include="Halloumi.Common">
@@ -94,156 +61,48 @@
     <Reference Include="IdSharp.Tagging">
       <HintPath>..\Components\IdSharp.Tagging.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MathNet.Numerics">
       <HintPath>..\packages\MathNet.Numerics.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Sanford.Multimedia.Midi, Version=6.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Sanford.Multimedia.Midi">
       <HintPath>..\packages\Sanford.Multimedia.Midi.6.6.2\lib\net20\Sanford.Multimedia.Midi.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="BassPlayer\BassPlayer.cs" />
-    <Compile Include="BassPlayer\BassPlayer.Plugins.cs" />
-    <Compile Include="Helpers\AudioDataHelper.cs" />
-    <Compile Include="Helpers\AudioStreamHelper.cs" />
-    <Compile Include="Helpers\AutomationAttributesHelper.cs" />
-    <Compile Include="Helpers\BpmHelper.cs" />
-    <Compile Include="Helpers\AudioEngineHelper.cs" />
-    <Compile Include="Helpers\ExtenedAttributesHelper.cs" />
-    <Compile Include="Helpers\SilenceHelper.cs" />
-    <Compile Include="Helpers\TagHelper.cs" />
-    <Compile Include="Helpers\TimeFormatHelper.cs" />
-    <Compile Include="Helpers\PlaylistHelper.cs" />
-    <Compile Include="Helpers\AudioExportHelper.cs" />
-    <Compile Include="Helpers\TrackHelper.cs" />
-    <Compile Include="Helpers\ChannelHelper.cs" />
-    <Compile Include="Midi\BassPlayerMidiMapper.cs" />
-    <Compile Include="Midi\MidiManager.cs" />
-    <Compile Include="Midi\MidiMapping.cs" />
-    <Compile Include="Models\AudioData.cs" />
-    <Compile Include="Models\AudioStream.cs" />
-    <Compile Include="Models\PlayState.cs" />
-    <Compile Include="ModulePlayer\Module.cs" />
-    <Compile Include="ModulePlayer\ModulePlayer.cs" />
-    <Compile Include="Players\Event.cs" />
-    <Compile Include="Players\EventType.cs" />
-    <Compile Include="Players\AudioPlayer.cs" />
-    <Compile Include="Players\AudioSection.cs" />
-    <Compile Include="Players\AudioSync.cs" />
-    <Compile Include="Players\SyncedSamplePlayer.cs" />
-    <Compile Include="Players\SyncType.cs" />
-    <Compile Include="Players\TrackSamplePlayer.cs" />
-    <Compile Include="Plugins\PluginHelper.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Sample.cs" />
-    <Compile Include="Plugins\VSTPluginConfigForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Plugins\WAPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Track.cs" />
-    <Compile Include="Models\TrackPosition.cs" />
-    <Compile Include="Channels\VolumeLevels.cs" />
-    <Compile Include="Players\RawLoopPlayer.cs" />
-    <Compile Include="SectionDetector\BeatDetector.cs" />
-    <Compile Include="SectionDetector\BeatDetector2.cs" />
-    <Compile Include="SectionDetector\BeatInspector.cs" />
-    <Compile Include="SectionDetector\BPMGuestimator.cs" />
-    <Compile Include="SectionDetector\SectionDetector.cs" />
-    <Compile Include="SectionDetector\SectionDetector2.cs" />
-    <Compile Include="SectionDetector\VolumeAnalyzer.cs" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
   </ItemGroup>
+
+  <!-- Exclude orphaned legacy files in the root folder that are not part of this project -->
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <Compile Remove="BassPlayer.Samples.cs" />
+    <Compile Remove="ExtendedMix.cs" />
+    <Compile Remove="Library.cs" />
+    <Compile Remove="MixLibrary.cs" />
+    <Compile Remove="PlaylistPlayer.cs" />
+    <Compile Remove="Shuffler.cs" />
+    <Compile Remove="TrackFXAutomation.cs" />
+    <Compile Remove="TrackHistory.cs" />
+    <Compile Remove="TrackLibrary.cs" />
+    <Compile Remove="TrackSelector.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Plugins\VSTPluginConfigForm.resx">
-      <DependentUpon>VSTPluginConfigForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Helpers\AnalogXScratchHelper.cs" />
-    <Compile Include="BassPlayer\BassPlayer.RawLoop.cs" />
-    <Compile Include="BassPlayer\BassPlayer.Sampler.cs" />
-    <Compile Include="Models\SampleTrigger.cs" />
-    <Compile Include="Models\TrackFXTrigger.cs" />
-    <Compile Include="Models\AutomationAttributes.cs" />
-    <Compile Include="Plugins\VSTPlugin.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Resources\silence.mp3" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BassPlayer\BassPlayer.Automation.cs" />
-    <Compile Include="Channels\Channel.cs" />
-    <Compile Include="Channels\MonitorOutputChannel.cs" />
-    <Compile Include="Channels\OutputSplitter.cs" />
-    <Compile Include="Channels\SpeakerOutputChannel.cs" />
-    <Compile Include="Helpers\KeyHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Channels\MixerChannel.cs" />
-    <Compile Include="Models\ExtendedFadeType.cs" />
-    <Compile Include="Models\ExtendedMixAttributes.cs" />
-    <Compile Include="Models\TrackSample.cs" />
+    <EmbeddedResource Include="Resources\silence.mp3" />
     <None Include="Resources\Music-001.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)\Components\Bass.Net\*.dll $(TargetDir)</PostBuildEvent>
+    <_ComponentsDir Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">$(SolutionDir)Components\Bass.Net</_ComponentsDir>
+    <_ComponentsDir Condition="'$(_ComponentsDir)' == ''">$(MSBuildProjectDirectory)\..\Components\Bass.Net</_ComponentsDir>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(_ComponentsDir)\*.dll&quot; &quot;$(TargetDir)&quot;" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

@@ -1,68 +1,47 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{744EC40E-007A-4D10-BBE1-FC084A9DB425}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Halloumi.Shuffler.AudioLibrary</RootNamespace>
+    <TargetFramework>net48</TargetFramework>
     <AssemblyName>Halloumi.Shuffler.AudioLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
+    <RootNamespace>Halloumi.Shuffler.AudioLibrary</RootNamespace>
+    <LangVersion>7.0</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Platforms>x86;AnyCPU</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.0</LangVersion>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Bass.Net, Version=2.4.6.4, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Bass.Net">
       <HintPath>..\Components\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>
     <Reference Include="Halloumi.Common">
@@ -77,67 +56,25 @@
     <Reference Include="IdSharp.Common">
       <HintPath>..\Components\IdSharp.Common.dll</HintPath>
     </Reference>
-    <Reference Include="IdSharp.Tagging, Version=1.1.4426.18077, Culture=neutral, PublicKeyToken=9218f8c7f40da032, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="IdSharp.Tagging">
       <HintPath>..\Components\IdSharp.Tagging.dll</HintPath>
     </Reference>
-    <Reference Include="Sanford.Multimedia.Midi, Version=6.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Sanford.Multimedia.Midi">
       <HintPath>..\packages\Sanford.Multimedia.Midi.6.6.2\lib\net20\Sanford.Multimedia.Midi.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Samples\LoopLibrary.cs" />
-    <Compile Include="Helpers\AlbumCoverHelper.cs" />
-    <Compile Include="Helpers\ShufflerHelper.cs" />
-    <Compile Include="Helpers\TrackHelper.cs" />
-    <Compile Include="Samples\ISampleLibrary.cs" />
-    <Compile Include="Models\Album.cs" />
-    <Compile Include="Models\Artist.cs" />
-    <Compile Include="Models\Genre.cs" />
-    <Compile Include="Models\GenreCode.cs" />
-    <Compile Include="Library.cs" />
-    <Compile Include="MixLibrary.cs" />
-    <Compile Include="Models\Playlist.cs" />
-    <Compile Include="Helpers\CollectionHelper.cs" />
-    <Compile Include="Samples\SearchCriteria.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Samples\Sample.cs" />
-    <Compile Include="Samples\TrackSampleLibrary.cs" />
-    <Compile Include="Models\Track.cs" />
-    <Compile Include="TrackSelector.cs" />
+    <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj">
-      <Project>{b2b7650c-8209-4d48-aadf-5a1e76928b7e}</Project>
-      <Name>Halloumi.Shuffler.AudioEngine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)\Components\Bass.Net\*.dll $(TargetDir)</PostBuildEvent>
+    <_ComponentsDir Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">$(SolutionDir)Components\Bass.Net</_ComponentsDir>
+    <_ComponentsDir Condition="'$(_ComponentsDir)' == ''">$(MSBuildProjectDirectory)\..\Components\Bass.Net</_ComponentsDir>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(_ComponentsDir)\*.dll&quot; &quot;$(TargetDir)&quot;" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
