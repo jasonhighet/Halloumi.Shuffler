@@ -1,8 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dotnet restore Halloumi.Shuffler.Engine/Halloumi.Shuffler.AudioLibrary.csproj -p:Platform=x86)",
-      "Bash(dotnet build Halloumi.Shuffler.Engine/Halloumi.Shuffler.AudioLibrary.csproj -p:Platform=x86)"
+      "Bash(dotnet)",
+      "Bash(git)",
+      "Task",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "WebFetch",
+      "WebSearch"
     ]
   }
 }

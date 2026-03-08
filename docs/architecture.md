@@ -1,5 +1,20 @@
 # Architecture
 
+## Operating modes
+
+The application serves two distinct use cases with different platform requirements:
+
+| Mode | Description | Platform |
+|---|---|---|
+| **Active** | Library curation, sync/fade point setup, finding compatible tracks, performance DJing | Windows-only (Bass.Net, x86) |
+| **Shuffler / Passive** | Automated playback of pre-mixed tracks — shuffled, sequenced, with playlist control | Audio host must be Windows; control UI does not have to be |
+
+**Active mode** covers anything that requires human judgement on the audio: loading a new track and listening to it, working out where sync points and fade points should be, finding which tracks it mixes well into, and live performance mixing. All of this requires the full Windows app with direct access to the audio engine.
+
+**Shuffler mode** covers automated playback where the mixing decisions have already been made. A remote UI can still do meaningful things here — adjusting the playlist, choosing the next track, skipping, changing volume — but it is not making real-time mixing decisions. The host process (Windows, running BassPlayer) handles all audio; remote clients send commands over an API.
+
+The natural API boundary is therefore between work that requires audio judgement (always Active/Windows) and work that is controlling already-configured playback (can be remote).
+
 ## Solution structure
 
 ```
