@@ -103,6 +103,10 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         private Halloumi.Shuffler.AudioLibrary.Library Library { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        private ShufflerApplication ShufflerApplication { get; set; }
+
         public Library GetLibrary() => Library;
 
         /// <summary>
@@ -356,6 +360,7 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initalize(TrackLibraryControl trackLibraryControl, ShufflerApplication application)
         {
+            ShufflerApplication = application;
             this.Library = application.Library;
             this.MixLibrary = application.MixLibrary;
             this.BassPlayer = application.BassPlayer;
@@ -364,7 +369,7 @@ namespace Halloumi.Shuffler.Controls
             trackDetails.DisplayTrackDetails(null);
 
             mixableTracks.PlaylistControl = this;
-            mixableTracks.Initialize(MixLibrary, trackLibraryControl);
+            mixableTracks.Initialize(ShufflerApplication, trackLibraryControl);
 
             if (BassPlayer == null) return;
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;

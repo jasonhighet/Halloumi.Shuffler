@@ -310,7 +310,7 @@ namespace Halloumi.Shuffler.Controls
             //trackDetails.SetLibrary(Library);
 
             mixableTracks.PlaylistControl = PlaylistControl;
-            mixableTracks.Initialize(MixLibrary, this);
+            mixableTracks.Initialize(ShufflerApplication, this);
 
             trackDetails.DisplayTrackDetails(null);
         }

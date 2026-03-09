@@ -474,5 +474,88 @@ namespace Halloumi.Shuffler
 
             return tracks;
         }
+
+        /// <summary>
+        ///     Returns a filtered list of <see cref="MixableTrackResult"/> objects for a given parent track.
+        ///     Handles: MixLibrary lookup, intersection with the candidate pool, key-rank filtering,
+        ///     queued-track exclusion, deduplication, result model construction, and default sort.
+        ///     Column-based re-sorting is a UI concern and is NOT done here.
+        /// </summary>
+        public List<MixableTrackResult> GetMixableTracks(
+            Track parentTrack,
+            MixableTrackFilter filter,
+            IEnumerable<Track> candidateTracks,
+            IEnumerable<Track> currentPlaylist = null)
+        {
+            if (parentTrack == null) return new List<MixableTrackResult>();
+            if (filter == null) filter = new MixableTrackFilter();
+
+            var isFrom = filter.Direction == MixableTrackFilter.TrackDirection.From;
+
+            // Step 1 - get mixable track descriptions from MixLibrary
+            var mixableDescriptions = new HashSet<string>(
+                isFrom
+                    ? MixLibrary.GetMixableFromTracks(parentTrack, filter.MixRankLevels).Select(t => t.Description)
+                    : MixLibrary.GetMixableToTracks(parentTrack, filter.MixRankLevels).Select(t => t.Description));
+
+            // Step 2 - intersect with candidate pool
+            var candidates = (candidateTracks ?? Enumerable.Empty<Track>())
+                .Where(t => mixableDescriptions.Contains(t.Description))
+                .ToList();
+
+            // Step 3 - apply key rank filter
+            if (filter.MinKeyRank == 0)
+                candidates = candidates.Where(t => KeyHelper.GetKeyMixRank(parentTrack.Key, t.Key) <= 1).ToList();
+            else if (filter.MinKeyRank > 0)
+                candidates = candidates.Where(t => KeyHelper.GetKeyMixRank(parentTrack.Key, t.Key) >= filter.MinKeyRank).ToList();
+
+            // Step 4 - exclude queued tracks
+            if (filter.ExcludeQueued && currentPlaylist != null)
+            {
+                var queued = new HashSet<string>(currentPlaylist.Where(t => t != null).Select(t => t.Description));
+                if (queued.Count > 0)
+                    candidates = candidates.Where(t => !queued.Contains(t.Description)).ToList();
+            }
+
+            // Step 5 - deduplicate, build result models
+            var seen = new HashSet<string>();
+            var results = new List<MixableTrackResult>();
+            foreach (var track in candidates)
+            {
+                if (!seen.Add(track.Description)) continue;
+
+                var mixRank = isFrom
+                    ? MixLibrary.GetExtendedMixLevel(track, parentTrack)
+                    : MixLibrary.GetExtendedMixLevel(parentTrack, track);
+
+                var mixRankDescription = MixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixRank)));
+                var hasExtended = isFrom ? MixLibrary.HasExtendedMix(parentTrack, track) : MixLibrary.HasExtendedMix(track, parentTrack);
+                if (hasExtended) mixRankDescription += "*";
+
+                results.Add(new MixableTrackResult
+                {
+                    Track              = track,
+                    Description        = track.Description,
+                    Bpm                = track.Bpm,
+                    Diff               = BpmHelper.GetAbsoluteBpmPercentChange(parentTrack.EndBpm, track.StartBpm),
+                    MixRank            = mixRank,
+                    MixRankDescription = mixRankDescription,
+                    Rank               = track.Rank,
+                    RankDescription    = track.RankDescription,
+                    Key                = KeyHelper.GetDisplayKey(track.Key),
+                    KeyDiff            = KeyHelper.GetKeyDifference(parentTrack.Key, track.Key),
+                    KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track.Key, parentTrack.Key)
+                });
+            }
+
+            // Step 6 - default sort
+            return results
+                .OrderByDescending(t => t.MixRank)
+                .ThenBy(t => t.KeyDiff)
+                .ThenBy(t => t.Diff)
+                .ThenByDescending(t => t.Rank)
+                .ThenBy(t => t.Description)
+                .ToList();
+        }
     }
 }

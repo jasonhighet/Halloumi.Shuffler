@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Forms;
@@ -19,10 +18,7 @@ namespace Halloumi.Shuffler.Controls
         }
 
         private bool _bindDataAllowed = true;
-
         private TrackLibraryControl _libraryControl;
-        private MixLibrary _mixLibrary;
-
         private Track _parentTrack;
 
         /// <summary>
@@ -39,50 +35,28 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl { get; set; }
 
-        private List<Track> GetMixableFromTracks(Track track, List<int> mixLevels)
-        {
-            var mixableTracks = _mixLibrary
-                .GetMixableFromTracks(track, mixLevels)
-                .Select(x => x.Description)
-                .ToList();
-
-            return (_libraryControl.DisplayedTracks ?? new List<Track>())
-                .Where(x => mixableTracks.Contains(x.Description))
-                .ToList();
-        }
-
-        private List<Track> GetMixableToTracks(Track track, List<int> mixLevels)
-        {
-            var mixableTracks = _mixLibrary
-                .GetMixableToTracks(track, mixLevels)
-                .Select(x => x.Description)
-                .ToList();
-
-            return (_libraryControl.DisplayedTracks ?? new List<Track>())
-                .Where(x => mixableTracks.Contains(x.Description))
-                .ToList();
-        }
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication ShufflerApplication { get; set; }
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
-        public void Initialize(MixLibrary mixLibrary, TrackLibraryControl libraryControl)
+        public void Initialize(ShufflerApplication application, TrackLibraryControl libraryControl)
         {
-            _mixLibrary = mixLibrary;
-            LoadSettings();
+            ShufflerApplication = application;
             _libraryControl = libraryControl;
+            LoadSettings();
         }
 
         public void DisplayMixableTracks(Track parentTrack)
         {
             _parentTrack = parentTrack;
 
-            // BindData();
             if (InvokeRequired)
                 BeginInvoke(new MethodInvoker(BindData));
             else BindData();
         }
-
 
         /// <summary>
         ///     Loads the settings.
@@ -121,10 +95,52 @@ namespace Halloumi.Shuffler.Controls
             if (track == null) return;
 
             var view = cmbView.ParseEnum<View>();
-            if(view == View.FromTracks)
+            if (view == View.FromTracks)
                 PlaylistControl?.InsertTrackBefore(track);
             else
                 PlaylistControl?.InsertTrackAfter(track);
+        }
+
+        /// <summary>
+        ///     Builds a <see cref="MixableTrackFilter"/> from the current UI state.
+        /// </summary>
+        private MixableTrackFilter BuildMixableTrackFilter()
+        {
+            // Map rank combo to list of allowed rank levels
+            var rankText = cmbRank.GetTextThreadSafe();
+            List<int> rankLevels;
+            switch (rankText)
+            {
+                case "Good+":     rankLevels = new List<int> { 5, 4, 3 };          break;
+                case "Bearable+": rankLevels = new List<int> { 5, 4, 3, 2 };       break;
+                case "Unranked":  rankLevels = new List<int> { 1 };                 break;
+                case "Forbidden": rankLevels = new List<int> { 0 };                 break;
+                default:          rankLevels = new List<int> { 5, 4, 3, 2, 1, 0 }; break;
+            }
+
+            // Map key rank combo to minimum key rank threshold
+            var keyRankText = cmbKeyRank.GetTextThreadSafe();
+            int minKeyRank;
+            switch (keyRankText)
+            {
+                case "Very Good+": minKeyRank = 4;  break;
+                case "Good+":      minKeyRank = 3;  break;
+                case "Bearable+":  minKeyRank = 2;  break;
+                case "Not Good":   minKeyRank = 0;  break;
+                default:           minKeyRank = -1; break;
+            }
+
+            var view = cmbView.ParseEnum<View>();
+
+            return new MixableTrackFilter
+            {
+                MixRankLevels = rankLevels,
+                MinKeyRank    = minKeyRank,
+                Direction     = view == View.FromTracks
+                                ? MixableTrackFilter.TrackDirection.From
+                                : MixableTrackFilter.TrackDirection.To,
+                ExcludeQueued = chkExcludeQueued.Checked
+            };
         }
 
         /// <summary>
@@ -134,159 +150,44 @@ namespace Halloumi.Shuffler.Controls
         {
             if (!_bindDataAllowed) return;
 
+            var filter = BuildMixableTrackFilter();
+            var playlist = PlaylistControl?.GetTracks();
+            var candidates = _libraryControl?.DisplayedTracks ?? new List<Track>();
 
-            var view = cmbView.ParseEnum<View>();
+            var results = ShufflerApplication != null && _parentTrack != null
+                ? ShufflerApplication.GetMixableTracks(_parentTrack, filter, candidates, playlist)
+                : new List<MixableTrackResult>();
 
-            var rankFilter = cmbRank.GetTextThreadSafe();
-            List<int> ranks;
-
-            switch (rankFilter)
-            {
-                case "Good+":
-                    ranks = new List<int> {5, 4, 3};
-                    break;
-                case "Bearable+":
-                    ranks = new List<int> {5, 4, 3, 2};
-                    break;
-                case "Unranked":
-                    ranks = new List<int> {1};
-                    break;
-                case "Forbidden":
-                    ranks = new List<int> {0};
-                    break;
-                default:
-                    ranks = new List<int> {5, 4, 3, 2, 1, 0};
-                    break;
-            }
-
-            var keyRankFilter = cmbKeyRank.GetTextThreadSafe();
-            int minimumKeyRank;
-
-            switch (keyRankFilter)
-            {
-                case "Very Good+":
-                    minimumKeyRank = 4;
-                    break;
-                case "Good+":
-                    minimumKeyRank = 3;
-                    break;
-                case "Bearable+":
-                    minimumKeyRank = 2;
-                    break;
-                case "Not Good":
-                    minimumKeyRank = 0;
-                    break;
-                default:
-                    minimumKeyRank = -1;
-                    break;
-            }
-
-            List<Track> tracks;
-            if (_parentTrack == null)
-                tracks = new List<Track>();
-            else if (view == View.FromTracks)
-                tracks = GetMixableFromTracks(_parentTrack, ranks);
-            else
-                tracks = GetMixableToTracks(_parentTrack, ranks);
-
-
-            var playListTracks = new List<Track>();
-            if (PlaylistControl != null)
-                playListTracks = PlaylistControl.GetTracks();
-
-            if (minimumKeyRank == 0 && _parentTrack != null)
-                tracks = tracks
-                    .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) <= 1)
-                    .ToList();
-            else if (minimumKeyRank != -1 && _parentTrack != null)
-                tracks = tracks
-                    .Where(t => KeyHelper.GetKeyMixRank(_parentTrack.Key, t.Key) >= minimumKeyRank)
-                    .ToList();
-
-            var mixableTracks = new List<MixableTrackModel>();
-            foreach (var track in tracks)
-            {
-                if (_parentTrack == null) continue;
-                if (mixableTracks.Exists(mt => mt.Description == track.Description)) continue;
-                if (chkExcludeQueued.Checked && playListTracks.Exists(mt => mt != null && mt.Description == track.Description))
-                    continue;
-
-                var mixRank = view == View.FromTracks
-                    ? _mixLibrary.GetExtendedMixLevel(track, _parentTrack)
-                    : _mixLibrary.GetExtendedMixLevel(_parentTrack, track);
-
-                var mixRankDescription = view == View.FromTracks
-                    ? _mixLibrary.GetExtendedMixDescription(track, _parentTrack)
-                    : _mixLibrary.GetExtendedMixDescription(_parentTrack, track);
-
-                var mixableTrack = new MixableTrackModel
-                {
-                    Track = track,
-                    Description = track.Description,
-                    Bpm = track.Bpm,
-                    Diff = BpmHelper.GetAbsoluteBpmPercentChange(_parentTrack.EndBpm, track.StartBpm),
-                    MixRank = mixRank,
-                    MixRankDescription = mixRankDescription,
-                    Rank = track.Rank,
-                    RankDescription = track.RankDescription,
-                    Key = KeyHelper.GetDisplayKey(track.Key),
-                    KeyDiff = KeyHelper.GetKeyDifference(_parentTrack.Key, track.Key),
-                    KeyRankDescription = KeyHelper.GetKeyMixRankDescription(track.Key, _parentTrack.Key)
-                };
-
-                mixableTrack.MixRankDescription =
-                    _mixLibrary.GetRankDescription(Convert.ToInt32(Math.Floor(mixableTrack.MixRank)));
-                var hasExtendedMix = _mixLibrary.HasExtendedMix(_parentTrack, track);
-                if (hasExtendedMix) mixableTrack.MixRankDescription += "*";
-
-                mixableTracks.Add(mixableTrack);
-            }
-
+            // Column-sort override — UI concern, stays here
             if (grdMixableTracks.SortedColumn != null)
             {
-                var sortField = grdMixableTracks.SortedColumn.DataPropertyName;
-                if (sortField == "Description") mixableTracks = mixableTracks.OrderBy(t => t.Description).ToList();
-                if (sortField == "BPM") mixableTracks = mixableTracks.OrderBy(t => t.Bpm).ToList();
-                if (sortField == "Diff") mixableTracks = mixableTracks.OrderBy(t => t.Diff).ToList();
-                if (sortField == "MixRankDescription")
-                    mixableTracks = mixableTracks.OrderBy(t => t.MixRank).ThenByDescending(t => t.Diff).ToList();
-                if (sortField == "RankDescription")
-                    mixableTracks = mixableTracks.OrderBy(t => t.Rank).ThenByDescending(t => t.Diff).ToList();
-                if (sortField == "Key") mixableTracks = mixableTracks.OrderBy(t => t.Key).ToList();
-                if (sortField == "KeyRankDescription")
-                    mixableTracks = mixableTracks.OrderByDescending(t => t.KeyDiff).ToList();
+                var col = grdMixableTracks.SortedColumn.DataPropertyName;
+                if (col == "Description")        results = results.OrderBy(t => t.Description).ToList();
+                if (col == "Bpm")                results = results.OrderBy(t => t.Bpm).ToList();
+                if (col == "Diff")               results = results.OrderBy(t => t.Diff).ToList();
+                if (col == "MixRankDescription") results = results.OrderBy(t => t.MixRank).ThenByDescending(t => t.Diff).ToList();
+                if (col == "RankDescription")    results = results.OrderBy(t => t.Rank).ThenByDescending(t => t.Diff).ToList();
+                if (col == "Key")                results = results.OrderBy(t => t.Key).ToList();
+                if (col == "KeyRankDescription") results = results.OrderByDescending(t => t.KeyDiff).ToList();
 
-                if (grdMixableTracks.SortOrder == SortOrder.Descending) mixableTracks.Reverse();
-            }
-            else
-            {
-                mixableTracks = mixableTracks
-                    .OrderByDescending(t => t.MixRank)
-                    .ThenBy(t => t.KeyDiff)
-                    .ThenBy(t => t.Diff)
-                    .ThenByDescending(t => t.Rank)
-                    .ThenBy(t => t.Description)
-                    .ToList();
+                if (grdMixableTracks.SortOrder == SortOrder.Descending) results.Reverse();
             }
 
             grdMixableTracks.SaveSelectedRows();
-            grdMixableTracks.DataSource = mixableTracks;
+            grdMixableTracks.DataSource = results;
             grdMixableTracks.RestoreSelectedRows();
 
-            lblCount.Text = $"{mixableTracks.Count} tracks";
+            lblCount.Text = $"{results.Count} tracks";
         }
 
         /// <summary>
         ///     Gets the selected track.
         /// </summary>
-        /// <returns>The selected track</returns>
         public Track GetSelectedTrack()
         {
             if (grdMixableTracks.SelectedRows.Count == 0) return null;
-
-            var model = grdMixableTracks.SelectedRows[0].DataBoundItem as MixableTrackModel;
-
-            return model?.Track;
+            var result = grdMixableTracks.SelectedRows[0].DataBoundItem as MixableTrackResult;
+            return result?.Track;
         }
 
         /// <summary>
@@ -331,38 +232,7 @@ namespace Halloumi.Shuffler.Controls
             BindData();
         }
 
-        /// <summary>
-        ///     Binds the data.
-        /// </summary>
         private delegate void BindDataHandler();
-
-        /// <summary>
-        ///     Represents a row in the grid
-        /// </summary>
-        private class MixableTrackModel
-        {
-            public string Description { get; set; }
-
-            public decimal Bpm { get; set; }
-
-            public int Rank { get; set; }
-
-            public double MixRank { get; set; }
-
-            public string MixRankDescription { get; set; }
-
-            public string KeyRankDescription { get; set; }
-
-            public string RankDescription { get; set; }
-
-            public decimal Diff { get; set; }
-
-            public Track Track { get; set; }
-
-            public string Key { get; set; }
-
-            public int KeyDiff { get; set; }
-        }
 
         private void mnuQueueTrack_Click(object sender, EventArgs e)
         {
