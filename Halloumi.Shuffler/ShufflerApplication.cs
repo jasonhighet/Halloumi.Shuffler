@@ -452,6 +452,7 @@ namespace Halloumi.Shuffler
 
         public void SavePlaylistGenerationSettings(PlaylistGenerationRequest request)
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(PlaylistSettingsFilename));
             SerializationHelper<PlaylistGenerationRequest>.ToXmlFile(request, PlaylistSettingsFilename);
         }
 

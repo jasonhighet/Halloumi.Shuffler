@@ -191,12 +191,22 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        private static void SetComboFromEnum<T>(ComboBox combo, T value)
+        private static void SetComboFromEnum<T>(Halloumi.Common.Windows.Controls.ComboBox combo, T value)
         {
             var text = Regex.Replace(value.ToString(), "([A-Z])", " $1").Trim();
-            var index = combo.FindStringExact(text);
-            if (index >= 0)
-                combo.SelectedIndex = index;
+            SetComboText(combo, text);
+        }
+
+        private static void SetComboText(Halloumi.Common.Windows.Controls.ComboBox combo, string text)
+        {
+            for (var i = 0; i < combo.Items.Count; i++)
+            {
+                if (combo.Items[i].ToString() == text)
+                {
+                    combo.SelectedIndex = i;
+                    return;
+                }
+            }
         }
 
         private void SetApproxLengthCombo(int minutes)
@@ -206,9 +216,7 @@ namespace Halloumi.Shuffler.Forms
                 cmbApproxLength.SelectedIndex = 0;
                 return;
             }
-            var index = cmbApproxLength.FindStringExact(minutes + " minutes");
-            if (index >= 0)
-                cmbApproxLength.SelectedIndex = index;
+            SetComboText(cmbApproxLength, minutes + " minutes");
         }
 
         private void SetTracksToGenerateCombo(int maxTracks)
@@ -218,9 +226,7 @@ namespace Halloumi.Shuffler.Forms
                 cmbTracksToGenerate.SelectedIndex = 0;
                 return;
             }
-            var index = cmbTracksToGenerate.FindStringExact(maxTracks.ToString());
-            if (index >= 0)
-                cmbTracksToGenerate.SelectedIndex = index;
+            SetComboText(cmbTracksToGenerate, maxTracks.ToString());
         }
 
         /// <summary>
