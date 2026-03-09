@@ -63,6 +63,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void frmGeneratePlaylist_Load(object sender, EventArgs e)
         {
+            LoadSettings();
             if (_screenMode == ScreenMode.AutoGeneratePlaylist)
             {
                 Opacity = 0;
@@ -118,7 +119,6 @@ namespace Halloumi.Shuffler.Forms
                 cmbTracksToGenerate.Items.Add((i + 1)*5);
             cmbTracksToGenerate.SelectedIndex = 2;
 
-            LoadSettings();
             EnableControls();
         }
 

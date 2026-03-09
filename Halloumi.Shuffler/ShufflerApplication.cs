@@ -59,6 +59,31 @@ namespace Halloumi.Shuffler
             LoadFromDatabase();
 
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
+            BassPlayer.OnSkipToEnd += BassPlayer_OnFadeEnded;
+            BassPlayer.OnEndFadeIn += BassPlayer_OnFadeEnded;
+        }
+
+        /// <summary>
+        /// Raised (on the BassPlayer thread) when auto-generation should run because
+        /// the playlist is below the threshold.
+        /// </summary>
+        public event EventHandler OnAutoGenerateRequired;
+
+        /// <summary>
+        /// Whether auto-generation is enabled. When true, ShufflerApplication monitors
+        /// BassPlayer transition events and fires OnAutoGenerateRequired when appropriate.
+        /// </summary>
+        public bool AutoGenerateEnabled { get; set; }
+
+        /// <summary>
+        /// Number of tracks remaining in the playlist below which auto-generation fires.
+        /// </summary>
+        public int AutoGenerateTracksRemainingThreshold { get; set; }
+
+        private void BassPlayer_OnFadeEnded(object sender, EventArgs e)
+        {
+            if (!AutoGenerateEnabled) return;
+            OnAutoGenerateRequired?.Invoke(this, EventArgs.Empty);
         }
 
         public BaseMinimizeToTrayForm BaseForm { get; set; }
@@ -452,15 +477,28 @@ namespace Halloumi.Shuffler
 
         public void SavePlaylistGenerationSettings(PlaylistGenerationRequest request)
         {
+            request.AutoGenerateEnabled = AutoGenerateEnabled;
+            request.AutoGenerateTracksRemainingThreshold = AutoGenerateTracksRemainingThreshold;
+
             Directory.CreateDirectory(Path.GetDirectoryName(PlaylistSettingsFilename));
             SerializationHelper<PlaylistGenerationRequest>.ToXmlFile(request, PlaylistSettingsFilename);
         }
 
         public PlaylistGenerationRequest LoadPlaylistGenerationSettings()
         {
-            if (File.Exists(PlaylistSettingsFilename))
-                return SerializationHelper<PlaylistGenerationRequest>.FromXmlFile(PlaylistSettingsFilename);
-            return PlaylistGenerationRequest.Default();
+            var request = GetPlaylistGenerationRequest();
+
+            AutoGenerateEnabled = request.AutoGenerateEnabled;
+            AutoGenerateTracksRemainingThreshold = request.AutoGenerateTracksRemainingThreshold;
+
+            return request;
+        }
+
+        public PlaylistGenerationRequest GetPlaylistGenerationRequest()
+        {
+            return File.Exists(PlaylistSettingsFilename)
+                ? SerializationHelper<PlaylistGenerationRequest>.FromXmlFile(PlaylistSettingsFilename)
+                : PlaylistGenerationRequest.Default();
         }
 
         public void ShowPlugin(VstPlugin plugin)

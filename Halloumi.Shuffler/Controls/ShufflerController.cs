@@ -31,8 +31,9 @@ namespace Halloumi.Shuffler.Controls
 
             InitializeComponent();
 
-            TracksRemainingThreshold = 2;
-            AutoGenerateEnabled = false;
+            container.Add(this);
+
+            InitializeComponent();
         }
 
         /// <summary>
@@ -49,12 +50,6 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TrackLibraryControl LibraryControl { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets the playlist control.
@@ -68,14 +63,28 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool AutoGenerateEnabled { get; set; }
+        public bool AutoGenerateEnabled
+        {
+            get => Application != null && Application.AutoGenerateEnabled;
+            set
+            {
+                if (Application != null) Application.AutoGenerateEnabled = value;
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the number of tracks remaining in the playlist before it should auto-generate more.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int TracksRemainingThreshold { get; set; }
+        public int TracksRemainingThreshold
+        {
+            get => Application != null ? Application.AutoGenerateTracksRemainingThreshold : 0;
+            set
+            {
+                if (Application != null) Application.AutoGenerateTracksRemainingThreshold = value;
+            }
+        }
 
         /// <summary>
         ///     Initalizes this instance.
@@ -86,24 +95,24 @@ namespace Halloumi.Shuffler.Controls
             _generateWorker.DoWork += GenerateWorker_DoWork;
             _generateWorker.RunWorkerCompleted += GenerateWorker_RunWorkerCompleted;
 
-            BassPlayer.OnSkipToEnd += BassPlayer_OnFadeEnded;
-            BassPlayer.OnEndFadeIn += BassPlayer_OnFadeEnded;
+            Application.OnAutoGenerateRequired += Application_OnAutoGenerateRequired;
         }
 
         /// <summary>
-        ///     Handles the OnEndFadeIn event of the BassPlayer control.
+        ///     Handles the Application OnAutoGenerateRequired event.
         /// </summary>
-        private void BassPlayer_OnFadeEnded(object sender, EventArgs e)
+        private void Application_OnAutoGenerateRequired(object sender, EventArgs e)
         {
             if (PlaylistControl.InvokeRequired)
-                PlaylistControl.BeginInvoke(new MethodInvoker(delegate { BassPlayer_OnFadeEnded(); }));
-            else BassPlayer_OnFadeEnded();
+                PlaylistControl.BeginInvoke(new MethodInvoker(CheckAndAutoGenerate));
+            else
+                CheckAndAutoGenerate();
         }
 
         /// <summary>
-        ///     Handles the OnEndFadeIn event of the BassPlayer control.
+        ///     Checks if auto-generation is required and triggers it.
         /// </summary>
-        private void BassPlayer_OnFadeEnded()
+        private void CheckAndAutoGenerate()
         {
             if (!AutoGenerateEnabled) return;
             var tracksRemaining = PlaylistControl.GetNumberOfTracksRemaining();
@@ -116,7 +125,7 @@ namespace Halloumi.Shuffler.Controls
             if (_generateWorker.IsBusy) return;
 
             // Capture UI state on the UI thread before handing off to the worker
-            var request = Application.LoadPlaylistGenerationSettings();
+            var request = Application.GetPlaylistGenerationRequest();
             request.ApproximateLengthMinutes = int.MaxValue;
 
             List<Track> availableTracks;

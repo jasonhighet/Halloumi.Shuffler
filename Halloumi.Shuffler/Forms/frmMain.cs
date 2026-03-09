@@ -110,8 +110,10 @@ namespace Halloumi.Shuffler.Forms
             shufflerController.Application = _application;
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
-            shufflerController.BassPlayer = application.BassPlayer;
             shufflerController.Initalize();
+
+            _application.LoadPlaylistGenerationSettings();
+            mnuAutoshuffle.Checked = shufflerController.AutoGenerateEnabled;
 
             SetView(PlayerDetails.SelectedView.Library);
 
@@ -265,7 +267,11 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuAutoshuffle_Click(object sender, EventArgs e)
         {
+            // Load existing settings, then re-apply the new toggle value before saving,
+            // because LoadPlaylistGenerationSettings overwrites AutoGenerateEnabled from the file.
+            var request = _application.LoadPlaylistGenerationSettings();
             shufflerController.AutoGenerateEnabled = mnuAutoshuffle.Checked;
+            _application.SavePlaylistGenerationSettings(request);
         }
 
         private void mnuAutoGenerateNow_Click(object sender, EventArgs e)
