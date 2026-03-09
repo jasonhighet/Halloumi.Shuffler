@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
@@ -685,5 +686,49 @@ namespace Halloumi.Shuffler
                 .ThenBy(t => t.Description)
                 .ToList();
         }
+
+        // ── Library wrappers ────────────────────────────────────────────────
+
+        public void SetTrackRank(List<Track> tracks, int rank) => Library.SetRank(tracks, rank);
+
+        public void CancelLibraryImport() => Library.CancelImport();
+
+        public void LoadTrack(string filename) => Library.LoadTrack(filename);
+
+        public List<Genre> GetGenresFromTracks(List<Track> tracks) => Library.GetGenresFromTracks(tracks);
+
+        public List<Artist> GetAlbumArtistsFromTracks(List<Track> tracks) => Library.GetAlbumArtistsFromTracks(tracks);
+
+        public List<Album> GetAlbumsFromTracks(List<Track> tracks) => Library.GetAlbumsFromTracks(tracks);
+
+        public int GetLibraryTrackCount() => Library.TrackCount();
+
+        public Track GetTrackByFilename(string filename) => Library.GetTrackByFilename(filename);
+
+        public List<Track> GetTracksByDescription(string description) => Library.GetTracksByDescription(description);
+
+        public Image GetAlbumCover(string albumName, List<Track> tracks = null) => Library.GetAlbumCover(albumName, tracks);
+
+        public void CopyAudioFromAnotherTrack(Track track, string sourceFilename) => Library.CopyAudioFromAnotherTrack(track, sourceFilename);
+
+        public void ImportAndCleanLibrary() { Library.ImportTracks(); Library.CleanLibrary(); }
+
+        public void RemoveShufflerDetails(Track track) => Library.RemoveShufflerDetails(track);
+
+        // ── MixLibrary wrappers ─────────────────────────────────────────────
+
+        public int GetMixInCount(Track track) => MixLibrary.GetMixInCount(track);
+
+        public int GetMixOutCount(Track track) => MixLibrary.GetMixOutCount(track);
+
+        public string GetMixRankDescription(int rank) => MixLibrary.GetRankDescription(rank);
+
+        public MixLibrary.MixRank GetMixRankFromDescription(string description) => MixLibrary.GetRankFromDescription(description);
+
+        public void SetMixLibraryAvailableTracks(List<Track> tracks) { MixLibrary.AvailableTracks = tracks; }
+
+        // ── TrackSampleLibrary wrappers ─────────────────────────────────────
+
+        public void ExportMixSectionsAsSamples(Track track) => TrackSampleLibrary.ExportMixSectionsAsSamples(track);
     }
 }

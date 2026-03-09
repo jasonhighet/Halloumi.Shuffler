@@ -88,14 +88,10 @@ namespace Halloumi.Shuffler.Forms
 
             
 
-            trackLibraryControl.Library = application.Library;
-            trackLibraryControl.BassPlayer = application.BassPlayer;
             trackLibraryControl.PlaylistControl = playlistControl;
-            trackLibraryControl.MixLibrary = application.MixLibrary;
             trackLibraryControl.ShufflerApplication = application;
             trackLibraryControl.ToolStripLabel = lblLibraryStatus;
             trackLibraryControl.SamplerControl = mixerControl.SamplerControl;
-            trackLibraryControl.TrackSampleLibrary = application.TrackSampleLibrary;
             trackLibraryControl.ShufflerDetailsUpdatedEvent += trackLibraryControl_ShufflerDetailsUpdatedEvent;
 
             mixerControl.Library = application.Library;

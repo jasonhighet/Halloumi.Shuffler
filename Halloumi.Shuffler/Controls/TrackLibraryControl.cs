@@ -154,30 +154,6 @@ namespace Halloumi.Shuffler.Controls
         public SamplerControl SamplerControl { get; set; }
 
 
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Library Library { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public TrackSampleLibrary TrackSampleLibrary { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MixLibrary MixLibrary { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the application facade used to call GetTracks with filter + sort.
-        /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ShufflerApplication ShufflerApplication { get; set; }
@@ -189,13 +165,6 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Track> AvailableTracks { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets the playlist control.
@@ -244,10 +213,10 @@ namespace Halloumi.Shuffler.Controls
             if (dropDownItem == null) return;
 
             var mixRankDescription = dropDownItem.Text;
-            var mixRank = MixLibrary.GetRankFromDescription(mixRankDescription);
+            var mixRank = ShufflerApplication.GetMixRankFromDescription(mixRankDescription);
 
             var tracks = GetSelectedTracks();
-            Library.SetRank(tracks, (int) mixRank);
+            ShufflerApplication.SetTrackRank(tracks, (int) mixRank);
 
             DebugHelper.WriteLine("mnuRank");
             BindData();
@@ -267,7 +236,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void CancelLibraryImport()
         {
-            Library.CancelImport();
+            ShufflerApplication.CancelLibraryImport();
         }
 
         /// <summary>
@@ -290,7 +259,7 @@ namespace Halloumi.Shuffler.Controls
                 try
                 {
                     KeyHelper.CalculateKey(track.Filename);
-                    Library.LoadTrack(track.Filename);
+                    ShufflerApplication.LoadTrack(track.Filename);
                 }
                 catch
                 {
@@ -315,7 +284,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 try
                 {
-                    Library.LoadTrack(track.Filename);
+                    ShufflerApplication.LoadTrack(track.Filename);
                 }
                 catch
                 {
@@ -407,23 +376,23 @@ namespace Halloumi.Shuffler.Controls
 
             AvailableTracks = GetAvailableTracks();
             DisplayedTracks = GetDisplayedTracks();
-            MixLibrary.AvailableTracks = AvailableTracks;
+            ShufflerApplication.SetMixLibraryAvailableTracks(AvailableTracks);
 
             if (bindGenres)
             {
-                var genres = Library.GetGenresFromTracks(AvailableTracks);
+                var genres = ShufflerApplication.GetGenresFromTracks(AvailableTracks);
                 BindGenres(selectedGenres, genres);
             }
 
             if (bindArtists)
             {
-                var artists = Library.GetAlbumArtistsFromTracks(DisplayedTracks);
+                var artists = ShufflerApplication.GetAlbumArtistsFromTracks(DisplayedTracks);
                 BindArtists(selectedArtists, artists);
             }
 
             if (bindAlbums)
             {
-                var albums = Library.GetAlbumsFromTracks(DisplayedTracks);
+                var albums = ShufflerApplication.GetAlbumsFromTracks(DisplayedTracks);
                 BindAlbums(selectedAlbums, albums);
             }
 
@@ -581,10 +550,10 @@ namespace Halloumi.Shuffler.Controls
             var sortPropertyName = grdTracks.SortedColumn?.DataPropertyName;
             if (sortPropertyName == "InCount")
                 foreach (var m in trackModels.Where(m => m.InCount == -1))
-                    m.InCount = MixLibrary.GetMixInCount(m.Track);
+                    m.InCount = ShufflerApplication.GetMixInCount(m.Track);
             if (sortPropertyName == "OutCount")
                 foreach (var m in trackModels.Where(m => m.OutCount == -1))
-                    m.OutCount = MixLibrary.GetMixOutCount(m.Track);
+                    m.OutCount = ShufflerApplication.GetMixOutCount(m.Track);
 
             TrackModels = trackModels;
 
@@ -597,7 +566,7 @@ namespace Halloumi.Shuffler.Controls
             grdTracks.RestoreSelectedRows();
             grdTracks.InvalidateDisplayedRows();
 
-            SetToolStripLabel(Library.TrackCount(), availableTracks.Count, displayedTracks.Count);
+            SetToolStripLabel(ShufflerApplication.GetLibraryTrackCount(), availableTracks.Count, displayedTracks.Count);
 
             _binding = false;
 
@@ -645,14 +614,14 @@ namespace Halloumi.Shuffler.Controls
             else if (e.ColumnIndex == 7)
             {
                 if (trackModel.InCount == -1)
-                    trackModel.InCount = MixLibrary.GetMixInCount(trackModel.Track);
+                    trackModel.InCount = ShufflerApplication.GetMixInCount(trackModel.Track);
                 e.Value = trackModel.InCount;
             }
 
             else if (e.ColumnIndex == 8)
             {
                 if (trackModel.OutCount == -1)
-                    trackModel.OutCount = MixLibrary.GetMixOutCount(trackModel.Track);
+                    trackModel.OutCount = ShufflerApplication.GetMixOutCount(trackModel.Track);
                 e.Value = trackModel.OutCount;
             }
             else if (e.ColumnIndex == 10)
@@ -855,8 +824,8 @@ namespace Halloumi.Shuffler.Controls
         {
             var trackModel = GetTrackModelByIndex(index);
             if (trackModel == null) return null;
-            var track = Library.GetTrackByFilename(trackModel.Filename) ??
-                        Library.GetTracksByDescription(trackModel.Description).FirstOrDefault();
+            var track = ShufflerApplication.GetTrackByFilename(trackModel.Filename) ??
+                        ShufflerApplication.GetTracksByDescription(trackModel.Description).FirstOrDefault();
 
             return track;
         }
@@ -904,7 +873,7 @@ namespace Halloumi.Shuffler.Controls
 
                 if (!imlAlbumArt.Images.ContainsKey(album.Name))
                 {
-                    var image = Library.GetAlbumCover(album.Name, AvailableTracks);
+                    var image = ShufflerApplication.GetAlbumCover(album.Name, AvailableTracks);
                     if (image == null) continue;
 
                     using (var graphics = Graphics.FromImage(image))
@@ -935,7 +904,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateGenre
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Genre = GetSelectedGenre()
             };
             var result = form.ShowDialog();
@@ -953,7 +922,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmUpdateGenre
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -969,7 +938,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateAlbum
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Album = GetSelectedAlbum()
             };
             var result = form.ShowDialog();
@@ -987,7 +956,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmUpdateAlbum
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -1003,7 +972,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateArtist
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Album = GetSelectedAlbum()
             };
             var result = form.ShowDialog();
@@ -1021,7 +990,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmUpdateArtist
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -1038,7 +1007,7 @@ namespace Halloumi.Shuffler.Controls
             if (GetSelectedTrack() == null) return;
             var form = new FrmUpdateTrackDetails
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Track = GetSelectedTrack()
             };
             var result = form.ShowDialog();
@@ -1094,7 +1063,7 @@ namespace Halloumi.Shuffler.Controls
 
                 try
                 {
-                    Library.CopyAudioFromAnotherTrack(track, selectedFilePath);
+                    ShufflerApplication.CopyAudioFromAnotherTrack(track, selectedFilePath);
                 }
                 catch (Exception ex)
                 {
@@ -1117,7 +1086,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var track = GetSelectedTrack();
             if (track == null) return;
-            if (FrmShufflerDetails.OpenForm(track.Filename, BassPlayer, Library) == DialogResult.OK)
+            if (FrmShufflerDetails.OpenForm(track.Filename, ShufflerApplication.BassPlayer, ShufflerApplication.Library) == DialogResult.OK)
             {
                 BindData();
 
@@ -1146,10 +1115,10 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmEditTrackSamples
             {
-                BassPlayer = BassPlayer,
+                BassPlayer = ShufflerApplication.BassPlayer,
                 Filename = GetSelectedTrack().Filename,
-                TrackSampleLibrary = TrackSampleLibrary,
-                Library = Library
+                TrackSampleLibrary = ShufflerApplication.TrackSampleLibrary,
+                Library = ShufflerApplication.Library
             };
 
             form.ShowDialog();
@@ -1162,7 +1131,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateArtist
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Artist = GetSelectedArtist()
             };
             var result = form.ShowDialog();
@@ -1321,8 +1290,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Library.ImportTracks();
-            Library.CleanLibrary();
+            ShufflerApplication.ImportAndCleanLibrary();
         }
 
         /// <summary>
@@ -1425,7 +1393,7 @@ namespace Halloumi.Shuffler.Controls
             if (!MessageBoxHelper.Confirm(message)) return;
 
             foreach (var track in tracks)
-                Library.RemoveShufflerDetails(track);
+                ShufflerApplication.RemoveShufflerDetails(track);
 
             BindData();
         }
@@ -1462,7 +1430,7 @@ namespace Halloumi.Shuffler.Controls
                 currentMixRank = GetSelectedTrack().Rank;
             for (var i = 0; i < 6; i++)
             {
-                mnuRank.DropDownItems[i].Text = MixLibrary.GetRankDescription(5 - i);
+                mnuRank.DropDownItems[i].Text = ShufflerApplication.GetMixRankDescription(5 - i);
                 ((ToolStripMenuItem) mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
@@ -1526,7 +1494,7 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             var form = new FrmAddPlaylist
             {
-                Library = Library,
+                Library = ShufflerApplication.Library,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -1820,7 +1788,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var tracks = GetSelectedTracks().Where(t => t.IsShufflerTrack);
             foreach (var track in tracks)
-                TrackSampleLibrary.ExportMixSectionsAsSamples(track);
+                ShufflerApplication.ExportMixSectionsAsSamples(track);
         }
 
         public void ImportCollection()
