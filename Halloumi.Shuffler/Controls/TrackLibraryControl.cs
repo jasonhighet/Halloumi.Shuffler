@@ -105,19 +105,49 @@ namespace Halloumi.Shuffler.Controls
             SetTrackRankFilter();
         }
 
-        private string SearchFilter { get; set; }
+        public TrackFilter Filter { get; } = TrackFilter.Default();
 
-        public string CollectionFilter { get; internal set; }
+        private string SearchFilter
+        {
+            get => Filter.SearchText;
+            set => Filter.SearchText = value;
+        }
 
-        public string ExcludeCollectionFilter { get; internal set; }
+        public string CollectionFilter
+        {
+            get => Filter.Collection;
+            set => Filter.Collection = value;
+        }
 
-        private Library.ShufflerFilter ShufflerFilter { get; set; }
+        public string ExcludeCollectionFilter
+        {
+            get => Filter.ExcludeCollection;
+            set => Filter.ExcludeCollection = value;
+        }
 
-        private Library.TrackRankFilter TrackRankFilter { get; set; }
+        private Library.ShufflerFilter ShufflerFilter
+        {
+            get => Filter.ShufflerFilter;
+            set => Filter.ShufflerFilter = value;
+        }
 
-        private int MinBpm { get; set; } = TrackFilter.Default().MinBpm;
+        private Library.TrackRankFilter TrackRankFilter
+        {
+            get => Filter.TrackRankFilter;
+            set => Filter.TrackRankFilter = value;
+        }
 
-        private int MaxBpm { get; set; } = TrackFilter.Default().MaxBpm;
+        private int MinBpm
+        {
+            get => Filter.MinBpm;
+            set => Filter.MinBpm = value;
+        }
+
+        private int MaxBpm
+        {
+            get => Filter.MaxBpm;
+            set => Filter.MaxBpm = value;
+        }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1178,20 +1208,20 @@ namespace Halloumi.Shuffler.Controls
                 var settings = SerializationHelper<Settings>.FromXmlFile(filename);
 
                 txtSearch.Text = settings.TxtSearchText;
-                SearchFilter = settings.TxtSearchText;
+                Filter.SearchText = settings.TxtSearchText;
 
                 txtMinBPM.Text = settings.TxtMinBpmText;
-                MinBpm = ConversionHelper.ToInt(settings.TxtMinBpmText, TrackFilter.Default().MinBpm);
+                Filter.MinBpm = ConversionHelper.ToInt(settings.TxtMinBpmText, TrackFilter.Default().MinBpm);
 
                 txtMaxBPM.Text = settings.TxtMaxBpmText;
-                MaxBpm = ConversionHelper.ToInt(settings.TxtMaxBpmText, TrackFilter.Default().MaxBpm);
+                Filter.MaxBpm = ConversionHelper.ToInt(settings.TxtMaxBpmText, TrackFilter.Default().MaxBpm);
 
                 cmbQueued.SelectedIndex = settings.CmbQueuedSelectedIndex;
                 cmbShufflerFilter.SelectedIndex = settings.CmbShufflerFilterSelectedIndex;
                 cmbTrackRankFilter.SelectedIndex = settings.CmbTrackRankFilterSelectedIndex;
 
-                CollectionFilter = settings.Collection;
-                ExcludeCollectionFilter = settings.ExcludedCollection;
+                Filter.Collection = settings.Collection;
+                Filter.ExcludeCollection = settings.ExcludedCollection;
 
                 if (settings.SortColumnName != "")
                     for (var i = 0; i < grdTracks.Columns.Count; i++)
