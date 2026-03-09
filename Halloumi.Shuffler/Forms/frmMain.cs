@@ -107,6 +107,7 @@ namespace Halloumi.Shuffler.Forms
             
             
 
+            shufflerController.Application = _application;
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
             shufflerController.BassPlayer = application.BassPlayer;
@@ -252,6 +253,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 _autoGenerateSettings = new FrmGeneratePlaylist
                 {
+                    Application = _application,
                     LibraryControl = trackLibraryControl,
                     PlaylistControl = playlistControl
                 };
@@ -681,6 +683,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 _generatePlaylist = new FrmGeneratePlaylist
                 {
+                    Application = _application,
                     LibraryControl = trackLibraryControl,
                     PlaylistControl = playlistControl
                 };

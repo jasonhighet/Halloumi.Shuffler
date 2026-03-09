@@ -12,7 +12,8 @@
       "MultiEdit",
       "Write",
       "WebFetch",
-      "WebSearch"
+      "WebSearch",
+      "Bash(dotnet build Halloumi.Shuffler.sln -p:Platform=x86)"
     ]
   }
 }

@@ -1,16 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.Controls;
-using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -25,6 +22,9 @@ namespace Halloumi.Shuffler.Forms
 
         private bool _cancel;
         private List<Track> _displayedTracks;
+        private List<Track> _allShufflerTracks;
+        private List<Track> _currentPlaylist;
+        private PlaylistGenerationRequest _pendingRequest;
 
         private ScreenMode _screenMode;
 
@@ -37,10 +37,15 @@ namespace Halloumi.Shuffler.Forms
 
             Load += frmGeneratePlaylist_Load;
 
-            TrackSelector = new TrackSelector();
-
             InitialiseControls();
         }
+
+        /// <summary>
+        ///     Gets or sets the shuffler application.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication Application { get; set; }
 
         /// <summary>
         ///     Gets or sets the library control.
@@ -55,11 +60,6 @@ namespace Halloumi.Shuffler.Forms
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the track selector.
-        /// </summary>
-        private TrackSelector TrackSelector { get; }
 
         private void frmGeneratePlaylist_Load(object sender, EventArgs e)
         {
@@ -165,25 +165,25 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void LoadSettings()
         {
+            if (Application == null) return;
             try
             {
-                var settings = GetSettings();
-
-                cmbBmpDirection.SelectedIndex = settings.CmbBpmDirectionSelectedIndex;
-                cmbDirection.SelectedIndex = settings.CmbGenerateDirectionSelectedIndex;
-                cmbAllowBearable.SelectedIndex = settings.CmbAllowBearableSelectedIndex;
-                cmbApproxLength.SelectedIndex = settings.CmbApproxLengthSelectedIndex;
-                cmbMode.SelectedIndex = settings.CmbModeSelectedIndex;
-                txtExcludeTracks.Text = settings.TxtExcludeTracksText;
-                cmbExtendedMixes.SelectedIndex = settings.CmbExtendedMixesSelectedIndex;
-                chkExlcudeMixesOnly.Checked = settings.ChkExlcudeMixesOnlyChecked;
-                chkRestrictArtistClumping.Checked = settings.ChkRestrictArtistClumpingChecked;
-                chkRestrictGenreClumping.Checked = settings.ChkRestrictGenreClumpingChecked;
-                chkRestrictTitleClumping.Checked = settings.ChkRestrictTitleClumpingChecked;
-                chkDisplayedTracksOnly.Checked = settings.ChkDisplayedTracksOnlyChecked;
-                cmbTracksToGenerate.SelectedIndex = settings.CmbTracksToGenerateSelectedIndex;
-                cmbContinueMix.SelectedIndex = settings.CmbContinueMixSelectedIndex;
-                cmbKeyMixing.SelectedIndex = settings.CmbKeyMixingSelectedIndex;
+                var request = Application.LoadPlaylistGenerationSettings();
+                SetComboFromEnum(cmbBmpDirection, request.BpmDirection);
+                SetComboFromEnum(cmbDirection, request.Direction);
+                SetComboFromEnum(cmbAllowBearable, request.AllowBearable);
+                SetComboFromEnum(cmbMode, request.Strategy);
+                SetComboFromEnum(cmbKeyMixing, request.KeyMixStrategy);
+                SetComboFromEnum(cmbContinueMix, request.ContinueMix);
+                SetComboFromEnum(cmbExtendedMixes, request.UseExtendedMixes);
+                txtExcludeTracks.Text = request.ExcludeFromPlaylistFile;
+                chkExlcudeMixesOnly.Checked = request.ExcludeMixesOnly;
+                chkRestrictArtistClumping.Checked = request.RestrictArtistClumping;
+                chkRestrictGenreClumping.Checked = request.RestrictGenreClumping;
+                chkRestrictTitleClumping.Checked = request.RestrictTitleClumping;
+                chkDisplayedTracksOnly.Checked = request.DisplayedTracksOnly;
+                SetApproxLengthCombo(request.ApproximateLengthMinutes);
+                SetTracksToGenerateCombo(request.MaxTracksToAdd);
             }
             catch
             {
@@ -191,15 +191,42 @@ namespace Halloumi.Shuffler.Forms
             }
         }
 
-        private static Settings GetSettings()
+        private static void SetComboFromEnum<T>(Halloumi.Common.Windows.Controls.ComboBox combo, T value)
         {
-            var settings = new Settings();
-            var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.frmGeneratePlaylist.xml");
-            if (File.Exists(filename))
+            var text = Regex.Replace(value.ToString(), "([A-Z])", " $1").Trim();
+            SetComboText(combo, text);
+        }
+
+        private static void SetComboText(Halloumi.Common.Windows.Controls.ComboBox combo, string text)
+        {
+            for (var i = 0; i < combo.Items.Count; i++)
             {
-                settings = SerializationHelper<Settings>.FromXmlFile(filename);
+                if (combo.Items[i].ToString() == text)
+                {
+                    combo.SelectedIndex = i;
+                    return;
+                }
             }
-            return settings;
+        }
+
+        private void SetApproxLengthCombo(int minutes)
+        {
+            if (minutes == int.MaxValue)
+            {
+                cmbApproxLength.SelectedIndex = 0;
+                return;
+            }
+            SetComboText(cmbApproxLength, minutes + " minutes");
+        }
+
+        private void SetTracksToGenerateCombo(int maxTracks)
+        {
+            if (maxTracks == int.MaxValue)
+            {
+                cmbTracksToGenerate.SelectedIndex = 0;
+                return;
+            }
+            SetComboText(cmbTracksToGenerate, maxTracks.ToString());
         }
 
         /// <summary>
@@ -207,27 +234,50 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void SaveSettings()
         {
-            var settings = new Settings
-            {
-                CmbBpmDirectionSelectedIndex = cmbBmpDirection.SelectedIndex,
-                CmbAllowBearableSelectedIndex = cmbAllowBearable.SelectedIndex,
-                CmbGenerateDirectionSelectedIndex = cmbDirection.SelectedIndex,
-                CmbApproxLengthSelectedIndex = cmbApproxLength.SelectedIndex,
-                CmbModeSelectedIndex = cmbMode.SelectedIndex,
-                TxtExcludeTracksText = txtExcludeTracks.Text,
-                CmbExtendedMixesSelectedIndex = cmbExtendedMixes.SelectedIndex,
-                ChkExlcudeMixesOnlyChecked = chkExlcudeMixesOnly.Checked,
-                ChkRestrictArtistClumpingChecked = chkRestrictArtistClumping.Checked,
-                ChkRestrictGenreClumpingChecked = chkRestrictGenreClumping.Checked,
-                ChkRestrictTitleClumpingChecked = chkRestrictTitleClumping.Checked,
-                ChkDisplayedTracksOnlyChecked = chkDisplayedTracksOnly.Checked,
-                CmbTracksToGenerateSelectedIndex = cmbTracksToGenerate.SelectedIndex,
-                CmbContinueMixSelectedIndex = cmbContinueMix.SelectedIndex,
-                CmbKeyMixingSelectedIndex = cmbKeyMixing.SelectedIndex
-            };
+            if (Application == null) return;
+            Application.SavePlaylistGenerationSettings(BuildRequestFromUi());
+        }
 
-            var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.frmGeneratePlaylist.xml");
-            SerializationHelper<Settings>.ToXmlFile(settings, filename);
+        /// <summary>
+        ///     Builds a PlaylistGenerationRequest from current UI state (call on UI thread only).
+        /// </summary>
+        private PlaylistGenerationRequest BuildRequestFromUi()
+        {
+            return new PlaylistGenerationRequest
+            {
+                Strategy = ParseEnum<TrackSelector.MixStrategy>(cmbMode.Text),
+                BpmDirection = ParseEnum<TrackSelector.BpmDirection>(cmbBmpDirection.Text),
+                Direction = ParseEnum<TrackSelector.GenerateDirection>(cmbDirection.Text),
+                AllowBearable = ParseEnum<TrackSelector.AllowBearableMixStrategy>(cmbAllowBearable.Text),
+                ContinueMix = ParseEnum<TrackSelector.ContinueMix>(cmbContinueMix.Text),
+                KeyMixStrategy = ParseEnum<TrackSelector.KeyMixStrategy>(cmbKeyMixing.Text),
+                UseExtendedMixes = ParseEnum<TrackSelector.UseExtendedMixes>(cmbExtendedMixes.Text),
+                RestrictArtistClumping = chkRestrictArtistClumping.Checked,
+                RestrictGenreClumping = chkRestrictGenreClumping.Checked,
+                RestrictTitleClumping = chkRestrictTitleClumping.Checked,
+                ExcludeFromPlaylistFile = txtExcludeTracks.Text,
+                ExcludeMixesOnly = chkExlcudeMixesOnly.Checked,
+                DisplayedTracksOnly = chkDisplayedTracksOnly.Checked,
+                ApproximateLengthMinutes = ParseApproxLength(),
+                MaxTracksToAdd = ParseTracksToAdd()
+            };
+        }
+
+        private static T ParseEnum<T>(string text) where T : struct
+        {
+            return (T)Enum.Parse(typeof(T), text.Replace(" ", ""));
+        }
+
+        private int ParseApproxLength()
+        {
+            var text = cmbApproxLength.Text.Replace(" minutes", "");
+            return text == "No limit" ? int.MaxValue : int.Parse(text);
+        }
+
+        private int ParseTracksToAdd()
+        {
+            int n;
+            return int.TryParse(cmbTracksToGenerate.Text, out n) ? n : int.MaxValue;
         }
 
         /// <summary>
@@ -316,16 +366,13 @@ namespace Halloumi.Shuffler.Forms
                 tracks = tracks.Take(additionalTrackCount).ToList();
                 tracks.Reverse();
 
-                //this.PlaylistControl.ClearTracks();
                 PlaylistControl.QueueTracks(tracks);
             }
             else
             {
                 this.PlaylistControl.ClearTracks();
                 PlaylistControl.QueueTracks(tracks);
-
             }
-
         }
 
         /// <summary>
@@ -333,7 +380,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void btnStop_Click(object sender, EventArgs e)
         {
-            TrackSelector.StopGeneratePlayList();
+            Application.StopPlaylistGeneration();
         }
 
         /// <summary>
@@ -344,7 +391,7 @@ namespace Halloumi.Shuffler.Forms
             if (backgroundWorker.IsBusy)
             {
                 _cancel = true;
-                TrackSelector.CancelGeneratePlayList();
+                Application.CancelPlaylistGeneration();
             }
             else
             {
@@ -358,110 +405,23 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            List<Track> availableTracks;
+            var request = _pendingRequest;
 
-            if (chkDisplayedTracksOnly.Checked)
-            {
-                availableTracks = _displayedTracks;
-            }
-            else
-            {
-                availableTracks = LibraryControl
-                    .AvailableTracks
-                    .Where(t => t.IsShufflerTrack)
-                    .ToList();
-            }
+            // Apply mode-specific overrides
+            if (_screenMode != ScreenMode.GeneratePlaylist)
+                request.ApproximateLengthMinutes = int.MaxValue;
+            if (_screenMode != ScreenMode.AutoGeneratePlaylist)
+                request.MaxTracksToAdd = int.MaxValue;
 
-            var strategy =
-                (TrackSelector.MixStrategy)
-                    Enum.Parse(typeof(TrackSelector.MixStrategy), cmbMode.GetTextThreadSafe().Replace(" ", ""));
-
-            Dictionary<string, Dictionary<string, Track>> excludedMixes = null;
-
-            if (txtExcludeTracks.Text != "" && File.Exists(txtExcludeTracks.Text))
-            {
-                var excludeTracks = PlaylistHelper.GetFilesInPlaylist(txtExcludeTracks.Text)
-                    .Select(f => LibraryControl.Library.GetTrackByFilename(f))
-                    .Where(t => t != null)
-                    .ToList();
-
-                if (chkExlcudeMixesOnly.Checked)
-                {
-                    if (excludeTracks.Count > 1)
-                        excludedMixes = LibraryControl.MixLibrary.ConvertPlaylistToMixDictionary(excludeTracks);
-                }
-                else
-                {
-                    var excludeTrackTitles = excludeTracks
-                        .Select(t => t.Title)
-                        .ToList();
-                    availableTracks.RemoveAll(t => excludeTrackTitles.Contains(t.Title));
-                }
-            }
-
-            var bpmDirection =
-                (TrackSelector.BpmDirection) Enum.Parse(typeof(TrackSelector.BpmDirection), cmbBmpDirection.GetTextThreadSafe());
-
-            var direction =
-                (TrackSelector.GenerateDirection)Enum.Parse(typeof(TrackSelector.GenerateDirection), cmbDirection.GetTextThreadSafe());
-
-
-            var allowBearable =
-                (TrackSelector.AllowBearableMixStrategy)
-                    Enum.Parse(typeof(TrackSelector.AllowBearableMixStrategy),
-                        cmbAllowBearable.GetTextThreadSafe().Replace(" ", ""));
-
-            var approxLength = int.MaxValue;
-            if (_screenMode == ScreenMode.GeneratePlaylist)
-            {
-                var comboText = cmbApproxLength.GetTextThreadSafe().Replace(" minutes", "");
-                if (comboText != "No limit")
-                    approxLength = Convert.ToInt32(comboText);
-            }
-
-            var continueMix =
-                (TrackSelector.ContinueMix)
-                    Enum.Parse(typeof(TrackSelector.ContinueMix), cmbContinueMix.GetTextThreadSafe().Replace(" ", ""));
-
-            var keyMixStrategy =
-                (TrackSelector.KeyMixStrategy)
-                    Enum.Parse(typeof(TrackSelector.KeyMixStrategy), cmbKeyMixing.GetTextThreadSafe().Replace(" ", ""));
-
-            var useExtendedMixes =
-                (TrackSelector.UseExtendedMixes)
-                    Enum.Parse(typeof(TrackSelector.UseExtendedMixes),
-                        cmbExtendedMixes.GetTextThreadSafe().Replace(" ", ""));
-
-            var tracksToAdd = int.MaxValue;
-            if (_screenMode == ScreenMode.AutoGeneratePlaylist)
-            {
-                tracksToAdd = Convert.ToInt32(cmbTracksToGenerate.GetTextThreadSafe());
-            }
-
-            var mixPath = TrackSelector.GeneratePlayList(availableTracks,
-                LibraryControl.MixLibrary,
-                PlaylistControl.GetTracks(),
-                bpmDirection,
-                approxLength,
-                allowBearable,
-                strategy,
-                useExtendedMixes,
-                excludedMixes,
-                chkRestrictArtistClumping.Checked,
-                chkRestrictGenreClumping.Checked,
-                chkRestrictTitleClumping.Checked,
-                continueMix,
-                keyMixStrategy,
-                tracksToAdd,
-                direction);
+            var availableTracks = request.DisplayedTracksOnly ? _displayedTracks : _allShufflerTracks;
+            var tracks = Application.GeneratePlaylist(request, availableTracks, _currentPlaylist);
 
             if (!_cancel)
             {
                 if (InvokeRequired)
-                {
-                    BeginInvoke(new MethodInvoker(() => QueueTracks(mixPath, direction)));
-                }
-                else QueueTracks(mixPath, direction);
+                    BeginInvoke(new MethodInvoker(() => QueueTracks(tracks, request.Direction)));
+                else
+                    QueueTracks(tracks, request.Direction);
             }
         }
 
@@ -470,9 +430,9 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void timer_Tick(object sender, EventArgs e)
         {
-            var status = TrackSelector.GeneratePlayListStatus;
+            var status = Application.PlaylistGenerationStatus;
             if (status != lblStatus.Text && status != "")
-                lblStatus.Text = TrackSelector.GeneratePlayListStatus;
+                lblStatus.Text = status;
         }
 
         /// <summary>
@@ -502,6 +462,14 @@ namespace Halloumi.Shuffler.Forms
                 .Where(t => t.IsShufflerTrack)
                 .ToList();
 
+            _allShufflerTracks = LibraryControl
+                .AvailableTracks
+                .Where(t => t.IsShufflerTrack)
+                .ToList();
+
+            _currentPlaylist = PlaylistControl.GetTracks();
+            _pendingRequest = BuildRequestFromUi();
+
             backgroundWorker.RunWorkerAsync();
             timer.Start();
         }
@@ -523,58 +491,6 @@ namespace Halloumi.Shuffler.Forms
         private void btnOK_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        public class Settings
-        {
-            public Settings()
-            {
-                CmbBpmDirectionSelectedIndex = 0;
-                CmbGenerateDirectionSelectedIndex = 0;
-                CmbAllowBearableSelectedIndex = 0;
-                CmbApproxLengthSelectedIndex = 0;
-                CmbModeSelectedIndex = 0;
-                TxtExcludeTracksText = "";
-                CmbExtendedMixesSelectedIndex = 0;
-                ChkExlcudeMixesOnlyChecked = false;
-                ChkRestrictArtistClumpingChecked = false;
-                ChkRestrictGenreClumpingChecked = false;
-                ChkDisplayedTracksOnlyChecked = false;
-                ChkRestrictTitleClumpingChecked = false;
-                CmbTracksToGenerateSelectedIndex = 0;
-                CmbContinueMixSelectedIndex = 0;
-                CmbKeyMixingSelectedIndex = 0;
-            }
-
-            public int CmbBpmDirectionSelectedIndex { get; set; }
-
-            public int CmbGenerateDirectionSelectedIndex { get; set; }
-
-            public int CmbAllowBearableSelectedIndex { get; set; }
-
-            public int CmbApproxLengthSelectedIndex { get; set; }
-
-            public int CmbModeSelectedIndex { get; set; }
-
-            public string TxtExcludeTracksText { get; set; }
-
-            public int CmbExtendedMixesSelectedIndex { get; set; }
-
-            public bool ChkExlcudeMixesOnlyChecked { get; set; }
-
-            public bool ChkRestrictArtistClumpingChecked { get; set; }
-
-            public bool ChkRestrictGenreClumpingChecked { get; set; }
-
-            public bool ChkRestrictTitleClumpingChecked { get; set; }
-
-            public bool ChkDisplayedTracksOnlyChecked { get; set; }
-
-            public int CmbTracksToGenerateSelectedIndex { get; set; }
-
-            public int CmbContinueMixSelectedIndex { get; set; }
-
-            public int CmbKeyMixingSelectedIndex { get; set; }
         }
     }
 }

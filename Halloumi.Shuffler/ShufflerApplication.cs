@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
@@ -20,6 +22,19 @@ namespace Halloumi.Shuffler
         private frmPluginSettings _pluginSettingsForm;
 
         private bool _useConservativeFadeOut;
+
+        private readonly TrackSelector _trackSelector = new TrackSelector();
+
+        private static string PlaylistSettingsFilename
+        {
+            get
+            {
+                return Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Halloumi",
+                    "Halloumi.Shuffler.PlaylistGenerationSettings.xml");
+            }
+        }
 
         public ShufflerApplication()
         {
@@ -371,6 +386,81 @@ namespace Halloumi.Shuffler
             settings.EnableSampleAutomation = BassPlayer.SampleAutomationEnabled;
 
             settings.Save();
+        }
+
+        public List<Track> GeneratePlaylist(
+            PlaylistGenerationRequest request,
+            List<Track> availableTracks,
+            List<Track> currentPlaylist)
+        {
+            Dictionary<string, Dictionary<string, Track>> excludedMixes = null;
+
+            if (!string.IsNullOrEmpty(request.ExcludeFromPlaylistFile)
+                && File.Exists(request.ExcludeFromPlaylistFile))
+            {
+                var excludeTracks = PlaylistHelper
+                    .GetFilesInPlaylist(request.ExcludeFromPlaylistFile)
+                    .Select(f => Library.GetTrackByFilename(f))
+                    .Where(t => t != null)
+                    .ToList();
+
+                if (request.ExcludeMixesOnly)
+                {
+                    if (excludeTracks.Count > 1)
+                        excludedMixes = MixLibrary.ConvertPlaylistToMixDictionary(excludeTracks);
+                }
+                else
+                {
+                    var excludeTitles = excludeTracks.Select(t => t.Title).ToList();
+                    availableTracks.RemoveAll(t => excludeTitles.Contains(t.Title));
+                }
+            }
+
+            return _trackSelector.GeneratePlayList(
+                availableTracks,
+                MixLibrary,
+                currentPlaylist,
+                request.BpmDirection,
+                request.ApproximateLengthMinutes,
+                request.AllowBearable,
+                request.Strategy,
+                request.UseExtendedMixes,
+                excludedMixes,
+                request.RestrictArtistClumping,
+                request.RestrictGenreClumping,
+                request.RestrictTitleClumping,
+                request.ContinueMix,
+                request.KeyMixStrategy,
+                request.MaxTracksToAdd,
+                request.Direction);
+        }
+
+        public void StopPlaylistGeneration()
+        {
+            _trackSelector.StopGeneratePlayList();
+        }
+
+        public void CancelPlaylistGeneration()
+        {
+            _trackSelector.CancelGeneratePlayList();
+        }
+
+        public string PlaylistGenerationStatus
+        {
+            get { return _trackSelector.GeneratePlayListStatus; }
+        }
+
+        public void SavePlaylistGenerationSettings(PlaylistGenerationRequest request)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(PlaylistSettingsFilename));
+            SerializationHelper<PlaylistGenerationRequest>.ToXmlFile(request, PlaylistSettingsFilename);
+        }
+
+        public PlaylistGenerationRequest LoadPlaylistGenerationSettings()
+        {
+            if (File.Exists(PlaylistSettingsFilename))
+                return SerializationHelper<PlaylistGenerationRequest>.FromXmlFile(PlaylistSettingsFilename);
+            return PlaylistGenerationRequest.Default();
         }
 
         public void ShowPlugin(VstPlugin plugin)
