@@ -392,12 +392,13 @@ namespace Halloumi.Shuffler.AudioLibrary
         private List<Track> GetDistinctToTracksFromMixes(List<MixRanking> mixRankings)
         {
             var tracks = GetToTracksFromMixes(mixRankings);
-            var trackNames = tracks.Select(t => t.Description).Distinct().ToList();
-
-            return trackNames
-                .Select(trackName => tracks.FirstOrDefault(t => t.Description == trackName))
-                .Where(distinctTrack => distinctTrack != null)
-                .ToList();
+            var seen = new Dictionary<string, Track>(tracks.Count);
+            foreach (var track in tracks)
+            {
+                if (!seen.ContainsKey(track.Description))
+                    seen[track.Description] = track;
+            }
+            return seen.Values.ToList();
         }
 
         private List<Track> GetFromTracksFromMixes(IEnumerable<MixRanking> mixRankings)

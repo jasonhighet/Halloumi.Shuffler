@@ -76,6 +76,8 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private bool _stopGeneratePlayList;
 
+        private Dictionary<string, List<Track>> _mixCache;
+
         private List<Track> AvailableTracks { get; set; }
 
         private MixLibrary MixLibrary { get; set; }
@@ -154,6 +156,15 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (strategy == MixStrategy.Working) AvailableTracks.RemoveAll(t => MixLibrary.GetMixOutCount(t) == 0);
 
             if (AvailableTracks.Count == 0) return currentPlaylist;
+
+            _mixCache = new Dictionary<string, List<Track>>(AvailableTracks.Count * 4);
+            foreach (var track in AvailableTracks)
+            {
+                _mixCache["good:" + track.Description] = MixLibrary.GetGoodTracks(track);
+                _mixCache["bearable:" + track.Description] = MixLibrary.GetBearableTracks(track);
+                _mixCache["goodFrom:" + track.Description] = MixLibrary.GetGoodFromTracks(track);
+                _mixCache["bearableFrom:" + track.Description] = MixLibrary.GetBearableFromTracks(track);
+            }
 
             var availableTrackDescriptions = GetDistinctTrackDescriptions(AvailableTracks);
 
@@ -525,9 +536,15 @@ namespace Halloumi.Shuffler.AudioLibrary
             KeyMixStrategy keyMixStrategy,
             GenerateDirection direction)
         {
-            var mixTracks = direction == GenerateDirection.Forwards
-                ? MixLibrary.GetGoodTracks(currentTrack).ToList()
-                : MixLibrary.GetGoodFromTracks(currentTrack).ToList();
+            var goodKey = direction == GenerateDirection.Forwards
+                ? "good:" + currentTrack.Description
+                : "goodFrom:" + currentTrack.Description;
+            List<Track> cachedGood;
+            var mixTracks = (_mixCache != null && _mixCache.TryGetValue(goodKey, out cachedGood))
+                ? cachedGood.ToList()
+                : (direction == GenerateDirection.Forwards
+                    ? MixLibrary.GetGoodTracks(currentTrack)
+                    : MixLibrary.GetGoodFromTracks(currentTrack));
 
             mixTracks = mixTracks
                 .Where(t => !excludeTrackDescriptions.Contains(t.Description))
@@ -548,9 +565,15 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (bearableAllowed)
             {
-                var bearableTracks = direction == GenerateDirection.Forwards
-                        ? MixLibrary.GetBearableTracks(currentTrack).ToList()
-                        : MixLibrary.GetBearableFromTracks(currentTrack).ToList();
+                var bearableKey = direction == GenerateDirection.Forwards
+                    ? "bearable:" + currentTrack.Description
+                    : "bearableFrom:" + currentTrack.Description;
+                List<Track> cachedBearable;
+                var bearableTracks = (_mixCache != null && _mixCache.TryGetValue(bearableKey, out cachedBearable))
+                    ? cachedBearable.ToList()
+                    : (direction == GenerateDirection.Forwards
+                        ? MixLibrary.GetBearableTracks(currentTrack)
+                        : MixLibrary.GetBearableFromTracks(currentTrack));
 
                     bearableTracks = bearableTracks.Where(t => !excludeTrackDescriptions.Contains(t.Description))
                     .Where(t => availableTrackDescriptions.Contains(t.Description))
