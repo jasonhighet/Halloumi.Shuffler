@@ -730,5 +730,54 @@ namespace Halloumi.Shuffler
         // ── TrackSampleLibrary wrappers ─────────────────────────────────────
 
         public void ExportMixSectionsAsSamples(Track track) => TrackSampleLibrary.ExportMixSectionsAsSamples(track);
+
+        // ── Playlist file I/O ────────────────────────────────────────────────
+
+        private static string WorkingPlaylistFilename
+        {
+            get { return Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.WorkingPlaylist.xml"); }
+        }
+
+        public void SaveWorkingPlaylist(List<string> trackDescriptions)
+        {
+            SerializationHelper<List<string>>.ToXmlFile(trackDescriptions, WorkingPlaylistFilename);
+        }
+
+        public List<string> LoadWorkingPlaylist()
+        {
+            if (!File.Exists(WorkingPlaylistFilename))
+                return new List<string>();
+
+            return SerializationHelper<List<string>>
+                .FromXmlFile(WorkingPlaylistFilename)
+                .Select(x => Library.GetTrackByDescription(x))
+                .Where(x => x != null)
+                .Select(x => x.Filename)
+                .ToList();
+        }
+
+        public List<Track> GetTracksInPlaylist(string playlistName)
+        {
+            return CollectionHelper.GetTracksInPlaylistFile(playlistName);
+        }
+
+        public void SavePlaylist(string playlistFile, List<Track> tracks)
+        {
+            CollectionHelper.ExportPlaylist(playlistFile, tracks);
+        }
+
+        // ── Collection helpers ───────────────────────────────────────────────
+
+        public IEnumerable<string> GetCollectionsTracksArentIn(List<Track> tracks)
+            => CollectionHelper.GetCollectionsTracksArentIn(tracks);
+
+        public IEnumerable<string> GetCollectionsForTracks(List<Track> tracks)
+            => CollectionHelper.GetCollectionsForTracks(tracks);
+
+        public void AddTracksToCollection(string collection, List<Track> tracks)
+            => CollectionHelper.AddTracksToCollection(collection, tracks);
+
+        public void RemoveTracksFromCollection(string collection, List<Track> tracks)
+            => CollectionHelper.RemoveTracksFromCollection(collection, tracks);
     }
 }

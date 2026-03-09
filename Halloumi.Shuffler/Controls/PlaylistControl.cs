@@ -128,14 +128,6 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string CurrentPlaylistFile { get; internal set; }
 
-        /// <summary>
-        ///     Gets the name of the file where the track data is cached.
-        /// </summary>
-        private string WorkingPlaylistFilename
-        {
-            get { return Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.WorkingPlaylist.xml"); }
-        }
-
         private void mnuRemoveShufflerDetails_Click(object sender, EventArgs e)
         {
             var track = GetSelectedTrack();
@@ -483,7 +475,7 @@ namespace Halloumi.Shuffler.Controls
                 Application.DoEvents();
 
                 CurrentPlaylistFile = playlistName;
-                QueueTracks(CollectionHelper.GetTracksInPlaylistFile(playlistName));
+                QueueTracks(ShufflerApplication.GetTracksInPlaylist(playlistName));
             }
             catch (Exception e)
             {
@@ -695,7 +687,7 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                CollectionHelper.ExportPlaylist(playlistFile, GetTracks());
+                ShufflerApplication.SavePlaylist(playlistFile, GetTracks());
                 CurrentPlaylistFile = playlistFile;
             }
             catch (Exception e)
@@ -1060,7 +1052,7 @@ namespace Halloumi.Shuffler.Controls
         private void BindAddTrackToPlaylistMenu()
         {
             var selectedTracks = GetSelectedLibraryTracks();
-            var playlists = CollectionHelper.GetCollectionsTracksArentIn(selectedTracks);
+            var playlists = ShufflerApplication.GetCollectionsTracksArentIn(selectedTracks);
 
             // generate 'add to playlist' sub menu
             mnuAddTrackToCollection.DropDownItems.Clear();
@@ -1074,7 +1066,7 @@ namespace Halloumi.Shuffler.Controls
         {
             // generate 'remove from playlist' sub menu
             mnuRemoveTrackFromCollection.DropDownItems.Clear();
-            var selectedPlaylists = CollectionHelper.GetCollectionsForTracks(GetSelectedLibraryTracks());
+            var selectedPlaylists = ShufflerApplication.GetCollectionsForTracks(GetSelectedLibraryTracks());
             foreach (var playlist in selectedPlaylists)
                 mnuRemoveTrackFromCollection.DropDownItems.Add(playlist, null, mnuRemoveTrackFromPlaylist_Click);
             mnuRemoveTrackFromCollection.Visible = mnuRemoveTrackFromCollection.DropDownItems.Count > 0;
@@ -1089,7 +1081,7 @@ namespace Halloumi.Shuffler.Controls
             if (menu == null) return;
 
             var playlist = menu.Text;
-            CollectionHelper.AddTracksToCollection(playlist, GetSelectedLibraryTracks());
+            ShufflerApplication.AddTracksToCollection(playlist, GetSelectedLibraryTracks());
         }
 
         /// <summary>
@@ -1116,7 +1108,7 @@ namespace Halloumi.Shuffler.Controls
             if (menu == null) return;
 
             var playlist = menu.Text;
-            CollectionHelper.RemoveTracksFromCollection(playlist, GetSelectedLibraryTracks());
+            ShufflerApplication.RemoveTracksFromCollection(playlist, GetSelectedLibraryTracks());
         }
 
         /// <summary>
@@ -1130,21 +1122,14 @@ namespace Halloumi.Shuffler.Controls
 
         private void SaveWorkingPlaylist()
         {
-            var playlistFiles = TrackModels.Select(x => x.Description).ToList();
-            SerializationHelper<List<string>>.ToXmlFile(playlistFiles, WorkingPlaylistFilename);
+            ShufflerApplication.SaveWorkingPlaylist(TrackModels.Select(x => x.Description).ToList());
         }
 
         public void LoadWorkingPlaylist()
         {
-            if (!File.Exists(WorkingPlaylistFilename))
+            var playlistFiles = ShufflerApplication.LoadWorkingPlaylist();
+            if (playlistFiles.Count == 0)
                 return;
-
-            var playlistFiles = SerializationHelper<List<string>>
-                .FromXmlFile(WorkingPlaylistFilename)
-                .Select(x => Library.GetTrackByDescription(x))
-                .Where(x => x != null)
-                .Select(x => x.Filename)
-                .ToList();
 
             TrackModels = new List<TrackModel>();
             QueueFiles(playlistFiles);
