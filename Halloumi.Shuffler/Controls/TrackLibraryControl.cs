@@ -92,11 +92,12 @@ namespace Halloumi.Shuffler.Controls
             lstAlbum.BackColor = grdArtist.StateNormal.Background.Color1;
             lstAlbum.ForeColor = grdArtist.ForeColor;
 
-            CollectionFilter = "";
-            ExcludeCollectionFilter = "";
-            SearchFilter = "";
-            ShufflerFilter = Library.ShufflerFilter.None;
-            TrackRankFilter = Library.TrackRankFilter.None;
+            var defaults = TrackFilter.Default();
+            CollectionFilter = defaults.Collection;
+            ExcludeCollectionFilter = defaults.ExcludeCollection;
+            SearchFilter = defaults.SearchText;
+            ShufflerFilter = defaults.ShufflerFilter;
+            TrackRankFilter = defaults.TrackRankFilter;
 
             grdTracks.DefaultCellStyle.Font = _font;
 
@@ -114,9 +115,9 @@ namespace Halloumi.Shuffler.Controls
 
         private Library.TrackRankFilter TrackRankFilter { get; set; }
 
-        private int MinBpm { get; set; }
+        private int MinBpm { get; set; } = TrackFilter.Default().MinBpm;
 
-        private int MaxBpm { get; set; }
+        private int MaxBpm { get; set; } = TrackFilter.Default().MaxBpm;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -543,6 +544,18 @@ namespace Halloumi.Shuffler.Controls
 
             // Sorting is handled by ShufflerApplication.GetTracks — the displayedTracks list
             // is already in the correct order when it arrives here.
+            //
+            // Pre-populate InCount/OutCount when sorted by those columns so that
+            // grdTracks_CellValueNeeded doesn't call MixLibrary a second time per visible row
+            // (ShufflerApplication already paid the cost to sort, so cache the result here).
+            var sortPropertyName = grdTracks.SortedColumn?.DataPropertyName;
+            if (sortPropertyName == "InCount")
+                foreach (var m in trackModels.Where(m => m.InCount == -1))
+                    m.InCount = MixLibrary.GetMixInCount(m.Track);
+            if (sortPropertyName == "OutCount")
+                foreach (var m in trackModels.Where(m => m.OutCount == -1))
+                    m.OutCount = MixLibrary.GetMixOutCount(m.Track);
+
             TrackModels = trackModels;
 
             if (trackModels.Count != grdTracks.RowCount)
@@ -1168,10 +1181,10 @@ namespace Halloumi.Shuffler.Controls
                 SearchFilter = settings.TxtSearchText;
 
                 txtMinBPM.Text = settings.TxtMinBpmText;
-                MinBpm = ConversionHelper.ToInt(settings.TxtMinBpmText, 0);
+                MinBpm = ConversionHelper.ToInt(settings.TxtMinBpmText, TrackFilter.Default().MinBpm);
 
                 txtMaxBPM.Text = settings.TxtMaxBpmText;
-                MaxBpm = ConversionHelper.ToInt(settings.TxtMaxBpmText, 1000);
+                MaxBpm = ConversionHelper.ToInt(settings.TxtMaxBpmText, TrackFilter.Default().MaxBpm);
 
                 cmbQueued.SelectedIndex = settings.CmbQueuedSelectedIndex;
                 cmbShufflerFilter.SelectedIndex = settings.CmbShufflerFilterSelectedIndex;
