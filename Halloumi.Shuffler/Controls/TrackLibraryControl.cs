@@ -904,7 +904,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateGenre
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Genre = GetSelectedGenre()
             };
             var result = form.ShowDialog();
@@ -922,7 +922,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmUpdateGenre
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -938,7 +938,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateAlbum
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Album = GetSelectedAlbum()
             };
             var result = form.ShowDialog();
@@ -956,7 +956,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmUpdateAlbum
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -972,7 +972,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateArtist
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Album = GetSelectedAlbum()
             };
             var result = form.ShowDialog();
@@ -990,7 +990,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmUpdateArtist
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Tracks = tracks
             };
             var result = form.ShowDialog();
@@ -1132,7 +1132,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var form = new FrmUpdateArtist
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Artist = GetSelectedArtist()
             };
             var result = form.ShowDialog();

@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler;
 
@@ -21,8 +20,6 @@ namespace Halloumi.Shuffler.Forms
         public ShufflerApplication Application { get; set; }
 
         public BassPlayer BassPlayer { get; set; }
-
-        public Library Library { get; set; }
 
         public List<Track> SimilarTracks { get; set; }
 
@@ -50,7 +47,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (GetSelectedTrack() == null) return;
 
-            if (FrmShufflerDetails.OpenForm(GetSelectedTrack().Filename, BassPlayer, Library, Application) == DialogResult.OK)
+            if (FrmShufflerDetails.OpenForm(GetSelectedTrack().Filename, BassPlayer, Application.Library, Application) == DialogResult.OK)
             {
                 BindData();
             }
@@ -83,7 +80,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void frmSimilarTracks_Load(object sender, EventArgs e)
         {
-            SimilarTracks = Library.GetDuplicateButDifferentShufflerTracks();
+            SimilarTracks = Application.GetDuplicateButDifferentShufflerTracks();
             BindData();
         }
 
@@ -125,7 +122,7 @@ namespace Halloumi.Shuffler.Forms
 
             var form = new FrmUpdateTrackTitle
             {
-                Library = Library,
+                Application = Application,
                 Tracks = GetSelectedTracks()
             };
             form.ShowDialog();

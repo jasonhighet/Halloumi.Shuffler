@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -18,7 +17,7 @@ namespace Halloumi.Shuffler.Forms
             Album = "";
         }
 
-        public Library Library { get; set; }
+        public ShufflerApplication Application { get; set; }
         public string Artist { get; set; }
         public string Album { get; set; }
         public List<Track> Tracks { get; set; }
@@ -30,7 +29,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindData()
         {
-            var albums = Library.GetAllArtists();
+            var albums = Application.GetAllArtists();
             cmbArtist.ValueMember = "Name";
             cmbArtist.DisplayMember = "Name";
             cmbArtist.DataSource = albums;
@@ -40,7 +39,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 Text = "Update Album Artist";
 
-                var albumTracks = Library.GetAllTracksForAlbum(Album);
+                var albumTracks = Application.GetAllTracksForAlbum(Album);
                 if (albumTracks.Count > 0) cmbArtist.Text = albumTracks[0].AlbumArtist;
 
             }
@@ -67,19 +66,19 @@ namespace Halloumi.Shuffler.Forms
             if (cmbArtist.Text.Trim() == "") return;
 
             Cursor = Cursors.Hand;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             if (Album != "")
             {
-                Library.UpdateAlbumArtist(Album, cmbArtist.Text);
+                Application.UpdateAlbumArtist(Album, cmbArtist.Text);
             }
             else if (Tracks != null)
             {
-                Library.UpdateArtist(Tracks, cmbArtist.Text);
+                Application.UpdateArtist(Tracks, cmbArtist.Text);
             }
             else
             {
-                Library.RenameArtist(Artist, cmbArtist.Text);
+                Application.RenameArtist(Artist, cmbArtist.Text);
             }
 
             DialogResult = DialogResult.OK;

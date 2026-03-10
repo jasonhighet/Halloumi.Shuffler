@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -15,7 +14,7 @@ namespace Halloumi.Shuffler.Forms
             InitializeComponent();
         }
 
-        public Library Library { get; set; }
+        public ShufflerApplication Application { get; set; }
         public List<Track> Tracks { get; set; }
 
         private void frmUpdateTrackTitle_Load(object sender, EventArgs e)
@@ -43,7 +42,7 @@ namespace Halloumi.Shuffler.Forms
             if (cmbTitle.Text.Trim() == "") return;
 
             Cursor = Cursors.Hand;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
 
             var destinationTracks = Tracks.Where(t => t.Title != cmbTitle.Text).ToList();
@@ -51,7 +50,7 @@ namespace Halloumi.Shuffler.Forms
             {
                 try
                 {
-                    Library.UpdateTitle(track, cmbTitle.Text, chkUpdateAuxillaryFiles.Checked);
+                    Application.UpdateTitle(track, cmbTitle.Text, chkUpdateAuxillaryFiles.Checked);
                 }
                 catch (Exception e)
                 {

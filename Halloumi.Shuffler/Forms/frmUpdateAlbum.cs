@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -17,7 +16,7 @@ namespace Halloumi.Shuffler.Forms
             Album = "";
         }
 
-        public Library Library { get; set; }
+        public ShufflerApplication Application { get; set; }
         public string Album { get; set; }
         public List<Track> Tracks { get; set; }
 
@@ -29,7 +28,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void BindData()
         {
-            var albums = Library.GetAllAlbums();
+            var albums = Application.GetAllAlbums();
             cmbAlbum.ValueMember = "Name";
             cmbAlbum.DisplayMember = "Name";
             cmbAlbum.DataSource = albums;
@@ -57,15 +56,15 @@ namespace Halloumi.Shuffler.Forms
             if (cmbAlbum.Text.Trim() == "") return;
 
             Cursor = Cursors.Hand;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             if (Tracks != null)
             {
-                Library.UpdateAlbum(Tracks, cmbAlbum.Text);
+                Application.UpdateAlbum(Tracks, cmbAlbum.Text);
             }
             else
             {
-                Library.RenameAlbum(Album, cmbAlbum.Text);
+                Application.RenameAlbum(Album, cmbAlbum.Text);
             }
 
             DialogResult = DialogResult.OK;

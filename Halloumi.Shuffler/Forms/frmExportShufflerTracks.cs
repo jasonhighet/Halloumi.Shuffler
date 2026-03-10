@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
-using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler;
 
 namespace Halloumi.Shuffler.Forms
@@ -23,10 +21,6 @@ namespace Halloumi.Shuffler.Forms
 
         public ShufflerApplication Application { get; set; }
 
-        public Library Library { get; set; }
-
-        public TrackSampleLibrary TrackSampleLibrary { get; set; }
-
         /// <summary>
         ///     Handles the Load event of the frmSettings control.
         /// </summary>
@@ -40,8 +34,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            _tracks = Library.GetTracks(shufflerFilter: Library.ShufflerFilter.ShufflerTracks);
-            var sampleTracks = TrackSampleLibrary.GetAllTracks().Where(track => _tracks.All(x => x.Filename != track.Filename));
+            _tracks = Application.GetAllShufflerTracks();
+            var sampleTracks = Application.GetAllSampleTracks().Where(track => _tracks.All(x => x.Filename != track.Filename));
             _tracks.AddRange(sampleTracks);
 
             btnOK.Enabled = _tracks.Count > 0;
@@ -104,7 +98,7 @@ namespace Halloumi.Shuffler.Forms
                 progressDialog.Text = "Exporting " + track.Description;
                 progressDialog.Details += "Copying track " + track.Description + "...";
 
-                var destinationFile = track.Filename.Replace(Library.LibraryFolder, destinationFolder);
+                var destinationFile = track.Filename.Replace(Application.GetLibraryFolder(), destinationFolder);
                 var destinationSubFolder = Path.GetDirectoryName(destinationFile) + "";
 
                 var albumArt = Path.GetDirectoryName(track.Filename) + @"\folder.jpg";

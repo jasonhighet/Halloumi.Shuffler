@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -20,10 +19,7 @@ namespace Halloumi.Shuffler.Forms
             Genre = "";
         }
 
-        /// <summary>
-        /// Gets or sets the library.
-        /// </summary>
-        public Library Library { get; set; }
+        public ShufflerApplication Application { get; set; }
         
         /// <summary>
         /// Gets or sets the genre.
@@ -40,7 +36,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            var genres = Library.GetAllGenres();
+            var genres = Application.GetAllGenres();
             cmbGenre.ValueMember = "Name";
             cmbGenre.DisplayMember = "Name";
             cmbGenre.DataSource = genres;
@@ -65,15 +61,15 @@ namespace Halloumi.Shuffler.Forms
             if (cmbGenre.Text.Trim() == "") return;
 
             Cursor = Cursors.Hand;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             if (Tracks != null)
             {
-                Library.UpdateGenre(Tracks, cmbGenre.Text);
+                Application.UpdateGenre(Tracks, cmbGenre.Text);
             }
             else
             {
-                Library.RenameGenre(Genre, cmbGenre.Text);
+                Application.RenameGenre(Genre, cmbGenre.Text);
             }
 
             DialogResult = DialogResult.OK;

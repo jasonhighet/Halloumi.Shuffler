@@ -242,7 +242,6 @@ namespace Halloumi.Shuffler.Forms
             {
                 Application = _application,
                 BassPlayer = _application.BassPlayer,
-                Library = _application.Library,
             };
             similarTracks.ShowDialog();
         }
@@ -710,8 +709,6 @@ namespace Halloumi.Shuffler.Forms
             var exportPlaylist = new FrmExportShufflerTracks
             {
                 Application = _application,
-                Library = _application.Library,
-                TrackSampleLibrary = _application.TrackSampleLibrary
             };
             exportPlaylist.ShowDialog();
         }

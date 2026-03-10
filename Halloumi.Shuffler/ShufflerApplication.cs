@@ -786,6 +786,42 @@ namespace Halloumi.Shuffler
 
         public void RemoveShufflerDetails(Track track) => Library.RemoveShufflerDetails(track);
 
+        public void UpdateTitle(Track track, string title, bool updateAxillaryFiles)
+            => Library.UpdateTitle(track, title, updateAxillaryFiles);
+
+        public List<Track> GetAllTracksForAlbum(string albumName)
+            => Library.GetAllTracksForAlbum(albumName);
+
+        public void UpdateAlbumArtist(string album, string newAlbumArtist)
+            => Library.UpdateAlbumArtist(album, newAlbumArtist);
+
+        public void UpdateArtist(List<Track> tracks, string newArtist)
+            => Library.UpdateArtist(tracks, newArtist);
+
+        public void RenameArtist(string oldArtist, string newArtist)
+            => Library.RenameArtist(oldArtist, newArtist);
+
+        public void UpdateGenre(List<Track> tracks, string newGenre)
+            => Library.UpdateGenre(tracks, newGenre);
+
+        public void RenameGenre(string oldGenre, string newGenre)
+            => Library.RenameGenre(oldGenre, newGenre);
+
+        public void UpdateAlbum(List<Track> tracks, string newAlbum)
+            => Library.UpdateAlbum(tracks, newAlbum);
+
+        public void RenameAlbum(string oldAlbum, string newAlbum)
+            => Library.RenameAlbum(oldAlbum, newAlbum);
+
+        public List<Track> GetDuplicateButDifferentShufflerTracks()
+            => Library.GetDuplicateButDifferentShufflerTracks();
+
+        public List<Track> GetAllShufflerTracks()
+            => Library.GetTracks(shufflerFilter: Library.ShufflerFilter.ShufflerTracks);
+
+        public List<Track> GetAllSampleTracks()
+            => TrackSampleLibrary.GetAllTracks();
+
         // ── MixLibrary wrappers ─────────────────────────────────────────────
 
         public int GetMixInCount(Track track) => MixLibrary.GetMixInCount(track);

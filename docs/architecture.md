@@ -176,6 +176,7 @@ Add logic to `ShufflerApplication` when it:
 | `frmMonitorSettings.cs` | Active DJing feature (headphone cue output); `GetMonitorVolume`/`SetMonitorVolume` are low-level audio operations that will not be surfaced through `ShufflerApplication` |
 | `SampleLibraryControl.cs` | Active DJing feature; holds `BassPlayer` for sample previewing and `LinkLoopSampleToTrack` — too low-level to route through the facade |
 | `SamplePlayer.cs` | Active DJing feature; `PlaySample`/`PauseSample` are direct `BassPlayer` calls triggered by mouse events — low-level audio control that stays outside the facade |
+| `TrackWave.cs` | Active DJing feature; waveform display and real-time fade/skip point editor — calls `LoadRawLoopTrack`, `SetRawLoopPositions`, `PlayRawLoop`, `GetPosition`, and mutates `BassTrack` properties directly during user interaction |
 
 ## Design patterns in use
 
