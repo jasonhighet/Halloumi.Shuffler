@@ -36,7 +36,7 @@ namespace Halloumi.Shuffler.Forms
 
             var form = new FrmUpdateTrackDetails
             {
-                Library = Library,
+                Application = Application,
                 Track = selectedTrack
             };
             var result = form.ShowDialog();
@@ -108,7 +108,7 @@ namespace Halloumi.Shuffler.Forms
 
             var updateTrackAudio = new FrmUpdateTrackAudio
             {
-                Library = Library,
+                Application = Application,
                 DestinationTracks = GetSelectedTracks(),
                 SourceTracks = GetSimilarTracks(GetSelectedTrack())
             };

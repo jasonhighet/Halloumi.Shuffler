@@ -769,7 +769,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (_frmImportShufflerTracks == null || _frmImportShufflerTracks.IsDisposed)
             {
-                _frmImportShufflerTracks = new frmImportShufflerTracks {Library = _application.Library};
+                _frmImportShufflerTracks = new frmImportShufflerTracks {Application = _application};
             }
 
             if (!_frmImportShufflerTracks.Visible)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -15,7 +14,7 @@ namespace Halloumi.Shuffler.Forms
             InitializeComponent();
         }
 
-        public Library Library { get; set; }
+        public ShufflerApplication Application { get; set; }
         public List<Track> DestinationTracks { get; set; }
         public List<Track> SourceTracks { get; set; }
 
@@ -63,7 +62,7 @@ namespace Halloumi.Shuffler.Forms
             if (cmbSourceTrack.Text.Trim() == "") return;
 
             Cursor = Cursors.Hand;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             var sourceTrackFile = cmbSourceTrack.SelectedValue.ToString();
             var sourceTrack = SourceTracks.Where(t => t.Filename == sourceTrackFile).FirstOrDefault();
@@ -74,7 +73,7 @@ namespace Halloumi.Shuffler.Forms
 
                 try
                 {
-                    Library.CopyAudioFromAnotherTrack(destinationTrack, sourceTrack);
+                    Application.CopyAudioFromAnotherTrack(destinationTrack, sourceTrack.Filename);
                 }
                 catch (Exception e)
                 {

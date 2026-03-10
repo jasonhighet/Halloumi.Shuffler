@@ -778,6 +778,10 @@ namespace Halloumi.Shuffler
 
         public void CopyAudioFromAnotherTrack(Track track, string sourceFilename) => Library.CopyAudioFromAnotherTrack(track, sourceFilename);
 
+        public string GetLibraryFolder() => Library.LibraryFolder;
+
+        public void ImportExternalShufflerTracks(string folder) => Library.ImportExternalShufflerTracks(folder);
+
         public void ImportAndCleanLibrary() { Library.ImportTracks(); Library.CleanLibrary(); }
 
         public void RemoveShufflerDetails(Track track) => Library.RemoveShufflerDetails(track);

@@ -1007,7 +1007,7 @@ namespace Halloumi.Shuffler.Controls
             if (GetSelectedTrack() == null) return;
             var form = new FrmUpdateTrackDetails
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Track = GetSelectedTrack()
             };
             var result = form.ShowDialog();
