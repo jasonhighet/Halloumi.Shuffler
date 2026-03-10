@@ -748,6 +748,20 @@ namespace Halloumi.Shuffler
 
         public Image GetAlbumCover(string albumName, List<Track> tracks = null) => Library.GetAlbumCover(albumName, tracks);
 
+        public Track LoadNonLibraryTrack(string filename) => Library.LoadNonLibraryTrack(filename);
+
+        public bool SaveNonLibraryTrack(Track track) => Library.SaveNonLibraryTrack(track);
+
+        public void SetTrackAlbumCover(Track track, Image image) => Library.SetTrackAlbumCover(track, image);
+
+        public string GetExportPlaylistFolder() => Settings.Default.ExportPlaylistFolder;
+
+        public void SetExportPlaylistFolder(string folder)
+        {
+            Settings.Default.ExportPlaylistFolder = folder;
+            Settings.Default.Save();
+        }
+
         public void CopyAudioFromAnotherTrack(Track track, string sourceFilename) => Library.CopyAudioFromAnotherTrack(track, sourceFilename);
 
         public void ImportAndCleanLibrary() { Library.ImportTracks(); Library.CleanLibrary(); }

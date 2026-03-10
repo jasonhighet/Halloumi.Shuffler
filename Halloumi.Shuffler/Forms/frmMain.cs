@@ -620,7 +620,7 @@ namespace Halloumi.Shuffler.Forms
         {
             var exportPlaylist = new FrmExportPlaylist
             {
-                Library = _application.Library,
+                Application = _application,
                 Tracks = tracks,
                 PlaylistName = playlistName
             };

@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -20,7 +19,7 @@ namespace Halloumi.Shuffler.Forms
         }
 
 
-        public Library Library { get; set; }
+        public ShufflerApplication Application { get; set; }
         public List<Track> Tracks { get; set; }
         public string PlaylistName { get; set; }
 
@@ -57,8 +56,7 @@ namespace Halloumi.Shuffler.Forms
             btnOK.Enabled = Tracks.Count > 0;
 
 
-            var settings = Settings.Default;
-            txtOutputFolder.Text = settings.ExportPlaylistFolder;
+            txtOutputFolder.Text = Application.GetExportPlaylistFolder();
         }
 
         /// <summary>
@@ -129,7 +127,7 @@ namespace Halloumi.Shuffler.Forms
                     if (progressDialog.Cancelled) break;
 
 
-                    var destinationTrack = Library.LoadNonLibraryTrack(destination);
+                    var destinationTrack = Application.LoadNonLibraryTrack(destination);
 
                     destinationTrack.AlbumArtist = albumArtist;
                     destinationTrack.Album = txtAlbumName.Text;
@@ -138,10 +136,10 @@ namespace Halloumi.Shuffler.Forms
                     else
                         destinationTrack.TrackNumber = 0;
 
-                    Library.SaveNonLibraryTrack(destinationTrack);
+                    Application.SaveNonLibraryTrack(destinationTrack);
 
                     if (AlbumImage != null)
-                        Library.SetTrackAlbumCover(destinationTrack, AlbumImage);
+                        Application.SetTrackAlbumCover(destinationTrack, AlbumImage);
 
 
                     if (progressDialog.Cancelled) break;
@@ -178,9 +176,7 @@ namespace Halloumi.Shuffler.Forms
 
             progressDialog.Text = "Export completed.";
 
-            var settings = Settings.Default;
-            settings.ExportPlaylistFolder = txtOutputFolder.Text;
-            settings.Save();
+            Application.SetExportPlaylistFolder(txtOutputFolder.Text);
         }
 
         private void progressDialog_ProcessingCompleted(object sender, EventArgs e)
