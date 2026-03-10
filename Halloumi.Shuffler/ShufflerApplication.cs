@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
@@ -60,9 +61,20 @@ namespace Halloumi.Shuffler
             LoadFromDatabase();
 
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackQueued;
+            BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
             BassPlayer.OnSkipToEnd += BassPlayer_OnFadeEnded;
             BassPlayer.OnEndFadeIn += BassPlayer_OnFadeEnded;
         }
+
+        /// <summary>
+        /// Raised when BassPlayer changes the current track.
+        /// </summary>
+        public event EventHandler OnTrackChanged;
+
+        /// <summary>
+        /// Raised when a fade ends (BassPlayer.OnSkipToEnd or BassPlayer.OnEndFadeIn).
+        /// </summary>
+        public event EventHandler OnFadeEnded;
 
         /// <summary>
         /// Raised (on the BassPlayer thread) when auto-generation should run because
@@ -81,8 +93,14 @@ namespace Halloumi.Shuffler
         /// </summary>
         public int AutoGenerateTracksRemainingThreshold { get; set; }
 
+        private void BassPlayer_OnTrackChange(object sender, EventArgs e)
+        {
+            OnTrackChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private void BassPlayer_OnFadeEnded(object sender, EventArgs e)
         {
+            OnFadeEnded?.Invoke(this, EventArgs.Empty);
             if (!AutoGenerateEnabled) return;
             OnAutoGenerateRequired?.Invoke(this, EventArgs.Empty);
         }
@@ -686,6 +704,27 @@ namespace Halloumi.Shuffler
                 .ThenBy(t => t.Description)
                 .ToList();
         }
+
+        // ── BassPlayer wrappers ──────────────────────────────────────────────
+
+        public bool IsCurrentTrackNull => BassPlayer.CurrentTrack == null;
+
+        public string GetCurrentTrackDescription() => BassPlayer.CurrentTrack?.Description;
+
+        public string GetNextTrackDescription() => BassPlayer.NextTrack?.Description;
+
+        public void QueueTrack(string filename) => BassPlayer.QueueTrack(filename);
+
+        public void PreloadTrack(string filename) => BassPlayer.PreloadTrack(filename);
+
+        public void ForcePlay(string filename) => BassPlayer.ForcePlay(filename);
+
+        public void SkipToFadeOut() => BassPlayer.SkipToFadeOut();
+
+        public void Play() => BassPlayer.Play();
+
+        public DialogResult ShowShufflerDetails(string filename)
+            => Forms.FrmShufflerDetails.OpenForm(filename, BassPlayer, Library);
 
         // ── Library wrappers ────────────────────────────────────────────────
 

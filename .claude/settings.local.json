@@ -13,7 +13,8 @@
       "Write",
       "WebFetch",
       "WebSearch",
-      "Bash(dotnet build Halloumi.Shuffler.sln -p:Platform=x86)"
+      "Bash(dotnet build Halloumi.Shuffler.sln -p:Platform=x86)",
+      "Bash(grep -rn \"Settings.Default\" \"e:\\\\Github\\\\Halloumi.Shuffler\\\\Halloumi.Shuffler\"\" --include=\"*.cs\" | grep -v \".Designer.cs \")"
     ]
   }
 }

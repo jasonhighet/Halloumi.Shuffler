@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Controls;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Helpers;
@@ -108,13 +107,6 @@ namespace Halloumi.Shuffler.Controls
         private ShufflerApplication ShufflerApplication { get; set; }
 
         public Library GetLibrary() => Library;
-
-        /// <summary>
-        ///     Gets or sets the bass player.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private BassPlayer BassPlayer { get; set; }
 
         /// <summary>
         ///     Gets the tracks.
@@ -335,9 +327,9 @@ namespace Halloumi.Shuffler.Controls
             SetCurrentTrack(index);
 
             _doNotBind = true;
-            BassPlayer.ForcePlay(previousTrack.Filename);
-            BassPlayer.SkipToFadeOut();
-            BassPlayer.Play();
+            ShufflerApplication.ForcePlay(previousTrack.Filename);
+            ShufflerApplication.SkipToFadeOut();
+            ShufflerApplication.Play();
 
             _doNotBind = false;
 
@@ -355,7 +347,6 @@ namespace Halloumi.Shuffler.Controls
             ShufflerApplication = application;
             this.Library = application.Library;
             this.MixLibrary = application.MixLibrary;
-            this.BassPlayer = application.BassPlayer;
 
             //trackDetails.SetLibrary(Library);
             trackDetails.DisplayTrackDetails(null);
@@ -363,30 +354,22 @@ namespace Halloumi.Shuffler.Controls
             mixableTracks.PlaylistControl = this;
             mixableTracks.Initialize(ShufflerApplication, trackLibraryControl);
 
-            if (BassPlayer == null) return;
-            BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
-            BassPlayer.OnSkipToEnd += BassPlayer_OnFadeEnded;
-            BassPlayer.OnEndFadeIn += BassPlayer_OnFadeEnded;
+            ShufflerApplication.OnTrackChanged += Application_OnTrackChanged;
+            ShufflerApplication.OnFadeEnded += Application_OnFadeEnded;
         }
 
-        /// <summary>
-        ///     Handles the OnEndFadeIn event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnFadeEnded(object sender, EventArgs e)
+        private void Application_OnFadeEnded(object sender, EventArgs e)
         {
             if (InvokeRequired)
                 BeginInvoke(new MethodInvoker(PreloadTrack));
             else PreloadTrack();
         }
 
-        /// <summary>
-        ///     Handles the OnEndFadeIn event of the BassPlayer control.
-        /// </summary>
         private void PreloadTrack()
         {
             var preloadTrack = GetTrackAfterNext();
             if (preloadTrack != null)
-                BassPlayer.PreloadTrack(preloadTrack.Filename);
+                ShufflerApplication.PreloadTrack(preloadTrack.Filename);
         }
 
         /// <summary>
@@ -401,10 +384,10 @@ namespace Halloumi.Shuffler.Controls
 
         private void RefreshPlaylist()
         {
-            if (BassPlayer.CurrentTrack == null && TrackModels.Count > 0)
+            if (ShufflerApplication.IsCurrentTrackNull && TrackModels.Count > 0)
             {
                 var track = GetTrackByIndex(0);
-                BassPlayer.QueueTrack(track.Filename);
+                ShufflerApplication.QueueTrack(track.Filename);
             }
             SetNextBassPlayerTrack();
             PreloadTrack();
@@ -592,7 +575,7 @@ namespace Halloumi.Shuffler.Controls
                 if (currentIndex != -1)
                     TrackModels[currentIndex].IsCurrent = false;
                 TrackModels[currentIndex + 1].IsCurrent = true;
-                BassPlayer.ForcePlay(track.Filename);
+                ShufflerApplication.ForcePlay(track.Filename);
             }
         }
 
@@ -606,7 +589,7 @@ namespace Halloumi.Shuffler.Controls
             var currentIndex = GetCurrentTrackIndex();
             TrackModels[currentIndex].IsCurrent = false;
             TrackModels[currentIndex - 1].IsCurrent = true;
-            BassPlayer.ForcePlay(track.Filename);
+            ShufflerApplication.ForcePlay(track.Filename);
         }
 
 
@@ -648,10 +631,9 @@ namespace Halloumi.Shuffler.Controls
             var nextTrack = GetNextTrack();
 
             if (nextTrack == null) return;
-            if (BassPlayer.NextTrack == null
-                ||
-                BassPlayer.NextTrack != null && BassPlayer.NextTrack.Description != nextTrack.Description)
-                BassPlayer.QueueTrack(nextTrack.Filename);
+            var nextBassDescription = ShufflerApplication.GetNextTrackDescription();
+            if (nextBassDescription == null || nextBassDescription != nextTrack.Description)
+                ShufflerApplication.QueueTrack(nextTrack.Filename);
         }
 
         /// <summary>
@@ -706,9 +688,7 @@ namespace Halloumi.Shuffler.Controls
             if (currentTrack == null)
                 return GetCurrentTrackIndexFromBassPlayer();
 
-            var currentBassTrackDescription = BassPlayer.CurrentTrack == null
-                ? ""
-                : BassPlayer.CurrentTrack.Description;
+            var currentBassTrackDescription = ShufflerApplication.GetCurrentTrackDescription() ?? "";
 
             if (currentBassTrackDescription == currentTrack.Description)
                 return TrackModels.IndexOf(currentTrack);
@@ -729,13 +709,14 @@ namespace Halloumi.Shuffler.Controls
 
         private int GetCurrentTrackIndexFromBassPlayer()
         {
-            if (BassPlayer.CurrentTrack == null)
+            var currentDescription = ShufflerApplication.GetCurrentTrackDescription();
+            if (currentDescription == null)
             {
                 if (TrackModels.Count <= 0) return -1;
                 TrackModels[0].IsCurrent = true;
                 return 0;
             }
-            var currentTrack = TrackModels.FirstOrDefault(t => t.Description == BassPlayer.CurrentTrack.Description);
+            var currentTrack = TrackModels.FirstOrDefault(t => t.Description == currentDescription);
             if (currentTrack == null) return -1;
             currentTrack.IsCurrent = true;
             return TrackModels.IndexOf(currentTrack);
@@ -790,7 +771,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var track = GetSelectedTrack();
             if (track == null) return;
-            if (FrmShufflerDetails.OpenForm(track.Filename, BassPlayer, Library) == DialogResult.OK)
+            if (ShufflerApplication.ShowShufflerDetails(track.Filename) == DialogResult.OK)
             {
                 BindData();
 
@@ -849,20 +830,14 @@ namespace Halloumi.Shuffler.Controls
             _loaded = true;
         }
 
-        /// <summary>
-        ///     Handles the OnTrackChange event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackChange(object sender, EventArgs e)
+        private void Application_OnTrackChanged(object sender, EventArgs e)
         {
             if (InvokeRequired)
-                BeginInvoke(new MethodInvoker(BassPlayer_OnTrackChange));
-            else BassPlayer_OnTrackChange();
+                BeginInvoke(new MethodInvoker(Application_OnTrackChanged));
+            else Application_OnTrackChanged();
         }
 
-        /// <summary>
-        ///     Handles the OnTrackChange event of the BassPlayer control.
-        /// </summary>
-        private void BassPlayer_OnTrackChange()
+        private void Application_OnTrackChanged()
         {
             if (_bassPlayerOnTrackChange) return;
             _bassPlayerOnTrackChange = true;
@@ -875,10 +850,8 @@ namespace Halloumi.Shuffler.Controls
             var nextTrack = GetNextTrack();
             var nextTrackDescription = nextTrack == null ? "" : nextTrack.Description;
 
-            var currentBassTrackDescription = BassPlayer.CurrentTrack == null
-                ? ""
-                : BassPlayer.CurrentTrack.Description;
-            var nextBassTrackDescription = BassPlayer.NextTrack == null ? "" : BassPlayer.NextTrack.Description;
+            var currentBassTrackDescription = ShufflerApplication.GetCurrentTrackDescription() ?? "";
+            var nextBassTrackDescription = ShufflerApplication.GetNextTrackDescription() ?? "";
 
             if (currentBassTrackDescription != currentTrackDescription ||
                 nextBassTrackDescription != nextTrackDescription)
@@ -941,7 +914,7 @@ namespace Halloumi.Shuffler.Controls
         {
             _doNotBind = true;
 
-            BassPlayer.ForcePlay(track.Filename);
+            ShufflerApplication.ForcePlay(track.Filename);
 
             _doNotBind = false;
 
@@ -1117,7 +1090,7 @@ namespace Halloumi.Shuffler.Controls
         private void mnuPlay_Click(object sender, EventArgs e)
         {
             var track = GetSelectedTrack();
-            BassPlayer.ForcePlay(track.Filename);
+            ShufflerApplication.ForcePlay(track.Filename);
         }
 
         private void SaveWorkingPlaylist()
