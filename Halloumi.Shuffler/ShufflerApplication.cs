@@ -735,6 +735,12 @@ namespace Halloumi.Shuffler
 
         public void LoadTrack(string filename) => Library.LoadTrack(filename);
 
+        public void CalculateKeyForTrack(string filename)
+        {
+            KeyHelper.CalculateKey(filename);
+            Library.LoadTrack(filename);
+        }
+
         public List<Genre> GetGenresFromTracks(List<Track> tracks) => Library.GetGenresFromTracks(tracks);
 
         public List<Artist> GetAlbumArtistsFromTracks(List<Track> tracks) => Library.GetAlbumArtistsFromTracks(tracks);

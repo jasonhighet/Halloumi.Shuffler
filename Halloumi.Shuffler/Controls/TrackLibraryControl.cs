@@ -258,8 +258,7 @@ namespace Halloumi.Shuffler.Controls
             {
                 try
                 {
-                    KeyHelper.CalculateKey(track.Filename);
-                    ShufflerApplication.LoadTrack(track.Filename);
+                    ShufflerApplication.CalculateKeyForTrack(track.Filename);
                 }
                 catch
                 {

@@ -20,7 +20,6 @@ namespace Halloumi.Shuffler.Forms
             Tracks = null;
         }
 
-        public Library Library { get; set; }
         public ShufflerApplication Application { get; set; }
         public List<Track> Tracks { get; set; }
 
@@ -49,7 +48,7 @@ namespace Halloumi.Shuffler.Forms
             Cursor = Cursors.Hand;
             System.Windows.Forms.Application.DoEvents();
 
-            CollectionHelper.AddTracksToCollection(playlistName, Tracks);
+            Application.AddTracksToCollection(playlistName, Tracks);
 
             DialogResult = DialogResult.OK;
             Close();
