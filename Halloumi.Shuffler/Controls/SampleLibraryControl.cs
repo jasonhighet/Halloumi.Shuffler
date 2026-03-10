@@ -13,6 +13,7 @@ using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Players;
 using Halloumi.Shuffler.AudioLibrary.Samples;
+using Halloumi.Shuffler;
 using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.Controls
@@ -96,6 +97,11 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ISampleRecipient SampleRecipient { get; set; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication Application { get; set; }
+
         public bool AutoPlaySamples { get; private set; }
 
         public void Initialize()
@@ -107,9 +113,9 @@ namespace Halloumi.Shuffler.Controls
 
             cmbOutput.SelectedIndex = 0;
 
-            var settings = Settings.Default;
-            _player.SetVolume(settings.LoopVolume);
-            SetVolume((int)settings.LoopVolume);
+            var loopVolume = Application.GetLoopVolume();
+            _player.SetVolume(loopVolume);
+            SetVolume((int)loopVolume);
 
             sldVolume.Minimum = 0;
             sldVolume.Maximum = 100;
@@ -134,8 +140,7 @@ namespace Halloumi.Shuffler.Controls
         {
             sldVolume.Value = volume;
             lblVolume.Text = volume.ToString();
-            var settings = Settings.Default;
-            settings.LoopVolume = volume;
+            Application.SetLoopVolume(volume);
         }
 
         public void Close()
@@ -503,6 +508,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmEditTrackSamples
             {
+                Application = Application,
                 BassPlayer = BassPlayer,
                 Filename = track.Filename,
                 TrackSampleLibrary = trackSampleLibrary,

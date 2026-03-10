@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using AE = Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -36,12 +37,18 @@ namespace Halloumi.Shuffler.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication Application { get; set; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SamplerControl SamplerControl { get; private set; }
 
         public void Initialize()
         {
+            SamplerControl.Application = Application;
             SamplerControl.BassPlayer = BassPlayer;
             SamplerControl.PlaylistControl = PlaylistControl;
+            trackMixerControl.Application = Application;
             trackMixerControl.BassPlayer = BassPlayer;
             trackMixerControl.Library = Library;
             trackMixerControl.PlaylistControl = PlaylistControl;

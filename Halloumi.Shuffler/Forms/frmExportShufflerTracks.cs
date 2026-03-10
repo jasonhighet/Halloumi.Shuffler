@@ -7,6 +7,7 @@ using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using Halloumi.Shuffler.AudioLibrary.Samples;
+using Halloumi.Shuffler;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -19,6 +20,8 @@ namespace Halloumi.Shuffler.Forms
 
         private List<Track> _tracks;
 
+
+        public ShufflerApplication Application { get; set; }
 
         public Library Library { get; set; }
 
@@ -42,8 +45,7 @@ namespace Halloumi.Shuffler.Forms
             _tracks.AddRange(sampleTracks);
 
             btnOK.Enabled = _tracks.Count > 0;
-            var settings = Settings.Default;
-            txtOutputFolder.Text = settings.ExportPlaylistFolder;
+            txtOutputFolder.Text = Application.GetExportPlaylistFolder();
         }
 
         /// <summary>
@@ -149,9 +151,7 @@ namespace Halloumi.Shuffler.Forms
 
             progressDialog.Text = "Export completed.";
 
-            var settings = Settings.Default;
-            settings.ExportPlaylistFolder = txtOutputFolder.Text;
-            settings.Save();
+            Application.SetExportPlaylistFolder(txtOutputFolder.Text);
         }
 
         private void progressDialog_ProcessingCompleted(object sender, EventArgs e)

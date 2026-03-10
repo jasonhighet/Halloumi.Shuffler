@@ -11,7 +11,6 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.Forms;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -30,6 +29,7 @@ namespace Halloumi.Shuffler.Controls
 
         private readonly Visuals _bassVisuals = new Visuals();
 
+        private ShufflerApplication _application;
         private bool _bassPlayerOnTrackChange;
         private bool _bindingVolumeSlider;
         private bool _firstVisualShown;
@@ -144,16 +144,15 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initialize(ShufflerApplication application, PlaylistControl playlistControl)
         {
+            _application = application;
             this.Library = application.Library;
             this.BassPlayer = application.BassPlayer;
             this.PlaylistControl = playlistControl;
             this.MixLibrary = application.MixLibrary;
 
-
-            var settings = Settings.Default;
-            BassPlayer.SetMixerVolume(settings.Volume);
-
-            SetVolume((int) settings.Volume);
+            var volume = _application.GetVolume();
+            BassPlayer.SetMixerVolume(volume);
+            SetVolume((int)volume);
 
             BassPlayer.OnVolumeChanged += BassPlayer_OnVolumeChanged;
         }

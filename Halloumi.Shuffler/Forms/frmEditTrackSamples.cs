@@ -14,6 +14,7 @@ using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioEngine.Models.Track;
+using Halloumi.Shuffler;
 
 
 namespace Halloumi.Shuffler.Forms
@@ -33,6 +34,8 @@ namespace Halloumi.Shuffler.Forms
             cmbSampleLength.TextChanged += cmbSampleLength_TextChanged;
         }
 
+
+        public ShufflerApplication Application { get; set; }
 
         public BassPlayer BassPlayer { get; set; }
 
@@ -169,11 +172,11 @@ namespace Halloumi.Shuffler.Forms
         {
             try
             {
-                var settings = Settings.Default;
-                BassPlayer.RawLoopOutput = settings.RawLoopOutput;
-                if (settings.RawLoopOutput == SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.RawLoopOutput == SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.RawLoopOutput == SoundOutput.Both) cmbOutput.SelectedIndex = 2;
+                var rawLoopOutput = Application.GetRawLoopOutput();
+                BassPlayer.RawLoopOutput = rawLoopOutput;
+                if (rawLoopOutput == SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
+                if (rawLoopOutput == SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
+                if (rawLoopOutput == SoundOutput.Both) cmbOutput.SelectedIndex = 2;
             }
             catch
             {

@@ -4,6 +4,7 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioLibrary.Samples;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
+using Halloumi.Shuffler;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -14,8 +15,9 @@ namespace Halloumi.Shuffler.Forms
             InitializeComponent();
         }
 
-        internal void Initialize(BassPlayer bassPlayer, ISampleLibrary trackSampleLibrary, ISampleRecipient sampleRecipient = null)
+        internal void Initialize(ShufflerApplication application, BassPlayer bassPlayer, ISampleLibrary trackSampleLibrary, ISampleRecipient sampleRecipient = null)
         {
+            sampleLibraryControl.Application = application;
             sampleLibraryControl.BassPlayer = bassPlayer;
             sampleLibraryControl.SampleLibrary = trackSampleLibrary;
             sampleLibraryControl.SampleRecipient = sampleRecipient;

@@ -1086,7 +1086,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var track = GetSelectedTrack();
             if (track == null) return;
-            if (FrmShufflerDetails.OpenForm(track.Filename, ShufflerApplication.BassPlayer, ShufflerApplication.Library) == DialogResult.OK)
+            if (FrmShufflerDetails.OpenForm(track.Filename, ShufflerApplication.BassPlayer, ShufflerApplication.Library, ShufflerApplication) == DialogResult.OK)
             {
                 BindData();
 
@@ -1115,6 +1115,7 @@ namespace Halloumi.Shuffler.Controls
 
             var form = new FrmEditTrackSamples
             {
+                Application = ShufflerApplication,
                 BassPlayer = ShufflerApplication.BassPlayer,
                 Filename = GetSelectedTrack().Filename,
                 TrackSampleLibrary = ShufflerApplication.TrackSampleLibrary,

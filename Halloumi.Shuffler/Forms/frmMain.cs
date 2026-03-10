@@ -94,6 +94,7 @@ namespace Halloumi.Shuffler.Forms
             trackLibraryControl.SamplerControl = mixerControl.SamplerControl;
             trackLibraryControl.ShufflerDetailsUpdatedEvent += trackLibraryControl_ShufflerDetailsUpdatedEvent;
 
+            mixerControl.Application = application;
             mixerControl.Library = application.Library;
             mixerControl.BassPlayer = application.BassPlayer;
             mixerControl.PlaylistControl = playlistControl;
@@ -239,6 +240,7 @@ namespace Halloumi.Shuffler.Forms
         {
             var similarTracks = new FrmUpdateSimilarTracks
             {
+                Application = _application,
                 BassPlayer = _application.BassPlayer,
                 Library = _application.Library,
             };
@@ -287,7 +289,7 @@ namespace Halloumi.Shuffler.Forms
             if (_frmSampleLibrary == null || _frmSampleLibrary.IsDisposed)
             {
                 _frmSampleLibrary = new FrmSampleLibrary();
-                _frmSampleLibrary.Initialize(_application.BassPlayer, _application.TrackSampleLibrary);
+                _frmSampleLibrary.Initialize(_application, _application.BassPlayer, _application.TrackSampleLibrary);
             }
 
             if (!_frmSampleLibrary.Visible)
@@ -707,6 +709,7 @@ namespace Halloumi.Shuffler.Forms
         {
             var exportPlaylist = new FrmExportShufflerTracks
             {
+                Application = _application,
                 Library = _application.Library,
                 TrackSampleLibrary = _application.TrackSampleLibrary
             };
@@ -783,7 +786,7 @@ namespace Halloumi.Shuffler.Forms
             if (_frmLoopLibrary == null || _frmLoopLibrary.IsDisposed)
             {
                 _frmLoopLibrary = new FrmSampleLibrary();
-                _frmLoopLibrary.Initialize(_application.BassPlayer, _application.LoopLibrary);
+                _frmLoopLibrary.Initialize(_application, _application.BassPlayer, _application.LoopLibrary);
             }
 
             if (!_frmLoopLibrary.Visible)

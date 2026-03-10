@@ -7,7 +7,7 @@ using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.Forms;
+using Halloumi.Shuffler;
 using AE = Halloumi.Shuffler.AudioEngine;
 
 
@@ -20,12 +20,13 @@ namespace Halloumi.Shuffler.Controls
             InitializeComponent();
 
             SamplePlayers = new List<SamplePlayer>();
-
-            var settings = Settings.Default;
-            AnalogXScratchHelper.SetApplicationFolder(settings.AnalogXScratchFolder);
         }
 
         private List<SamplePlayer> SamplePlayers { get; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication Application { get; set; }
 
         /// <summary>
         ///     Gets or sets the playlist control.
@@ -46,6 +47,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         public void Initialize()
         {
+            AnalogXScratchHelper.SetApplicationFolder(Application.GetAnalogXScratchFolder());
             rdbDelay2.Checked = true;
             chkEnableAutomation.Checked = BassPlayer.SampleAutomationEnabled;
 
@@ -119,17 +121,17 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                var settings = Settings.Default;
+                var samplerDelayNotes = Application.GetSamplerDelayNotes();
 
-                if (settings.SamplerDelayNotes == 0.5M) rdbDelay1.Checked = true;
-                else if (settings.SamplerDelayNotes == 0.25M) rdbDelay2.Checked = true;
-                else if (settings.SamplerDelayNotes == 0.125M) rdbDelay3.Checked = true;
-                else if (settings.SamplerDelayNotes == 0.0625M) rdbDelay4.Checked = true;
-                else if (settings.SamplerDelayNotes == 0M) rdbDelayNone.Checked = true;
-                else if (settings.SamplerDelayNotes == 0.375M) rdbDelay5.Checked = true;
-                else if (settings.SamplerDelayNotes == 0.1875M) rdbDelay6.Checked = true;
+                if (samplerDelayNotes == 0.5M) rdbDelay1.Checked = true;
+                else if (samplerDelayNotes == 0.25M) rdbDelay2.Checked = true;
+                else if (samplerDelayNotes == 0.125M) rdbDelay3.Checked = true;
+                else if (samplerDelayNotes == 0.0625M) rdbDelay4.Checked = true;
+                else if (samplerDelayNotes == 0M) rdbDelayNone.Checked = true;
+                else if (samplerDelayNotes == 0.375M) rdbDelay5.Checked = true;
+                else if (samplerDelayNotes == 0.1875M) rdbDelay6.Checked = true;
 
-                BassPlayer.SamplerDelayNotes = settings.SamplerDelayNotes;
+                BassPlayer.SamplerDelayNotes = samplerDelayNotes;
             }
             catch
             {

@@ -7,6 +7,7 @@ using Halloumi.Common.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler;
 
 namespace Halloumi.Shuffler.Forms
 {
@@ -16,6 +17,8 @@ namespace Halloumi.Shuffler.Forms
         {
             InitializeComponent();
         }
+
+        public ShufflerApplication Application { get; set; }
 
         public BassPlayer BassPlayer { get; set; }
 
@@ -47,7 +50,7 @@ namespace Halloumi.Shuffler.Forms
         {
             if (GetSelectedTrack() == null) return;
 
-            if (FrmShufflerDetails.OpenForm(GetSelectedTrack().Filename, BassPlayer, Library) == DialogResult.OK)
+            if (FrmShufflerDetails.OpenForm(GetSelectedTrack().Filename, BassPlayer, Library, Application) == DialogResult.OK)
             {
                 BindData();
             }

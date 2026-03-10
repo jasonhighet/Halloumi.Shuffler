@@ -8,6 +8,7 @@ using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
+using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Midi;
 using Halloumi.Shuffler.AudioEngine.Plugins;
@@ -724,7 +725,7 @@ namespace Halloumi.Shuffler
         public void Play() => BassPlayer.Play();
 
         public DialogResult ShowShufflerDetails(string filename)
-            => Forms.FrmShufflerDetails.OpenForm(filename, BassPlayer, Library);
+            => Forms.FrmShufflerDetails.OpenForm(filename, BassPlayer, Library, this);
 
         // ── Library wrappers ────────────────────────────────────────────────
 
@@ -854,5 +855,21 @@ namespace Halloumi.Shuffler
             Settings.Default.MixableViewIndex           = settings.ViewIndex;
             Settings.Default.MixableTracksExcludeQueued = settings.ExcludeQueued;
         }
+
+        // ── Settings accessors ───────────────────────────────────────────────
+
+        public decimal GetLoopVolume() => Settings.Default.LoopVolume;
+        public void SetLoopVolume(decimal volume) { Settings.Default.LoopVolume = volume; Settings.Default.Save(); }
+
+        public decimal GetVolume() => Settings.Default.Volume;
+        public void SetVolume(decimal volume) { Settings.Default.Volume = volume; Settings.Default.Save(); }
+
+        public decimal GetTrackFxDelayNotes() => Settings.Default.TrackFxDelayNotes;
+        public bool GetEnableTrackFxAutomation() => Settings.Default.EnableTrackFxAutomation;
+
+        public string GetAnalogXScratchFolder() => Settings.Default.AnalogXScratchFolder;
+        public decimal GetSamplerDelayNotes() => Settings.Default.SamplerDelayNotes;
+
+        public SoundOutput GetRawLoopOutput() => Settings.Default.RawLoopOutput;
     }
 }

@@ -13,6 +13,7 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Halloumi.Shuffler.AudioEngine.SectionDetector;
 using Halloumi.Shuffler.AudioLibrary;
+using Halloumi.Shuffler;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -45,7 +46,7 @@ namespace Halloumi.Shuffler.Forms
 
         }
 
-        public static DialogResult OpenForm(string filename, BassPlayer bassPlayer, Library library)
+        public static DialogResult OpenForm(string filename, BassPlayer bassPlayer, Library library, ShufflerApplication application = null)
         {
             var track = library.GetTrackByFilename(filename);
 
@@ -53,6 +54,7 @@ namespace Halloumi.Shuffler.Forms
 
             var form = new FrmShufflerDetails
             {
+                Application = application,
                 BassPlayer = bassPlayer,
                 Filename = filename
             };
@@ -69,6 +71,8 @@ namespace Halloumi.Shuffler.Forms
 
         public Track Track { get; private set; }
 
+
+        public ShufflerApplication Application { get; set; }
 
         public BassPlayer BassPlayer { get; set; }
 
@@ -254,11 +258,11 @@ namespace Halloumi.Shuffler.Forms
         {
             try
             {
-                var settings = Settings.Default;
-                BassPlayer.RawLoopOutput = settings.RawLoopOutput;
-                if (settings.RawLoopOutput == SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
-                if (settings.RawLoopOutput == SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
-                if (settings.RawLoopOutput == SoundOutput.Both) cmbOutput.SelectedIndex = 2;
+                var rawLoopOutput = Application.GetRawLoopOutput();
+                BassPlayer.RawLoopOutput = rawLoopOutput;
+                if (rawLoopOutput == SoundOutput.Speakers) cmbOutput.SelectedIndex = 0;
+                if (rawLoopOutput == SoundOutput.Monitor) cmbOutput.SelectedIndex = 1;
+                if (rawLoopOutput == SoundOutput.Both) cmbOutput.SelectedIndex = 2;
             }
             catch
             {

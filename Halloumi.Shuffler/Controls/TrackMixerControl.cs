@@ -9,7 +9,7 @@ using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 using Halloumi.Shuffler.AudioLibrary;
-using Halloumi.Shuffler.Forms;
+using Halloumi.Shuffler;
 using Un4seen.Bass;
 
 namespace Halloumi.Shuffler.Controls
@@ -65,6 +65,10 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PlaylistControl PlaylistControl { get; set; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication Application { get; set; }
 
         private Track PreviousTrack { get; set; }
 
@@ -285,12 +289,10 @@ namespace Halloumi.Shuffler.Controls
         {
             try
             {
-                var settings = Settings.Default;
-
-                BassPlayer.TrackSendFxDelayNotes = settings.TrackFxDelayNotes;
+                BassPlayer.TrackSendFxDelayNotes = Application.GetTrackFxDelayNotes();
                 BindDelayNotes();
 
-                BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
+                BassPlayer.TrackFxAutomationEnabled = Application.GetEnableTrackFxAutomation();
             }
             catch
             {
