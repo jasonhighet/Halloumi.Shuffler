@@ -79,7 +79,7 @@ namespace Halloumi.Shuffler.Forms
             if (!ValidateData()) return;
 
             Cursor = Cursors.Hand;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             var saved = Library.UpdateTrackDetails(Track,
                 cmbArtist.Text,
@@ -123,6 +123,11 @@ namespace Halloumi.Shuffler.Forms
         /// Gets or sets the library.
         /// </summary>
         public Library Library { get; set; }
+
+        public ShufflerApplication Application
+        {
+            set { Library = value?.Library; }
+        }
 
         /// <summary>
         /// Gets or sets the track.

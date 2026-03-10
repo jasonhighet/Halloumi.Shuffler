@@ -781,6 +781,15 @@ namespace Halloumi.Shuffler
 
         public void SetMixLibraryAvailableTracks(List<Track> tracks) { MixLibrary.AvailableTracks = tracks; }
 
+        public string GetExtendedMixDescription(Track track1, Track track2)
+            => MixLibrary.GetExtendedMixDescription(track1, track2);
+
+        public int GetMixLevel(Track track1, Track track2)
+            => MixLibrary.GetMixLevel(track1, track2);
+
+        public void SetMixLevel(Track track1, Track track2, int level)
+            => MixLibrary.SetMixLevel(track1, track2, level);
+
         // ── TrackSampleLibrary wrappers ─────────────────────────────────────
 
         public void ExportMixSectionsAsSamples(Track track) => TrackSampleLibrary.ExportMixSectionsAsSamples(track);

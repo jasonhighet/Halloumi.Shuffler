@@ -66,7 +66,7 @@ namespace Halloumi.Shuffler.Controls
                     Size = new Size(samplePlayer.Width, samplePlayer.Height),
                     Dock = DockStyle.Top,
                     BassPlayer = BassPlayer,
-                    Library = PlaylistControl.GetLibrary()
+                    Library = Application.Library
                 };
                 if (i % 2 != 0) player.BackColor = Color.WhiteSmoke;
                 SamplePlayers.Add(player);
