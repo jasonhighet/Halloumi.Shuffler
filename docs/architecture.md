@@ -173,6 +173,9 @@ Add logic to `ShufflerApplication` when it:
 | `Program.cs` | Start-up folder validation runs before `ShufflerApplication` is instantiated |
 | `CommonFunctions.cs` | Error-logging utility that needs `ShufflerFolder` before the app is wired |
 | `PlayerDetails`, `TrackMixerControl`, `SamplerControl`, `frmEditTrackSamples`, `frmShufflerDetails` | Direct `BassPlayer` calls for volume/FX assignment in response to hardware events (MIDI, sliders) are an accepted compromise — `Settings.Default` reads have been removed from these, but the `BassPlayer` assignments remain |
+| `frmMonitorSettings.cs` | Active DJing feature (headphone cue output); `GetMonitorVolume`/`SetMonitorVolume` are low-level audio operations that will not be surfaced through `ShufflerApplication` |
+| `SampleLibraryControl.cs` | Active DJing feature; holds `BassPlayer` for sample previewing and `LinkLoopSampleToTrack` — too low-level to route through the facade |
+| `SamplePlayer.cs` | Active DJing feature; `PlaySample`/`PauseSample` are direct `BassPlayer` calls triggered by mouse events — low-level audio control that stays outside the facade |
 
 ## Design patterns in use
 

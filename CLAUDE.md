@@ -73,6 +73,9 @@ These files legitimately bypass `ShufflerApplication` and should not be "fixed":
 | `Program.cs` | Start-up validation runs before `ShufflerApplication` is instantiated |
 | `CommonFunctions.cs` | Error-logging utility; needs `ShufflerFolder` at start-up before the app is wired |
 | Audio-reactive controls (`PlayerDetails`, `TrackMixerControl`, `SamplerControl`, `frmEditTrackSamples`, `frmShufflerDetails`) | Direct `BassPlayer` calls for volume/FX assignment in response to hardware events (MIDI, slider) are an accepted compromise — settings reads have been removed, but the BassPlayer assignments remain |
+| `frmMonitorSettings.cs` | Active DJing feature; `GetMonitorVolume`/`SetMonitorVolume` are low-level audio operations not surfaced through `ShufflerApplication` |
+| `SampleLibraryControl.cs` | Active DJing feature; holds `BassPlayer` for sample previewing and `LinkLoopSampleToTrack` — too low-level for the facade |
+| `SamplePlayer.cs` | Active DJing feature; `PlaySample`/`PauseSample` are direct `BassPlayer` calls from mouse events — low-level audio control that stays outside the facade |
 
 ### BassPlayer — split partial class
 
