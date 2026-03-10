@@ -34,7 +34,7 @@ All projects use SDK-style `.csproj` with `net48` target.
 
 ## Architecture
 
-The UI never calls the audio engine or library directly — it goes through `ShufflerApplication`:
+The UI goes through `ShufflerApplication` for all domain logic. `ShufflerApplication` is the single entry point for track queries, playlist generation, settings persistence, and event bridging:
 
 ```
 Halloumi.Shuffler (UI)
@@ -48,7 +48,31 @@ Halloumi.Shuffler (UI)
     └─► Forms / Controls (talk to ShufflerApplication only, never directly to engine/library)
 ```
 
-`ShufflerApplication` (`Halloumi.Shuffler/ShufflerApplication.cs`) is the single entry point for all UI interactions. It owns all service instances and wires events between them.
+`ShufflerApplication` (`Halloumi.Shuffler/ShufflerApplication.cs`) owns all service instances and wires events between them.
+
+### What belongs in ShufflerApplication
+
+Add logic to `ShufflerApplication` if it:
+- Queries or filters tracks (`GetTracks`, `GetMixableTracks`)
+- Generates or manages playlists (`GeneratePlaylist`, `GetPlaylistGenerationRequest`)
+- Persists or retrieves settings (`LoadPlaylistGenerationSettings`, `GetExportPlaylistFolder`, etc.)
+- Bridges engine events to the UI (`OnAutoGenerateRequired`, `OnTrackChanged`)
+- Performs any domain operation that a non-Windows UI would also need
+
+`ShufflerApplication` must never reference `System.Windows.Forms`, Krypton theming types, or VST plugin UI.
+
+### Intentional exceptions — direct engine access is accepted
+
+These files legitimately bypass `ShufflerApplication` and should not be "fixed":
+
+| File | Why it's accepted |
+|---|---|
+| `frmSettings.cs` | IS the settings editor; reads/writes `Settings.Default` directly |
+| `frmPluginSettings.cs` | VST/WinAmp plugin configuration requires direct `BassPlayer` plugin slot manipulation; too intertwined to safely abstract |
+| `frmMain.cs` | UI layout state only (`FormStateSettings`, `MinimizeToTray`, `VisualsShown`) — no domain significance |
+| `Program.cs` | Start-up validation runs before `ShufflerApplication` is instantiated |
+| `CommonFunctions.cs` | Error-logging utility; needs `ShufflerFolder` at start-up before the app is wired |
+| Audio-reactive controls (`PlayerDetails`, `TrackMixerControl`, `SamplerControl`, `frmEditTrackSamples`, `frmShufflerDetails`) | Direct `BassPlayer` calls for volume/FX assignment in response to hardware events (MIDI, slider) are an accepted compromise — settings reads have been removed, but the BassPlayer assignments remain |
 
 ### BassPlayer — split partial class
 

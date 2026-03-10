@@ -49,7 +49,7 @@ Halloumi.Shuffler.sln
 └────────────────┘
 ```
 
-The UI layer never talks directly to the audio engine or library — it goes through `ShufflerApplication`. The engine and library layers have no knowledge of each other.
+The goal is for UI controls to never talk directly to the audio engine or library — everything routes through `ShufflerApplication`. The engine and library layers have no knowledge of each other. See the boundary rules section below for what is currently achieved and what is accepted as a deliberate exception.
 
 ## Key subsystems
 
@@ -142,6 +142,37 @@ There are two different `Track` classes. They serve different layers and should 
                                        #   fade points, loop counts, skip sections,
                                        #   automation triggers, manual mix curves
 ```
+
+## Boundary rules
+
+### What belongs in ShufflerApplication
+
+Add logic to `ShufflerApplication` when it:
+
+- Queries or filters tracks (`GetTracks`, `GetMixableTracks`)
+- Generates or manages playlists (`GeneratePlaylist`, `GetPlaylistGenerationRequest`)
+- Persists or retrieves settings (`LoadPlaylistGenerationSettings`, `GetExportPlaylistFolder`, etc.)
+- Bridges engine events to UI (`OnAutoGenerateRequired`, `OnTrackChanged`, `OnFadeEnded`)
+- Performs any domain operation a non-Windows UI would also need
+
+`ShufflerApplication` must never reference `System.Windows.Forms`, Krypton theming types, or VST plugin UI classes.
+
+### What UI code must NOT do
+
+- Hold a `Library`, `MixLibrary`, or `BassPlayer` field and call it directly for domain operations
+- Read or write `Settings.Default` for domain-significant settings — use a `ShufflerApplication` method instead
+- Subscribe directly to `BassPlayer` events — subscribe to the corresponding `ShufflerApplication` event instead
+
+### Intentional exceptions — direct engine access is accepted here
+
+| File | Reason |
+| --- | --- |
+| `frmSettings.cs` | IS the settings editor; reads and writes `Settings.Default` directly |
+| `frmPluginSettings.cs` | VST/WinAmp plugin config requires direct `BassPlayer` plugin slot access; too intertwined to safely abstract |
+| `frmMain.cs` | Persists pure UI layout state (`FormStateSettings`, `MinimizeToTray`, `VisualsShown`) with no domain significance |
+| `Program.cs` | Start-up folder validation runs before `ShufflerApplication` is instantiated |
+| `CommonFunctions.cs` | Error-logging utility that needs `ShufflerFolder` before the app is wired |
+| `PlayerDetails`, `TrackMixerControl`, `SamplerControl`, `frmEditTrackSamples`, `frmShufflerDetails` | Direct `BassPlayer` calls for volume/FX assignment in response to hardware events (MIDI, sliders) are an accepted compromise — `Settings.Default` reads have been removed from these, but the `BassPlayer` assignments remain |
 
 ## Design patterns in use
 
