@@ -72,80 +72,27 @@ namespace Halloumi.Shuffler.Forms
 
         private void progressDialog_PerformProcessing(object sender, EventArgs e)
         {
-
-            var destinationFolder = txtOutputFolder.Text;
-
-            if (chkCreateSubfolder.Checked)
-            {
-                destinationFolder = Path.Combine(destinationFolder,
-                    FileSystemHelper.StripInvalidFileNameChars("Library"));
-
-                if (!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-            }
-
-            try
-            {
-                FileSystemHelper.DeleteFiles(destinationFolder, "*.mp3;*.jpg", true);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            foreach (var track in _tracks.TakeWhile(track => !progressDialog.Cancelled))
-            {
-                progressDialog.Text = "Exporting " + track.Description;
-                progressDialog.Details += "Copying track " + track.Description + "...";
-
-                var destinationFile = track.Filename.Replace(Application.GetLibraryFolder(), destinationFolder);
-                var destinationSubFolder = Path.GetDirectoryName(destinationFile) + "";
-
-                var albumArt = Path.GetDirectoryName(track.Filename) + @"\folder.jpg";
-                var destinationAlbumArt = Path.GetDirectoryName(track.Filename) + @"\folder.jpg";
-
-                try
+            Application.ExportShufflerTracks(
+                _tracks,
+                txtOutputFolder.Text,
+                chkCreateSubfolder.Checked,
+                () => progressDialog.Cancelled,
+                track =>
                 {
-                    if (!Directory.Exists(destinationSubFolder))
-                        Directory.CreateDirectory(destinationSubFolder);
-
-                    if (!File.Exists(destinationAlbumArt) && File.Exists(albumArt))
-                        FileSystemHelper.Copy(albumArt, destinationAlbumArt);
-
-                    FileSystemHelper.Copy(track.Filename, destinationFile);
-                    if (progressDialog.Cancelled) break;
-
-                    progressDialog.Details += "Done" + Environment.NewLine;
-                }
-                catch (Exception exception)
+                    progressDialog.Text = "Exporting " + track.Description;
+                    progressDialog.Details += "Copying track " + track.Description + "...";
+                    progressDialog.Value++;
+                },
+                (track, folder, message) =>
                 {
-                    var message = string.Format("{0}ERROR: Could not copy file '{1}' to '{2}'{0}{3}{0}",
+                    progressDialog.Details += string.Format("{0}ERROR: Could not copy file '{1}' to '{2}'{0}{3}{0}",
                         Environment.NewLine,
                         track.Description,
-                        destinationFolder,
-                        exception.Message);
-
-                    progressDialog.Details += message;
-
-                    if (File.Exists(destinationFile))
-                    {
-                        try
-                        {
-                            File.Delete(destinationFile);
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-                }
-                progressDialog.Value++;
-            }
-
+                        folder,
+                        message);
+                });
 
             progressDialog.Text = "Export completed.";
-
-            Application.SetExportPlaylistFolder(txtOutputFolder.Text);
         }
 
         private void progressDialog_ProcessingCompleted(object sender, EventArgs e)

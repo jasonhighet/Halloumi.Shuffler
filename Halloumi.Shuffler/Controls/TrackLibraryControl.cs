@@ -1494,7 +1494,7 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             var form = new FrmAddPlaylist
             {
-                Library = ShufflerApplication.Library,
+                Application = ShufflerApplication,
                 Tracks = tracks
             };
             var result = form.ShowDialog();

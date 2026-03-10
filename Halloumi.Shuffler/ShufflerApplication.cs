@@ -853,6 +853,76 @@ namespace Halloumi.Shuffler
 
         public void ExportMixSectionsAsSamples(Track track) => TrackSampleLibrary.ExportMixSectionsAsSamples(track);
 
+        public void ExportShufflerTracks(
+            IEnumerable<Track> tracks,
+            string destinationFolder,
+            bool createSubfolder,
+            Func<bool> isCancelled,
+            Action<Track> onTrackStarted,
+            Action<Track, string, string> onTrackError)
+        {
+            var exportFolder = destinationFolder;
+
+            if (createSubfolder)
+            {
+                exportFolder = Path.Combine(destinationFolder,
+                    FileSystemHelper.StripInvalidFileNameChars("Library"));
+
+                if (!Directory.Exists(exportFolder))
+                    Directory.CreateDirectory(exportFolder);
+            }
+
+            try
+            {
+                FileSystemHelper.DeleteFiles(exportFolder, "*.mp3;*.jpg", true);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            foreach (var track in tracks.TakeWhile(_ => !isCancelled()))
+            {
+                onTrackStarted(track);
+
+                var destinationFile = track.Filename.Replace(GetLibraryFolder(), exportFolder);
+                var destinationSubFolder = Path.GetDirectoryName(destinationFile) + "";
+
+                var albumArt = Path.Combine(Path.GetDirectoryName(track.Filename) + "", "folder.jpg");
+                var destinationAlbumArt = Path.Combine(destinationSubFolder, "folder.jpg");
+
+                try
+                {
+                    if (!Directory.Exists(destinationSubFolder))
+                        Directory.CreateDirectory(destinationSubFolder);
+
+                    if (!File.Exists(destinationAlbumArt) && File.Exists(albumArt))
+                        FileSystemHelper.Copy(albumArt, destinationAlbumArt);
+
+                    FileSystemHelper.Copy(track.Filename, destinationFile);
+                    if (isCancelled()) break;
+                }
+                catch (Exception exception)
+                {
+                    onTrackError(track, exportFolder, exception.Message);
+
+                    if (File.Exists(destinationFile))
+                    {
+                        try
+                        {
+                            File.Delete(destinationFile);
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                    }
+                }
+            }
+
+            SetExportPlaylistFolder(destinationFolder);
+        }
+
         // ── Playlist file I/O ────────────────────────────────────────────────
 
         private static string WorkingPlaylistFilename
