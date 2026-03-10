@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Helpers;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 
 namespace Halloumi.Shuffler.Forms
@@ -38,19 +37,19 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void BindData()
         {
-            cmbArtist.DataSource = Library.GetAllArtists();
+            cmbArtist.DataSource = Application.GetAllArtists();
             cmbArtist.DisplayMember = "Name";
             cmbArtist.ValueMember = "Name";
 
-            cmbAlbumArtist.DataSource = Library.GetAllAlbumArtists();
+            cmbAlbumArtist.DataSource = Application.GetAllAlbumArtists();
             cmbAlbumArtist.DisplayMember = "Name";
             cmbAlbumArtist.ValueMember = "Name";
 
-            cmbGenre.DataSource = Library.GetAllGenres();
+            cmbGenre.DataSource = Application.GetAllGenres();
             cmbGenre.DisplayMember = "Name";
             cmbGenre.ValueMember = "Name";
 
-            cmbAlbum.DataSource = Library.GetAllAlbums();
+            cmbAlbum.DataSource = Application.GetAllAlbums();
             cmbAlbum.DisplayMember = "Name";
             cmbAlbum.ValueMember = "Name";
 
@@ -81,7 +80,7 @@ namespace Halloumi.Shuffler.Forms
             Cursor = Cursors.Hand;
             System.Windows.Forms.Application.DoEvents();
 
-            var saved = Library.UpdateTrackDetails(Track,
+            var saved = Application.UpdateTrackDetails(Track,
                 cmbArtist.Text,
                 txtTitle.Text,
                 cmbAlbum.Text,
@@ -120,14 +119,7 @@ namespace Halloumi.Shuffler.Forms
         #region Properties
 
         /// <summary>
-        /// Gets or sets the library.
-        /// </summary>
-        public Library Library { get; set; }
-
-        public ShufflerApplication Application
-        {
-            set { Library = value?.Library; }
-        }
+        public ShufflerApplication Application { get; set; }
 
         /// <summary>
         /// Gets or sets the track.
