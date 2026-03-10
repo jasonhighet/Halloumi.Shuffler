@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
-using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.Controls
 {
@@ -65,13 +64,24 @@ namespace Halloumi.Shuffler.Controls
         {
             _bindDataAllowed = false;
 
-            var settings = Settings.Default;
-            cmbRank.SelectedIndex = settings.MixableRankFilterIndex;
-            cmbKeyRank.SelectedIndex = settings.MixableKeyRankFilterIndex;
-            cmbView.SelectedIndex = settings.MixableViewIndex;
-            chkExcludeQueued.Checked = settings.MixableTracksExcludeQueued;
+            var s = ShufflerApplication.LoadMixableTracksSettings();
+            cmbRank.SelectedIndex    = s.RankFilterIndex;
+            cmbKeyRank.SelectedIndex = s.KeyRankFilterIndex;
+            cmbView.SelectedIndex    = s.ViewIndex;
+            chkExcludeQueued.Checked = s.ExcludeQueued;
 
             _bindDataAllowed = true;
+        }
+
+        private void SaveCurrentSettings()
+        {
+            ShufflerApplication.SaveMixableTracksSettings(new MixableTracksDisplaySettings
+            {
+                RankFilterIndex    = cmbRank.SelectedIndex,
+                KeyRankFilterIndex = cmbKeyRank.SelectedIndex,
+                ViewIndex          = cmbView.SelectedIndex,
+                ExcludeQueued      = chkExcludeQueued.Checked
+            });
         }
 
         /// <summary>
@@ -204,7 +214,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbRank_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Settings.Default.MixableRankFilterIndex = cmbRank.SelectedIndex;
+            SaveCurrentSettings();
             BindData();
         }
 
@@ -213,7 +223,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void chkExcludeQueued_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Default.MixableTracksExcludeQueued = chkExcludeQueued.Checked;
+            SaveCurrentSettings();
             BindData();
         }
 
@@ -222,13 +232,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void cmbKeyRank_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Settings.Default.MixableKeyRankFilterIndex = cmbKeyRank.SelectedIndex;
+            SaveCurrentSettings();
             BindData();
         }
 
         private void cmbView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Settings.Default.MixableViewIndex = cmbView.SelectedIndex;
+            SaveCurrentSettings();
             BindData();
         }
 

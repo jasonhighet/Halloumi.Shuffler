@@ -818,5 +818,27 @@ namespace Halloumi.Shuffler
 
         public void RemoveTracksFromCollection(string collection, List<Track> tracks)
             => CollectionHelper.RemoveTracksFromCollection(collection, tracks);
+
+        // ── MixableTracks display settings ───────────────────────────────────
+
+        public MixableTracksDisplaySettings LoadMixableTracksSettings()
+        {
+            var s = Settings.Default;
+            return new MixableTracksDisplaySettings
+            {
+                RankFilterIndex    = s.MixableRankFilterIndex,
+                KeyRankFilterIndex = s.MixableKeyRankFilterIndex,
+                ViewIndex          = s.MixableViewIndex,
+                ExcludeQueued      = s.MixableTracksExcludeQueued
+            };
+        }
+
+        public void SaveMixableTracksSettings(MixableTracksDisplaySettings settings)
+        {
+            Settings.Default.MixableRankFilterIndex     = settings.RankFilterIndex;
+            Settings.Default.MixableKeyRankFilterIndex  = settings.KeyRankFilterIndex;
+            Settings.Default.MixableViewIndex           = settings.ViewIndex;
+            Settings.Default.MixableTracksExcludeQueued = settings.ExcludeQueued;
+        }
     }
 }
