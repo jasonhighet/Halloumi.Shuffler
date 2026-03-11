@@ -126,11 +126,8 @@ namespace Halloumi.Shuffler.Controls
 
         private void SetMixAndKeyRanks()
         {
-            //for (var i = 0; i < TrackModels.Count; i++)
-            //    UpdateMixRank(i);
-            Parallel.For(0, TrackModels.Count, i => {
+            for (var i = 0; i < TrackModels.Count; i++)
                 UpdateMixRank(i);
-            });
         }
 
         private void UpdateMixRank(int rowIndex)
@@ -238,7 +235,6 @@ namespace Halloumi.Shuffler.Controls
             }
             else if (e.ColumnIndex == 3)
             {
-                UpdateMixRank(e.RowIndex);
                 e.Value = trackModel.MixRankDescription;
             }
             else if (e.ColumnIndex == 4)
@@ -1100,6 +1096,8 @@ namespace Halloumi.Shuffler.Controls
                 Bpm = track.Bpm;
                 Length = track.Length;
                 TrackRankDescription = trackRankDescription;
+                MixRankDescription = "";
+                KeyRankDescription = "";
                 Key = KeyHelper.GetDisplayKey(track.Key);
             }
 
