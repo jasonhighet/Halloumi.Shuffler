@@ -59,7 +59,7 @@ Add logic to `ShufflerApplication` if it:
 - Bridges engine events to the UI (`OnAutoGenerateRequired`, `OnTrackChanged`)
 - Performs any domain operation that a non-Windows UI would also need
 
-`ShufflerApplication` must never reference `System.Windows.Forms`, Krypton theming types, or VST plugin UI.
+`ShufflerApplication` may reference Windows Forms libraries (for types like `Rectangle` or `Point`), but it must **never** open a window/dialog, or return non-serializable data. It should return "httpy" (plain data objects/DTOs). It will always run on Windows.
 
 ### Intentional exceptions — direct engine access is accepted
 

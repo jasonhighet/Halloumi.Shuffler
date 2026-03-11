@@ -11,7 +11,7 @@ The application serves two distinct use cases with different platform requiremen
 
 **Active mode** covers anything that requires human judgement on the audio: loading a new track and listening to it, working out where sync points and fade points should be, finding which tracks it mixes well into, and live performance mixing. All of this requires the full Windows app with direct access to the audio engine.
 
-**Shuffler mode** covers automated playback where the mixing decisions have already been made. A remote UI can still do meaningful things here — adjusting the playlist, choosing the next track, skipping, changing volume — but it is not making real-time mixing decisions. The host process (Windows, running BassPlayer) handles all audio; remote clients send commands over an API.
+**Shuffler mode** covers automated playback where the mixing decisions have already been made. Eventually, `ShufflerApplication` will evolve into a service called via REST or HTTP by UIs running in separate processes. A remote UI can still do meaningful things here — adjusting the playlist, choosing the next track, skipping, changing volume — but it is not making real-time mixing decisions. The host process (always Windows, running BassPlayer) handles all audio; remote clients send commands over an API.
 
 The natural API boundary is therefore between work that requires audio judgement (always Active/Windows) and work that is controlling already-configured playback (can be remote).
 
@@ -155,7 +155,9 @@ Add logic to `ShufflerApplication` when it:
 - Bridges engine events to UI (`OnAutoGenerateRequired`, `OnTrackChanged`, `OnFadeEnded`)
 - Performs any domain operation a non-Windows UI would also need
 
-`ShufflerApplication` must never reference `System.Windows.Forms`, Krypton theming types, or VST plugin UI classes.
+`ShufflerApplication` may reference Windows Forms libraries (e.g., for types like `Rectangle` or `Point`), but it must **never** open a window or dialog, or return non-serializable data. All data returned should be "httpy" (plain data objects/DTOs) suitable for a future REST/HTTP interface.
+
+It is assumed that `ShufflerApplication` will always be running on a Windows machine for the foreseeable future.
 
 ### What UI code must NOT do
 
