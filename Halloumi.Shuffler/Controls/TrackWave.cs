@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using Halloumi.Common.Windows.Controls;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
@@ -37,7 +36,6 @@ namespace Halloumi.Shuffler.Controls
 
         private bool _ticking;
 
-        private bool _waveRendered = true;
 
 
         public EventHandler PositionsChanged;
@@ -216,7 +214,6 @@ namespace Halloumi.Shuffler.Controls
             //_songSections = SectionDetector.SplitIntoSections(fileName, _beats);
 
             LoadTrackWaveData();
-            DrawWave();
 
             return BassTrack;
         }
@@ -355,7 +352,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void LoadTrackWaveData()
         {
-            _waveRendered = false;
+            ZoomStart = 0;
+            ZoomEnd = 0;
 
             if (!File.Exists(Filename)) return;
 
@@ -382,12 +380,6 @@ namespace Halloumi.Shuffler.Controls
             Wave.RenderStart(true, BASSFlag.BASS_DEFAULT);
 
             SetMarkers();
-
-            while (!_waveRendered)
-            {
-                Application.DoEvents();
-                Thread.Sleep(100);
-            }
         }
 
         private void UpdateViewText()
@@ -650,7 +642,6 @@ namespace Halloumi.Shuffler.Controls
             {
                 ZoomStart = 0;
                 ZoomEnd = BassTrack.Length;
-                _waveRendered = true;
             }
             DrawWave();
         }

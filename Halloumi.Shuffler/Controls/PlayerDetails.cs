@@ -31,7 +31,7 @@ namespace Halloumi.Shuffler.Controls
         private ShufflerApplication _application;
         private bool _bassPlayerOnTrackChange;
         private bool _bindingVolumeSlider;
-        private bool _firstVisualShown;
+        private int _visualWarmupTicks;
 
         private bool _loaded;
 
@@ -358,12 +358,8 @@ namespace Halloumi.Shuffler.Controls
             if (!VisualsShown) return;
             if (BassPlayer.PlayState == PlayState.Playing)
             {
-                if (!_firstVisualShown)
-                    for (var i = 0; i < 5; i++)
-                    {
-                        Thread.Sleep(50);
-                        Application.DoEvents();
-                    }
+                _visualWarmupTicks++;
+                if (_visualWarmupTicks < 3) return;
 
                 //lock (BassPlayer.ExternalMixerLock)
                 {
@@ -378,13 +374,11 @@ namespace Halloumi.Shuffler.Controls
                         false,
                         true,
                         false);
-                    Thread.Sleep(1);
-                    _firstVisualShown = true;
                 }
             }
             else
             {
-                _firstVisualShown = false;
+                _visualWarmupTicks = 0;
             }
         }
 

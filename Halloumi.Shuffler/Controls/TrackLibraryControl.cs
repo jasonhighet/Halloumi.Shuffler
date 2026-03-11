@@ -26,6 +26,8 @@ namespace Halloumi.Shuffler.Controls
     {
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
 
+        private BackgroundWorker _calculateKeyWorker;
+        private BackgroundWorker _reloadMetadataWorker;
 
         private bool _binding;
 
@@ -75,6 +77,14 @@ namespace Halloumi.Shuffler.Controls
 
             backgroundWorker.DoWork += backgroundWorker_DoWork;
             backgroundWorker.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
+
+            _calculateKeyWorker = new BackgroundWorker();
+            _calculateKeyWorker.DoWork += CalculateKey_DoWork;
+            _calculateKeyWorker.RunWorkerCompleted += CalculateKey_RunWorkerCompleted;
+
+            _reloadMetadataWorker = new BackgroundWorker();
+            _reloadMetadataWorker.DoWork += ReloadMetadata_DoWork;
+            _reloadMetadataWorker.RunWorkerCompleted += ReloadMetadata_RunWorkerCompleted;
 
             lstAlbum.Scroll += lstAlbum_Scroll;
             txtSearch.KeyPress += txtSearch_KeyPress;
@@ -251,10 +261,16 @@ namespace Halloumi.Shuffler.Controls
 
         private void mnuCalculateKey_Click(object sender, EventArgs e)
         {
+            if (_calculateKeyWorker.IsBusy) return;
+            var tracks = GetSelectedTracks();
             Cursor = Cursors.WaitCursor;
-            Application.DoEvents();
+            _calculateKeyWorker.RunWorkerAsync(tracks);
+        }
 
-            foreach (var track in GetSelectedTracks())
+        private void CalculateKey_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var tracks = (List<Track>)e.Argument;
+            foreach (var track in tracks)
             {
                 try
                 {
@@ -264,22 +280,28 @@ namespace Halloumi.Shuffler.Controls
                 {
                     // ignored
                 }
-                Application.DoEvents();
             }
-
-            Cursor = Cursors.Default;
-            Application.DoEvents();
-
             DebugHelper.WriteLine("CalcKey");
+        }
+
+        private void CalculateKey_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Cursor = Cursors.Default;
             BindData(false, false, false);
         }
 
         private void mnuReloadMetadata_Click(object sender, EventArgs e)
         {
+            if (_reloadMetadataWorker.IsBusy) return;
+            var tracks = GetSelectedTracks();
             Cursor = Cursors.WaitCursor;
-            Application.DoEvents();
+            _reloadMetadataWorker.RunWorkerAsync(tracks);
+        }
 
-            foreach (var track in GetSelectedTracks())
+        private void ReloadMetadata_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var tracks = (List<Track>)e.Argument;
+            foreach (var track in tracks)
             {
                 try
                 {
@@ -289,13 +311,13 @@ namespace Halloumi.Shuffler.Controls
                 {
                     // ignored
                 }
-                Application.DoEvents();
             }
-
-            Cursor = Cursors.Default;
-            Application.DoEvents();
-
             DebugHelper.WriteLine("ReloadMeta");
+        }
+
+        private void ReloadMetadata_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Cursor = Cursors.Default;
             BindData(false, false, false);
         }
 
