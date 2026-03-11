@@ -22,8 +22,6 @@ namespace Halloumi.Shuffler
 {
     public class ShufflerApplication
     {
-        private frmPluginSettings _pluginSettingsForm;
-
         private bool _useConservativeFadeOut;
 
         private readonly TrackSelector _trackSelector = new TrackSelector();
@@ -77,10 +75,11 @@ namespace Halloumi.Shuffler
         /// </summary>
         public event EventHandler OnFadeEnded;
 
+        private const int AutoGenerateTracksRemainingThreshold = 1;
+
         /// <summary>
-        /// Raised when auto-generation should run because the remaining playlist track
-        /// count (as reported by <see cref="PlaylistTrackCountProvider"/>) is below
-        /// <see cref="AutoGenerateTracksRemainingThreshold"/>.
+        /// Raised when auto-generation should run because 5 or fewer tracks remain in
+        /// the playlist (as reported by <see cref="PlaylistTrackCountProvider"/>).
         /// Only fires when <see cref="AutoGenerateEnabled"/> is true and
         /// <see cref="PlaylistTrackCountProvider"/> is set.
         /// </summary>
@@ -89,14 +88,9 @@ namespace Halloumi.Shuffler
         /// <summary>
         /// Whether auto-generation is enabled.
         /// When true, ShufflerApplication checks the playlist track count on every fade
-        /// end and fires <see cref="OnAutoGenerateRequired"/> when below threshold.
+        /// end and fires <see cref="OnAutoGenerateRequired"/> when 5 or fewer tracks remain.
         /// </summary>
         public bool AutoGenerateEnabled { get; set; }
-
-        /// <summary>
-        /// Number of tracks remaining in the playlist below which auto-generation fires.
-        /// </summary>
-        public int AutoGenerateTracksRemainingThreshold { get; set; }
 
         /// <summary>
         /// Callback that returns the number of tracks remaining in the playlist.
@@ -115,7 +109,7 @@ namespace Halloumi.Shuffler
             OnFadeEnded?.Invoke(this, EventArgs.Empty);
             if (!AutoGenerateEnabled) return;
             if (PlaylistTrackCountProvider == null) return;
-            if (PlaylistTrackCountProvider() < AutoGenerateTracksRemainingThreshold)
+            if (PlaylistTrackCountProvider() <= AutoGenerateTracksRemainingThreshold)
                 OnAutoGenerateRequired?.Invoke(this, EventArgs.Empty);
         }
 
@@ -356,7 +350,6 @@ namespace Halloumi.Shuffler
         public void SavePlaylistGenerationSettings(PlaylistGenerationRequest request)
         {
             request.AutoGenerateEnabled = AutoGenerateEnabled;
-            request.AutoGenerateTracksRemainingThreshold = AutoGenerateTracksRemainingThreshold;
 
             Directory.CreateDirectory(Path.GetDirectoryName(PlaylistSettingsFilename));
             SerializationHelper<PlaylistGenerationRequest>.ToXmlFile(request, PlaylistSettingsFilename);
@@ -367,7 +360,6 @@ namespace Halloumi.Shuffler
             var request = GetPlaylistGenerationRequest();
 
             AutoGenerateEnabled = request.AutoGenerateEnabled;
-            AutoGenerateTracksRemainingThreshold = request.AutoGenerateTracksRemainingThreshold;
 
             return request;
         }
@@ -377,33 +369,6 @@ namespace Halloumi.Shuffler
             return File.Exists(PlaylistSettingsFilename)
                 ? SerializationHelper<PlaylistGenerationRequest>.FromXmlFile(PlaylistSettingsFilename)
                 : PlaylistGenerationRequest.Default();
-        }
-
-        public void ShowPlugin(VstPlugin plugin)
-        {
-            if (plugin == null)
-                ShowPluginsForm();
-            else
-                PluginHelper.ShowVstPluginConfig(plugin);
-        }
-
-        public void ShowPlugin(WaPlugin plugin)
-        {
-            if (plugin == null)
-                ShowPluginsForm();
-            else
-                PluginHelper.ShowWaPluginConfig(plugin);
-        }
-
-        /// <summary>
-        ///     Shows the plug-in form.
-        /// </summary>
-        public void ShowPluginsForm()
-        {
-            if (_pluginSettingsForm == null || _pluginSettingsForm.IsDisposed)
-                _pluginSettingsForm = new frmPluginSettings(BassPlayer);
-            if (!_pluginSettingsForm.Visible)
-                WindowHelper.ShowDialog(BaseForm, _pluginSettingsForm);
         }
 
         public void ResetMidi()
@@ -581,9 +546,6 @@ namespace Halloumi.Shuffler
         public void SkipToFadeOut() => BassPlayer.SkipToFadeOut();
 
         public void Play() => BassPlayer.Play();
-
-        public DialogResult ShowShufflerDetails(string filename)
-            => Forms.FrmShufflerDetails.OpenForm(filename, BassPlayer, Library, this);
 
         // ── Library wrappers ────────────────────────────────────────────────
 

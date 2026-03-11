@@ -8,6 +8,7 @@ using Halloumi.Common.Windows.Controllers;
 using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
+using Halloumi.Shuffler.AudioEngine.Plugins;
 using Halloumi.Shuffler.Controls;
 using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioLibrary.Models.Track;
@@ -19,6 +20,7 @@ namespace Halloumi.Shuffler.Forms
     public partial class FrmMain : BaseMinimizeToTrayForm
     {
         private readonly ShufflerApplication _application;
+        private frmPluginSettings _pluginSettingsForm;
         private FrmGeneratePlaylist _autoGenerateSettings;
         private frmImportShufflerTracks _frmImportShufflerTracks;
 
@@ -374,7 +376,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.MainVstPlugin);
+            var plugin = _application.BassPlayer.MainVstPlugin;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowVstPluginConfig(plugin);
         }
 
         /// <summary>
@@ -382,7 +385,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuWinampDSPConfig_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.WaPlugin);
+            var plugin = _application.BassPlayer.WaPlugin;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowWaPluginConfig(plugin);
         }
 
         /// <summary>
@@ -390,7 +394,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuSamplerVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.SamplerVstPlugin);
+            var plugin = _application.BassPlayer.SamplerVstPlugin;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowVstPluginConfig(plugin);
         }
 
         /// <summary>
@@ -398,7 +403,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuTrackVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.TrackVstPlugin);
+            var plugin = _application.BassPlayer.TrackVstPlugin;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowVstPluginConfig(plugin);
         }
 
         /// <summary>
@@ -406,7 +412,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuTrackFXVSTPluginConfig_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.TrackSendFxVstPlugin);
+            var plugin = _application.BassPlayer.TrackSendFxVstPlugin;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowVstPluginConfig(plugin);
         }
 
         /// <summary>
@@ -414,7 +421,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuTrackFXVSTPluginConfig2_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.TrackSendFxVstPlugin2);
+            var plugin = _application.BassPlayer.TrackSendFxVstPlugin2;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowVstPluginConfig(plugin);
         }
 
         /// <summary>
@@ -422,7 +430,8 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuSamplerVSTPluginConfig2_Click(object sender, EventArgs e)
         {
-            _application.ShowPlugin(_application.BassPlayer.SamplerVstPlugin2);
+            var plugin = _application.BassPlayer.SamplerVstPlugin2;
+            if (plugin == null) ShowPluginsForm(); else PluginHelper.ShowVstPluginConfig(plugin);
         }
 
         /// <summary>
@@ -430,7 +439,15 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuPlugins_Click(object sender, EventArgs e)
         {
-            _application.ShowPluginsForm();
+            ShowPluginsForm();
+        }
+
+        private void ShowPluginsForm()
+        {
+            if (_pluginSettingsForm == null || _pluginSettingsForm.IsDisposed)
+                _pluginSettingsForm = new frmPluginSettings(_application.BassPlayer);
+            if (!_pluginSettingsForm.Visible)
+                WindowHelper.ShowDialog(_application.BaseForm, _pluginSettingsForm);
         }
 
         /// <summary>

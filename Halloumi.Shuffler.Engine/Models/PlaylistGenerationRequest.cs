@@ -20,7 +20,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
             ExcludeMixesOnly = false;
             DisplayedTracksOnly = false;
             AutoGenerateEnabled = false;
-            AutoGenerateTracksRemainingThreshold = 5;
         }
 
         public static PlaylistGenerationRequest Default() => new PlaylistGenerationRequest();
@@ -41,6 +40,5 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         public bool ExcludeMixesOnly { get; set; }
         public bool DisplayedTracksOnly { get; set; }
         public bool AutoGenerateEnabled { get; set; }
-        public int AutoGenerateTracksRemainingThreshold { get; set; }
     }
 }

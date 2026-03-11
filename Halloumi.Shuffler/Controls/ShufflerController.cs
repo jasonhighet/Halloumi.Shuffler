@@ -69,20 +69,6 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        ///     Gets or sets the number of tracks remaining in the playlist before it should auto-generate more.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int TracksRemainingThreshold
-        {
-            get => Application != null ? Application.AutoGenerateTracksRemainingThreshold : 0;
-            set
-            {
-                if (Application != null) Application.AutoGenerateTracksRemainingThreshold = value;
-            }
-        }
-
-        /// <summary>
         ///     Initalizes this instance.
         /// </summary>
         public void Initalize()

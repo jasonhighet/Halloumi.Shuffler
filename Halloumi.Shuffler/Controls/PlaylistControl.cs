@@ -752,7 +752,7 @@ namespace Halloumi.Shuffler.Controls
         {
             var track = GetSelectedTrack();
             if (track == null) return;
-            if (ShufflerApplication.ShowShufflerDetails(track.Filename) == DialogResult.OK)
+            if (FrmShufflerDetails.OpenForm(track.Filename, ShufflerApplication.BassPlayer, ShufflerApplication.Library, ShufflerApplication) == DialogResult.OK)
             {
                 BindData();
 
