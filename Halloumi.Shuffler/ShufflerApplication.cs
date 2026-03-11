@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -78,14 +78,18 @@ namespace Halloumi.Shuffler
         public event EventHandler OnFadeEnded;
 
         /// <summary>
-        /// Raised (on the BassPlayer thread) when auto-generation should run because
-        /// the playlist is below the threshold.
+        /// Raised when auto-generation should run because the remaining playlist track
+        /// count (as reported by <see cref="PlaylistTrackCountProvider"/>) is below
+        /// <see cref="AutoGenerateTracksRemainingThreshold"/>.
+        /// Only fires when <see cref="AutoGenerateEnabled"/> is true and
+        /// <see cref="PlaylistTrackCountProvider"/> is set.
         /// </summary>
         public event EventHandler OnAutoGenerateRequired;
 
         /// <summary>
-        /// Whether auto-generation is enabled. When true, ShufflerApplication monitors
-        /// BassPlayer transition events and fires OnAutoGenerateRequired when appropriate.
+        /// Whether auto-generation is enabled.
+        /// When true, ShufflerApplication checks the playlist track count on every fade
+        /// end and fires <see cref="OnAutoGenerateRequired"/> when below threshold.
         /// </summary>
         public bool AutoGenerateEnabled { get; set; }
 
@@ -93,6 +97,13 @@ namespace Halloumi.Shuffler
         /// Number of tracks remaining in the playlist below which auto-generation fires.
         /// </summary>
         public int AutoGenerateTracksRemainingThreshold { get; set; }
+
+        /// <summary>
+        /// Callback that returns the number of tracks remaining in the playlist.
+        /// Set by the UI at startup so ShufflerApplication can evaluate the threshold
+        /// without holding a WinForms reference.
+        /// </summary>
+        public Func<int> PlaylistTrackCountProvider { get; set; }
 
         private void BassPlayer_OnTrackChange(object sender, EventArgs e)
         {
@@ -103,7 +114,9 @@ namespace Halloumi.Shuffler
         {
             OnFadeEnded?.Invoke(this, EventArgs.Empty);
             if (!AutoGenerateEnabled) return;
-            OnAutoGenerateRequired?.Invoke(this, EventArgs.Empty);
+            if (PlaylistTrackCountProvider == null) return;
+            if (PlaylistTrackCountProvider() < AutoGenerateTracksRemainingThreshold)
+                OnAutoGenerateRequired?.Invoke(this, EventArgs.Empty);
         }
 
         public BaseMinimizeToTrayForm BaseForm { get; set; }
@@ -156,281 +169,126 @@ namespace Halloumi.Shuffler
         {
             SaveSettings();
             Library.SaveToDatabase();
+            MixLibrary.SaveToDatabase();
             LoopLibrary.SaveToCache();
             BassPlayer.Dispose();
             MidiManager.Dispose();
         }
+
+        // ── Plugin load/save helpers ─────────────────────────────────────────
+
+        /// <summary>
+        /// Calls <paramref name="loader"/> with <paramref name="path"/> if the path is non-empty,
+        /// swallowing any exception (plugin not found / incompatible version).
+        /// </summary>
+        private static void TryLoadPlugin(string path, Action<string> loader)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+            try { loader(path); } catch { /* ignored */ }
+        }
+
+        /// <summary>
+        /// Loads a plugin via <paramref name="loader"/> and then applies stored
+        /// <paramref name="parameters"/> to <paramref name="getPlugin"/>() when available.
+        /// </summary>
+        private static void TryLoadPluginWithParams(
+            string path, Action<string> loader,
+            string parameters, Func<VstPlugin> getPlugin)
+        {
+            TryLoadPlugin(path, loader);
+            if (!string.IsNullOrEmpty(parameters))
+            {
+                var plugin = getPlugin();
+                if (plugin != null)
+                    try { PluginHelper.SetVstPluginParameters(plugin, parameters); } catch { /* ignored */ }
+            }
+        }
+
+        /// <summary>
+        /// Returns the plugin's location, or <see cref="string.Empty"/> if the plugin is null.
+        /// </summary>
+        private static string SavePlugin(VstPlugin plugin)
+            => plugin?.Location ?? string.Empty;
+
+        /// <summary>
+        /// Returns the plugin's serialised parameter string, or <see cref="string.Empty"/> if null.
+        /// </summary>
+        private static string SavePluginParams(VstPlugin plugin)
+            => plugin != null ? PluginHelper.GetVstPluginParameters(plugin) : string.Empty;
+
+        // ── Settings ─────────────────────────────────────────────────────────
 
         /// <summary>
         ///     Loads the settings.
         /// </summary>
         public void LoadSettings()
         {
-            var settings = Settings.Default;
-            Library.LibraryFolder = settings.LibraryFolder;
+            var s = Settings.Default;
+            Library.LibraryFolder = s.LibraryFolder;
 
-            ExtenedAttributesHelper.ShufflerFolder = settings.ShufflerFolder;
-            PluginHelper.WaPluginsFolder = settings.WaPluginsFolder;
-            PluginHelper.VstPluginsFolder = settings.VstPluginsFolder;
-            BassPlayer.TrackFxAutomationEnabled = settings.EnableTrackFxAutomation;
-            BassPlayer.SampleAutomationEnabled = settings.EnableSampleAutomation;
-            KeyHelper.SetApplicationFolder(settings.KeyFinderFolder);
+            ExtenedAttributesHelper.ShufflerFolder = s.ShufflerFolder;
+            PluginHelper.WaPluginsFolder            = s.WaPluginsFolder;
+            PluginHelper.VstPluginsFolder           = s.VstPluginsFolder;
+            BassPlayer.TrackFxAutomationEnabled     = s.EnableTrackFxAutomation;
+            BassPlayer.SampleAutomationEnabled      = s.EnableSampleAutomation;
+            KeyHelper.SetApplicationFolder(s.KeyFinderFolder);
 
+            TryLoadPlugin(s.WaPlugin,                                  p => BassPlayer.LoadWaPlugin(p));
+            TryLoadPluginWithParams(s.MainMixerVstPlugin,  p => BassPlayer.LoadMainVstPlugin(p, 0),        s.MainMixerVstPluginParameters,  () => BassPlayer.MainVstPlugin);
+            TryLoadPluginWithParams(s.MainMixerVstPlugin2, p => BassPlayer.LoadMainVstPlugin(p, 1),        s.MainMixerVstPlugin2Parameters, () => BassPlayer.MainVstPlugin2);
+            TryLoadPluginWithParams(s.SamplerVstPlugin,    p => BassPlayer.LoadSamplerVstPlugin(p, 0),    s.SamplerVstPluginParameters,    () => BassPlayer.SamplerVstPlugin);
+            TryLoadPluginWithParams(s.SamplerVstPlugin2,   p => BassPlayer.LoadSamplerVstPlugin(p, 1),    s.SamplerVstPlugin2Parameters,   () => BassPlayer.SamplerVstPlugin2);
+            TryLoadPluginWithParams(s.TrackVstPlugin,      p => BassPlayer.LoadTracksVstPlugin(p, 0),     s.TrackVstPluginParameters,      () => BassPlayer.TrackVstPlugin);
+            TryLoadPluginWithParams(s.TrackFxvstPlugin,    p => BassPlayer.LoadTrackSendFxvstPlugin(p, 0), s.TrackFxvstPluginParameters,   () => BassPlayer.TrackSendFxVstPlugin);
+            TryLoadPluginWithParams(s.TrackFxvstPlugin2,   p => BassPlayer.LoadTrackSendFxvstPlugin(p, 1), s.TrackFxvstPlugin2Parameters,  () => BassPlayer.TrackSendFxVstPlugin2);
 
-            if (settings.WaPlugin != "")
-                try
-                {
-                    BassPlayer.LoadWaPlugin(settings.WaPlugin);
-                }
-                catch
-                {
-                    // ignored
-                }
+            BassPlayer.LimitSongLength = s.LimitSongLength;
+            BassPlayer.SetMonitorVolume(s.MonitorVolume);
+            UseConservativeFadeOut = s.LimitSongLength;
 
-            if (settings.MainMixerVstPlugin != "")
-                try
-                {
-                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
+            LoopLibrary.Initialize(s.LoopLibraryFolder);
+            BassPlayer.LoopFolder = s.LoopLibraryFolder;
 
-            if (settings.MainMixerVstPlugin2 != "")
-                try
-                {
-                    BassPlayer.LoadMainVstPlugin(settings.MainMixerVstPlugin2, 1);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.MainMixerVstPluginParameters != "" && BassPlayer.MainVstPlugin != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin,
-                        settings.MainMixerVstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.MainMixerVstPlugin2Parameters != "" && BassPlayer.MainVstPlugin2 != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.MainVstPlugin2,
-                        settings.MainMixerVstPlugin2Parameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.SamplerVstPlugin != "")
-                try
-                {
-                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.SamplerVstPluginParameters != "" && BassPlayer.SamplerVstPlugin != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin,
-                        settings.SamplerVstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.SamplerVstPlugin2 != "")
-                try
-                {
-                    BassPlayer.LoadSamplerVstPlugin(settings.SamplerVstPlugin2, 1);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.SamplerVstPlugin2Parameters != "" && BassPlayer.SamplerVstPlugin2 != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.SamplerVstPlugin2,
-                        settings.SamplerVstPlugin2Parameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.TrackVstPlugin != "")
-                try
-                {
-                    BassPlayer.LoadTracksVstPlugin(settings.TrackVstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.TrackVstPluginParameters != "" && BassPlayer.TrackVstPlugin != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackVstPlugin, settings.TrackVstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.TrackFxvstPlugin != "")
-                try
-                {
-                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin, 0);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.TrackFxvstPluginParameters != "" && BassPlayer.TrackSendFxVstPlugin != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin,
-                        settings.TrackFxvstPluginParameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.TrackFxvstPlugin2 != "")
-                try
-                {
-                    BassPlayer.LoadTrackSendFxvstPlugin(settings.TrackFxvstPlugin2, 1);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            if (settings.TrackFxvstPlugin2Parameters != "" && BassPlayer.TrackSendFxVstPlugin2 != null)
-                try
-                {
-                    PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2,
-                        settings.TrackFxvstPlugin2Parameters);
-                }
-                catch
-                {
-                    // ignored
-                }
-
-            BassPlayer.LimitSongLength = settings.LimitSongLength;
-            BassPlayer.SetMonitorVolume(settings.MonitorVolume);
-
-            UseConservativeFadeOut = settings.LimitSongLength;
-
-            LoopLibrary.Initialize(settings.LoopLibraryFolder);
-            BassPlayer.LoopFolder = settings.LoopLibraryFolder;
-
-            ShuffleAfterShuffling = settings.ShuffleAfterShuffling;
+            ShuffleAfterShuffling = s.ShuffleAfterShuffling;
         }
 
         public void SaveSettings()
         {
-            var settings = Settings.Default;
+            var s = Settings.Default;
 
-            var winampPlugin = "";
-            if (BassPlayer.WaPlugin != null) winampPlugin = BassPlayer.WaPlugin.Location;
-            settings.WaPlugin = winampPlugin;
+            s.WaPlugin = BassPlayer.WaPlugin?.Location ?? string.Empty;
 
-            var mainVstPlugin = "";
-            if (BassPlayer.MainVstPlugin != null) mainVstPlugin = BassPlayer.MainVstPlugin.Location;
-            settings.MainMixerVstPlugin = mainVstPlugin;
+            s.MainMixerVstPlugin            = SavePlugin(BassPlayer.MainVstPlugin);
+            s.MainMixerVstPlugin2           = SavePlugin(BassPlayer.MainVstPlugin2);
+            s.MainMixerVstPluginParameters  = SavePluginParams(BassPlayer.MainVstPlugin);
+            s.MainMixerVstPlugin2Parameters = SavePluginParams(BassPlayer.MainVstPlugin2);
 
-            var mainVstPlugin2 = "";
-            if (BassPlayer.MainVstPlugin2 != null) mainVstPlugin2 = BassPlayer.MainVstPlugin2.Location;
-            settings.MainMixerVstPlugin2 = mainVstPlugin2;
+            s.SamplerVstPlugin            = SavePlugin(BassPlayer.SamplerVstPlugin);
+            s.SamplerVstPlugin2           = SavePlugin(BassPlayer.SamplerVstPlugin2);
+            s.SamplerVstPluginParameters  = SavePluginParams(BassPlayer.SamplerVstPlugin);
+            s.SamplerVstPlugin2Parameters = SavePluginParams(BassPlayer.SamplerVstPlugin2);
 
-            var mainVstPluginParameters = "";
-            if (BassPlayer.MainVstPlugin != null)
-                mainVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin);
-            settings.MainMixerVstPluginParameters = mainVstPluginParameters;
+            s.TrackVstPlugin           = SavePlugin(BassPlayer.TrackVstPlugin);
+            s.TrackVstPluginParameters = SavePluginParams(BassPlayer.TrackVstPlugin);
 
-            var mainVstPluginParameters2 = "";
-            if (BassPlayer.MainVstPlugin2 != null)
-                mainVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.MainVstPlugin2);
-            settings.MainMixerVstPlugin2Parameters = mainVstPluginParameters2;
+            s.TrackFxvstPlugin            = SavePlugin(BassPlayer.TrackSendFxVstPlugin);
+            s.TrackFxvstPlugin2           = SavePlugin(BassPlayer.TrackSendFxVstPlugin2);
+            s.TrackFxvstPluginParameters  = SavePluginParams(BassPlayer.TrackSendFxVstPlugin);
+            s.TrackFxvstPlugin2Parameters = SavePluginParams(BassPlayer.TrackSendFxVstPlugin2);
 
-            var samplerVstPlugin = "";
-            if (BassPlayer.SamplerVstPlugin != null) samplerVstPlugin = BassPlayer.SamplerVstPlugin.Location;
-            settings.SamplerVstPlugin = samplerVstPlugin;
+            s.ShuffleAfterShuffling    = ShuffleAfterShuffling;
+            s.LimitSongLength          = UseConservativeFadeOut;
+            s.Volume                   = BassPlayer.GetMixerVolume();
+            s.SamplerDelayNotes        = BassPlayer.SamplerDelayNotes;
+            s.TrackFxDelayNotes        = BassPlayer.TrackSendFxDelayNotes;
+            s.SamplerOutput            = BassPlayer.SamplerOutput;
+            s.TrackOutput              = BassPlayer.TrackOutput;
+            s.MonitorVolume            = Convert.ToInt32(BassPlayer.GetMonitorVolume());
+            s.RawLoopOutput            = BassPlayer.RawLoopOutput;
+            s.EnableTrackFxAutomation  = BassPlayer.TrackFxAutomationEnabled;
+            s.EnableSampleAutomation   = BassPlayer.SampleAutomationEnabled;
 
-            var samplerVstPluginParameters = "";
-            if (BassPlayer.SamplerVstPlugin != null)
-                samplerVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin);
-            settings.SamplerVstPluginParameters = samplerVstPluginParameters;
-
-            var samplerVstPlugin2 = "";
-            if (BassPlayer.SamplerVstPlugin2 != null) samplerVstPlugin2 = BassPlayer.SamplerVstPlugin2.Location;
-            settings.SamplerVstPlugin2 = samplerVstPlugin2;
-
-            var samplerVstPluginParameters2 = "";
-            if (BassPlayer.SamplerVstPlugin2 != null)
-                samplerVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.SamplerVstPlugin2);
-            settings.SamplerVstPlugin2Parameters = samplerVstPluginParameters2;
-
-            var trackVstPlugin = "";
-            if (BassPlayer.TrackVstPlugin != null) trackVstPlugin = BassPlayer.TrackVstPlugin.Location;
-            settings.TrackVstPlugin = trackVstPlugin;
-
-            var trackVstPluginParameters = "";
-            if (BassPlayer.TrackVstPlugin != null)
-                trackVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackVstPlugin);
-            settings.TrackVstPluginParameters = trackVstPluginParameters;
-
-            var trackFxVstPlugin = "";
-            if (BassPlayer.TrackSendFxVstPlugin != null) trackFxVstPlugin = BassPlayer.TrackSendFxVstPlugin.Location;
-            settings.TrackFxvstPlugin = trackFxVstPlugin;
-
-            var trackFxVstPluginParameters = "";
-            if (BassPlayer.TrackSendFxVstPlugin != null)
-                trackFxVstPluginParameters = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin);
-            settings.TrackFxvstPluginParameters = trackFxVstPluginParameters;
-
-            var trackFxVstPlugin2 = "";
-            if (BassPlayer.TrackSendFxVstPlugin2 != null) trackFxVstPlugin2 = BassPlayer.TrackSendFxVstPlugin2.Location;
-            settings.TrackFxvstPlugin2 = trackFxVstPlugin2;
-
-            var trackFxVstPluginParameters2 = "";
-            if (BassPlayer.TrackSendFxVstPlugin2 != null)
-                trackFxVstPluginParameters2 = PluginHelper.GetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2);
-            settings.TrackFxvstPlugin2Parameters = trackFxVstPluginParameters2;
-
-            settings.ShuffleAfterShuffling = ShuffleAfterShuffling;
-            settings.LimitSongLength = UseConservativeFadeOut;
-            settings.Volume = BassPlayer.GetMixerVolume();
-
-            settings.SamplerDelayNotes = BassPlayer.SamplerDelayNotes;
-            settings.TrackFxDelayNotes = BassPlayer.TrackSendFxDelayNotes;
-
-            settings.SamplerOutput = BassPlayer.SamplerOutput;
-            settings.TrackOutput = BassPlayer.TrackOutput;
-            settings.MonitorVolume = Convert.ToInt32(BassPlayer.GetMonitorVolume());
-            settings.RawLoopOutput = BassPlayer.RawLoopOutput;
-
-            settings.EnableTrackFxAutomation = BassPlayer.TrackFxAutomationEnabled;
-            settings.EnableSampleAutomation = BassPlayer.SampleAutomationEnabled;
-
-            settings.Save();
+            s.Save();
         }
 
         public List<Track> GeneratePlaylist(

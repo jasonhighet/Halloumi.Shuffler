@@ -30,10 +30,6 @@ namespace Halloumi.Shuffler.Controls
             container.Add(this);
 
             InitializeComponent();
-
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         /// <summary>
@@ -95,28 +91,23 @@ namespace Halloumi.Shuffler.Controls
             _generateWorker.DoWork += GenerateWorker_DoWork;
             _generateWorker.RunWorkerCompleted += GenerateWorker_RunWorkerCompleted;
 
+            // Wire up the playlist count provider so ShufflerApplication can evaluate
+            // the threshold without holding any WinForms reference.
+            Application.PlaylistTrackCountProvider = () => PlaylistControl.GetNumberOfTracksRemaining();
+
             Application.OnAutoGenerateRequired += Application_OnAutoGenerateRequired;
         }
 
         /// <summary>
         ///     Handles the Application OnAutoGenerateRequired event.
+        ///     ShufflerApplication has already verified that the threshold is met;
+        ///     we just need to marshal onto the UI thread and trigger generation.
         /// </summary>
         private void Application_OnAutoGenerateRequired(object sender, EventArgs e)
         {
             if (PlaylistControl.InvokeRequired)
-                PlaylistControl.BeginInvoke(new MethodInvoker(CheckAndAutoGenerate));
+                PlaylistControl.BeginInvoke(new MethodInvoker(AutoGeneratePlaylist));
             else
-                CheckAndAutoGenerate();
-        }
-
-        /// <summary>
-        ///     Checks if auto-generation is required and triggers it.
-        /// </summary>
-        private void CheckAndAutoGenerate()
-        {
-            if (!AutoGenerateEnabled) return;
-            var tracksRemaining = PlaylistControl.GetNumberOfTracksRemaining();
-            if (tracksRemaining < TracksRemainingThreshold)
                 AutoGeneratePlaylist();
         }
 
