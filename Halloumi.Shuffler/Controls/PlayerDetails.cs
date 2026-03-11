@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -10,7 +10,6 @@ using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Shuffler.AudioLibrary;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using AE = Halloumi.Shuffler.AudioEngine;
@@ -91,27 +90,12 @@ namespace Halloumi.Shuffler.Controls
             set { picCover.Visible = value; }
         }
 
-
-        /// <summary>
-        ///     Gets or sets the library.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private Library Library { get; set; }
-
         /// <summary>
         ///     Gets or sets the bass player.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         private BassPlayer BassPlayer { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the mix library
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private MixLibrary MixLibrary { get; set; }
 
         /// <summary>
         ///     Gets or sets the timer.
@@ -145,10 +129,8 @@ namespace Halloumi.Shuffler.Controls
         public void Initialize(ShufflerApplication application, PlaylistControl playlistControl)
         {
             _application = application;
-            this.Library = application.Library;
             this.BassPlayer = application.BassPlayer;
             this.PlaylistControl = playlistControl;
-            this.MixLibrary = application.MixLibrary;
 
             var volume = _application.GetVolume();
             BassPlayer.SetMixerVolume(volume);
@@ -216,7 +198,7 @@ namespace Halloumi.Shuffler.Controls
         {
             Track track = null;
             if (BassPlayer.CurrentTrack != null)
-                track = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
+                track = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
 
             if (BassPlayer.PlayState == PlayState.Playing)
             {
@@ -246,7 +228,7 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                picCover.Image = Library.GetAlbumCover(track.Album);
+                picCover.Image = _application.GetAlbumCover(track.Album);
             }
             else
             {
@@ -276,12 +258,12 @@ namespace Halloumi.Shuffler.Controls
 
             Track currentTrack = null;
             if (BassPlayer.CurrentTrack != null)
-                currentTrack = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
+                currentTrack = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
 
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return 1;
 
-            return MixLibrary.GetMixLevel(prevTrack, currentTrack);
+            return _application.GetMixLevel(prevTrack, currentTrack);
         }
 
         public void SetCurrentMixRank(int mixRank)
@@ -290,12 +272,12 @@ namespace Halloumi.Shuffler.Controls
 
             Track currentTrack = null;
             if (BassPlayer.CurrentTrack != null)
-                currentTrack = Library.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
+                currentTrack = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
 
             var prevTrack = PlaylistControl.GetPreviousTrack();
             if (prevTrack == null) return;
 
-            MixLibrary.SetMixLevel(prevTrack, currentTrack, mixRank);
+            _application.SetMixLevel(prevTrack, currentTrack, mixRank);
         }
 
 

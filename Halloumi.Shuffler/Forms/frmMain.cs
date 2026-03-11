@@ -182,14 +182,14 @@ namespace Halloumi.Shuffler.Forms
             if (toolStripDropDownItem == null) return;
 
             var mixRankDescription = toolStripDropDownItem.Text;
-            var mixRank = _application.MixLibrary.GetRankFromDescription(mixRankDescription);
+            var mixRank = _application.GetMixRankFromDescription(mixRankDescription);
 
             var track = playlistControl.GetCurrentTrack();
             if (track == null)
                 return;
 
             var tracks = new List<Track> { track };
-            _application.Library.SetRank(tracks, (int)mixRank);
+            _application.SetTrackRank(tracks, (int)mixRank);
         }
 
         private void mnuViewVisuals_Click(object sender, EventArgs e)
@@ -233,7 +233,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuCleanLibrary_Click(object sender, EventArgs e)
         {
-            _application.Library.CleanLibrary();
+            _application.CleanLibrary();
         }
 
         private void mnuUpdateDuplicateTracks_Click(object sender, EventArgs e)
@@ -555,7 +555,7 @@ namespace Halloumi.Shuffler.Forms
             if (toolStripDropDownItem != null)
             {
                 var mixRankDescription = toolStripDropDownItem.Text;
-                var mixRank = _application.MixLibrary.GetRankFromDescription(mixRankDescription);
+                var mixRank = _application.GetMixRankFromDescription(mixRankDescription);
                 playerDetails.SetCurrentMixRank((int)mixRank);
             }
             playerDetails.DisplayCurrentTrackDetails();
@@ -655,7 +655,7 @@ namespace Halloumi.Shuffler.Forms
             var currentMixRank = playerDetails.GetCurrentMixRank();
             for (var i = 0; i < 6; i++)
             {
-                mnuRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);
+                mnuRank.DropDownItems[i].Text = _application.GetMixRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
@@ -670,7 +670,7 @@ namespace Halloumi.Shuffler.Forms
                 currentMixRank = playlistControl.GetCurrentTrack().Rank;
             for (var i = 0; i < 6; i++)
             {
-                mnuTrackRank.DropDownItems[i].Text = _application.MixLibrary.GetRankDescription(5 - i);
+                mnuTrackRank.DropDownItems[i].Text = _application.GetMixRankDescription(5 - i);
                 ((ToolStripMenuItem)mnuTrackRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
             }
         }
@@ -793,13 +793,13 @@ namespace Halloumi.Shuffler.Forms
         private void mnuUpdateLibraryFolder_Click(object sender, EventArgs e)
         {
             var folder = FileDialogHelper.OpenFolder();
-            if (!folder.StartsWith(_application.Library.LibraryFolder))
+            if (!folder.StartsWith(_application.GetLibraryFolder()))
             {
                 MessageBoxHelper.Show("Folder must be in library");
                 return;
             }
 
-            _application.Library.ImportTracks(folder);
+            _application.ImportTracks(folder);
         }
 
         private void QueueWorking(string filename) 

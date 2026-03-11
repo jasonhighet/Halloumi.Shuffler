@@ -648,6 +648,10 @@ namespace Halloumi.Shuffler
 
         public void ImportAndCleanLibrary() { Library.ImportTracks(); Library.CleanLibrary(); }
 
+        public void CleanLibrary() => Library.CleanLibrary();
+
+        public void ImportTracks(string folder) => Library.ImportTracks(folder);
+
         public void RemoveShufflerDetails(Track track) => Library.RemoveShufflerDetails(track);
 
         public void UpdateTitle(Track track, string title, bool updateAxillaryFiles)
