@@ -28,6 +28,7 @@ namespace Halloumi.Shuffler.Controls
 
         private bool _loaded;
         public EventHandler PlaylistChanged;
+        public EventHandler MixRankAssigned;
         ///public EventHandler TrackClicked;
 
 
@@ -199,6 +200,7 @@ namespace Halloumi.Shuffler.Controls
 
 
             grdPlaylist.InvalidateDisplayedRows();
+            MixRankAssigned?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

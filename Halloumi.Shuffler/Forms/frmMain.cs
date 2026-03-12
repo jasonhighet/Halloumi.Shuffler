@@ -79,6 +79,7 @@ namespace Halloumi.Shuffler.Forms
 
             playlistControl.Initalize(trackLibraryControl, application);
             playlistControl.ShufflerDetailsUpdatedEvent += playlistControl_ShufflerDetailsUpdatedEvent;
+            playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(); };
 
             playerDetails.Initialize(application, playlistControl);
 
@@ -674,10 +675,11 @@ namespace Halloumi.Shuffler.Forms
         private void BindMixRankMenu()
         {
             var currentMixRank = playerDetails.GetCurrentMixRank();
+            var rankItems = new[] { mnuRank0, mnuRank1, mnuRank2, mnuRank3, mnuRank4, mnuRank5 };
             for (var i = 0; i < 6; i++)
             {
-                mnuRank.DropDownItems[i].Text = _application.GetMixRankDescription(5 - i);
-                ((ToolStripMenuItem)mnuRank.DropDownItems[i]).Checked = 5 - i == currentMixRank;
+                rankItems[i].Text = _application.GetMixRankDescription(5 - i);
+                rankItems[i].Checked = 5 - i == currentMixRank;
             }
         }
 

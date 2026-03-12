@@ -237,3 +237,26 @@ All forms and controls use ComponentFactory.Krypton 4.3.2 for visual theming. Th
 ## Form state persistence
 
 Window sizes and positions are saved to `Settings.Default.FormStateSettings` as a serialised dictionary keyed by form type name. `LeftRightSplit` and `TrackSplit` store splitter positions. These are restored on next launch.
+
+---
+
+## Design-time gotcha: BASSTimer in constructors
+
+`BASSTimer` (from `Un4seen.Bass.Misc`) requires the native BASS DLL to be loaded. Visual Studio instantiates UserControls to render them in the designer — if `BASSTimer` is constructed unconditionally, the designer silently fails and shows a blank control.
+
+**Rule:** any `BASSTimer` (or other Bass.Net type) instantiation in a constructor must be guarded with `DesignMode`:
+
+```csharp
+public MyControl()
+{
+    InitializeComponent();
+    if (DesignMode) return;   // ← guard before any BASS code
+
+    _timer = new BASSTimer(100);
+    _timer.Tick += Timer_Tick;
+}
+```
+
+Field initialisers cannot use `DesignMode`, so Bass.Net fields must be declared without an initialiser and assigned in the constructor after the guard.
+
+**Affected controls (already fixed):** `PlayerDetails`, `TrackMixerControl`, `TrackWave`.

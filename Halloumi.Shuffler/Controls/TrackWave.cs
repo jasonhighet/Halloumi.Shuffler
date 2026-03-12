@@ -51,11 +51,13 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
+            Mode = TrackWaveMode.Shuffler;
+
+            if (DesignMode) return;
+
             // create a secure timer
             _timer = new BASSTimer(50);
             _timer.Tick += timer_Tick;
-
-            Mode = TrackWaveMode.Shuffler;
         }
 
 

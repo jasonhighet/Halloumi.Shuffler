@@ -49,6 +49,8 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
+            if (DesignMode) return;
+
             Timer = new BASSTimer(100) {Interval = 100};
 
             Load += TrackDetails_Load;

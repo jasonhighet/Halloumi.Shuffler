@@ -18,7 +18,7 @@ namespace Halloumi.Shuffler.Controls
     /// </summary>
     public partial class TrackMixerControl : UserControl
     {
-        private readonly BASSTimer _timer = new BASSTimer();
+        private readonly BASSTimer _timer;
         private bool _bassPlayerOnTrackChange;
         private bool _binding;
         private bool _bindingManualMode;
@@ -32,6 +32,10 @@ namespace Halloumi.Shuffler.Controls
         public TrackMixerControl()
         {
             InitializeComponent();
+
+            if (DesignMode) return;
+
+            _timer = new BASSTimer();
             sldFader.ValueChanged += sldFader_ValueChanged;
         }
 
