@@ -355,25 +355,26 @@ Identifies structural sections (intro, verse, chorus, outro) by analysing energy
 
 ## Known issues and gotchas
 
-### Thread safety — custom Lock/Unlock is not a real mutex
+### Lock/Unlock is a coarse "fade in progress" guard, not a general mutex
 
-`BassPlayer` uses a hand-rolled `Lock()` / `Unlock()` pair backed by a plain `bool _locked`:
+`BassPlayer` has a custom `Lock()` / `Unlock()` pair used to signal that a fade operation is in progress. It is backed by an `int` field with `Interlocked.CompareExchange` to guarantee atomic acquisition:
 
 ```csharp
-private void Lock()   { WaitForLock(); _locked = true; }
-private void Unlock() { _locked = false; }
-private void WaitForLock() { while (IsLocked()) Thread.Sleep(50); }
+private void Lock()   { while (Interlocked.CompareExchange(ref _locked, 1, 0) != 0) Thread.Sleep(1); }
+private void Unlock() { Interlocked.Exchange(ref _locked, 0); }
 ```
 
-This is **not thread-safe**. Two threads can both read `_locked == false`, both set `_locked = true`, and both believe they hold the lock. In practice this is unlikely because most calls come from the UI thread or from BASS sync handlers (which are serialised by BASS itself), but it is a latent race. Do not add multi-threaded callers without replacing this with a proper synchronisation primitive (`SemaphoreSlim`, `Monitor`, etc.).
+`WaitForLock()` (used in `GetVolumeLevels`) spins until the fade completes without acquiring the lock itself. This is intentional — it just waits for stable state before sampling volume levels.
+
+The pattern is fine for its current single-caller use (UI thread + BASS sync handlers), but is not designed for general multi-threaded access. Do not add concurrent callers without replacing this with a full synchronisation primitive.
 
 ### Static shared track state
 
 `CachedTracks`, `_nextTrackId`, and `_recentTracks` are all `static`. The application is designed for a single `BassPlayer` instance; if a second instance is ever created (e.g. for a second audio device) the two instances will share the same ID space and track cache, which will break silently.
 
-### Thread.Sleep in audio-adjacent code
+### Thread.Sleep(10) in AudioStreamHelper.Pause
 
-`Pause()` calls `Thread.Sleep(150)` before returning. `AudioStreamHelper` methods each call `Thread.Sleep(1)` after every volume set. These block whichever thread is calling (usually the UI thread), causing small UI freezes. The sleeps appear to be defensive guards against BASS settling; they are safe to keep but undesirable in performance-critical paths.
+`AudioStreamHelper.Pause()` sleeps 10 milliseconds after calling `BASS_Mixer_ChannelPause`. This is a deliberate small settle wait to give BASS time to drain its output buffer before callers assume the channel is silent. The `PowerDownAsync` loop also uses `Thread.Sleep(interval)` intentionally to pace its pitch-slide animation — do not remove those.
 
 ### Sync handlers fire on a BASS thread
 

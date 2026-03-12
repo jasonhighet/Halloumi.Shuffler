@@ -34,7 +34,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private static readonly object MixerLock = new object();
         public MonitorOutputChannel MonitorOutput { get; }
 
-        private bool _locked;
+        private int _locked; // 0 = free, 1 = locked; use Interlocked for atomic access
 
         private MixerChannel _trackMixer;
 
@@ -671,9 +671,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 foreach (var track in unusedTracks)
                     UnloadTrackAudioData(track);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // ignored
+                System.Diagnostics.Debug.WriteLine("UnloadUnusedAudioData failed: " + e.Message);
             }
         }
 
@@ -807,17 +807,16 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             StopSamples();
 
             if (CurrentTrack != null)
-                AudioStreamHelper.SmoothPause(CurrentTrack);
+                AudioStreamHelper.SmoothPauseSync(CurrentTrack);
 
             if (NextTrack != null)
-                AudioStreamHelper.SmoothPause(NextTrack);
+                AudioStreamHelper.SmoothPauseSync(NextTrack);
 
             if (PreviousTrack != null)
-                AudioStreamHelper.SmoothPause(PreviousTrack);
+                AudioStreamHelper.SmoothPauseSync(PreviousTrack);
 
             StopTrackFxSend();
             PlayState = PlayState.Paused;
-            Thread.Sleep(150);
         }
 
         /// <summary>
@@ -1470,24 +1469,24 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         private void Unlock()
         {
-            _locked = false;
+            Interlocked.Exchange(ref _locked, 0);
         }
 
         private void Lock()
         {
-            WaitForLock();
-            _locked = true;
+            while (Interlocked.CompareExchange(ref _locked, 1, 0) != 0)
+                Thread.Sleep(1);
         }
 
         private void WaitForLock()
         {
-            while (IsLocked())
+            while (Volatile.Read(ref _locked) != 0)
                 Thread.Sleep(50);
         }
 
         public bool IsLocked()
         {
-            return _locked;
+            return Volatile.Read(ref _locked) != 0;
         }
 
         /// <summary>
