@@ -350,3 +350,31 @@ Identifies structural sections (intro, verse, chorus, outro) by analysing energy
 ## MIDI
 
 `BassPlayerMidiMapper` maps incoming MIDI messages to `BassPlayer` methods. Mappings are defined in `MidiMapping.cs` and serialised as JSON. `MidiManager` handles device enumeration and raw MIDI input events.
+
+---
+
+## Known issues and gotchas
+
+### Thread safety — custom Lock/Unlock is not a real mutex
+
+`BassPlayer` uses a hand-rolled `Lock()` / `Unlock()` pair backed by a plain `bool _locked`:
+
+```csharp
+private void Lock()   { WaitForLock(); _locked = true; }
+private void Unlock() { _locked = false; }
+private void WaitForLock() { while (IsLocked()) Thread.Sleep(50); }
+```
+
+This is **not thread-safe**. Two threads can both read `_locked == false`, both set `_locked = true`, and both believe they hold the lock. In practice this is unlikely because most calls come from the UI thread or from BASS sync handlers (which are serialised by BASS itself), but it is a latent race. Do not add multi-threaded callers without replacing this with a proper synchronisation primitive (`SemaphoreSlim`, `Monitor`, etc.).
+
+### Static shared track state
+
+`CachedTracks`, `_nextTrackId`, and `_recentTracks` are all `static`. The application is designed for a single `BassPlayer` instance; if a second instance is ever created (e.g. for a second audio device) the two instances will share the same ID space and track cache, which will break silently.
+
+### Thread.Sleep in audio-adjacent code
+
+`Pause()` calls `Thread.Sleep(150)` before returning. `AudioStreamHelper` methods each call `Thread.Sleep(1)` after every volume set. These block whichever thread is calling (usually the UI thread), causing small UI freezes. The sleeps appear to be defensive guards against BASS settling; they are safe to keep but undesirable in performance-critical paths.
+
+### Sync handlers fire on a BASS thread
+
+`OnTrackSync` is called by BASS on an internal BASS thread, not the UI thread. UI interactions triggered from within `OnTrackSync` (via `Invoke`/`BeginInvoke`) are correct, but any code that directly touches UI controls without marshalling will throw cross-thread exceptions. Existing code is generally correct here but care is needed when adding new sync handling code.

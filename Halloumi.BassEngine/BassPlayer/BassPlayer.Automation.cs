@@ -41,7 +41,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         private Track LastExtendedMixTrack { get; set; }
 
-        public ExtendedFadeType PreviousManaulExtendedFadeType { get; set; }
+        public ExtendedFadeType PreviousManualExtendedFadeType { get; set; }
 
         public ExtendedFadeType CurrentManualExtendedFadeType { get; set; }
 
@@ -52,7 +52,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private void InitialiseManualMixer()
         {
             IsManualMixMode = false;
-            PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
+            PreviousManualExtendedFadeType = ExtendedFadeType.Default;
             CurrentManualExtendedFadeType = ExtendedFadeType.Default;
         }
 
@@ -167,7 +167,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             attributes.SampleTriggers.Clear();
 
-            var mixDetails = attributes.GetExtendedMixAttributes(NextTrack.Description);
+            var mixDetails = NextTrack != null ? attributes.GetExtendedMixAttributes(NextTrack.Description) : null;
             mixDetails?.SampleTriggers.Clear();
 
             AutomationAttributesHelper.SaveAutomationAttributes(CurrentTrack.Description, attributes);
@@ -479,7 +479,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (CurrentTrack == null) return;
             if (PreviousTrack == null) return;
             if (!IsManualMixMode) return;
-            if (PreviousManaulExtendedFadeType == ExtendedFadeType.PowerDown) return;
+            if (PreviousManualExtendedFadeType == ExtendedFadeType.PowerDown) return;
 
             CreateLastExtendedMixAttributes();
 
@@ -499,7 +499,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (CurrentTrack == null) return;
             if (PreviousTrack == null) return;
             if (!IsManualMixMode) return;
-            if (PreviousManaulExtendedFadeType == ExtendedFadeType.Default) return;
+            if (PreviousManualExtendedFadeType == ExtendedFadeType.Default) return;
 
             CreateLastExtendedMixAttributes();
 
@@ -517,7 +517,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             LastExtendedMixAttributes = new ExtendedMixAttributes
             {
                 TrackDescription = CurrentTrack.Description,
-                ExtendedFadeType = PreviousManaulExtendedFadeType
+                ExtendedFadeType = PreviousManualExtendedFadeType
             };
         }
 

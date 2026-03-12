@@ -219,7 +219,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             IsManualMixMode = true;
             CurrentManualExtendedFadeType = ExtendedFadeType.Default;
-            PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
+            PreviousManualExtendedFadeType = ExtendedFadeType.Default;
             SetManualMixVolume(0);
             OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
@@ -228,7 +228,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             IsManualMixMode = false;
             CurrentManualExtendedFadeType = ExtendedFadeType.Default;
-            PreviousManaulExtendedFadeType = ExtendedFadeType.Default;
+            PreviousManualExtendedFadeType = ExtendedFadeType.Default;
             PausePreviousTrack();
             SetManualMixVolume(0);
             OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
@@ -1266,6 +1266,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                     case SyncType.EndSampleTrigger:
                         break;
                     case SyncType.StartSkipSection:
+                        track.SkipSyncId = syncId;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(syncType), syncType, null);
@@ -1303,7 +1304,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 if (track.FadeOutEndSyncId != int.MinValue)
                 {
                     BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeOutEndSyncId);
-                    track.FadeInStartSyncId = int.MinValue;
+                    track.FadeOutEndSyncId = int.MinValue;
                 }
                 if (track.PreFadeInStartSyncId != int.MinValue)
                 {
@@ -1318,7 +1319,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 if (track.RawLoopEndSyncId != int.MinValue)
                 {
                     BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.RawLoopEndSyncId);
-                    track.TrackEndSyncId = int.MinValue;
+                    track.RawLoopEndSyncId = int.MinValue;
                 }
                 if (track.ExtendedMixEndSyncId != int.MinValue)
                 {
@@ -1458,7 +1459,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 AudioStreamHelper.SetVolume(CurrentTrack, 1F);
                 Unlock();
 
-                if (!IsManualMixMode || IsManualMixMode && PreviousManaulExtendedFadeType == ExtendedFadeType.PowerDown)
+                if (!IsManualMixMode || IsManualMixMode && PreviousManualExtendedFadeType == ExtendedFadeType.PowerDown)
                     RaiseOnEndFadeIn();
 
                 UnloadUnusedAudioData();
@@ -1504,7 +1505,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             CurrentTrack = NextTrack;
             NextTrack = null;
 
-            PreviousManaulExtendedFadeType = CurrentManualExtendedFadeType;
+            PreviousManualExtendedFadeType = CurrentManualExtendedFadeType;
             CurrentManualExtendedFadeType = GetCurrentExtendedFadeType();
 
             if (!IsTrackInUse(oldPreviousTrack))
@@ -1525,8 +1526,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
                 if (IsManualMixMode)
                 {
-                    SetAutoFadeOutSettings(PreviousManaulExtendedFadeType, PreviousTrack);
-                    switch (PreviousManaulExtendedFadeType)
+                    SetAutoFadeOutSettings(PreviousManualExtendedFadeType, PreviousTrack);
+                    switch (PreviousManualExtendedFadeType)
                     {
                         case ExtendedFadeType.Cut:
                             AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
