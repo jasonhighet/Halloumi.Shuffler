@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Helpers;
-using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
 using AE = Halloumi.Shuffler.AudioEngine;
 
@@ -14,17 +13,20 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private string _currentFilename;
 
+        public ShufflerApplication ShufflerApplication { get; set; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool AlbumArtShown
+        {
+            get => picCover.Visible;
+            set => picCover.Visible = value;
+        }
+
         public TrackDetails()
         {
             InitializeComponent();
         }
-
-        //private Library _library = null;
-
-        //public void SetLibrary(Library library)
-        //{
-        //    _library = library;
-        //}
 
         /// <summary>
         ///     Displays the current track details.
@@ -49,7 +51,8 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                //picCover.Image = _library.GetAlbumCover(track.Album);
+                if (ShufflerApplication != null)
+                    picCover.Image = ShufflerApplication.GetAlbumCover(track.Album);
 
                 _currentFilename = track.Filename;
             }

@@ -89,6 +89,13 @@ namespace Halloumi.Shuffler.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowTrackDetailsAlbumArt
+        {
+            set => trackDetails.AlbumArtShown = value;
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         private ShufflerApplication ShufflerApplication { get; set; }
 
         /// <summary>
@@ -325,7 +332,7 @@ namespace Halloumi.Shuffler.Controls
         {
             ShufflerApplication = application;
 
-            //trackDetails.SetLibrary(Library);
+            trackDetails.ShufflerApplication = application;
             trackDetails.DisplayTrackDetails(null);
 
             mixableTracks.PlaylistControl = this;

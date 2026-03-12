@@ -212,6 +212,13 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowTrackDetailsAlbumArt
+        {
+            set => trackDetails.AlbumArtShown = value;
+        }
+
         private List<TrackModel> TrackModels { get; set; }
 
         /// <summary>
@@ -328,7 +335,7 @@ namespace Halloumi.Shuffler.Controls
 
         public void Initalize()
         {
-            //trackDetails.SetLibrary(Library);
+            trackDetails.ShufflerApplication = ShufflerApplication;
 
             mixableTracks.PlaylistControl = PlaylistControl;
             mixableTracks.Initialize(ShufflerApplication, this);

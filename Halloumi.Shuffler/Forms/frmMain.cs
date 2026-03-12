@@ -231,6 +231,8 @@ namespace Halloumi.Shuffler.Forms
         {
             mnuViewAlbumArt.Checked = !mnuViewAlbumArt.Checked;
             playerDetails.AlbumArtShown = mnuViewAlbumArt.Checked;
+            trackLibraryControl.ShowTrackDetailsAlbumArt = mnuViewAlbumArt.Checked;
+            playlistControl.ShowTrackDetailsAlbumArt = mnuViewAlbumArt.Checked;
         }
 
         private void mnuCleanLibrary_Click(object sender, EventArgs e)
@@ -323,6 +325,8 @@ namespace Halloumi.Shuffler.Forms
             playerDetails.VisualsShown = settings.VisualsShown;
             mnuViewVisuals.Checked = settings.VisualsShown;
             playerDetails.AlbumArtShown = settings.AlbumArtShown;
+            trackLibraryControl.ShowTrackDetailsAlbumArt = settings.AlbumArtShown;
+            playlistControl.ShowTrackDetailsAlbumArt = settings.AlbumArtShown;
             mnuViewAlbumArt.Checked = settings.AlbumArtShown;
             mnuSkipAfterMix.Checked = settings.SkipAfterMix;
             mnuShowPlayer.Checked = settings.ShowPlayer;
