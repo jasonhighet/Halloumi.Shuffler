@@ -16,6 +16,14 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             _tagDetails = new Dictionary<string, TagDetails>();
         }
 
+        public static void ClearCache(string filename)
+        {
+            lock (_tagDetails)
+            {
+                _tagDetails.Remove(filename);
+            }
+        }
+
         public static TagDetails LoadTags(string filename)
         {
             var extension = Path.GetExtension(filename);

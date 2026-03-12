@@ -233,6 +233,29 @@ namespace Halloumi.Shuffler.Forms
             trackWave.SetModeAndBassPlayer(Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler, BassPlayer);
 
             Track = trackWave.LoadTrack(Filename);
+
+            if (!ExtenedAttributesHelper.HasExtendedAttributes(Track.Description))
+            {
+                if (Track.TagBpm == 0 || Track.TagBpm == 100)
+                {
+                    var bpm = BpmCalculator.CalculateBpm(Track.Filename);
+                    if (bpm > 0)
+                    {
+                        Track.TagBpm = BpmHelper.NormaliseBpm(Convert.ToDecimal(bpm));
+                        TagHelper.ClearCache(Track.Filename);
+                    }
+                }
+
+                if (Track.TagBpm > 0 && Track.TagBpm != 100)
+                {
+                    var defaultFadeLength = Track.SecondsToSamples(BpmHelper.GetDefaultLoopLength(Track.TagBpm));
+                    Track.FadeInStart = 0;
+                    Track.FadeInEnd = defaultFadeLength;
+                    Track.FadeOutEnd = Track.Length;
+                    Track.FadeOutStart = Math.Max(0, Track.Length - defaultFadeLength);
+                }
+            }
+
             AutomationAttributes = AutomationAttributesHelper.GetAutomationAttributes(Track.Description);
 
             cmbOutput.SelectedIndex = 0;
@@ -301,9 +324,10 @@ namespace Halloumi.Shuffler.Forms
 
             if (Track.FadeInEnd != 0)
                 cmbCustomFadeInLength.Seconds = Track.SamplesToSeconds(Track.FadeInEnd - Track.FadeInStart);
+
             if (Track.FadeOutEnd != 0)
                 cmbCustomFadeOutLength.Seconds = Track.SamplesToSeconds(Track.FadeOutEnd - Track.FadeOutStart);
-
+ 
             cmbPreFadeInStartVolume.Text = (Track.PreFadeInStartVolume*100).ToString(CultureInfo.InvariantCulture);
 
             cmbFadeInLoopCount.Text = !Track.IsLoopedAtStart ? "0" : Track.StartLoopCount.ToString();

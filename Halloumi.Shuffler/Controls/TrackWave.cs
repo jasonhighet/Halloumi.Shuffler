@@ -206,7 +206,15 @@ namespace Halloumi.Shuffler.Controls
             BassTrack = BassPlayer.LoadRawLoopTrack(Filename);
 
             var isShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(BassTrack.Description);
-            if (!isShufflerTrack) BassTrack.TagBpm = BpmHelper.NormaliseBpm(Convert.ToDecimal(BPMGuestimator.EstimateBPM(BassTrack.Filename)));
+            if (!isShufflerTrack && (BassTrack.TagBpm == 0 || BassTrack.TagBpm == 100))
+            {
+                var bpm = BpmCalculator.CalculateBpm(BassTrack.Filename);
+                if (bpm > 0)
+                {
+                    BassTrack.TagBpm = BpmHelper.NormaliseBpm(Convert.ToDecimal(bpm));
+                    TagHelper.ClearCache(BassTrack.Filename);
+                }
+            }
 
 
             //var bpm = BPMGuestimator.EstimateBPM(fileName);
