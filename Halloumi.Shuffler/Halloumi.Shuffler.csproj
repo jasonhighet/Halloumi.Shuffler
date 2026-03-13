@@ -10,7 +10,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x86;AnyCPU</Platforms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+
     <Deterministic>false</Deterministic>
   </PropertyGroup>
 
@@ -72,10 +72,6 @@
   <!-- Slider.Designer.cs was intentionally excluded from the original project -->
   <ItemGroup>
     <Compile Remove="Controls\Slider.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
