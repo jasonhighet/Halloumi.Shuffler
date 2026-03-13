@@ -244,19 +244,21 @@ Window sizes and positions are saved to `Settings.Default.FormStateSettings` as 
 
 `BASSTimer` (from `Un4seen.Bass.Misc`) requires the native BASS DLL to be loaded. Visual Studio instantiates UserControls to render them in the designer — if `BASSTimer` is constructed unconditionally, the designer silently fails and shows a blank control.
 
-**Rule:** any `BASSTimer` (or other Bass.Net type) instantiation in a constructor must be guarded with `DesignMode`:
+**`DesignMode` is unreliable in constructors.** The `Control.DesignMode` property returns `false` inside a constructor because the control hasn't been sited yet. Use `LicenseManager.UsageMode` instead, which is set before the constructor runs:
 
 ```csharp
 public MyControl()
 {
     InitializeComponent();
-    if (DesignMode) return;   // ← guard before any BASS code
+    if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
     _timer = new BASSTimer(100);
     _timer.Tick += Timer_Tick;
 }
 ```
 
-Field initialisers cannot use `DesignMode`, so Bass.Net fields must be declared without an initialiser and assigned in the constructor after the guard.
+The combined check handles both the designer (via `LicenseManager`) and nested host scenarios (via `DesignMode`). Use this same combined form in event handlers and methods too — `DesignMode` works there, but the combined check is consistent and safe everywhere.
 
-**Affected controls (already fixed):** `PlayerDetails`, `TrackMixerControl`, `TrackWave`.
+Field initialisers cannot use either check, so Bass.Net fields must be declared without an initialiser and assigned in the constructor after the guard.
+
+**Affected controls (already fixed):** `PlayerDetails`, `TrackMixerControl`, `TrackWave`, `Slider`, `PlaylistControl`.

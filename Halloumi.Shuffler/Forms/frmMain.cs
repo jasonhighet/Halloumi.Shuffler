@@ -33,6 +33,9 @@ namespace Halloumi.Shuffler.Forms
 
 
         /// <summary>
+        // Required by VS designer — runtime always uses the parameterized overload
+        public FrmMain() => InitializeComponent();
+
         ///     Initializes a new instance of the frmMain class.
         /// </summary>
         public FrmMain(ShufflerApplication application)
