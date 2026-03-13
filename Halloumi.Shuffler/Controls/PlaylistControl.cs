@@ -810,7 +810,7 @@ namespace Halloumi.Shuffler.Controls
         /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void PlaylistControl_Load(object sender, EventArgs e)
         {
-            if (DesignMode) return;
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             if (_loaded) return;
 
             _loaded = true;

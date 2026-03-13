@@ -53,7 +53,7 @@ namespace Halloumi.Shuffler.Controls
 
             Mode = TrackWaveMode.Shuffler;
 
-            if (DesignMode) return;
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
             // create a secure timer
             _timer = new BASSTimer(50);

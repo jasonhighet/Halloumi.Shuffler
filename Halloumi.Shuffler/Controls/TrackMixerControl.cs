@@ -33,7 +33,7 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            if (DesignMode) return;
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
             _timer = new BASSTimer();
             sldFader.ValueChanged += sldFader_ValueChanged;

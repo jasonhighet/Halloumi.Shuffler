@@ -49,7 +49,7 @@ namespace Halloumi.Shuffler.Controls
         {
             InitializeComponent();
 
-            if (DesignMode) return;
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
             Timer = new BASSTimer(100) {Interval = 100};
 
@@ -146,7 +146,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void TrackDetails_Load(object sender, EventArgs e)
         {
-            if (DesignMode) return;
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             if (_loaded) return;
 
             DisplayCurrentTrackDetails();
@@ -175,7 +175,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetThemeState()
         {
-            if (DesignMode) return;
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
             var palette = KryptonHelper.GetCurrentPalette();
             var color = KryptonManager.GetPaletteForMode(palette)

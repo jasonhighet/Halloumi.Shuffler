@@ -49,7 +49,7 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SetThemeState()
         {
-            if (DesignMode) return;
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
             var palette = KryptonHelper.GetCurrentPalette();
             base.TrackProgressColor = KryptonManager.GetPaletteForMode(palette).GetBackColor1(PaletteBackStyle.ButtonStandalone, PaletteState.Pressed);
