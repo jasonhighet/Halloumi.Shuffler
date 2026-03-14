@@ -10,7 +10,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x86;AnyCPU</Platforms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <Deterministic>false</Deterministic>
   </PropertyGroup>
 
