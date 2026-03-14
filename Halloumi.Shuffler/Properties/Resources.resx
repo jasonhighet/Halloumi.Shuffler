@@ -163,4 +163,13 @@
   <data name="player_rew1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\player_rew1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="nav_library" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nav_library.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_playlist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nav_playlist.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_mixer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nav_mixer.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

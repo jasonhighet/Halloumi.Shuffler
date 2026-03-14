@@ -44,11 +44,6 @@
             this.lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
             this.picVisuals = new System.Windows.Forms.PictureBox();
             this.pnlLeft = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
-            this.beveledLine2 = new Halloumi.Common.Windows.Controls.BeveledLine();
-            this.flpTabButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnLibrary = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            this.btnPlaylist = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            this.btnMixer = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnPrevious = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnReplayMix = new ComponentFactory.Krypton.Toolkit.KryptonButton();
@@ -56,7 +51,6 @@
             this.btnPause = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnSkipToEnd = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.btnNext = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.tabButtons = new ComponentFactory.Krypton.Toolkit.KryptonCheckSet(this.components);
             this.beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.slider = new Halloumi.Shuffler.Controls.Slider();
             this.sldVolume = new Halloumi.Shuffler.Controls.Slider();
@@ -72,9 +66,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picVisuals)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pnlLeft)).BeginInit();
             this.pnlLeft.SuspendLayout();
-            this.flpTabButtons.SuspendLayout();
             this.flpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tabButtons)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlBackground
@@ -269,8 +261,6 @@
             // 
             // pnlLeft
             // 
-            this.pnlLeft.Controls.Add(this.beveledLine2);
-            this.pnlLeft.Controls.Add(this.flpTabButtons);
             this.pnlLeft.Controls.Add(this.flpButtons);
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
@@ -280,60 +270,7 @@
             this.pnlLeft.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
             this.pnlLeft.Size = new System.Drawing.Size(284, 110);
             this.pnlLeft.TabIndex = 20;
-            // 
-            // beveledLine2
-            // 
-            this.beveledLine2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.beveledLine2.Location = new System.Drawing.Point(5, 58);
-            this.beveledLine2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.beveledLine2.Name = "beveledLine2";
-            this.beveledLine2.Size = new System.Drawing.Size(274, 2);
-            this.beveledLine2.TabIndex = 23;
-            // 
-            // flpTabButtons
-            // 
-            this.flpTabButtons.BackColor = System.Drawing.Color.Transparent;
-            this.flpTabButtons.Controls.Add(this.btnLibrary);
-            this.flpTabButtons.Controls.Add(this.btnPlaylist);
-            this.flpTabButtons.Controls.Add(this.btnMixer);
-            this.flpTabButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flpTabButtons.Location = new System.Drawing.Point(5, 67);
-            this.flpTabButtons.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
-            this.flpTabButtons.Name = "flpTabButtons";
-            this.flpTabButtons.Size = new System.Drawing.Size(274, 38);
-            this.flpTabButtons.TabIndex = 22;
-            // 
-            // btnLibrary
-            // 
-            this.btnLibrary.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Cluster;
-            this.btnLibrary.Checked = true;
-            this.btnLibrary.Location = new System.Drawing.Point(0, 0);
-            this.btnLibrary.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnLibrary.Name = "btnLibrary";
-            this.btnLibrary.Size = new System.Drawing.Size(87, 38);
-            this.btnLibrary.TabIndex = 16;
-            this.btnLibrary.Values.Text = "Library";
-            // 
-            // btnPlaylist
-            // 
-            this.btnPlaylist.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Cluster;
-            this.btnPlaylist.Location = new System.Drawing.Point(90, 0);
-            this.btnPlaylist.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnPlaylist.Name = "btnPlaylist";
-            this.btnPlaylist.Size = new System.Drawing.Size(87, 38);
-            this.btnPlaylist.TabIndex = 15;
-            this.btnPlaylist.Values.Text = "Playlist";
-            // 
-            // btnMixer
-            // 
-            this.btnMixer.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Cluster;
-            this.btnMixer.Location = new System.Drawing.Point(180, 0);
-            this.btnMixer.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnMixer.Name = "btnMixer";
-            this.btnMixer.Size = new System.Drawing.Size(87, 38);
-            this.btnMixer.TabIndex = 17;
-            this.btnMixer.Values.Text = "Mixer";
-            // 
+            //
             // flpButtons
             // 
             this.flpButtons.BackColor = System.Drawing.Color.Transparent;
@@ -411,15 +348,7 @@
             this.btnNext.TabIndex = 12;
             this.btnNext.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_end;
             this.btnNext.Values.Text = "";
-            // 
-            // tabButtons
-            // 
-            this.tabButtons.CheckButtons.Add(this.btnPlaylist);
-            this.tabButtons.CheckButtons.Add(this.btnLibrary);
-            this.tabButtons.CheckButtons.Add(this.btnMixer);
-            this.tabButtons.CheckedButton = this.btnLibrary;
-            this.tabButtons.CheckedButtonChanged += new System.EventHandler(this.tabButtons_CheckedButtonChanged);
-            // 
+            //
             // beveledLine1
             // 
             this.beveledLine1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -551,9 +480,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picVisuals)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pnlLeft)).EndInit();
             this.pnlLeft.ResumeLayout(false);
-            this.flpTabButtons.ResumeLayout(false);
             this.flpButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.tabButtons)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -584,12 +511,6 @@
         private Slider sldVolume;
         private Halloumi.Common.Windows.Controls.Label lblVolume;
         private Halloumi.Common.Windows.Controls.Label lblVolumCaption;
-        private Halloumi.Common.Windows.Controls.BeveledLine beveledLine2;
-        private System.Windows.Forms.FlowLayoutPanel flpTabButtons;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnPlaylist;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckSet tabButtons;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnLibrary;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnMixer;
         private VolumeLevels volumeLevels;
         private System.Windows.Forms.PictureBox picVisuals;
 

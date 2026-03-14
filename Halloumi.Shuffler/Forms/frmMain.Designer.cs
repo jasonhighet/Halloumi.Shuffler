@@ -128,6 +128,12 @@
             fileMenuController = new Halloumi.Common.Windows.Controllers.FileMenuController(components);
             aboutDialog = new Halloumi.Common.Windows.Controls.AboutDialog(components);
             pnlMain = new Halloumi.Common.Windows.Controls.Panel();
+            pnlSideNav = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
+            btnNavLibrary = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            btnNavPlaylist = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            btnNavMixer = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            navCheckSet = new ComponentFactory.Krypton.Toolkit.KryptonCheckSet(components);
+            toolTipNav = new System.Windows.Forms.ToolTip(components);
             trackLibraryControl = new Halloumi.Shuffler.Controls.TrackLibraryControl();
             playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
@@ -141,6 +147,9 @@
             notificationContextMenu.SuspendLayout();
             statusStrip.SuspendLayout();
             pnlMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlSideNav).BeginInit();
+            pnlSideNav.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)navCheckSet).BeginInit();
             SuspendLayout();
             // 
             // kryptonManager
@@ -816,15 +825,73 @@
             pnlMain.Controls.Add(trackLibraryControl);
             pnlMain.Controls.Add(playlistControl);
             pnlMain.Controls.Add(mixerControl);
+            pnlMain.Controls.Add(pnlSideNav);
             pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             pnlMain.Location = new System.Drawing.Point(0, 224);
             pnlMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pnlMain.Name = "pnlMain";
             pnlMain.Size = new System.Drawing.Size(2078, 939);
             pnlMain.TabIndex = 36;
-            // 
+            //
+            // pnlSideNav
+            //
+            pnlSideNav.Controls.Add(btnNavLibrary);
+            pnlSideNav.Controls.Add(btnNavPlaylist);
+            pnlSideNav.Controls.Add(btnNavMixer);
+            pnlSideNav.Dock = System.Windows.Forms.DockStyle.Left;
+            pnlSideNav.Location = new System.Drawing.Point(0, 0);
+            pnlSideNav.Name = "pnlSideNav";
+            pnlSideNav.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
+            pnlSideNav.Size = new System.Drawing.Size(52, 939);
+            pnlSideNav.TabIndex = 10;
+            //
+            // btnNavLibrary
+            //
+            btnNavLibrary.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Standalone;
+            btnNavLibrary.Checked = true;
+            btnNavLibrary.Location = new System.Drawing.Point(0, 4);
+            btnNavLibrary.Margin = new System.Windows.Forms.Padding(0);
+            btnNavLibrary.Name = "btnNavLibrary";
+            btnNavLibrary.Size = new System.Drawing.Size(52, 52);
+            btnNavLibrary.TabIndex = 0;
+            btnNavLibrary.TabStop = false;
+            btnNavLibrary.Values.Image = global::Halloumi.Shuffler.Properties.Resources.nav_library;
+            btnNavLibrary.Values.Text = "";
+            //
+            // btnNavPlaylist
+            //
+            btnNavPlaylist.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Standalone;
+            btnNavPlaylist.Location = new System.Drawing.Point(0, 56);
+            btnNavPlaylist.Margin = new System.Windows.Forms.Padding(0);
+            btnNavPlaylist.Name = "btnNavPlaylist";
+            btnNavPlaylist.Size = new System.Drawing.Size(52, 52);
+            btnNavPlaylist.TabIndex = 1;
+            btnNavPlaylist.TabStop = false;
+            btnNavPlaylist.Values.Image = global::Halloumi.Shuffler.Properties.Resources.nav_playlist;
+            btnNavPlaylist.Values.Text = "";
+            //
+            // btnNavMixer
+            //
+            btnNavMixer.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Standalone;
+            btnNavMixer.Location = new System.Drawing.Point(0, 108);
+            btnNavMixer.Margin = new System.Windows.Forms.Padding(0);
+            btnNavMixer.Name = "btnNavMixer";
+            btnNavMixer.Size = new System.Drawing.Size(52, 52);
+            btnNavMixer.TabIndex = 2;
+            btnNavMixer.TabStop = false;
+            btnNavMixer.Values.Image = global::Halloumi.Shuffler.Properties.Resources.nav_mixer;
+            btnNavMixer.Values.Text = "";
+            //
+            // navCheckSet
+            //
+            navCheckSet.CheckButtons.Add(btnNavLibrary);
+            navCheckSet.CheckButtons.Add(btnNavPlaylist);
+            navCheckSet.CheckButtons.Add(btnNavMixer);
+            navCheckSet.CheckedButton = btnNavLibrary;
+            navCheckSet.CheckedButtonChanged += new System.EventHandler(this.navCheckSet_CheckedButtonChanged);
+            //
             // trackLibraryControl
-            // 
+            //
             trackLibraryControl.CollectionFilter = "";
             trackLibraryControl.Dock = System.Windows.Forms.DockStyle.Fill;
             trackLibraryControl.ExcludeCollectionFilter = "";
@@ -891,6 +958,9 @@
             statusStrip.ResumeLayout(false);
             statusStrip.PerformLayout();
             pnlMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pnlSideNav).EndInit();
+            pnlSideNav.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)navCheckSet).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
@@ -936,6 +1006,12 @@
         private System.Windows.Forms.ToolStripMenuItem mnuSkipAfterMix;
         private System.Windows.Forms.ToolStripMenuItem mnuReplayMix;
         private Halloumi.Common.Windows.Controls.Panel pnlMain;
+        private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlSideNav;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavLibrary;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavPlaylist;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavMixer;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckSet navCheckSet;
+        private System.Windows.Forms.ToolTip toolTipNav;
         private Halloumi.Shuffler.Controls.PlaylistControl playlistControl;
         private Halloumi.Shuffler.Controls.ShufflerController shufflerController;
         private System.Windows.Forms.MenuStrip menuStrip;

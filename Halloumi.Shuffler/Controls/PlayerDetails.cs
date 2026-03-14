@@ -19,13 +19,6 @@ namespace Halloumi.Shuffler.Controls
 {
     public partial class PlayerDetails : UserControl
     {
-        public enum SelectedView
-        {
-            Playlist = 0,
-            Library = 1,
-            Mixer = 2
-        }
-
         private readonly Visuals _bassVisuals = new Visuals();
 
         private ShufflerApplication _application;
@@ -498,25 +491,6 @@ namespace Halloumi.Shuffler.Controls
         private void btnReplayMix_Click(object sender, EventArgs e)
         {
             BeginInvoke(new MethodInvoker(delegate { PlaylistControl.ReplayMix(); }));
-        }
-
-        public event EventHandler SelectedViewChanged;
-
-        private void tabButtons_CheckedButtonChanged(object sender, EventArgs e)
-        {
-            SelectedViewChanged?.Invoke(this, e);
-        }
-
-        public SelectedView GetSelectedView()
-        {
-            return (SelectedView) tabButtons.CheckedIndex;
-        }
-
-        public void SetSelectedView(SelectedView selectedView)
-        {
-            var index = (int) selectedView;
-            if (index != tabButtons.CheckedIndex)
-                tabButtons.CheckedIndex = (int) selectedView;
         }
 
     }

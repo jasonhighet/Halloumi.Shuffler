@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ComponentFactory.Krypton.Toolkit;
 using Halloumi.Common.Windows.Controllers;
@@ -19,6 +20,12 @@ namespace Halloumi.Shuffler.Forms
     /// </summary>
     public partial class FrmMain : BaseMinimizeToTrayForm
     {
+        [DllImport("user32.dll")]
+        private static extern bool SendMessage(IntPtr hWnd, int msg, bool wParam, int lParam);
+        private const int WM_SETREDRAW = 0x000B;
+
+        private enum SelectedView { Library = 0, Playlist = 1, Mixer = 2 }
+
         private readonly ShufflerApplication _application;
         private frmPluginSettings _pluginSettingsForm;
         private FrmGeneratePlaylist _autoGenerateSettings;
@@ -86,8 +93,6 @@ namespace Halloumi.Shuffler.Forms
 
             playerDetails.Initialize(application, playlistControl);
 
-            playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
-            playerDetails.SelectedViewChanged += playerDetails_SelectedViewChanged;
             playerDetails.ToolStripLabel = lblPlayerStatus;
             
 
@@ -118,7 +123,11 @@ namespace Halloumi.Shuffler.Forms
             _application.LoadPlaylistGenerationSettings();
             mnuAutoshuffle.Checked = shufflerController.AutoGenerateEnabled;
 
-            SetView(PlayerDetails.SelectedView.Library);
+            toolTipNav.SetToolTip(btnNavLibrary, "Library");
+            toolTipNav.SetToolTip(btnNavPlaylist, "Playlist");
+            toolTipNav.SetToolTip(btnNavMixer, "Mixer");
+
+            SetView(SelectedView.Library);
 
             var newMenu = new ToolStripMenuItem(mnuPlayPause.Text, mnuPlayPause.Image);
             newMenu.Click += mnuPlayPause_Click;
@@ -303,9 +312,11 @@ namespace Halloumi.Shuffler.Forms
                 WindowHelper.ShowDialog(this, _frmSampleLibrary);
         }
 
-        private void playerDetails_SelectedViewChanged(object sender,EventArgs e)
+        private void navCheckSet_CheckedButtonChanged(object sender, EventArgs e)
         {
-            SetView(playerDetails.GetSelectedView());
+            if (navCheckSet.CheckedIndex == 0) SetView(SelectedView.Library);
+            else if (navCheckSet.CheckedIndex == 1) SetView(SelectedView.Playlist);
+            else SetView(SelectedView.Mixer);
         }
 
 
@@ -463,7 +474,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuViewMixer_Click(object sender, EventArgs e)
         {
-            playerDetails.SetSelectedView(PlayerDetails.SelectedView.Mixer);
+            SetView(SelectedView.Mixer);
         }
 
         /// <summary>
@@ -471,7 +482,7 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuViewLibrary_Click(object sender, EventArgs e)
         {
-            playerDetails.SetSelectedView(PlayerDetails.SelectedView.Library);
+            SetView(SelectedView.Library);
         }
 
         /// <summary>
@@ -479,21 +490,38 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void mnuViewPlaylist_Click(object sender, EventArgs e)
         {
-            playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
+            SetView(SelectedView.Playlist);
         }
 
-        private void SetView(PlayerDetails.SelectedView view)
+        private bool _settingView;
+
+        private void SetView(SelectedView view)
         {
-            trackLibraryControl.Visible = view == PlayerDetails.SelectedView.Library;
-            mnuViewLibrary.Checked = view == PlayerDetails.SelectedView.Library;
+            if (_settingView) return;
+            _settingView = true;
+            try
+            {
+                SendMessage(pnlMain.Handle, WM_SETREDRAW, false, 0);
 
-            mixerControl.Visible = view == PlayerDetails.SelectedView.Mixer;
-            mnuViewMixer.Checked = view == PlayerDetails.SelectedView.Mixer;
+                trackLibraryControl.Visible = view == SelectedView.Library;
+                mnuViewLibrary.Checked = view == SelectedView.Library;
 
-            playlistControl.Visible = view == PlayerDetails.SelectedView.Playlist;
-            mnuViewPlaylist.Checked = view == PlayerDetails.SelectedView.Playlist;
+                mixerControl.Visible = view == SelectedView.Mixer;
+                mnuViewMixer.Checked = view == SelectedView.Mixer;
 
-            playerDetails.SetSelectedView(view);
+                playlistControl.Visible = view == SelectedView.Playlist;
+                mnuViewPlaylist.Checked = view == SelectedView.Playlist;
+
+                navCheckSet.CheckedIndex = view == SelectedView.Library ? 0
+                                         : view == SelectedView.Playlist ? 1 : 2;
+
+                SendMessage(pnlMain.Handle, WM_SETREDRAW, true, 0);
+                pnlMain.Refresh();
+            }
+            finally
+            {
+                _settingView = false;
+            }
         }
 
         /// <summary>
@@ -830,7 +858,7 @@ namespace Halloumi.Shuffler.Forms
 
         private void QueueWorking(string filename) 
         {
-            playerDetails.SetSelectedView(PlayerDetails.SelectedView.Playlist);
+            SetView(SelectedView.Playlist);
             trackLibraryControl.SetShufflerFilter(AudioLibrary.Library.ShufflerFilter.ShufflerTracks);
             playlistControl.QueueWorkingFile(filename); 
             OpenGeneratePlaylistForm();
