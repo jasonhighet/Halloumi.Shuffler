@@ -58,6 +58,12 @@ namespace Halloumi.Shuffler.Controls
             btnSkipToEnd.Click += btnSkipToEnd_Click;
             btnNext.Click += btnNext_Click;
             sldVolume.Scrolled += sldVolume_Slid;
+
+            btnRankExcellent.Click += (s, e) => RankButton_Click(5);
+            btnRankVeryGood.Click += (s, e) => RankButton_Click(4);
+            btnRankGood.Click += (s, e) => RankButton_Click(3);
+            btnRankBearable.Click += (s, e) => RankButton_Click(2);
+            btnRankForbidden.Click += (s, e) => RankButton_Click(0);
             VisualsShown = false;
             AlbumArtShown = true;
 
@@ -420,6 +426,7 @@ namespace Halloumi.Shuffler.Controls
         private void KryptonManager_GlobalPaletteChanged(object sender, EventArgs e)
         {
             SetThemeState();
+            UpdateRankHighlight();
         }
 
         /// <summary>
@@ -441,6 +448,8 @@ namespace Halloumi.Shuffler.Controls
             _bassPlayerOnTrackChange = true;
 
             DisplayCurrentTrackDetails();
+            UpdateTrackInfoBar();
+            UpdateRankHighlight();
 
             _bassPlayerOnTrackChange = false;
         }
@@ -452,6 +461,8 @@ namespace Halloumi.Shuffler.Controls
         private void PlaylistControl_PlaylistChanged(object sender, EventArgs e)
         {
             DisplayCurrentTrackDetails();
+            UpdateTrackInfoBar();
+            UpdateRankHighlight();
         }
 
         /// <summary>
@@ -491,6 +502,67 @@ namespace Halloumi.Shuffler.Controls
         private void btnReplayMix_Click(object sender, EventArgs e)
         {
             BeginInvoke(new MethodInvoker(delegate { PlaylistControl.ReplayMix(); }));
+        }
+
+        private void RankButton_Click(int rank)
+        {
+            SetCurrentMixRank(rank);
+            UpdateRankHighlight();
+            PlaylistControl?.MixRankAssigned?.Invoke(PlaylistControl, EventArgs.Empty);
+        }
+
+        private void UpdateRankHighlight()
+        {
+            var rank = GetCurrentMixRank();
+
+            var rankButtons = new[]
+            {
+                (Rank: 5, Button: btnRankExcellent),
+                (Rank: 4, Button: btnRankVeryGood),
+                (Rank: 3, Button: btnRankGood),
+                (Rank: 2, Button: btnRankBearable),
+                (Rank: 0, Button: btnRankForbidden),
+            };
+
+            foreach (var entry in rankButtons)
+            {
+                var isActive = entry.Rank == rank;
+                entry.Button.StateNormal.Back.Color1 = isActive ? _volumeColor1 : Color.Empty;
+                entry.Button.StateNormal.Back.Color2 = isActive ? _volumeColor2 : Color.Empty;
+            }
+        }
+
+        private void UpdateTrackInfoBar()
+        {
+            if (PlaylistControl == null) return;
+
+            var prevTrack = PlaylistControl.GetPreviousTrack();
+            if (prevTrack != null)
+            {
+                var info = prevTrack.Description;
+                if (prevTrack.LengthFormatted != null) info += $"  {prevTrack.LengthFormatted}";
+                if (prevTrack.Bpm != 0) info += $"  {prevTrack.Bpm:0.00} BPM";
+                if (!string.IsNullOrEmpty(prevTrack.Key)) info += $"  {KeyHelper.GetDisplayKey(prevTrack.Key)}";
+                lblPrevTrack.Text = "Prev: " + info;
+            }
+            else
+            {
+                lblPrevTrack.Text = "Previous Track:";
+            }
+
+            var nextTrack = PlaylistControl.GetNextTrack();
+            if (nextTrack != null)
+            {
+                var info = nextTrack.Description;
+                if (nextTrack.LengthFormatted != null) info += $"  {nextTrack.LengthFormatted}";
+                if (nextTrack.Bpm != 0) info += $"  {nextTrack.Bpm:0.00} BPM";
+                if (!string.IsNullOrEmpty(nextTrack.Key)) info += $"  {KeyHelper.GetDisplayKey(nextTrack.Key)}";
+                lblNextTrack.Text = "Next: " + info;
+            }
+            else
+            {
+                lblNextTrack.Text = "Next Track:";
+            }
         }
 
     }

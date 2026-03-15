@@ -28,460 +28,578 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.pnlBackground = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
-            this.pnlMiddle = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.lblCurrentTrackDetails = new Halloumi.Common.Windows.Controls.Label();
-            this.lblCurrentTrackDescription = new Halloumi.Common.Windows.Controls.Label();
-            this.pnlSlider = new System.Windows.Forms.Panel();
-            this.lblTimeRemaining = new Halloumi.Common.Windows.Controls.Label();
-            this.lblTimeElapsed = new Halloumi.Common.Windows.Controls.Label();
-            this.picCover = new System.Windows.Forms.PictureBox();
-            this.pnlRight = new System.Windows.Forms.Panel();
-            this.pnlVolume = new System.Windows.Forms.Panel();
-            this.lblVolume = new Halloumi.Common.Windows.Controls.Label();
-            this.lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
-            this.picVisuals = new System.Windows.Forms.PictureBox();
-            this.pnlLeft = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnPrevious = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.btnReplayMix = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.btnPlay = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.btnPause = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.btnSkipToEnd = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.btnNext = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
-            this.slider = new Halloumi.Shuffler.Controls.Slider();
-            this.sldVolume = new Halloumi.Shuffler.Controls.Slider();
-            this.volumeLevels = new Halloumi.Shuffler.Controls.VolumeLevels();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlBackground)).BeginInit();
-            this.pnlBackground.SuspendLayout();
-            this.pnlMiddle.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.pnlSlider.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picCover)).BeginInit();
-            this.pnlRight.SuspendLayout();
-            this.pnlVolume.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picVisuals)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlLeft)).BeginInit();
-            this.pnlLeft.SuspendLayout();
-            this.flpButtons.SuspendLayout();
-            this.SuspendLayout();
+            pnlBackground = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
+            pnlMiddle = new System.Windows.Forms.Panel();
+            panel1 = new System.Windows.Forms.Panel();
+            lblCurrentTrackDetails = new Halloumi.Common.Windows.Controls.Label();
+            lblCurrentTrackDescription = new Halloumi.Common.Windows.Controls.Label();
+            pnlSlider = new System.Windows.Forms.Panel();
+            slider = new Slider();
+            lblTimeRemaining = new Halloumi.Common.Windows.Controls.Label();
+            lblTimeElapsed = new Halloumi.Common.Windows.Controls.Label();
+            picCover = new System.Windows.Forms.PictureBox();
+            pnlRight = new System.Windows.Forms.Panel();
+            pnlVolume = new System.Windows.Forms.Panel();
+            sldVolume = new Slider();
+            lblVolume = new Halloumi.Common.Windows.Controls.Label();
+            lblVolumCaption = new Halloumi.Common.Windows.Controls.Label();
+            picVisuals = new System.Windows.Forms.PictureBox();
+            volumeLevels = new VolumeLevels();
+            pnlLeft = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
+            flpRankButtons = new System.Windows.Forms.FlowLayoutPanel();
+            btnRankExcellent = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnRankVeryGood = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnRankGood = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnRankBearable = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnRankForbidden = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            btnPrevious = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnReplayMix = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnPlay = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnPause = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnSkipToEnd = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            btnNext = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            pnlTrackInfo = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
+            lblNextTrack = new Halloumi.Common.Windows.Controls.Label();
+            lblPrevTrack = new Halloumi.Common.Windows.Controls.Label();
+            beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
+            ((System.ComponentModel.ISupportInitialize)pnlBackground).BeginInit();
+            pnlBackground.SuspendLayout();
+            pnlMiddle.SuspendLayout();
+            panel1.SuspendLayout();
+            pnlSlider.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picCover).BeginInit();
+            pnlRight.SuspendLayout();
+            pnlVolume.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picVisuals).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pnlLeft).BeginInit();
+            pnlLeft.SuspendLayout();
+            flpRankButtons.SuspendLayout();
+            flpButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlTrackInfo).BeginInit();
+            pnlTrackInfo.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlBackground
             // 
-            this.pnlBackground.Controls.Add(this.pnlMiddle);
-            this.pnlBackground.Controls.Add(this.pnlRight);
-            this.pnlBackground.Controls.Add(this.pnlLeft);
-            this.pnlBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBackground.Location = new System.Drawing.Point(0, 0);
-            this.pnlBackground.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pnlBackground.Name = "pnlBackground";
-            this.pnlBackground.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
-            this.pnlBackground.Size = new System.Drawing.Size(1255, 110);
-            this.pnlBackground.TabIndex = 4;
+            pnlBackground.Controls.Add(pnlMiddle);
+            pnlBackground.Controls.Add(pnlRight);
+            pnlBackground.Controls.Add(pnlLeft);
+            pnlBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlBackground.Location = new System.Drawing.Point(0, 0);
+            pnlBackground.Margin = new System.Windows.Forms.Padding(6);
+            pnlBackground.Name = "pnlBackground";
+            pnlBackground.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
+            pnlBackground.Size = new System.Drawing.Size(1726, 166);
+            pnlBackground.TabIndex = 4;
             // 
             // pnlMiddle
             // 
-            this.pnlMiddle.BackColor = System.Drawing.Color.Transparent;
-            this.pnlMiddle.Controls.Add(this.panel1);
-            this.pnlMiddle.Controls.Add(this.pnlSlider);
-            this.pnlMiddle.Controls.Add(this.picCover);
-            this.pnlMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMiddle.Location = new System.Drawing.Point(284, 0);
-            this.pnlMiddle.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlMiddle.Name = "pnlMiddle";
-            this.pnlMiddle.Padding = new System.Windows.Forms.Padding(0, 5, 5, 5);
-            this.pnlMiddle.Size = new System.Drawing.Size(691, 110);
-            this.pnlMiddle.TabIndex = 27;
+            pnlMiddle.BackColor = System.Drawing.Color.Transparent;
+            pnlMiddle.Controls.Add(panel1);
+            pnlMiddle.Controls.Add(pnlSlider);
+            pnlMiddle.Controls.Add(picCover);
+            pnlMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlMiddle.Location = new System.Drawing.Point(390, 0);
+            pnlMiddle.Margin = new System.Windows.Forms.Padding(0);
+            pnlMiddle.Name = "pnlMiddle";
+            pnlMiddle.Padding = new System.Windows.Forms.Padding(0, 8, 7, 8);
+            pnlMiddle.Size = new System.Drawing.Size(951, 166);
+            pnlMiddle.TabIndex = 27;
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.lblCurrentTrackDetails);
-            this.panel1.Controls.Add(this.lblCurrentTrackDescription);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(106, 5);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
-            this.panel1.Size = new System.Drawing.Size(580, 75);
-            this.panel1.TabIndex = 25;
+            panel1.BackColor = System.Drawing.Color.Transparent;
+            panel1.Controls.Add(lblCurrentTrackDetails);
+            panel1.Controls.Add(lblCurrentTrackDescription);
+            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel1.Location = new System.Drawing.Point(145, 8);
+            panel1.Margin = new System.Windows.Forms.Padding(6);
+            panel1.Name = "panel1";
+            panel1.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            panel1.Size = new System.Drawing.Size(799, 112);
+            panel1.TabIndex = 25;
             // 
             // lblCurrentTrackDetails
             // 
-            this.lblCurrentTrackDetails.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblCurrentTrackDetails.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCurrentTrackDetails.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblCurrentTrackDetails.Location = new System.Drawing.Point(7, 25);
-            this.lblCurrentTrackDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCurrentTrackDetails.Name = "lblCurrentTrackDetails";
-            this.lblCurrentTrackDetails.Padding = new System.Windows.Forms.Padding(0, 0, 13, 0);
-            this.lblCurrentTrackDetails.Size = new System.Drawing.Size(573, 28);
-            this.lblCurrentTrackDetails.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblCurrentTrackDetails.TabIndex = 1;
-            this.lblCurrentTrackDetails.Text = "Blue Brazil - Blue Note In A Latin Groove Vol. 3 - Latin - 2:02 - 102BPM";
-            this.lblCurrentTrackDetails.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblCurrentTrackDetails.Dock = System.Windows.Forms.DockStyle.Top;
+            lblCurrentTrackDetails.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblCurrentTrackDetails.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblCurrentTrackDetails.Location = new System.Drawing.Point(10, 38);
+            lblCurrentTrackDetails.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            lblCurrentTrackDetails.Name = "lblCurrentTrackDetails";
+            lblCurrentTrackDetails.Padding = new System.Windows.Forms.Padding(0, 0, 18, 0);
+            lblCurrentTrackDetails.Size = new System.Drawing.Size(789, 42);
+            lblCurrentTrackDetails.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblCurrentTrackDetails.TabIndex = 1;
+            lblCurrentTrackDetails.Text = "Blue Brazil - Blue Note In A Latin Groove Vol. 3 - Latin - 2:02 - 102BPM";
+            lblCurrentTrackDetails.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblCurrentTrackDescription
             // 
-            this.lblCurrentTrackDescription.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblCurrentTrackDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCurrentTrackDescription.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblCurrentTrackDescription.Location = new System.Drawing.Point(7, 0);
-            this.lblCurrentTrackDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCurrentTrackDescription.Name = "lblCurrentTrackDescription";
-            this.lblCurrentTrackDescription.Padding = new System.Windows.Forms.Padding(0, 0, 13, 0);
-            this.lblCurrentTrackDescription.Size = new System.Drawing.Size(573, 25);
-            this.lblCurrentTrackDescription.Style = Halloumi.Common.Windows.Controls.LabelStyle.Heading;
-            this.lblCurrentTrackDescription.TabIndex = 0;
-            this.lblCurrentTrackDescription.Text = "Elza Soares &&  Roberto Ribeiro - O Que Vem De Baixo Nao Me Atinge";
-            this.lblCurrentTrackDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblCurrentTrackDescription.Dock = System.Windows.Forms.DockStyle.Top;
+            lblCurrentTrackDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblCurrentTrackDescription.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblCurrentTrackDescription.Location = new System.Drawing.Point(10, 0);
+            lblCurrentTrackDescription.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            lblCurrentTrackDescription.Name = "lblCurrentTrackDescription";
+            lblCurrentTrackDescription.Padding = new System.Windows.Forms.Padding(0, 0, 18, 0);
+            lblCurrentTrackDescription.Size = new System.Drawing.Size(789, 38);
+            lblCurrentTrackDescription.Style = Common.Windows.Controls.LabelStyle.Heading;
+            lblCurrentTrackDescription.TabIndex = 0;
+            lblCurrentTrackDescription.Text = "Elza Soares &&  Roberto Ribeiro - O Que Vem De Baixo Nao Me Atinge";
+            lblCurrentTrackDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlSlider
             // 
-            this.pnlSlider.BackColor = System.Drawing.Color.Transparent;
-            this.pnlSlider.Controls.Add(this.slider);
-            this.pnlSlider.Controls.Add(this.lblTimeRemaining);
-            this.pnlSlider.Controls.Add(this.lblTimeElapsed);
-            this.pnlSlider.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlSlider.Location = new System.Drawing.Point(106, 80);
-            this.pnlSlider.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pnlSlider.Name = "pnlSlider";
-            this.pnlSlider.Size = new System.Drawing.Size(580, 25);
-            this.pnlSlider.TabIndex = 17;
-            // 
-            // lblTimeRemaining
-            // 
-            this.lblTimeRemaining.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblTimeRemaining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTimeRemaining.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblTimeRemaining.Location = new System.Drawing.Point(504, 0);
-            this.lblTimeRemaining.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblTimeRemaining.Name = "lblTimeRemaining";
-            this.lblTimeRemaining.Size = new System.Drawing.Size(76, 25);
-            this.lblTimeRemaining.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblTimeRemaining.TabIndex = 1;
-            this.lblTimeRemaining.Text = "00:00";
-            this.lblTimeRemaining.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblTimeElapsed
-            // 
-            this.lblTimeElapsed.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblTimeElapsed.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTimeElapsed.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblTimeElapsed.Location = new System.Drawing.Point(0, 0);
-            this.lblTimeElapsed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblTimeElapsed.Name = "lblTimeElapsed";
-            this.lblTimeElapsed.Size = new System.Drawing.Size(84, 25);
-            this.lblTimeElapsed.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblTimeElapsed.TabIndex = 0;
-            this.lblTimeElapsed.Text = "00:00";
-            this.lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // picCover
-            // 
-            this.picCover.BackColor = System.Drawing.Color.White;
-            this.picCover.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picCover.Dock = System.Windows.Forms.DockStyle.Left;
-            this.picCover.Location = new System.Drawing.Point(0, 5);
-            this.picCover.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.picCover.Name = "picCover";
-            this.picCover.Size = new System.Drawing.Size(106, 100);
-            this.picCover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picCover.TabIndex = 16;
-            this.picCover.TabStop = false;
-            this.picCover.Visible = false;
-            // 
-            // pnlRight
-            // 
-            this.pnlRight.BackColor = System.Drawing.Color.Transparent;
-            this.pnlRight.Controls.Add(this.pnlVolume);
-            this.pnlRight.Controls.Add(this.picVisuals);
-            this.pnlRight.Controls.Add(this.volumeLevels);
-            this.pnlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlRight.Location = new System.Drawing.Point(975, 0);
-            this.pnlRight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.pnlRight.Size = new System.Drawing.Size(280, 110);
-            this.pnlRight.TabIndex = 26;
-            // 
-            // pnlVolume
-            // 
-            this.pnlVolume.BackColor = System.Drawing.Color.Transparent;
-            this.pnlVolume.Controls.Add(this.sldVolume);
-            this.pnlVolume.Controls.Add(this.lblVolume);
-            this.pnlVolume.Controls.Add(this.lblVolumCaption);
-            this.pnlVolume.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlVolume.Location = new System.Drawing.Point(5, 80);
-            this.pnlVolume.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pnlVolume.Name = "pnlVolume";
-            this.pnlVolume.Size = new System.Drawing.Size(270, 25);
-            this.pnlVolume.TabIndex = 26;
-            // 
-            // lblVolume
-            // 
-            this.lblVolume.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblVolume.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVolume.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolume.Location = new System.Drawing.Point(233, 0);
-            this.lblVolume.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(37, 25);
-            this.lblVolume.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolume.TabIndex = 1;
-            this.lblVolume.Text = "100";
-            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblVolumCaption
-            // 
-            this.lblVolumCaption.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblVolumCaption.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVolumCaption.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblVolumCaption.Location = new System.Drawing.Point(0, 0);
-            this.lblVolumCaption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblVolumCaption.Name = "lblVolumCaption";
-            this.lblVolumCaption.Size = new System.Drawing.Size(40, 25);
-            this.lblVolumCaption.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
-            this.lblVolumCaption.TabIndex = 0;
-            this.lblVolumCaption.Text = "Vol:";
-            this.lblVolumCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // picVisuals
-            // 
-            this.picVisuals.BackColor = System.Drawing.Color.Transparent;
-            this.picVisuals.Location = new System.Drawing.Point(5, 5);
-            this.picVisuals.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.picVisuals.Name = "picVisuals";
-            this.picVisuals.Size = new System.Drawing.Size(269, 66);
-            this.picVisuals.TabIndex = 28;
-            this.picVisuals.TabStop = false;
-            // 
-            // pnlLeft
-            // 
-            this.pnlLeft.Controls.Add(this.flpButtons);
-            this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlLeft.Location = new System.Drawing.Point(0, 0);
-            this.pnlLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.pnlLeft.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
-            this.pnlLeft.Size = new System.Drawing.Size(284, 110);
-            this.pnlLeft.TabIndex = 20;
-            //
-            // flpButtons
-            // 
-            this.flpButtons.BackColor = System.Drawing.Color.Transparent;
-            this.flpButtons.Controls.Add(this.btnPrevious);
-            this.flpButtons.Controls.Add(this.btnReplayMix);
-            this.flpButtons.Controls.Add(this.btnPlay);
-            this.flpButtons.Controls.Add(this.btnPause);
-            this.flpButtons.Controls.Add(this.btnSkipToEnd);
-            this.flpButtons.Controls.Add(this.btnNext);
-            this.flpButtons.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flpButtons.Location = new System.Drawing.Point(5, 5);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(274, 53);
-            this.flpButtons.TabIndex = 21;
-            // 
-            // btnPrevious
-            // 
-            this.btnPrevious.Location = new System.Drawing.Point(0, 0);
-            this.btnPrevious.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnPrevious.Name = "btnPrevious";
-            this.btnPrevious.Size = new System.Drawing.Size(51, 47);
-            this.btnPrevious.TabIndex = 9;
-            this.btnPrevious.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_restart;
-            this.btnPrevious.Values.Text = "";
-            // 
-            // btnReplayMix
-            // 
-            this.btnReplayMix.Location = new System.Drawing.Point(54, 0);
-            this.btnReplayMix.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnReplayMix.Name = "btnReplayMix";
-            this.btnReplayMix.Size = new System.Drawing.Size(51, 47);
-            this.btnReplayMix.TabIndex = 14;
-            this.btnReplayMix.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_rew;
-            this.btnReplayMix.Values.Text = "";
-            this.btnReplayMix.Click += new System.EventHandler(this.btnReplayMix_Click);
-            // 
-            // btnPlay
-            // 
-            this.btnPlay.Location = new System.Drawing.Point(108, 0);
-            this.btnPlay.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(51, 47);
-            this.btnPlay.TabIndex = 10;
-            this.btnPlay.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_play;
-            this.btnPlay.Values.Text = "";
-            // 
-            // btnPause
-            // 
-            this.btnPause.Location = new System.Drawing.Point(162, 0);
-            this.btnPause.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnPause.Name = "btnPause";
-            this.btnPause.Size = new System.Drawing.Size(51, 47);
-            this.btnPause.TabIndex = 13;
-            this.btnPause.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_pause;
-            this.btnPause.Values.Text = "";
-            this.btnPause.Visible = false;
-            // 
-            // btnSkipToEnd
-            // 
-            this.btnSkipToEnd.Location = new System.Drawing.Point(216, 0);
-            this.btnSkipToEnd.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnSkipToEnd.Name = "btnSkipToEnd";
-            this.btnSkipToEnd.Size = new System.Drawing.Size(51, 47);
-            this.btnSkipToEnd.TabIndex = 11;
-            this.btnSkipToEnd.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_fwd;
-            this.btnSkipToEnd.Values.Text = "";
-            // 
-            // btnNext
-            // 
-            this.btnNext.Location = new System.Drawing.Point(0, 47);
-            this.btnNext.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(51, 47);
-            this.btnNext.TabIndex = 12;
-            this.btnNext.Values.Image = global::Halloumi.Shuffler.Properties.Resources.player_end;
-            this.btnNext.Values.Text = "";
-            //
-            // beveledLine1
-            // 
-            this.beveledLine1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.beveledLine1.Location = new System.Drawing.Point(0, 110);
-            this.beveledLine1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.beveledLine1.Name = "beveledLine1";
-            this.beveledLine1.Size = new System.Drawing.Size(1255, 2);
-            this.beveledLine1.TabIndex = 2;
+            pnlSlider.BackColor = System.Drawing.Color.Transparent;
+            pnlSlider.Controls.Add(slider);
+            pnlSlider.Controls.Add(lblTimeRemaining);
+            pnlSlider.Controls.Add(lblTimeElapsed);
+            pnlSlider.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pnlSlider.Location = new System.Drawing.Point(145, 120);
+            pnlSlider.Margin = new System.Windows.Forms.Padding(6);
+            pnlSlider.Name = "pnlSlider";
+            pnlSlider.Size = new System.Drawing.Size(799, 38);
+            pnlSlider.TabIndex = 17;
             // 
             // slider
             // 
-            this.slider.Animated = false;
-            this.slider.AnimationSize = 0.2F;
-            this.slider.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
-            this.slider.AutoScrollMargin = new System.Drawing.Size(0, 0);
-            this.slider.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.slider.BackColor = System.Drawing.SystemColors.Control;
-            this.slider.BackgroundImage = null;
-            this.slider.BackGroundImage = null;
-            this.slider.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.slider.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.slider.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.slider.ButtonCornerRadius = ((uint)(2u));
-            this.slider.ButtonSize = new System.Drawing.Size(24, 12);
-            this.slider.ButtonStyle = MediaSlider.MediaSlider.ButtonType.GlassInline;
-            this.slider.ContextMenuStrip = null;
-            this.slider.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.slider.LargeChange = 2;
-            this.slider.Location = new System.Drawing.Point(84, 3);
-            this.slider.Margin = new System.Windows.Forms.Padding(0);
-            this.slider.Maximum = 10;
-            this.slider.Minimum = 0;
-            this.slider.Name = "slider";
-            this.slider.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.slider.ResizeRedraw = true;
-            this.slider.ShowButtonOnHover = false;
-            this.slider.Size = new System.Drawing.Size(420, 22);
-            this.slider.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
-            this.slider.SmallChange = 1;
-            this.slider.SmoothScrolling = false;
-            this.slider.TabIndex = 2;
-            this.slider.TickColor = System.Drawing.Color.DarkOliveGreen;
-            this.slider.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.slider.TickType = MediaSlider.MediaSlider.TickMode.Standard;
-            this.slider.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.slider.TrackDepth = 6;
-            this.slider.TrackFillColor = System.Drawing.Color.Transparent;
-            this.slider.TrackProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(228)))), ((int)(((byte)(138)))));
-            this.slider.TrackShadow = false;
-            this.slider.TrackShadowColor = System.Drawing.Color.DarkGray;
-            this.slider.TrackStyle = MediaSlider.MediaSlider.TrackType.Progress;
-            this.slider.Value = 0;
-            this.slider.WheelScrollTicks = 3;
+            slider.Animated = false;
+            slider.AnimationSize = 0.2F;
+            slider.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
+            slider.AutoScrollMargin = new System.Drawing.Size(0, 0);
+            slider.AutoScrollMinSize = new System.Drawing.Size(0, 0);
+            slider.BackColor = System.Drawing.SystemColors.Control;
+            slider.BackgroundImage = null;
+            slider.BackGroundImage = null;
+            slider.ButtonAccentColor = System.Drawing.Color.FromArgb(128, 64, 64, 64);
+            slider.ButtonBorderColor = System.Drawing.Color.FromArgb(133, 158, 191);
+            slider.ButtonColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+            slider.ButtonCornerRadius = 2U;
+            slider.ButtonSize = new System.Drawing.Size(24, 12);
+            slider.ButtonStyle = MediaSlider.MediaSlider.ButtonType.GlassInline;
+            slider.Dock = System.Windows.Forms.DockStyle.Bottom;
+            slider.LargeChange = 2;
+            slider.Location = new System.Drawing.Point(116, 5);
+            slider.Margin = new System.Windows.Forms.Padding(0);
+            slider.Maximum = 10;
+            slider.Minimum = 0;
+            slider.Name = "slider";
+            slider.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            slider.ResizeRedraw = true;
+            slider.ShowButtonOnHover = false;
+            slider.Size = new System.Drawing.Size(579, 33);
+            slider.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
+            slider.SmallChange = 1;
+            slider.SmoothScrolling = false;
+            slider.TabIndex = 2;
+            slider.TickColor = System.Drawing.Color.DarkOliveGreen;
+            slider.TickStyle = System.Windows.Forms.TickStyle.None;
+            slider.TickType = MediaSlider.MediaSlider.TickMode.Standard;
+            slider.TrackBorderColor = System.Drawing.Color.FromArgb(133, 158, 191);
+            slider.TrackDepth = 6;
+            slider.TrackFillColor = System.Drawing.Color.Transparent;
+            slider.TrackProgressColor = System.Drawing.Color.FromArgb(255, 228, 138);
+            slider.TrackShadow = false;
+            slider.TrackShadowColor = System.Drawing.Color.DarkGray;
+            slider.TrackStyle = MediaSlider.MediaSlider.TrackType.Progress;
+            slider.Value = 0;
+            slider.WheelScrollTicks = 3;
+            // 
+            // lblTimeRemaining
+            // 
+            lblTimeRemaining.Dock = System.Windows.Forms.DockStyle.Right;
+            lblTimeRemaining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblTimeRemaining.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblTimeRemaining.Location = new System.Drawing.Point(695, 0);
+            lblTimeRemaining.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            lblTimeRemaining.Name = "lblTimeRemaining";
+            lblTimeRemaining.Size = new System.Drawing.Size(104, 38);
+            lblTimeRemaining.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblTimeRemaining.TabIndex = 1;
+            lblTimeRemaining.Text = "00:00";
+            lblTimeRemaining.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTimeElapsed
+            // 
+            lblTimeElapsed.Dock = System.Windows.Forms.DockStyle.Left;
+            lblTimeElapsed.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblTimeElapsed.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblTimeElapsed.Location = new System.Drawing.Point(0, 0);
+            lblTimeElapsed.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            lblTimeElapsed.Name = "lblTimeElapsed";
+            lblTimeElapsed.Size = new System.Drawing.Size(116, 38);
+            lblTimeElapsed.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblTimeElapsed.TabIndex = 0;
+            lblTimeElapsed.Text = "00:00";
+            lblTimeElapsed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // picCover
+            // 
+            picCover.BackColor = System.Drawing.Color.White;
+            picCover.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            picCover.Dock = System.Windows.Forms.DockStyle.Left;
+            picCover.Location = new System.Drawing.Point(0, 8);
+            picCover.Margin = new System.Windows.Forms.Padding(6);
+            picCover.Name = "picCover";
+            picCover.Size = new System.Drawing.Size(145, 150);
+            picCover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            picCover.TabIndex = 16;
+            picCover.TabStop = false;
+            picCover.Visible = false;
+            // 
+            // pnlRight
+            // 
+            pnlRight.BackColor = System.Drawing.Color.Transparent;
+            pnlRight.Controls.Add(pnlVolume);
+            pnlRight.Controls.Add(picVisuals);
+            pnlRight.Controls.Add(volumeLevels);
+            pnlRight.Dock = System.Windows.Forms.DockStyle.Right;
+            pnlRight.Location = new System.Drawing.Point(1341, 0);
+            pnlRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlRight.Name = "pnlRight";
+            pnlRight.Padding = new System.Windows.Forms.Padding(7, 8, 7, 8);
+            pnlRight.Size = new System.Drawing.Size(385, 166);
+            pnlRight.TabIndex = 26;
+            // 
+            // pnlVolume
+            // 
+            pnlVolume.BackColor = System.Drawing.Color.Transparent;
+            pnlVolume.Controls.Add(sldVolume);
+            pnlVolume.Controls.Add(lblVolume);
+            pnlVolume.Controls.Add(lblVolumCaption);
+            pnlVolume.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pnlVolume.Location = new System.Drawing.Point(7, 120);
+            pnlVolume.Margin = new System.Windows.Forms.Padding(6);
+            pnlVolume.Name = "pnlVolume";
+            pnlVolume.Size = new System.Drawing.Size(371, 38);
+            pnlVolume.TabIndex = 26;
             // 
             // sldVolume
             // 
-            this.sldVolume.Animated = false;
-            this.sldVolume.AnimationSize = 0.2F;
-            this.sldVolume.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
-            this.sldVolume.AutoScrollMargin = new System.Drawing.Size(0, 0);
-            this.sldVolume.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.sldVolume.BackColor = System.Drawing.SystemColors.Control;
-            this.sldVolume.BackgroundImage = null;
-            this.sldVolume.BackGroundImage = null;
-            this.sldVolume.ButtonAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sldVolume.ButtonBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.sldVolume.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.sldVolume.ButtonCornerRadius = ((uint)(2u));
-            this.sldVolume.ButtonSize = new System.Drawing.Size(24, 12);
-            this.sldVolume.ButtonStyle = MediaSlider.MediaSlider.ButtonType.GlassInline;
-            this.sldVolume.ContextMenuStrip = null;
-            this.sldVolume.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.sldVolume.LargeChange = 2;
-            this.sldVolume.Location = new System.Drawing.Point(40, 3);
-            this.sldVolume.Margin = new System.Windows.Forms.Padding(0);
-            this.sldVolume.Maximum = 10;
-            this.sldVolume.Minimum = 0;
-            this.sldVolume.Name = "sldVolume";
-            this.sldVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.sldVolume.ResizeRedraw = true;
-            this.sldVolume.ShowButtonOnHover = false;
-            this.sldVolume.Size = new System.Drawing.Size(193, 22);
-            this.sldVolume.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
-            this.sldVolume.SmallChange = 1;
-            this.sldVolume.SmoothScrolling = false;
-            this.sldVolume.TabIndex = 2;
-            this.sldVolume.TickColor = System.Drawing.Color.DarkOliveGreen;
-            this.sldVolume.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.sldVolume.TickType = MediaSlider.MediaSlider.TickMode.Standard;
-            this.sldVolume.TrackBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(133)))), ((int)(((byte)(158)))), ((int)(((byte)(191)))));
-            this.sldVolume.TrackDepth = 6;
-            this.sldVolume.TrackFillColor = System.Drawing.Color.Transparent;
-            this.sldVolume.TrackProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(228)))), ((int)(((byte)(138)))));
-            this.sldVolume.TrackShadow = false;
-            this.sldVolume.TrackShadowColor = System.Drawing.Color.DarkGray;
-            this.sldVolume.TrackStyle = MediaSlider.MediaSlider.TrackType.Progress;
-            this.sldVolume.Value = 0;
-            this.sldVolume.WheelScrollTicks = 3;
+            sldVolume.Animated = false;
+            sldVolume.AnimationSize = 0.2F;
+            sldVolume.AnimationSpeed = MediaSlider.MediaSlider.AnimateSpeed.Normal;
+            sldVolume.AutoScrollMargin = new System.Drawing.Size(0, 0);
+            sldVolume.AutoScrollMinSize = new System.Drawing.Size(0, 0);
+            sldVolume.BackColor = System.Drawing.SystemColors.Control;
+            sldVolume.BackgroundImage = null;
+            sldVolume.BackGroundImage = null;
+            sldVolume.ButtonAccentColor = System.Drawing.Color.FromArgb(128, 64, 64, 64);
+            sldVolume.ButtonBorderColor = System.Drawing.Color.FromArgb(133, 158, 191);
+            sldVolume.ButtonColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+            sldVolume.ButtonCornerRadius = 2U;
+            sldVolume.ButtonSize = new System.Drawing.Size(24, 12);
+            sldVolume.ButtonStyle = MediaSlider.MediaSlider.ButtonType.GlassInline;
+            sldVolume.Dock = System.Windows.Forms.DockStyle.Bottom;
+            sldVolume.LargeChange = 2;
+            sldVolume.Location = new System.Drawing.Point(55, 5);
+            sldVolume.Margin = new System.Windows.Forms.Padding(0);
+            sldVolume.Maximum = 10;
+            sldVolume.Minimum = 0;
+            sldVolume.Name = "sldVolume";
+            sldVolume.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            sldVolume.ResizeRedraw = true;
+            sldVolume.ShowButtonOnHover = false;
+            sldVolume.Size = new System.Drawing.Size(265, 33);
+            sldVolume.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
+            sldVolume.SmallChange = 1;
+            sldVolume.SmoothScrolling = false;
+            sldVolume.TabIndex = 2;
+            sldVolume.TickColor = System.Drawing.Color.DarkOliveGreen;
+            sldVolume.TickStyle = System.Windows.Forms.TickStyle.None;
+            sldVolume.TickType = MediaSlider.MediaSlider.TickMode.Standard;
+            sldVolume.TrackBorderColor = System.Drawing.Color.FromArgb(133, 158, 191);
+            sldVolume.TrackDepth = 6;
+            sldVolume.TrackFillColor = System.Drawing.Color.Transparent;
+            sldVolume.TrackProgressColor = System.Drawing.Color.FromArgb(255, 228, 138);
+            sldVolume.TrackShadow = false;
+            sldVolume.TrackShadowColor = System.Drawing.Color.DarkGray;
+            sldVolume.TrackStyle = MediaSlider.MediaSlider.TrackType.Progress;
+            sldVolume.Value = 0;
+            sldVolume.WheelScrollTicks = 3;
+            // 
+            // lblVolume
+            // 
+            lblVolume.Dock = System.Windows.Forms.DockStyle.Right;
+            lblVolume.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblVolume.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblVolume.Location = new System.Drawing.Point(320, 0);
+            lblVolume.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            lblVolume.Name = "lblVolume";
+            lblVolume.Size = new System.Drawing.Size(51, 38);
+            lblVolume.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblVolume.TabIndex = 1;
+            lblVolume.Text = "100";
+            lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblVolumCaption
+            // 
+            lblVolumCaption.Dock = System.Windows.Forms.DockStyle.Left;
+            lblVolumCaption.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblVolumCaption.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblVolumCaption.Location = new System.Drawing.Point(0, 0);
+            lblVolumCaption.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            lblVolumCaption.Name = "lblVolumCaption";
+            lblVolumCaption.Size = new System.Drawing.Size(55, 38);
+            lblVolumCaption.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblVolumCaption.TabIndex = 0;
+            lblVolumCaption.Text = "Vol:";
+            lblVolumCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // picVisuals
+            // 
+            picVisuals.BackColor = System.Drawing.Color.Transparent;
+            picVisuals.Location = new System.Drawing.Point(7, 8);
+            picVisuals.Margin = new System.Windows.Forms.Padding(6);
+            picVisuals.Name = "picVisuals";
+            picVisuals.Size = new System.Drawing.Size(370, 99);
+            picVisuals.TabIndex = 28;
+            picVisuals.TabStop = false;
             // 
             // volumeLevels
             // 
-            this.volumeLevels.BackColor = System.Drawing.Color.Transparent;
-            this.volumeLevels.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.volumeLevels.Location = new System.Drawing.Point(5, 5);
-            this.volumeLevels.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.volumeLevels.Name = "volumeLevels";
-            this.volumeLevels.Padding = new System.Windows.Forms.Padding(0, 5, 0, 10);
-            this.volumeLevels.Size = new System.Drawing.Size(270, 100);
-            this.volumeLevels.TabIndex = 29;
-            this.volumeLevels.Visible = false;
+            volumeLevels.BackColor = System.Drawing.Color.Transparent;
+            volumeLevels.Dock = System.Windows.Forms.DockStyle.Fill;
+            volumeLevels.Location = new System.Drawing.Point(7, 8);
+            volumeLevels.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            volumeLevels.Name = "volumeLevels";
+            volumeLevels.Padding = new System.Windows.Forms.Padding(0, 8, 0, 15);
+            volumeLevels.Size = new System.Drawing.Size(371, 150);
+            volumeLevels.TabIndex = 29;
+            volumeLevels.Visible = false;
+            // 
+            // pnlLeft
+            // 
+            pnlLeft.Controls.Add(flpRankButtons);
+            pnlLeft.Controls.Add(flpButtons);
+            pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            pnlLeft.Location = new System.Drawing.Point(0, 0);
+            pnlLeft.Margin = new System.Windows.Forms.Padding(6);
+            pnlLeft.Name = "pnlLeft";
+            pnlLeft.Padding = new System.Windows.Forms.Padding(7, 8, 7, 8);
+            pnlLeft.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
+            pnlLeft.Size = new System.Drawing.Size(390, 166);
+            pnlLeft.TabIndex = 20;
+            // 
+            // flpRankButtons
+            // 
+            flpRankButtons.BackColor = System.Drawing.Color.Transparent;
+            flpRankButtons.Controls.Add(btnRankExcellent);
+            flpRankButtons.Controls.Add(btnRankVeryGood);
+            flpRankButtons.Controls.Add(btnRankGood);
+            flpRankButtons.Controls.Add(btnRankBearable);
+            flpRankButtons.Controls.Add(btnRankForbidden);
+            flpRankButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            flpRankButtons.Location = new System.Drawing.Point(7, 88);
+            flpRankButtons.Margin = new System.Windows.Forms.Padding(0);
+            flpRankButtons.Name = "flpRankButtons";
+            flpRankButtons.Size = new System.Drawing.Size(376, 70);
+            flpRankButtons.TabIndex = 22;
+            // 
+            // btnRankExcellent
+            // 
+            btnRankExcellent.Location = new System.Drawing.Point(0, 0);
+            btnRankExcellent.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankExcellent.Name = "btnRankExcellent";
+            btnRankExcellent.Size = new System.Drawing.Size(59, 60);
+            btnRankExcellent.TabIndex = 15;
+            btnRankExcellent.Values.Text = "EX";
+            // 
+            // btnRankVeryGood
+            // 
+            btnRankVeryGood.Location = new System.Drawing.Point(62, 0);
+            btnRankVeryGood.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankVeryGood.Name = "btnRankVeryGood";
+            btnRankVeryGood.Size = new System.Drawing.Size(59, 60);
+            btnRankVeryGood.TabIndex = 16;
+            btnRankVeryGood.Values.Text = "VG";
+            // 
+            // btnRankGood
+            // 
+            btnRankGood.Location = new System.Drawing.Point(124, 0);
+            btnRankGood.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankGood.Name = "btnRankGood";
+            btnRankGood.Size = new System.Drawing.Size(59, 60);
+            btnRankGood.TabIndex = 17;
+            btnRankGood.Values.Text = "GD";
+            // 
+            // btnRankBearable
+            // 
+            btnRankBearable.Location = new System.Drawing.Point(186, 0);
+            btnRankBearable.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankBearable.Name = "btnRankBearable";
+            btnRankBearable.Size = new System.Drawing.Size(59, 60);
+            btnRankBearable.TabIndex = 18;
+            btnRankBearable.Values.Text = "OK";
+            // 
+            // btnRankForbidden
+            // 
+            btnRankForbidden.Location = new System.Drawing.Point(310, 0);
+            btnRankForbidden.Margin = new System.Windows.Forms.Padding(0);
+            btnRankForbidden.Name = "btnRankForbidden";
+            btnRankForbidden.Size = new System.Drawing.Size(59, 60);
+            btnRankForbidden.TabIndex = 20;
+            btnRankForbidden.Values.Text = "NO";
+            // 
+            // flpButtons
+            // 
+            flpButtons.BackColor = System.Drawing.Color.Transparent;
+            flpButtons.Controls.Add(btnPrevious);
+            flpButtons.Controls.Add(btnReplayMix);
+            flpButtons.Controls.Add(btnPlay);
+            flpButtons.Controls.Add(btnPause);
+            flpButtons.Controls.Add(btnSkipToEnd);
+            flpButtons.Controls.Add(btnNext);
+            flpButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            flpButtons.Location = new System.Drawing.Point(7, 8);
+            flpButtons.Margin = new System.Windows.Forms.Padding(6);
+            flpButtons.Name = "flpButtons";
+            flpButtons.Size = new System.Drawing.Size(376, 80);
+            flpButtons.TabIndex = 21;
+            // 
+            // btnPrevious
+            // 
+            btnPrevious.Location = new System.Drawing.Point(0, 0);
+            btnPrevious.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            btnPrevious.Name = "btnPrevious";
+            btnPrevious.Size = new System.Drawing.Size(70, 70);
+            btnPrevious.TabIndex = 9;
+            btnPrevious.Values.Image = Properties.Resources.player_restart;
+            btnPrevious.Values.Text = "";
+            // 
+            // btnReplayMix
+            // 
+            btnReplayMix.Location = new System.Drawing.Point(74, 0);
+            btnReplayMix.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            btnReplayMix.Name = "btnReplayMix";
+            btnReplayMix.Size = new System.Drawing.Size(70, 70);
+            btnReplayMix.TabIndex = 14;
+            btnReplayMix.Values.Image = Properties.Resources.player_rew;
+            btnReplayMix.Values.Text = "";
+            btnReplayMix.Click += btnReplayMix_Click;
+            // 
+            // btnPlay
+            // 
+            btnPlay.Location = new System.Drawing.Point(148, 0);
+            btnPlay.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            btnPlay.Name = "btnPlay";
+            btnPlay.Size = new System.Drawing.Size(70, 70);
+            btnPlay.TabIndex = 10;
+            btnPlay.Values.Image = Properties.Resources.player_play;
+            btnPlay.Values.Text = "";
+            // 
+            // btnPause
+            // 
+            btnPause.Location = new System.Drawing.Point(222, 0);
+            btnPause.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            btnPause.Name = "btnPause";
+            btnPause.Size = new System.Drawing.Size(70, 70);
+            btnPause.TabIndex = 13;
+            btnPause.Values.Image = Properties.Resources.player_pause;
+            btnPause.Values.Text = "";
+            btnPause.Visible = false;
+            // 
+            // btnSkipToEnd
+            // 
+            btnSkipToEnd.Location = new System.Drawing.Point(296, 0);
+            btnSkipToEnd.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            btnSkipToEnd.Name = "btnSkipToEnd";
+            btnSkipToEnd.Size = new System.Drawing.Size(70, 70);
+            btnSkipToEnd.TabIndex = 11;
+            btnSkipToEnd.Values.Image = Properties.Resources.player_fwd;
+            btnSkipToEnd.Values.Text = "";
+            // 
+            // btnNext
+            // 
+            btnNext.Location = new System.Drawing.Point(0, 70);
+            btnNext.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            btnNext.Name = "btnNext";
+            btnNext.Size = new System.Drawing.Size(70, 70);
+            btnNext.TabIndex = 12;
+            btnNext.Values.Image = Properties.Resources.player_end;
+            btnNext.Values.Text = "";
+            // 
+            // pnlTrackInfo
+            // 
+            pnlTrackInfo.Controls.Add(lblNextTrack);
+            pnlTrackInfo.Controls.Add(lblPrevTrack);
+            pnlTrackInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pnlTrackInfo.Location = new System.Drawing.Point(0, 166);
+            pnlTrackInfo.Margin = new System.Windows.Forms.Padding(0);
+            pnlTrackInfo.Name = "pnlTrackInfo";
+            pnlTrackInfo.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
+            pnlTrackInfo.Size = new System.Drawing.Size(1726, 39);
+            pnlTrackInfo.TabIndex = 5;
+            // 
+            // lblNextTrack
+            // 
+            lblNextTrack.BackColor = System.Drawing.Color.Transparent;
+            lblNextTrack.Dock = System.Windows.Forms.DockStyle.Right;
+            lblNextTrack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblNextTrack.ForeColor = System.Drawing.Color.Silver;
+            lblNextTrack.Location = new System.Drawing.Point(864, 0);
+            lblNextTrack.Margin = new System.Windows.Forms.Padding(0);
+            lblNextTrack.Name = "lblNextTrack";
+            lblNextTrack.Padding = new System.Windows.Forms.Padding(0, 0, 11, 0);
+            lblNextTrack.Size = new System.Drawing.Size(862, 39);
+            lblNextTrack.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblNextTrack.TabIndex = 1;
+            lblNextTrack.Text = "Next Track:";
+            lblNextTrack.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblPrevTrack
+            // 
+            lblPrevTrack.BackColor = System.Drawing.Color.Transparent;
+            lblPrevTrack.Dock = System.Windows.Forms.DockStyle.Left;
+            lblPrevTrack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblPrevTrack.ForeColor = System.Drawing.Color.Silver;
+            lblPrevTrack.Location = new System.Drawing.Point(0, 0);
+            lblPrevTrack.Margin = new System.Windows.Forms.Padding(0);
+            lblPrevTrack.Name = "lblPrevTrack";
+            lblPrevTrack.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
+            lblPrevTrack.Size = new System.Drawing.Size(862, 39);
+            lblPrevTrack.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblPrevTrack.TabIndex = 0;
+            lblPrevTrack.Text = "Previous Track:";
+            lblPrevTrack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // beveledLine1
+            // 
+            beveledLine1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            beveledLine1.Location = new System.Drawing.Point(0, 205);
+            beveledLine1.Margin = new System.Windows.Forms.Padding(6);
+            beveledLine1.Name = "beveledLine1";
+            beveledLine1.Size = new System.Drawing.Size(1726, 2);
+            beveledLine1.TabIndex = 2;
             // 
             // PlayerDetails
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.pnlBackground);
-            this.Controls.Add(this.beveledLine1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "PlayerDetails";
-            this.Size = new System.Drawing.Size(1255, 112);
-            ((System.ComponentModel.ISupportInitialize)(this.pnlBackground)).EndInit();
-            this.pnlBackground.ResumeLayout(false);
-            this.pnlMiddle.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.pnlSlider.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picCover)).EndInit();
-            this.pnlRight.ResumeLayout(false);
-            this.pnlVolume.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picVisuals)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlLeft)).EndInit();
-            this.pnlLeft.ResumeLayout(false);
-            this.flpButtons.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(pnlBackground);
+            Controls.Add(pnlTrackInfo);
+            Controls.Add(beveledLine1);
+            Margin = new System.Windows.Forms.Padding(6);
+            Name = "PlayerDetails";
+            Size = new System.Drawing.Size(1726, 207);
+            ((System.ComponentModel.ISupportInitialize)pnlBackground).EndInit();
+            pnlBackground.ResumeLayout(false);
+            pnlMiddle.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            pnlSlider.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picCover).EndInit();
+            pnlRight.ResumeLayout(false);
+            pnlVolume.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picVisuals).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pnlLeft).EndInit();
+            pnlLeft.ResumeLayout(false);
+            flpRankButtons.ResumeLayout(false);
+            flpButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pnlTrackInfo).EndInit();
+            pnlTrackInfo.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 
@@ -513,6 +631,15 @@
         private Halloumi.Common.Windows.Controls.Label lblVolumCaption;
         private VolumeLevels volumeLevels;
         private System.Windows.Forms.PictureBox picVisuals;
+        private System.Windows.Forms.FlowLayoutPanel flpRankButtons;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnRankExcellent;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnRankVeryGood;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnRankGood;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnRankBearable;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnRankForbidden;
+        private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlTrackInfo;
+        private Halloumi.Common.Windows.Controls.Label lblPrevTrack;
+        private Halloumi.Common.Windows.Controls.Label lblNextTrack;
 
     }
 }

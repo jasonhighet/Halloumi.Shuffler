@@ -93,6 +93,7 @@
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             mnuConservativeFadeOut = new System.Windows.Forms.ToolStripMenuItem();
             mnuShuffleAfterShuffling = new System.Windows.Forms.ToolStripMenuItem();
+            mnuSkipAfterMix = new System.Windows.Forms.ToolStripMenuItem();
             mnuResetMidi = new System.Windows.Forms.ToolStripMenuItem();
             mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,14 +113,15 @@
             toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-            mnuRank0 = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             mnuRank1 = new System.Windows.Forms.ToolStripMenuItem();
+            mnuRank0 = new System.Windows.Forms.ToolStripMenuItem();
             mnuRank2 = new System.Windows.Forms.ToolStripMenuItem();
             mnuRank3 = new System.Windows.Forms.ToolStripMenuItem();
             mnuRank4 = new System.Windows.Forms.ToolStripMenuItem();
             mnuRank5 = new System.Windows.Forms.ToolStripMenuItem();
-            mnuSkipAfterMix = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             mnuExit2 = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip = new System.Windows.Forms.StatusStrip();
             lblPlayerStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -128,18 +130,16 @@
             fileMenuController = new Halloumi.Common.Windows.Controllers.FileMenuController(components);
             aboutDialog = new Halloumi.Common.Windows.Controls.AboutDialog(components);
             pnlMain = new Halloumi.Common.Windows.Controls.Panel();
-            pnlSideNav = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
-            btnNavLibrary = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            btnNavPlaylist = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            btnNavMixer = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
-            navCheckSet = new ComponentFactory.Krypton.Toolkit.KryptonCheckSet(components);
-            toolTipNav = new System.Windows.Forms.ToolTip(components);
             trackLibraryControl = new Halloumi.Shuffler.Controls.TrackLibraryControl();
             playlistControl = new Halloumi.Shuffler.Controls.PlaylistControl();
             mixerControl = new Halloumi.Shuffler.Controls.MixerControl();
+            pnlSideNav = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
+            btnNavMixer = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            btnNavPlaylist = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            btnNavLibrary = new ComponentFactory.Krypton.Toolkit.KryptonCheckButton();
+            navCheckSet = new ComponentFactory.Krypton.Toolkit.KryptonCheckSet(components);
+            toolTipNav = new System.Windows.Forms.ToolTip(components);
             shufflerController = new Halloumi.Shuffler.Controls.ShufflerController(components);
-            toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             pnlTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlMenuBar).BeginInit();
             pnlMenuBar.SuspendLayout();
@@ -165,19 +165,19 @@
             pnlTop.Location = new System.Drawing.Point(0, 0);
             pnlTop.Margin = new System.Windows.Forms.Padding(6);
             pnlTop.Name = "pnlTop";
-            pnlTop.Size = new System.Drawing.Size(2078, 224);
+            pnlTop.Size = new System.Drawing.Size(2078, 251);
             pnlTop.TabIndex = 30;
-            //
+            // 
             // playerDetails
-            //
+            // 
             playerDetails.BackColor = System.Drawing.Color.FromArgb(72, 72, 72);
             playerDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             playerDetails.Location = new System.Drawing.Point(0, 56);
             playerDetails.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             playerDetails.Name = "playerDetails";
-            playerDetails.Size = new System.Drawing.Size(2078, 168);
+            playerDetails.Size = new System.Drawing.Size(2078, 195);
             playerDetails.TabIndex = 34;
-            //
+            // 
             // pnlMenuBar
             // 
             pnlMenuBar.Controls.Add(linMenuBorder);
@@ -579,6 +579,13 @@
             mnuShuffleAfterShuffling.Size = new System.Drawing.Size(395, 34);
             mnuShuffleAfterShuffling.Text = "Shuffle After Shuffling";
             // 
+            // mnuSkipAfterMix
+            // 
+            mnuSkipAfterMix.CheckOnClick = true;
+            mnuSkipAfterMix.Name = "mnuSkipAfterMix";
+            mnuSkipAfterMix.Size = new System.Drawing.Size(395, 34);
+            mnuSkipAfterMix.Text = "S&kip After Rating Mix";
+            // 
             // mnuResetMidi
             // 
             mnuResetMidi.Name = "mnuResetMidi";
@@ -610,61 +617,61 @@
             notificationContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             notificationContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuPlayPause, mnuPause, mnuNext, mnuPrevious, mnuSkipToEnd, mnuReplayMix, toolStripSeparator3, mnuTrackRank, toolStripMenuItem8, mnuRank1, mnuRank0, mnuRank2, mnuRank3, mnuRank4, mnuRank5, toolStripSeparator2, toolStripMenuItem7, mnuExit2 });
             notificationContextMenu.Name = "notificationContextMenu";
-            notificationContextMenu.Size = new System.Drawing.Size(287, 538);
+            notificationContextMenu.Size = new System.Drawing.Size(275, 504);
             // 
             // mnuPlayPause
             // 
             mnuPlayPause.Image = Properties.Resources.player_play_small;
             mnuPlayPause.Name = "mnuPlayPause";
-            mnuPlayPause.Size = new System.Drawing.Size(286, 34);
+            mnuPlayPause.Size = new System.Drawing.Size(274, 34);
             mnuPlayPause.Text = "&Play";
             // 
             // mnuPause
             // 
             mnuPause.Image = Properties.Resources.player_pause_small;
             mnuPause.Name = "mnuPause";
-            mnuPause.Size = new System.Drawing.Size(286, 34);
+            mnuPause.Size = new System.Drawing.Size(274, 34);
             mnuPause.Text = "&Pause";
             // 
             // mnuNext
             // 
             mnuNext.Image = Properties.Resources.player_end_small;
             mnuNext.Name = "mnuNext";
-            mnuNext.Size = new System.Drawing.Size(286, 34);
+            mnuNext.Size = new System.Drawing.Size(274, 34);
             mnuNext.Text = "&Next";
             // 
             // mnuPrevious
             // 
             mnuPrevious.Image = (System.Drawing.Image)resources.GetObject("mnuPrevious.Image");
             mnuPrevious.Name = "mnuPrevious";
-            mnuPrevious.Size = new System.Drawing.Size(286, 34);
+            mnuPrevious.Size = new System.Drawing.Size(274, 34);
             mnuPrevious.Text = "Pre&vious";
             // 
             // mnuSkipToEnd
             // 
             mnuSkipToEnd.Image = Properties.Resources.player_fwd_small;
             mnuSkipToEnd.Name = "mnuSkipToEnd";
-            mnuSkipToEnd.Size = new System.Drawing.Size(286, 34);
+            mnuSkipToEnd.Size = new System.Drawing.Size(274, 34);
             mnuSkipToEnd.Text = "&Skip To End";
             // 
             // mnuReplayMix
             // 
             mnuReplayMix.Image = Properties.Resources.player_rew1;
             mnuReplayMix.Name = "mnuReplayMix";
-            mnuReplayMix.Size = new System.Drawing.Size(286, 34);
+            mnuReplayMix.Size = new System.Drawing.Size(274, 34);
             mnuReplayMix.Text = "&Replay Mix";
             mnuReplayMix.Click += mnuReplayMix_Click;
             // 
             // toolStripSeparator3
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new System.Drawing.Size(283, 6);
+            toolStripSeparator3.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuTrackRank
             // 
             mnuTrackRank.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem1, toolStripMenuItem2, toolStripMenuItem3, toolStripMenuItem4, toolStripMenuItem5, toolStripMenuItem6 });
             mnuTrackRank.Name = "mnuTrackRank";
-            mnuTrackRank.Size = new System.Drawing.Size(286, 34);
+            mnuTrackRank.Size = new System.Drawing.Size(274, 34);
             mnuTrackRank.Text = "&Track Rating";
             // 
             // toolStripMenuItem1
@@ -709,65 +716,68 @@
             toolStripMenuItem6.Text = "toolStripMenuItem6";
             toolStripMenuItem6.Click += mnuTrackRank_Click;
             // 
-            // mnuRank0
+            // toolStripMenuItem8
             // 
-            mnuRank0.Name = "mnuRank0";
-            mnuRank0.Size = new System.Drawing.Size(286, 34);
-            mnuRank0.Text = "toolStripMenuItem1";
-            mnuRank0.Click += mnuRank_Click;
+            toolStripMenuItem8.Name = "toolStripMenuItem8";
+            toolStripMenuItem8.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuRank1
             // 
             mnuRank1.Name = "mnuRank1";
-            mnuRank1.Size = new System.Drawing.Size(286, 34);
+            mnuRank1.Size = new System.Drawing.Size(274, 34);
             mnuRank1.Text = "toolStripMenuItem2";
             mnuRank1.Click += mnuRank_Click;
+            // 
+            // mnuRank0
+            // 
+            mnuRank0.Name = "mnuRank0";
+            mnuRank0.Size = new System.Drawing.Size(274, 34);
+            mnuRank0.Text = "toolStripMenuItem1";
+            mnuRank0.Click += mnuRank_Click;
             // 
             // mnuRank2
             // 
             mnuRank2.Name = "mnuRank2";
-            mnuRank2.Size = new System.Drawing.Size(286, 34);
+            mnuRank2.Size = new System.Drawing.Size(274, 34);
             mnuRank2.Text = "toolStripMenuItem3";
             mnuRank2.Click += mnuRank_Click;
             // 
             // mnuRank3
             // 
             mnuRank3.Name = "mnuRank3";
-            mnuRank3.Size = new System.Drawing.Size(286, 34);
+            mnuRank3.Size = new System.Drawing.Size(274, 34);
             mnuRank3.Text = "toolStripMenuItem4";
             mnuRank3.Click += mnuRank_Click;
             // 
             // mnuRank4
             // 
             mnuRank4.Name = "mnuRank4";
-            mnuRank4.Size = new System.Drawing.Size(286, 34);
+            mnuRank4.Size = new System.Drawing.Size(274, 34);
             mnuRank4.Text = "toolStripMenuItem5";
             mnuRank4.Click += mnuRank_Click;
             // 
             // mnuRank5
             // 
             mnuRank5.Name = "mnuRank5";
-            mnuRank5.Size = new System.Drawing.Size(286, 34);
+            mnuRank5.Size = new System.Drawing.Size(274, 34);
             mnuRank5.Text = "toolStripMenuItem1";
             mnuRank5.Click += mnuRank_Click;
-            // 
-            // mnuSkipAfterMix
-            // 
-            mnuSkipAfterMix.CheckOnClick = true;
-            mnuSkipAfterMix.Name = "mnuSkipAfterMix";
-            mnuSkipAfterMix.Size = new System.Drawing.Size(395, 34);
-            mnuSkipAfterMix.Text = "S&kip After Rating Mix";
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new System.Drawing.Size(283, 6);
+            toolStripSeparator2.Size = new System.Drawing.Size(271, 6);
+            // 
+            // toolStripMenuItem7
+            // 
+            toolStripMenuItem7.Name = "toolStripMenuItem7";
+            toolStripMenuItem7.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuExit2
             // 
             mnuExit2.Image = Properties.Resources.exit;
             mnuExit2.Name = "mnuExit2";
-            mnuExit2.Size = new System.Drawing.Size(286, 34);
+            mnuExit2.Size = new System.Drawing.Size(274, 34);
             mnuExit2.Text = "E&xit";
             mnuExit2.Click += mnuExit_Click;
             // 
@@ -827,108 +837,98 @@
             pnlMain.Controls.Add(mixerControl);
             pnlMain.Controls.Add(pnlSideNav);
             pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            pnlMain.Location = new System.Drawing.Point(0, 224);
+            pnlMain.Location = new System.Drawing.Point(0, 251);
             pnlMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pnlMain.Name = "pnlMain";
-            pnlMain.Size = new System.Drawing.Size(2078, 939);
+            pnlMain.Size = new System.Drawing.Size(2078, 912);
             pnlMain.TabIndex = 36;
-            //
-            // pnlSideNav
-            //
-            pnlSideNav.Controls.Add(btnNavLibrary);
-            pnlSideNav.Controls.Add(btnNavPlaylist);
-            pnlSideNav.Controls.Add(btnNavMixer);
-            pnlSideNav.Dock = System.Windows.Forms.DockStyle.Left;
-            pnlSideNav.Location = new System.Drawing.Point(0, 0);
-            pnlSideNav.Name = "pnlSideNav";
-            pnlSideNav.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
-            pnlSideNav.Size = new System.Drawing.Size(52, 939);
-            pnlSideNav.TabIndex = 10;
-            //
-            // btnNavLibrary
-            //
-            btnNavLibrary.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Standalone;
-            btnNavLibrary.Checked = true;
-            btnNavLibrary.Location = new System.Drawing.Point(0, 4);
-            btnNavLibrary.Margin = new System.Windows.Forms.Padding(0);
-            btnNavLibrary.Name = "btnNavLibrary";
-            btnNavLibrary.Size = new System.Drawing.Size(52, 52);
-            btnNavLibrary.TabIndex = 0;
-            btnNavLibrary.TabStop = false;
-            btnNavLibrary.Values.Image = global::Halloumi.Shuffler.Properties.Resources.nav_library;
-            btnNavLibrary.Values.Text = "";
-            //
-            // btnNavPlaylist
-            //
-            btnNavPlaylist.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Standalone;
-            btnNavPlaylist.Location = new System.Drawing.Point(0, 56);
-            btnNavPlaylist.Margin = new System.Windows.Forms.Padding(0);
-            btnNavPlaylist.Name = "btnNavPlaylist";
-            btnNavPlaylist.Size = new System.Drawing.Size(52, 52);
-            btnNavPlaylist.TabIndex = 1;
-            btnNavPlaylist.TabStop = false;
-            btnNavPlaylist.Values.Image = global::Halloumi.Shuffler.Properties.Resources.nav_playlist;
-            btnNavPlaylist.Values.Text = "";
-            //
-            // btnNavMixer
-            //
-            btnNavMixer.ButtonStyle = ComponentFactory.Krypton.Toolkit.ButtonStyle.Standalone;
-            btnNavMixer.Location = new System.Drawing.Point(0, 108);
-            btnNavMixer.Margin = new System.Windows.Forms.Padding(0);
-            btnNavMixer.Name = "btnNavMixer";
-            btnNavMixer.Size = new System.Drawing.Size(52, 52);
-            btnNavMixer.TabIndex = 2;
-            btnNavMixer.TabStop = false;
-            btnNavMixer.Values.Image = global::Halloumi.Shuffler.Properties.Resources.nav_mixer;
-            btnNavMixer.Values.Text = "";
-            //
-            // navCheckSet
-            //
-            navCheckSet.CheckButtons.Add(btnNavLibrary);
-            navCheckSet.CheckButtons.Add(btnNavPlaylist);
-            navCheckSet.CheckButtons.Add(btnNavMixer);
-            navCheckSet.CheckedButton = btnNavLibrary;
-            navCheckSet.CheckedButtonChanged += new System.EventHandler(this.navCheckSet_CheckedButtonChanged);
-            //
+            // 
             // trackLibraryControl
-            //
+            // 
             trackLibraryControl.CollectionFilter = "";
             trackLibraryControl.Dock = System.Windows.Forms.DockStyle.Fill;
             trackLibraryControl.ExcludeCollectionFilter = "";
-            trackLibraryControl.Location = new System.Drawing.Point(0, 0);
+            trackLibraryControl.Location = new System.Drawing.Point(79, 0);
             trackLibraryControl.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             trackLibraryControl.Name = "trackLibraryControl";
-            trackLibraryControl.Size = new System.Drawing.Size(2078, 939);
+            trackLibraryControl.Size = new System.Drawing.Size(1999, 912);
             trackLibraryControl.TabIndex = 2;
             // 
             // playlistControl
             // 
             playlistControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            playlistControl.Location = new System.Drawing.Point(0, 0);
+            playlistControl.Location = new System.Drawing.Point(79, 0);
             playlistControl.Margin = new System.Windows.Forms.Padding(7, 8, 7, 8);
             playlistControl.Name = "playlistControl";
-            playlistControl.Size = new System.Drawing.Size(2078, 939);
+            playlistControl.Size = new System.Drawing.Size(1999, 912);
             playlistControl.TabIndex = 3;
             // 
             // mixerControl
             // 
             mixerControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            mixerControl.Location = new System.Drawing.Point(0, 0);
+            mixerControl.Location = new System.Drawing.Point(79, 0);
             mixerControl.Margin = new System.Windows.Forms.Padding(0);
             mixerControl.Name = "mixerControl";
-            mixerControl.Size = new System.Drawing.Size(2078, 939);
+            mixerControl.Size = new System.Drawing.Size(1999, 912);
             mixerControl.TabIndex = 1;
             mixerControl.Visible = false;
             // 
-            // toolStripMenuItem7
+            // pnlSideNav
             // 
-            toolStripMenuItem7.Name = "toolStripMenuItem7";
-            toolStripMenuItem7.Size = new System.Drawing.Size(283, 6);
+            pnlSideNav.Controls.Add(btnNavMixer);
+            pnlSideNav.Controls.Add(btnNavPlaylist);
+            pnlSideNav.Controls.Add(btnNavLibrary);
+            pnlSideNav.Dock = System.Windows.Forms.DockStyle.Left;
+            pnlSideNav.Location = new System.Drawing.Point(0, 0);
+            pnlSideNav.Name = "pnlSideNav";
+            pnlSideNav.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.HeaderForm;
+            pnlSideNav.Size = new System.Drawing.Size(79, 912);
+            pnlSideNav.TabIndex = 10;
             // 
-            // toolStripMenuItem8
+            // btnNavMixer
             // 
-            toolStripMenuItem8.Name = "toolStripMenuItem8";
-            toolStripMenuItem8.Size = new System.Drawing.Size(283, 6);
+            btnNavMixer.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavMixer.Location = new System.Drawing.Point(0, 158);
+            btnNavMixer.Margin = new System.Windows.Forms.Padding(0);
+            btnNavMixer.Name = "btnNavMixer";
+            btnNavMixer.Size = new System.Drawing.Size(79, 79);
+            btnNavMixer.TabIndex = 4;
+            btnNavMixer.TabStop = false;
+            btnNavMixer.Values.Image = Properties.Resources.nav_mixer;
+            btnNavMixer.Values.Text = "";
+            // 
+            // btnNavPlaylist
+            // 
+            btnNavPlaylist.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavPlaylist.Location = new System.Drawing.Point(0, 79);
+            btnNavPlaylist.Margin = new System.Windows.Forms.Padding(0);
+            btnNavPlaylist.Name = "btnNavPlaylist";
+            btnNavPlaylist.Size = new System.Drawing.Size(79, 79);
+            btnNavPlaylist.TabIndex = 3;
+            btnNavPlaylist.TabStop = false;
+            btnNavPlaylist.Values.Image = Properties.Resources.nav_playlist;
+            btnNavPlaylist.Values.Text = "";
+            // 
+            // btnNavLibrary
+            // 
+            btnNavLibrary.Checked = true;
+            btnNavLibrary.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavLibrary.Location = new System.Drawing.Point(0, 0);
+            btnNavLibrary.Margin = new System.Windows.Forms.Padding(0);
+            btnNavLibrary.Name = "btnNavLibrary";
+            btnNavLibrary.Size = new System.Drawing.Size(79, 79);
+            btnNavLibrary.TabIndex = 0;
+            btnNavLibrary.TabStop = false;
+            btnNavLibrary.Values.Image = Properties.Resources.nav_library;
+            btnNavLibrary.Values.Text = "";
+            // 
+            // navCheckSet
+            // 
+            navCheckSet.CheckButtons.Add(btnNavLibrary);
+            navCheckSet.CheckButtons.Add(btnNavPlaylist);
+            navCheckSet.CheckButtons.Add(btnNavMixer);
+            navCheckSet.CheckedButton = btnNavLibrary;
+            navCheckSet.CheckedButtonChanged += navCheckSet_CheckedButtonChanged;
             // 
             // FrmMain
             // 
@@ -1008,8 +1008,6 @@
         private Halloumi.Common.Windows.Controls.Panel pnlMain;
         private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlSideNav;
         private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavLibrary;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavPlaylist;
-        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavMixer;
         private ComponentFactory.Krypton.Toolkit.KryptonCheckSet navCheckSet;
         private System.Windows.Forms.ToolTip toolTipNav;
         private Halloumi.Shuffler.Controls.PlaylistControl playlistControl;
@@ -1078,5 +1076,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuShuffleAfterShuffling;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavMixer;
+        private ComponentFactory.Krypton.Toolkit.KryptonCheckButton btnNavPlaylist;
     }
 }
