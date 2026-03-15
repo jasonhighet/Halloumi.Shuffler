@@ -342,6 +342,22 @@ namespace Halloumi.Shuffler.Controls
 
             ShufflerApplication.OnTrackChanged += Application_OnTrackChanged;
             ShufflerApplication.OnFadeEnded += Application_OnFadeEnded;
+            ShufflerApplication.OnMixRankChanged += Application_OnMixRankChanged;
+        }
+
+        private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)
+        {
+            for (var i = 1; i < TrackModels.Count; i++)
+            {
+                var track1 = GetTrackByIndex(i - 1);
+                var track2 = GetTrackByIndex(i);
+                if (track1 == null || track2 == null) continue;
+                if (track1.Filename != e.FromTrack.Filename || track2.Filename != e.ToTrack.Filename) continue;
+                UpdateMixRank(i);
+                if (InvokeRequired) { Invoke(new Action(() => grdPlaylist.InvalidateDisplayedRows())); return; }
+                grdPlaylist.InvalidateDisplayedRows();
+                return;
+            }
         }
 
         private void Application_OnFadeEnded(object sender, EventArgs e)

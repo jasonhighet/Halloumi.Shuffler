@@ -66,6 +66,11 @@ namespace Halloumi.Shuffler
         }
 
         /// <summary>
+        /// Raised when a mix rank is changed via <see cref="SetMixLevel"/>.
+        /// </summary>
+        public event EventHandler<MixRankChangedEventArgs> OnMixRankChanged;
+
+        /// <summary>
         /// Raised when BassPlayer changes the current track.
         /// </summary>
         public event EventHandler OnTrackChanged;
@@ -677,7 +682,10 @@ namespace Halloumi.Shuffler
             => MixLibrary.GetMixLevel(track1, track2);
 
         public void SetMixLevel(Track track1, Track track2, int level)
-            => MixLibrary.SetMixLevel(track1, track2, level);
+        {
+            MixLibrary.SetMixLevel(track1, track2, level);
+            OnMixRankChanged?.Invoke(this, new MixRankChangedEventArgs { FromTrack = track1, ToTrack = track2, MixRank = level });
+        }
 
         // ── TrackSampleLibrary wrappers ─────────────────────────────────────
 
@@ -839,5 +847,12 @@ namespace Halloumi.Shuffler
         public decimal GetSamplerDelayNotes() => Settings.Default.SamplerDelayNotes;
 
         public SoundOutput GetRawLoopOutput() => Settings.Default.RawLoopOutput;
+    }
+
+    public class MixRankChangedEventArgs : EventArgs
+    {
+        public Track FromTrack { get; set; }
+        public Track ToTrack { get; set; }
+        public int MixRank { get; set; }
     }
 }

@@ -91,6 +91,7 @@ namespace Halloumi.Shuffler.Controls
 
             BassPlayer.OnTrackQueued += BassPlayer_OnTrackChange;
             BassPlayer.OnTrackChange += BassPlayer_OnTrackChange;
+            Application.OnMixRankChanged += Application_OnMixRankChanged;
 
             BassPlayer.OnManualMixVolumeChanged += BassPlayer_OnManualMixVolumeChanged;
             BassPlayer.OnManualMixModeChanged += BassPlayer_OnManualMixModeChanged;
@@ -111,6 +112,15 @@ namespace Halloumi.Shuffler.Controls
             _timer.Tick += Timer_Tick;
             _timer.Interval = 200;
             _timer.Start();
+        }
+
+        private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)
+        {
+            var prevCurrent = PreviousTrack?.Filename == e.FromTrack.Filename && CurrentTrack?.Filename == e.ToTrack.Filename;
+            var currentNext = CurrentTrack?.Filename == e.FromTrack.Filename && NextTrack?.Filename == e.ToTrack.Filename;
+            if (!prevCurrent && !currentNext) return;
+            if (InvokeRequired) { Invoke(new Action(BindData)); return; }
+            BindData();
         }
 
         /// <summary>

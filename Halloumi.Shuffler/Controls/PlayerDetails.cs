@@ -138,6 +138,18 @@ namespace Halloumi.Shuffler.Controls
             SetVolume((int)volume);
 
             BassPlayer.OnVolumeChanged += BassPlayer_OnVolumeChanged;
+            application.OnMixRankChanged += Application_OnMixRankChanged;
+        }
+
+        private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)
+        {
+            if (BassPlayer.CurrentTrack == null) return;
+            var currentTrack = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
+            var prevTrack = PlaylistControl?.GetPreviousTrack();
+            if (currentTrack == null || prevTrack == null) return;
+            if (e.FromTrack.Filename != prevTrack.Filename || e.ToTrack.Filename != currentTrack.Filename) return;
+            if (InvokeRequired) { Invoke(new Action(UpdateRankHighlight)); return; }
+            UpdateRankHighlight();
         }
 
         /// <summary>
