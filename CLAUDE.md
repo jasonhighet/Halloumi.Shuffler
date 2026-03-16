@@ -4,14 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build commands
 
+**Do NOT use `dotnet build` on this project.** The .NET 9 SDK (and later) raises `MSB3823: Non-string resources require GenerateResourceUsePreserializedResources` on the WinForms `.resx` files, and setting that property breaks the .NET 4.8 WinForms build. Use Visual Studio's MSBuild directly instead:
+
 ```bash
-# Build the full solution (x86)
-dotnet build Halloumi.Shuffler.sln -p:Platform=x86
+# Find MSBuild via vswhere and build the full solution (x86 Release)
+"%PROGRAMFILES(X86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+# Then: MSBuild.exe Halloumi.Shuffler.sln /p:Platform=x86 /p:Configuration=Release /m
+```
 
-# Build a single project
-dotnet build Halloumi.BassEngine/Halloumi.Shuffler.AudioEngine.csproj -p:Platform=x86
+The `deploy.bat` script at the repo root handles this automatically — use it for all builds.
 
-# Restore NuGet packages
+```bash
+# Restore NuGet packages (dotnet restore is fine for this)
 dotnet restore Halloumi.Shuffler.sln
 ```
 

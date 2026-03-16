@@ -51,7 +51,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         private static string ExtendedAttributesFile
         {
-            get { return Path.Combine(ShufflerFolder, "Haloumi.Shuffler.ExtendedAtrributes.xml"); }
+            get { return Path.Combine(ShufflerFolder, "Halloumi.Shuffler.ExtendedAttributes.xml"); }
         }
 
         /// <summary>

@@ -29,6 +29,8 @@ namespace Halloumi.Shuffler.Controls
         private bool _loaded;
         public EventHandler PlaylistChanged;
         public EventHandler MixRankAssigned;
+        public EventHandler GenerateClicked;
+        public EventHandler GenerateNowClicked;
         ///public EventHandler TrackClicked;
 
 
@@ -51,9 +53,9 @@ namespace Halloumi.Shuffler.Controls
             mnuTrack.Opening += mnuTrack_Opening;
 
             btnClear.Click += btnClear_Click;
-            btnOpen.Click += btnOpen_Click;
             btnRemove.Click += btnRemove_Click;
-            btnSave.Click += btnSave_Click;
+            btnGenerate.Click += btnGenerate_Click;
+            btnGenerateNow.Click += btnGenerateNow_Click;
 
             Load += PlaylistControl_Load;
             TrackModels = new List<TrackModel>();
@@ -809,14 +811,14 @@ namespace Halloumi.Shuffler.Controls
         }
 
 
-        /// <summary>
-        ///     Handles the Click event of the btnSave control.
-        /// </summary>
-        private void btnSave_Click(object sender, EventArgs e)
+        private void btnGenerate_Click(object sender, EventArgs e)
         {
-            if (TrackModels.Count == 0) return;
-            var playlist = FileDialogHelper.SaveAs("Play-list (*.m3u)|*.m3u", "");
-            if (playlist != "") SavePlaylist(playlist);
+            GenerateClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void btnGenerateNow_Click(object sender, EventArgs e)
+        {
+            GenerateNowClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -929,16 +931,6 @@ namespace Halloumi.Shuffler.Controls
             TrackModels[trackIndex].IsCurrent = true;
             return TrackModels[trackIndex];
         }
-
-        /// <summary>
-        ///     Handles the Click event of the btnOpen control.
-        /// </summary>
-        private void btnOpen_Click(object sender, EventArgs e)
-        {
-            var playlist = FileDialogHelper.OpenSingle("Playlist files (*.m3u)|*.m3u");
-            if (playlist != "") OpenPlaylist(playlist);
-        }
-
 
         /// <summary>
         ///     Handles the Click event of the mnuOpenFileLocation control.

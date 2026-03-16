@@ -65,6 +65,8 @@ namespace Halloumi.Shuffler
             BassPlayer.OnEndFadeIn += BassPlayer_OnFadeEnded;
         }
 
+        public List<string> StartupWarnings { get; } = new List<string>();
+
         /// <summary>
         /// Raised when a mix rank is changed via <see cref="SetMixLevel"/>.
         /// </summary>
@@ -153,15 +155,28 @@ namespace Halloumi.Shuffler
             MixLibrary.LoadFromDatabase();
 
             ExtenedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
+            WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.ExtendedAttributes.xml", "Extended attributes");
             ExtenedAttributesHelper.LoadFromDatabase();
             Library.LoadAllExtendedAttributes();
 
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
+            WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.AutomationAttributes.xml", "Automation attributes");
             AutomationAttributesHelper.LoadFromDatabase();
 
+            WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.Collections.xml", "Collections");
             CollectionHelper.LoadFromDatabase();
 
+            WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml", "Mix library");
+
             LoopLibrary.LoadFromCache();
+        }
+
+        private void WarnIfMissing(string folder, string filename, string label)
+        {
+            if (string.IsNullOrEmpty(folder)) return;
+            var path = Path.Combine(folder, filename);
+            if (!File.Exists(path))
+                StartupWarnings.Add($"{label} file not found:\n{path}");
         }
 
         public void Unload()
@@ -619,11 +634,11 @@ namespace Halloumi.Shuffler
 
         public void ImportExternalShufflerTracks(string folder) => Library.ImportExternalShufflerTracks(folder);
 
-        public void ImportAndCleanLibrary() { Library.ImportTracks(); Library.CleanLibrary(); }
+        public void ImportAndCleanLibrary() { Library.ImportTracks(); Library.CleanLibrary(); CollectionHelper.LoadFromDatabase(); }
 
         public void CleanLibrary() => Library.CleanLibrary();
 
-        public void ImportTracks(string folder) => Library.ImportTracks(folder);
+        public void ImportTracks(string folder) { Library.ImportTracks(folder); CollectionHelper.LoadFromDatabase(); }
 
         public void RemoveShufflerDetails(Track track) => Library.RemoveShufflerDetails(track);
 

@@ -78,8 +78,8 @@
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnRemove = new Halloumi.Common.Windows.Controls.Button();
             this.btnClear = new Halloumi.Common.Windows.Controls.Button();
-            this.btnSave = new Halloumi.Common.Windows.Controls.Button();
-            this.btnOpen = new Halloumi.Common.Windows.Controls.Button();
+            this.btnGenerate = new Halloumi.Common.Windows.Controls.Button();
+            this.btnGenerateNow = new Halloumi.Common.Windows.Controls.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackDetails = new Halloumi.Shuffler.Controls.TrackDetails();
             this.mixableTracks = new Halloumi.Shuffler.Controls.MixableTracks();
@@ -526,8 +526,8 @@
             this.flpButtons.BackColor = System.Drawing.Color.Transparent;
             this.flpButtons.Controls.Add(this.btnRemove);
             this.flpButtons.Controls.Add(this.btnClear);
-            this.flpButtons.Controls.Add(this.btnSave);
-            this.flpButtons.Controls.Add(this.btnOpen);
+            this.flpButtons.Controls.Add(this.btnGenerate);
+            this.flpButtons.Controls.Add(this.btnGenerateNow);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flpButtons.Location = new System.Drawing.Point(589, 0);
@@ -554,23 +554,23 @@
             this.btnClear.TabIndex = 11;
             this.btnClear.Text = "Clear";
             // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(75, 6);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(61, 31);
-            this.btnSave.TabIndex = 12;
-            this.btnSave.Text = "Save";
-            // 
-            // btnOpen
-            // 
-            this.btnOpen.Location = new System.Drawing.Point(6, 6);
-            this.btnOpen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(61, 31);
-            this.btnOpen.TabIndex = 13;
-            this.btnOpen.Text = "Open";
+            // btnGenerate
+            //
+            this.btnGenerate.Location = new System.Drawing.Point(75, 6);
+            this.btnGenerate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnGenerate.Name = "btnGenerate";
+            this.btnGenerate.Size = new System.Drawing.Size(75, 31);
+            this.btnGenerate.TabIndex = 12;
+            this.btnGenerate.Text = "Generate";
+            //
+            // btnGenerateNow
+            //
+            this.btnGenerateNow.Location = new System.Drawing.Point(6, 6);
+            this.btnGenerateNow.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnGenerateNow.Name = "btnGenerateNow";
+            this.btnGenerateNow.Size = new System.Drawing.Size(100, 31);
+            this.btnGenerateNow.TabIndex = 13;
+            this.btnGenerateNow.Text = "Generate Now";
             // 
             // panel1
             // 
@@ -664,8 +664,8 @@
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private Halloumi.Common.Windows.Controls.Button btnRemove;
         private Halloumi.Common.Windows.Controls.Button btnClear;
-        private Halloumi.Common.Windows.Controls.Button btnSave;
-        private Halloumi.Common.Windows.Controls.Button btnOpen;
+        private Halloumi.Common.Windows.Controls.Button btnGenerate;
+        private Halloumi.Common.Windows.Controls.Button btnGenerateNow;
         private System.Windows.Forms.Panel panel1;
         private TrackDetails trackDetails;
         private MixableTracks mixableTracks;

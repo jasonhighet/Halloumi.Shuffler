@@ -101,8 +101,6 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy &quot;$(_ComponentsDir)\*.dll&quot; &quot;$(TargetDir)&quot;" />
-    <Exec Condition="'$(Configuration)' == 'Release' And Exists('C:\Users\jason\Shuffler')"
-          Command="copy &quot;$(TargetDir).&quot; &quot;C:\Users\jason\Shuffler&quot;" />
   </Target>
 
 </Project>

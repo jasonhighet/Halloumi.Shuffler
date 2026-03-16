@@ -90,6 +90,8 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.Initalize(trackLibraryControl, application);
             playlistControl.ShufflerDetailsUpdatedEvent += playlistControl_ShufflerDetailsUpdatedEvent;
             playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(); };
+            playlistControl.GenerateClicked += (s, e) => OpenGeneratePlaylistForm();
+            playlistControl.GenerateNowClicked += (s, e) => shufflerController.AutoGenerateNow();
 
             playerDetails.Initialize(application, playlistControl);
 
@@ -154,6 +156,13 @@ namespace Halloumi.Shuffler.Forms
             mnuFile.DropDownItems.Insert(5, newMenu);
 
             mnuFile.DropDownItems.Insert(6, new ToolStripSeparator());
+
+            if (_application.StartupWarnings.Count > 0)
+            {
+                var message = "The following data files were not found at startup:\n\n"
+                              + string.Join("\n\n", _application.StartupWarnings);
+                MessageBox.Show(message, "Startup Warnings", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void mnuShuffleAfterShuffling_Click(object sender, EventArgs e)
@@ -706,7 +715,7 @@ namespace Halloumi.Shuffler.Forms
         private void BindMixRankMenu()
         {
             var currentMixRank = playerDetails.GetCurrentMixRank();
-            var rankItems = new[] { mnuRank0, mnuRank1, mnuRank2, mnuRank3, mnuRank4, mnuRank5 };
+            var rankItems = new[] { mnuRankExcellent, mnuRankVeryGood, mnuRankGood, mnuRankBearable, mnuRankUnranked, mnuRankForbidden };
             for (var i = 0; i < 6; i++)
             {
                 rankItems[i].Text = _application.GetMixRankDescription(5 - i);

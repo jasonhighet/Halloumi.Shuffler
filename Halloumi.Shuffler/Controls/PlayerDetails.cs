@@ -143,7 +143,7 @@ namespace Halloumi.Shuffler.Controls
 
         private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)
         {
-            if (BassPlayer.CurrentTrack == null) return;
+            if (BassPlayer == null || BassPlayer.CurrentTrack == null) return;
             var currentTrack = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             var prevTrack = PlaylistControl?.GetPreviousTrack();
             if (currentTrack == null || prevTrack == null) return;
@@ -267,7 +267,7 @@ namespace Halloumi.Shuffler.Controls
 
         public int GetCurrentMixRank()
         {
-            if (BassPlayer.CurrentTrack == null) return 1;
+            if (BassPlayer == null || BassPlayer.CurrentTrack == null) return 1;
 
             Track currentTrack = null;
             if (BassPlayer.CurrentTrack != null)
@@ -281,7 +281,7 @@ namespace Halloumi.Shuffler.Controls
 
         public void SetCurrentMixRank(int mixRank)
         {
-            if (BassPlayer.CurrentTrack == null) return;
+            if (BassPlayer == null || BassPlayer.CurrentTrack == null) return;
 
             Track currentTrack = null;
             if (BassPlayer.CurrentTrack != null)
@@ -519,14 +519,14 @@ namespace Halloumi.Shuffler.Controls
         private void RankButton_Click(int rank)
         {
             SetCurrentMixRank(rank);
-            UpdateRankHighlight();
+            SetRankHighlight(rank);
             PlaylistControl?.MixRankAssigned?.Invoke(PlaylistControl, EventArgs.Empty);
         }
 
-        private void UpdateRankHighlight()
-        {
-            var rank = GetCurrentMixRank();
+        private void UpdateRankHighlight() => SetRankHighlight(GetCurrentMixRank());
 
+        private void SetRankHighlight(int rank)
+        {
             var rankButtons = new[]
             {
                 (Rank: 5, Button: btnRankExcellent),

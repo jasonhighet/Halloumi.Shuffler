@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
         private static string AutomationAttributesFile
         {
-            get { return Path.Combine(ShufflerFolder, "Haloumi.Shuffler.AutomationAttributes.xml"); }
+            get { return Path.Combine(ShufflerFolder, "Halloumi.Shuffler.AutomationAttributes.xml"); }
         }
 
         public static void SaveToDatabase()

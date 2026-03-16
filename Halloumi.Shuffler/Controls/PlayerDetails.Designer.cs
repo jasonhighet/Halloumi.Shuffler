@@ -401,45 +401,45 @@
             // btnRankExcellent
             // 
             btnRankExcellent.Location = new System.Drawing.Point(0, 0);
-            btnRankExcellent.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankExcellent.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             btnRankExcellent.Name = "btnRankExcellent";
-            btnRankExcellent.Size = new System.Drawing.Size(59, 60);
+            btnRankExcellent.Size = new System.Drawing.Size(70, 70);
             btnRankExcellent.TabIndex = 15;
             btnRankExcellent.Values.Text = "EX";
             // 
             // btnRankVeryGood
             // 
-            btnRankVeryGood.Location = new System.Drawing.Point(62, 0);
-            btnRankVeryGood.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankVeryGood.Location = new System.Drawing.Point(74, 0);
+            btnRankVeryGood.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             btnRankVeryGood.Name = "btnRankVeryGood";
-            btnRankVeryGood.Size = new System.Drawing.Size(59, 60);
+            btnRankVeryGood.Size = new System.Drawing.Size(70, 70);
             btnRankVeryGood.TabIndex = 16;
             btnRankVeryGood.Values.Text = "VG";
             // 
             // btnRankGood
             // 
-            btnRankGood.Location = new System.Drawing.Point(124, 0);
-            btnRankGood.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankGood.Location = new System.Drawing.Point(148, 0);
+            btnRankGood.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             btnRankGood.Name = "btnRankGood";
-            btnRankGood.Size = new System.Drawing.Size(59, 60);
+            btnRankGood.Size = new System.Drawing.Size(70, 70);
             btnRankGood.TabIndex = 17;
             btnRankGood.Values.Text = "GD";
             // 
             // btnRankBearable
             // 
-            btnRankBearable.Location = new System.Drawing.Point(186, 0);
-            btnRankBearable.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            btnRankBearable.Location = new System.Drawing.Point(222, 0);
+            btnRankBearable.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             btnRankBearable.Name = "btnRankBearable";
-            btnRankBearable.Size = new System.Drawing.Size(59, 60);
+            btnRankBearable.Size = new System.Drawing.Size(70, 70);
             btnRankBearable.TabIndex = 18;
             btnRankBearable.Values.Text = "OK";
             // 
             // btnRankForbidden
             // 
-            btnRankForbidden.Location = new System.Drawing.Point(310, 0);
-            btnRankForbidden.Margin = new System.Windows.Forms.Padding(0);
+            btnRankForbidden.Location = new System.Drawing.Point(296, 0);
+            btnRankForbidden.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             btnRankForbidden.Name = "btnRankForbidden";
-            btnRankForbidden.Size = new System.Drawing.Size(59, 60);
+            btnRankForbidden.Size = new System.Drawing.Size(70, 70);
             btnRankForbidden.TabIndex = 20;
             btnRankForbidden.Values.Text = "NO";
             // 
