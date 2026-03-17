@@ -530,10 +530,10 @@
             this.flpButtons.Controls.Add(this.btnGenerateNow);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(589, 0);
+            this.flpButtons.Location = new System.Drawing.Point(534, 0);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Padding = new System.Windows.Forms.Padding(2, 2, 5, 2);
-            this.flpButtons.Size = new System.Drawing.Size(285, 42);
+            this.flpButtons.Size = new System.Drawing.Size(340, 42);
             this.flpButtons.TabIndex = 16;
             // 
             // btnRemove
