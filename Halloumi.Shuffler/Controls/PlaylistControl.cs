@@ -72,12 +72,16 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowMixableTracks
         {
+            get => !splTopBottom.Panel2Collapsed;
             set
             {
                 splTopBottom.Panel2Collapsed = !value;
+                trackDetails.MixableTracksShown = value;
                 ShowCurrentTrackDetails();
             }
         }
+
+        public event EventHandler MixableTracksToggled;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -338,6 +342,11 @@ namespace Halloumi.Shuffler.Controls
 
             trackDetails.ShufflerApplication = application;
             trackDetails.DisplayTrackDetails(null);
+            trackDetails.MixableTracksToggleRequested += (s, e) =>
+            {
+                ShowMixableTracks = splTopBottom.Panel2Collapsed;
+                MixableTracksToggled?.Invoke(this, EventArgs.Empty);
+            };
 
             mixableTracks.PlaylistControl = this;
             mixableTracks.Initialize(ShufflerApplication, trackLibraryControl);

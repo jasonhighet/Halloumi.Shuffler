@@ -63,6 +63,9 @@
             lblNextTrack = new Halloumi.Common.Windows.Controls.Label();
             lblPrevTrack = new Halloumi.Common.Windows.Controls.Label();
             beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
+            pnlPlayerMixCounts = new System.Windows.Forms.Panel();
+            lblPlayerMixOut = new Halloumi.Common.Windows.Controls.Label();
+            lblPlayerMixIn = new Halloumi.Common.Windows.Controls.Label();
             ((System.ComponentModel.ISupportInitialize)pnlBackground).BeginInit();
             pnlBackground.SuspendLayout();
             pnlMiddle.SuspendLayout();
@@ -78,6 +81,7 @@
             flpButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlTrackInfo).BeginInit();
             pnlTrackInfo.SuspendLayout();
+            pnlPlayerMixCounts.SuspendLayout();
             SuspendLayout();
             // 
             // pnlBackground
@@ -90,12 +94,13 @@
             pnlBackground.Margin = new System.Windows.Forms.Padding(6);
             pnlBackground.Name = "pnlBackground";
             pnlBackground.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
-            pnlBackground.Size = new System.Drawing.Size(1726, 166);
+            pnlBackground.Size = new System.Drawing.Size(2043, 166);
             pnlBackground.TabIndex = 4;
             // 
             // pnlMiddle
             // 
             pnlMiddle.BackColor = System.Drawing.Color.Transparent;
+            pnlMiddle.Controls.Add(pnlPlayerMixCounts);
             pnlMiddle.Controls.Add(panel1);
             pnlMiddle.Controls.Add(pnlSlider);
             pnlMiddle.Controls.Add(picCover);
@@ -104,7 +109,7 @@
             pnlMiddle.Margin = new System.Windows.Forms.Padding(0);
             pnlMiddle.Name = "pnlMiddle";
             pnlMiddle.Padding = new System.Windows.Forms.Padding(0, 8, 7, 8);
-            pnlMiddle.Size = new System.Drawing.Size(951, 166);
+            pnlMiddle.Size = new System.Drawing.Size(1268, 166);
             pnlMiddle.TabIndex = 27;
             // 
             // panel1
@@ -117,7 +122,7 @@
             panel1.Margin = new System.Windows.Forms.Padding(6);
             panel1.Name = "panel1";
             panel1.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            panel1.Size = new System.Drawing.Size(799, 112);
+            panel1.Size = new System.Drawing.Size(1116, 112);
             panel1.TabIndex = 25;
             // 
             // lblCurrentTrackDetails
@@ -129,7 +134,7 @@
             lblCurrentTrackDetails.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             lblCurrentTrackDetails.Name = "lblCurrentTrackDetails";
             lblCurrentTrackDetails.Padding = new System.Windows.Forms.Padding(0, 0, 18, 0);
-            lblCurrentTrackDetails.Size = new System.Drawing.Size(789, 42);
+            lblCurrentTrackDetails.Size = new System.Drawing.Size(1106, 42);
             lblCurrentTrackDetails.Style = Common.Windows.Controls.LabelStyle.Caption;
             lblCurrentTrackDetails.TabIndex = 1;
             lblCurrentTrackDetails.Text = "Blue Brazil - Blue Note In A Latin Groove Vol. 3 - Latin - 2:02 - 102BPM";
@@ -144,7 +149,7 @@
             lblCurrentTrackDescription.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             lblCurrentTrackDescription.Name = "lblCurrentTrackDescription";
             lblCurrentTrackDescription.Padding = new System.Windows.Forms.Padding(0, 0, 18, 0);
-            lblCurrentTrackDescription.Size = new System.Drawing.Size(789, 38);
+            lblCurrentTrackDescription.Size = new System.Drawing.Size(1106, 38);
             lblCurrentTrackDescription.Style = Common.Windows.Controls.LabelStyle.Heading;
             lblCurrentTrackDescription.TabIndex = 0;
             lblCurrentTrackDescription.Text = "Elza Soares &&  Roberto Ribeiro - O Que Vem De Baixo Nao Me Atinge";
@@ -160,7 +165,7 @@
             pnlSlider.Location = new System.Drawing.Point(145, 120);
             pnlSlider.Margin = new System.Windows.Forms.Padding(6);
             pnlSlider.Name = "pnlSlider";
-            pnlSlider.Size = new System.Drawing.Size(799, 38);
+            pnlSlider.Size = new System.Drawing.Size(1116, 38);
             pnlSlider.TabIndex = 17;
             // 
             // slider
@@ -189,7 +194,7 @@
             slider.Orientation = System.Windows.Forms.Orientation.Horizontal;
             slider.ResizeRedraw = true;
             slider.ShowButtonOnHover = false;
-            slider.Size = new System.Drawing.Size(579, 33);
+            slider.Size = new System.Drawing.Size(896, 33);
             slider.SliderFlyOut = MediaSlider.MediaSlider.FlyOutStyle.None;
             slider.SmallChange = 1;
             slider.SmoothScrolling = false;
@@ -212,7 +217,7 @@
             lblTimeRemaining.Dock = System.Windows.Forms.DockStyle.Right;
             lblTimeRemaining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             lblTimeRemaining.ForeColor = System.Drawing.SystemColors.ControlText;
-            lblTimeRemaining.Location = new System.Drawing.Point(695, 0);
+            lblTimeRemaining.Location = new System.Drawing.Point(1012, 0);
             lblTimeRemaining.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             lblTimeRemaining.Name = "lblTimeRemaining";
             lblTimeRemaining.Size = new System.Drawing.Size(104, 38);
@@ -256,7 +261,7 @@
             pnlRight.Controls.Add(picVisuals);
             pnlRight.Controls.Add(volumeLevels);
             pnlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            pnlRight.Location = new System.Drawing.Point(1341, 0);
+            pnlRight.Location = new System.Drawing.Point(1658, 0);
             pnlRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pnlRight.Name = "pnlRight";
             pnlRight.Padding = new System.Windows.Forms.Padding(7, 8, 7, 8);
@@ -530,7 +535,7 @@
             pnlTrackInfo.Margin = new System.Windows.Forms.Padding(0);
             pnlTrackInfo.Name = "pnlTrackInfo";
             pnlTrackInfo.PanelBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.PanelAlternate;
-            pnlTrackInfo.Size = new System.Drawing.Size(1726, 39);
+            pnlTrackInfo.Size = new System.Drawing.Size(2043, 39);
             pnlTrackInfo.TabIndex = 5;
             // 
             // lblNextTrack
@@ -539,7 +544,7 @@
             lblNextTrack.Dock = System.Windows.Forms.DockStyle.Right;
             lblNextTrack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             lblNextTrack.ForeColor = System.Drawing.Color.Silver;
-            lblNextTrack.Location = new System.Drawing.Point(864, 0);
+            lblNextTrack.Location = new System.Drawing.Point(1181, 0);
             lblNextTrack.Margin = new System.Windows.Forms.Padding(0);
             lblNextTrack.Name = "lblNextTrack";
             lblNextTrack.Padding = new System.Windows.Forms.Padding(0, 0, 11, 0);
@@ -571,8 +576,48 @@
             beveledLine1.Location = new System.Drawing.Point(0, 205);
             beveledLine1.Margin = new System.Windows.Forms.Padding(6);
             beveledLine1.Name = "beveledLine1";
-            beveledLine1.Size = new System.Drawing.Size(1726, 2);
+            beveledLine1.Size = new System.Drawing.Size(2043, 2);
             beveledLine1.TabIndex = 2;
+            // 
+            // pnlPlayerMixCounts
+            // 
+            pnlPlayerMixCounts.BackColor = System.Drawing.Color.Transparent;
+            pnlPlayerMixCounts.Controls.Add(lblPlayerMixOut);
+            pnlPlayerMixCounts.Controls.Add(lblPlayerMixIn);
+            pnlPlayerMixCounts.Dock = System.Windows.Forms.DockStyle.Right;
+            pnlPlayerMixCounts.Location = new System.Drawing.Point(1082, 8);
+            pnlPlayerMixCounts.Name = "pnlPlayerMixCounts";
+            pnlPlayerMixCounts.Padding = new System.Windows.Forms.Padding(0, 0, 8, 8);
+            pnlPlayerMixCounts.Size = new System.Drawing.Size(179, 112);
+            pnlPlayerMixCounts.TabIndex = 31;
+            // 
+            // lblPlayerMixOut
+            // 
+            lblPlayerMixOut.Dock = System.Windows.Forms.DockStyle.Top;
+            lblPlayerMixOut.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblPlayerMixOut.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblPlayerMixOut.Location = new System.Drawing.Point(0, 38);
+            lblPlayerMixOut.Margin = new System.Windows.Forms.Padding(3, 0, 6, 0);
+            lblPlayerMixOut.Name = "lblPlayerMixOut";
+            lblPlayerMixOut.Size = new System.Drawing.Size(171, 42);
+            lblPlayerMixOut.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblPlayerMixOut.TabIndex = 1;
+            lblPlayerMixOut.Text = "0E 0VG 0G";
+            lblPlayerMixOut.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblPlayerMixIn
+            // 
+            lblPlayerMixIn.Dock = System.Windows.Forms.DockStyle.Top;
+            lblPlayerMixIn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblPlayerMixIn.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblPlayerMixIn.Location = new System.Drawing.Point(0, 0);
+            lblPlayerMixIn.Margin = new System.Windows.Forms.Padding(3, 0, 6, 0);
+            lblPlayerMixIn.Name = "lblPlayerMixIn";
+            lblPlayerMixIn.Size = new System.Drawing.Size(171, 38);
+            lblPlayerMixIn.Style = Common.Windows.Controls.LabelStyle.Heading;
+            lblPlayerMixIn.TabIndex = 0;
+            lblPlayerMixIn.Text = "0E 0VG 0G";
+            lblPlayerMixIn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // PlayerDetails
             // 
@@ -583,7 +628,7 @@
             Controls.Add(beveledLine1);
             Margin = new System.Windows.Forms.Padding(6);
             Name = "PlayerDetails";
-            Size = new System.Drawing.Size(1726, 207);
+            Size = new System.Drawing.Size(2043, 207);
             ((System.ComponentModel.ISupportInitialize)pnlBackground).EndInit();
             pnlBackground.ResumeLayout(false);
             pnlMiddle.ResumeLayout(false);
@@ -599,6 +644,7 @@
             flpButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pnlTrackInfo).EndInit();
             pnlTrackInfo.ResumeLayout(false);
+            pnlPlayerMixCounts.ResumeLayout(false);
             ResumeLayout(false);
 
         }
@@ -640,6 +686,8 @@
         private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlTrackInfo;
         private Halloumi.Common.Windows.Controls.Label lblPrevTrack;
         private Halloumi.Common.Windows.Controls.Label lblNextTrack;
-
+        private System.Windows.Forms.Panel pnlPlayerMixCounts;
+        private Common.Windows.Controls.Label lblPlayerMixOut;
+        private Common.Windows.Controls.Label lblPlayerMixIn;
     }
 }

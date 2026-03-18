@@ -1,19 +1,31 @@
-﻿using System.ComponentModel;
+using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioLibrary.Models;
-using AE = Halloumi.Shuffler.AudioEngine;
 
 namespace Halloumi.Shuffler.Controls
 {
     public partial class TrackDetails : UserControl
     {
-        /// <summary>
-        ///     Gets or sets the current track description.
-        /// </summary>
         private string _currentFilename;
+        private Track _currentTrack;
+        private ShufflerApplication _shufflerApplication;
 
-        public ShufflerApplication ShufflerApplication { get; set; }
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ShufflerApplication ShufflerApplication
+        {
+            get => _shufflerApplication;
+            set
+            {
+                if (_shufflerApplication != null)
+                    _shufflerApplication.OnMixRankChanged -= Application_OnMixRankChanged;
+                _shufflerApplication = value;
+                if (_shufflerApplication != null)
+                    _shufflerApplication.OnMixRankChanged += Application_OnMixRankChanged;
+            }
+        }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -23,17 +35,26 @@ namespace Halloumi.Shuffler.Controls
             set => picCover.Visible = value;
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool MixableTracksShown
+        {
+            get => btnToggleMixable.Text == "\u25B2";
+            set => btnToggleMixable.Text = value ? "\u25B2" : "\u25BC";
+        }
+
+        public event EventHandler MixableTracksToggleRequested;
+
         public TrackDetails()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        ///     Displays the current track details.
-        /// </summary>
         public void DisplayTrackDetails(Track track)
         {
             if (track != null && track.Filename == _currentFilename) return;
+
+            _currentTrack = track;
 
             if (track != null)
             {
@@ -51,8 +72,8 @@ namespace Halloumi.Shuffler.Controls
 
                 lblCurrentTrackDetails.Text = details;
 
-                if (ShufflerApplication != null)
-                    picCover.Image = ShufflerApplication.GetAlbumCover(track.Album);
+                if (_shufflerApplication != null)
+                    picCover.Image = _shufflerApplication.GetAlbumCover(track.Album);
 
                 _currentFilename = track.Filename;
             }
@@ -61,9 +82,44 @@ namespace Halloumi.Shuffler.Controls
                 lblCurrentTrackDescription.Text = "";
                 lblCurrentTrackDetails.Text = "";
                 picCover.Image = null;
-
                 _currentFilename = "";
             }
+
+            RefreshMixCounts();
+        }
+
+        private void RefreshMixCounts()
+        {
+            if (_shufflerApplication == null || _currentTrack == null)
+            {
+                lblMixIn.Text = "In:  0E 0VG 0G";
+                lblMixOut.Text = "Out: 0E 0VG 0G";
+                return;
+            }
+
+            var inEx = _shufflerApplication.GetMixInCount(_currentTrack, 5);
+            var inVg = _shufflerApplication.GetMixInCount(_currentTrack, 4) - inEx;
+            var inGd = _shufflerApplication.GetMixInCount(_currentTrack, 3) - inEx - inVg;
+
+            var outEx = _shufflerApplication.GetMixOutCount(_currentTrack, 5);
+            var outVg = _shufflerApplication.GetMixOutCount(_currentTrack, 4) - outEx;
+            var outGd = _shufflerApplication.GetMixOutCount(_currentTrack, 3) - outEx - outVg;
+
+            lblMixIn.Text = $"In:  {inEx}E {inVg}VG {inGd}G";
+            lblMixOut.Text = $"Out: {outEx}E {outVg}VG {outGd}G";
+        }
+
+        private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)
+        {
+            if (_currentTrack == null) return;
+            if (e.FromTrack?.Description == _currentTrack.Description ||
+                e.ToTrack?.Description == _currentTrack.Description)
+                RefreshMixCounts();
+        }
+
+        private void btnToggleMixable_Click(object sender, EventArgs e)
+        {
+            MixableTracksToggleRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 }

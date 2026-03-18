@@ -92,6 +92,18 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(); };
             playlistControl.GenerateClicked += (s, e) => OpenGeneratePlaylistForm();
             playlistControl.GenerateNowClicked += (s, e) => shufflerController.AutoGenerateNow();
+            playlistControl.MixableTracksToggled += (s, e) =>
+            {
+                var shown = playlistControl.ShowMixableTracks;
+                mnuShowMixableTracks.Checked = shown;
+                trackLibraryControl.ShowMixableTracks = shown;
+            };
+            trackLibraryControl.MixableTracksToggled += (s, e) =>
+            {
+                var shown = trackLibraryControl.ShowMixableTracks;
+                mnuShowMixableTracks.Checked = shown;
+                playlistControl.ShowMixableTracks = shown;
+            };
 
             playerDetails.Initialize(application, playlistControl);
 

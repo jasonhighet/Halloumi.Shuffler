@@ -682,7 +682,11 @@ namespace Halloumi.Shuffler
 
         public int GetMixInCount(Track track) => MixLibrary.GetMixInCount(track);
 
+        public int GetMixInCount(Track track, int minimumLevel) => MixLibrary.GetMixInCount(track, minimumLevel);
+
         public int GetMixOutCount(Track track) => MixLibrary.GetMixOutCount(track);
+
+        public int GetMixOutCount(Track track, int minimumLevel) => MixLibrary.GetMixOutCount(track, minimumLevel);
 
         public string GetMixRankDescription(int rank) => MixLibrary.GetRankDescription(rank);
 

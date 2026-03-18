@@ -146,10 +146,43 @@ namespace Halloumi.Shuffler.Controls
             if (BassPlayer == null || BassPlayer.CurrentTrack == null) return;
             var currentTrack = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             var prevTrack = PlaylistControl?.GetPreviousTrack();
-            if (currentTrack == null || prevTrack == null) return;
-            if (e.FromTrack.Filename != prevTrack.Filename || e.ToTrack.Filename != currentTrack.Filename) return;
-            if (InvokeRequired) { Invoke(new Action(UpdateRankHighlight)); return; }
-            UpdateRankHighlight();
+            if (currentTrack != null && prevTrack != null
+                && e.FromTrack.Filename == prevTrack.Filename && e.ToTrack.Filename == currentTrack.Filename)
+            {
+                if (InvokeRequired) { Invoke(new Action(UpdateRankHighlight)); return; }
+                UpdateRankHighlight();
+            }
+            if (currentTrack != null &&
+                (e.FromTrack?.Filename == currentTrack.Filename || e.ToTrack?.Filename == currentTrack.Filename))
+            {
+                if (InvokeRequired) { Invoke(new Action(RefreshPlayerMixCounts)); return; }
+                RefreshPlayerMixCounts();
+            }
+        }
+
+        private void RefreshPlayerMixCounts()
+        {
+            if (BassPlayer?.CurrentTrack == null)
+            {
+                lblPlayerMixIn.Text = "In:  0E 0VG 0G";
+                lblPlayerMixOut.Text = "Out: 0E 0VG 0G";
+                return;
+            }
+            var track = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
+            if (track == null)
+            {
+                lblPlayerMixIn.Text = "In:  0E 0VG 0G";
+                lblPlayerMixOut.Text = "Out: 0E 0VG 0G";
+                return;
+            }
+            var inEx = _application.GetMixInCount(track, 5);
+            var inVg = _application.GetMixInCount(track, 4) - inEx;
+            var inGd = _application.GetMixInCount(track, 3) - inEx - inVg;
+            var outEx = _application.GetMixOutCount(track, 5);
+            var outVg = _application.GetMixOutCount(track, 4) - outEx;
+            var outGd = _application.GetMixOutCount(track, 3) - outEx - outVg;
+            lblPlayerMixIn.Text = $"In:  {inEx}E {inVg}VG {inGd}G";
+            lblPlayerMixOut.Text = $"Out: {outEx}E {outVg}VG {outGd}G";
         }
 
         /// <summary>
@@ -249,6 +282,8 @@ namespace Halloumi.Shuffler.Controls
                 lblCurrentTrackDetails.Text = "";
                 picCover.Image = null;
             }
+
+            RefreshPlayerMixCounts();
 
             var mainForm = (BaseMinimizeToTrayForm) ParentForm;
             if (mainForm == null) return;
