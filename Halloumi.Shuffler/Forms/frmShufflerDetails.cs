@@ -44,6 +44,8 @@ namespace Halloumi.Shuffler.Forms
             cmbSampleLength.TextChanged += cmbSampleLength_TextChanged;
             chkLoopSample.CheckedChanged += chkLoopSample_CheckedChanged;
 
+            cmbTrackRank.Items.AddRange(new object[] { "Excellent", "Very Good", "Good", "Bearable", "Unranked", "Forbidden" });
+            cmbTrackRank.SelectedIndexChanged += (s, e) => UpdateData();
         }
 
         public static DialogResult OpenForm(string filename, BassPlayer bassPlayer, Library library, ShufflerApplication application = null)
@@ -248,7 +250,7 @@ namespace Halloumi.Shuffler.Forms
 
                 if (Track.TagBpm > 0 && Track.TagBpm != 100)
                 {
-                    var defaultFadeLength = Track.SecondsToSamples(BpmHelper.GetDefaultLoopLength(Track.TagBpm));
+                    var defaultFadeLength = Track.SecondsToSamples(BpmHelper.GetDefaultLoopLength(Track.TagBpm) / 2);
                     Track.FadeInStart = 0;
                     Track.FadeInEnd = defaultFadeLength;
                     Track.FadeOutEnd = Track.Length;
@@ -273,6 +275,29 @@ namespace Halloumi.Shuffler.Forms
             PopulateTrackFxComboBox();
         }
 
+
+        private static string GetRankDescription(int rank)
+        {
+            if (rank == 5) return "Excellent";
+            if (rank == 4) return "Very Good";
+            if (rank == 3) return "Good";
+            if (rank == 2) return "Bearable";
+            if (rank == 0) return "Forbidden";
+            return "Unranked";
+        }
+
+        private static int GetRankFromDescription(string description)
+        {
+            switch (description)
+            {
+                case "Excellent": return 5;
+                case "Very Good": return 4;
+                case "Good": return 3;
+                case "Bearable": return 2;
+                case "Forbidden": return 0;
+                default: return 1;
+            }
+        }
 
         /// <summary>
         ///     Loads the settings.
@@ -335,6 +360,11 @@ namespace Halloumi.Shuffler.Forms
             cmbFadeOutLoopCount.Text = !Track.IsLoopedAtEnd ? "0" : Track.EndLoopCount.ToString();
 
             chkPowerDown.Checked = Track.PowerDownOnEnd;
+
+            var rankToShow = !ExtenedAttributesHelper.HasExtendedAttributes(Track.Description)
+                ? "Good"
+                : GetRankDescription(Track.Rank);
+            cmbTrackRank.SelectedItem = rankToShow;
 
             BindSamples();
             BindSample();
@@ -425,6 +455,10 @@ namespace Halloumi.Shuffler.Forms
             AutomationAttributesHelper.SaveAutomationAttributes(Track.Description, AutomationAttributes);
             BassPlayer.ReloadTrack(Track.Filename);
 
+            var libraryTrack = Application?.GetTrackByFilename(Filename);
+            if (libraryTrack != null)
+                libraryTrack.Rank = Track.Rank;
+
             _saved = true;
 
             Close();
@@ -468,6 +502,9 @@ namespace Halloumi.Shuffler.Forms
                 Track.SkipEnd = Track.SkipStart + Track.SecondsToSamples(cmbSkipLength.Seconds);
             else
                 Track.SkipEnd = 0;
+
+            if (cmbTrackRank.SelectedItem is string rankDesc)
+                Track.Rank = GetRankFromDescription(rankDesc);
 
             trackWave.RefreshPositions();
 
