@@ -1180,7 +1180,7 @@ namespace Halloumi.Shuffler.Controls
             mixableTracks.TabIndex = 0;
             // 
             // btnUnshuffledRoulette
-            // 
+            //
             btnUnshuffledRoulette.Dock = System.Windows.Forms.DockStyle.Right;
             btnUnshuffledRoulette.Location = new System.Drawing.Point(1930, 4);
             btnUnshuffledRoulette.Margin = new System.Windows.Forms.Padding(4);

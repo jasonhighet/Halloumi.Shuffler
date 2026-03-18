@@ -153,6 +153,11 @@ namespace Halloumi.Shuffler.Controls
 
         public void AutoGenerateWorkingPlaylistNow()
         {
+            AutoGenerateWorkingPlaylistNow(allowBearable: false);
+        }
+
+        public void AutoGenerateWorkingPlaylistNow(bool allowBearable)
+        {
             if (_generateWorker.IsBusy) return;
 
             var request = new PlaylistGenerationRequest
@@ -160,12 +165,17 @@ namespace Halloumi.Shuffler.Controls
                 Strategy = TrackSelector.MixStrategy.Working,
                 MaxTracksToAdd = int.MaxValue,
                 ApproximateLengthMinutes = int.MaxValue,
+                AllowBearable = allowBearable
+                    ? TrackSelector.AllowBearableMixStrategy.Always
+                    : TrackSelector.AllowBearableMixStrategy.AfterTwoGoodTracks,
             };
 
             var availableTracks = Application.GetTracks(new TrackFilter
             {
                 ShufflerFilter = Library.ShufflerFilter.ShufflerTracks,
-                TrackRankFilter = Library.TrackRankFilter.GoodPlus,
+                TrackRankFilter = allowBearable
+                    ? Library.TrackRankFilter.BearablePlus
+                    : Library.TrackRankFilter.GoodPlus,
             });
 
             var currentPlaylist = PlaylistControl.GetTracks();

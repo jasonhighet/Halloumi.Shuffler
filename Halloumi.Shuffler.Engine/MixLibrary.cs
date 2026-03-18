@@ -636,6 +636,11 @@ namespace Halloumi.Shuffler.AudioLibrary
             return GetUnrankedToTracks(track).Count();
         }
 
+        public int GetUnrankedFromCount(Track track)
+        {
+            return GetUnrankedFromTracks(track).Count();
+        }
+
         public void ExportToFolder(string folder)
         {
             ExportToFolder(folder, 0);

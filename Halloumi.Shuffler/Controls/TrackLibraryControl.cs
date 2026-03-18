@@ -72,6 +72,7 @@ namespace Halloumi.Shuffler.Controls
             mnuUpdateShufflerDetails.Click += mnuUpdateShufflerDetails_Click;
             mnuRemoveShufflerDetails.Click += mnuRemoveShufflerDetails_Click;
             btnUnshuffledRoulette.Click += btnUnshuffledRoulette_Click;
+
             mnuQueue.Click += mnuQueue_Click;
             mnuPlay.Click += mnuPlay_Click;
             mnuTrack.Opening += mnuTrack_Opening;

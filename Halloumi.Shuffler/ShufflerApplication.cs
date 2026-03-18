@@ -695,6 +695,38 @@ namespace Halloumi.Shuffler
 
         public int GetMixOutCount(Track track, int minimumLevel) => MixLibrary.GetMixOutCount(track, minimumLevel);
 
+        public List<Track> GetLeastMixedShufflerTracks(int count, string collection = "", string excludeCollection = "")
+        {
+            var filter = new TrackFilter
+            {
+                Collection = collection,
+                ExcludeCollection = excludeCollection,
+                ShufflerFilter = Library.ShufflerFilter.ShufflerTracks
+            };
+            var tracks = GetTracks(filter);
+
+            return tracks
+                .Select(t => new
+                {
+                    Track = t,
+                    Mixable = MixLibrary.GetUnrankedToCount(t) + MixLibrary.GetUnrankedFromCount(t),
+                    Mixed = MixLibrary.GetMixOutCount(t, 3) + MixLibrary.GetMixInCount(t, 3)
+                })
+                .Where(x => x.Mixable > 0)
+                .OrderBy(x => (double)x.Mixed / x.Mixable)
+                .Take(count)
+                .Select(x => x.Track)
+                .ToList();
+        }
+
+        public Track GetRandomLeastMixedShufflerTrack(string collection = "", string excludeCollection = "")
+        {
+            var scored = GetLeastMixedShufflerTracks(int.MaxValue, collection, excludeCollection);
+            if (scored == null || scored.Count == 0) return null;
+            var candidateCount = Math.Max(1, (int)Math.Round(scored.Count * 0.1));
+            return scored[new Random().Next(candidateCount)];
+        }
+
         public string GetMixRankDescription(int rank) => MixLibrary.GetRankDescription(rank);
 
         public MixLibrary.MixRank GetMixRankFromDescription(string description) => MixLibrary.GetRankFromDescription(description);

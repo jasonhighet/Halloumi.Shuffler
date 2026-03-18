@@ -30,6 +30,9 @@
         {
             pnlBackground = new ComponentFactory.Krypton.Toolkit.KryptonPanel();
             pnlMiddle = new System.Windows.Forms.Panel();
+            pnlPlayerMixCounts = new System.Windows.Forms.Panel();
+            lblPlayerMixOut = new Halloumi.Common.Windows.Controls.Label();
+            lblPlayerMixIn = new Halloumi.Common.Windows.Controls.Label();
             panel1 = new System.Windows.Forms.Panel();
             lblCurrentTrackDetails = new Halloumi.Common.Windows.Controls.Label();
             lblCurrentTrackDescription = new Halloumi.Common.Windows.Controls.Label();
@@ -63,12 +66,10 @@
             lblNextTrack = new Halloumi.Common.Windows.Controls.Label();
             lblPrevTrack = new Halloumi.Common.Windows.Controls.Label();
             beveledLine1 = new Halloumi.Common.Windows.Controls.BeveledLine();
-            pnlPlayerMixCounts = new System.Windows.Forms.Panel();
-            lblPlayerMixOut = new Halloumi.Common.Windows.Controls.Label();
-            lblPlayerMixIn = new Halloumi.Common.Windows.Controls.Label();
             ((System.ComponentModel.ISupportInitialize)pnlBackground).BeginInit();
             pnlBackground.SuspendLayout();
             pnlMiddle.SuspendLayout();
+            pnlPlayerMixCounts.SuspendLayout();
             panel1.SuspendLayout();
             pnlSlider.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picCover).BeginInit();
@@ -81,7 +82,6 @@
             flpButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlTrackInfo).BeginInit();
             pnlTrackInfo.SuspendLayout();
-            pnlPlayerMixCounts.SuspendLayout();
             SuspendLayout();
             // 
             // pnlBackground
@@ -111,6 +111,46 @@
             pnlMiddle.Padding = new System.Windows.Forms.Padding(0, 8, 7, 8);
             pnlMiddle.Size = new System.Drawing.Size(1268, 166);
             pnlMiddle.TabIndex = 27;
+            // 
+            // pnlPlayerMixCounts
+            // 
+            pnlPlayerMixCounts.BackColor = System.Drawing.Color.Transparent;
+            pnlPlayerMixCounts.Controls.Add(lblPlayerMixOut);
+            pnlPlayerMixCounts.Controls.Add(lblPlayerMixIn);
+            pnlPlayerMixCounts.Dock = System.Windows.Forms.DockStyle.Right;
+            pnlPlayerMixCounts.Location = new System.Drawing.Point(896, 8);
+            pnlPlayerMixCounts.Name = "pnlPlayerMixCounts";
+            pnlPlayerMixCounts.Padding = new System.Windows.Forms.Padding(0, 0, 8, 8);
+            pnlPlayerMixCounts.Size = new System.Drawing.Size(365, 112);
+            pnlPlayerMixCounts.TabIndex = 31;
+            // 
+            // lblPlayerMixOut
+            // 
+            lblPlayerMixOut.Dock = System.Windows.Forms.DockStyle.Top;
+            lblPlayerMixOut.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblPlayerMixOut.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblPlayerMixOut.Location = new System.Drawing.Point(0, 38);
+            lblPlayerMixOut.Margin = new System.Windows.Forms.Padding(3, 0, 6, 0);
+            lblPlayerMixOut.Name = "lblPlayerMixOut";
+            lblPlayerMixOut.Size = new System.Drawing.Size(357, 42);
+            lblPlayerMixOut.Style = Common.Windows.Controls.LabelStyle.Caption;
+            lblPlayerMixOut.TabIndex = 1;
+            lblPlayerMixOut.Text = "0E 0VG 0G";
+            lblPlayerMixOut.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblPlayerMixIn
+            // 
+            lblPlayerMixIn.Dock = System.Windows.Forms.DockStyle.Top;
+            lblPlayerMixIn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblPlayerMixIn.ForeColor = System.Drawing.SystemColors.ControlText;
+            lblPlayerMixIn.Location = new System.Drawing.Point(0, 0);
+            lblPlayerMixIn.Margin = new System.Windows.Forms.Padding(3, 0, 6, 0);
+            lblPlayerMixIn.Name = "lblPlayerMixIn";
+            lblPlayerMixIn.Size = new System.Drawing.Size(357, 38);
+            lblPlayerMixIn.Style = Common.Windows.Controls.LabelStyle.Heading;
+            lblPlayerMixIn.TabIndex = 0;
+            lblPlayerMixIn.Text = "0E 0VG 0G";
+            lblPlayerMixIn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // panel1
             // 
@@ -579,46 +619,6 @@
             beveledLine1.Size = new System.Drawing.Size(2043, 2);
             beveledLine1.TabIndex = 2;
             // 
-            // pnlPlayerMixCounts
-            // 
-            pnlPlayerMixCounts.BackColor = System.Drawing.Color.Transparent;
-            pnlPlayerMixCounts.Controls.Add(lblPlayerMixOut);
-            pnlPlayerMixCounts.Controls.Add(lblPlayerMixIn);
-            pnlPlayerMixCounts.Dock = System.Windows.Forms.DockStyle.Right;
-            pnlPlayerMixCounts.Location = new System.Drawing.Point(1082, 8);
-            pnlPlayerMixCounts.Name = "pnlPlayerMixCounts";
-            pnlPlayerMixCounts.Padding = new System.Windows.Forms.Padding(0, 0, 8, 8);
-            pnlPlayerMixCounts.Size = new System.Drawing.Size(179, 112);
-            pnlPlayerMixCounts.TabIndex = 31;
-            // 
-            // lblPlayerMixOut
-            // 
-            lblPlayerMixOut.Dock = System.Windows.Forms.DockStyle.Top;
-            lblPlayerMixOut.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            lblPlayerMixOut.ForeColor = System.Drawing.SystemColors.ControlText;
-            lblPlayerMixOut.Location = new System.Drawing.Point(0, 38);
-            lblPlayerMixOut.Margin = new System.Windows.Forms.Padding(3, 0, 6, 0);
-            lblPlayerMixOut.Name = "lblPlayerMixOut";
-            lblPlayerMixOut.Size = new System.Drawing.Size(171, 42);
-            lblPlayerMixOut.Style = Common.Windows.Controls.LabelStyle.Caption;
-            lblPlayerMixOut.TabIndex = 1;
-            lblPlayerMixOut.Text = "0E 0VG 0G";
-            lblPlayerMixOut.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblPlayerMixIn
-            // 
-            lblPlayerMixIn.Dock = System.Windows.Forms.DockStyle.Top;
-            lblPlayerMixIn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            lblPlayerMixIn.ForeColor = System.Drawing.SystemColors.ControlText;
-            lblPlayerMixIn.Location = new System.Drawing.Point(0, 0);
-            lblPlayerMixIn.Margin = new System.Windows.Forms.Padding(3, 0, 6, 0);
-            lblPlayerMixIn.Name = "lblPlayerMixIn";
-            lblPlayerMixIn.Size = new System.Drawing.Size(171, 38);
-            lblPlayerMixIn.Style = Common.Windows.Controls.LabelStyle.Heading;
-            lblPlayerMixIn.TabIndex = 0;
-            lblPlayerMixIn.Text = "0E 0VG 0G";
-            lblPlayerMixIn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // PlayerDetails
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -632,6 +632,7 @@
             ((System.ComponentModel.ISupportInitialize)pnlBackground).EndInit();
             pnlBackground.ResumeLayout(false);
             pnlMiddle.ResumeLayout(false);
+            pnlPlayerMixCounts.ResumeLayout(false);
             panel1.ResumeLayout(false);
             pnlSlider.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picCover).EndInit();
@@ -644,7 +645,6 @@
             flpButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pnlTrackInfo).EndInit();
             pnlTrackInfo.ResumeLayout(false);
-            pnlPlayerMixCounts.ResumeLayout(false);
             ResumeLayout(false);
 
         }

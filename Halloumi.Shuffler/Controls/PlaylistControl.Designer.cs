@@ -80,6 +80,7 @@
             this.btnClear = new Halloumi.Common.Windows.Controls.Button();
             this.btnGenerate = new Halloumi.Common.Windows.Controls.Button();
             this.btnGenerateNow = new Halloumi.Common.Windows.Controls.Button();
+            this.btnLeastMixedRoulette = new Halloumi.Common.Windows.Controls.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackDetails = new Halloumi.Shuffler.Controls.TrackDetails();
             this.mixableTracks = new Halloumi.Shuffler.Controls.MixableTracks();
@@ -528,6 +529,7 @@
             this.flpButtons.Controls.Add(this.btnClear);
             this.flpButtons.Controls.Add(this.btnGenerate);
             this.flpButtons.Controls.Add(this.btnGenerateNow);
+            this.flpButtons.Controls.Add(this.btnLeastMixedRoulette);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flpButtons.Location = new System.Drawing.Point(534, 0);
@@ -571,6 +573,15 @@
             this.btnGenerateNow.Size = new System.Drawing.Size(100, 31);
             this.btnGenerateNow.TabIndex = 13;
             this.btnGenerateNow.Text = "Generate Now";
+            //
+            // btnLeastMixedRoulette
+            //
+            this.btnLeastMixedRoulette.Location = new System.Drawing.Point(6, 6);
+            this.btnLeastMixedRoulette.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnLeastMixedRoulette.Name = "btnLeastMixedRoulette";
+            this.btnLeastMixedRoulette.Size = new System.Drawing.Size(130, 31);
+            this.btnLeastMixedRoulette.TabIndex = 14;
+            this.btnLeastMixedRoulette.Text = "Least Mixed Roulette";
             // 
             // panel1
             // 
@@ -666,6 +677,7 @@
         private Halloumi.Common.Windows.Controls.Button btnClear;
         private Halloumi.Common.Windows.Controls.Button btnGenerate;
         private Halloumi.Common.Windows.Controls.Button btnGenerateNow;
+        private Halloumi.Common.Windows.Controls.Button btnLeastMixedRoulette;
         private System.Windows.Forms.Panel panel1;
         private TrackDetails trackDetails;
         private MixableTracks mixableTracks;

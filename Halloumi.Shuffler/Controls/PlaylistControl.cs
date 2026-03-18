@@ -31,6 +31,7 @@ namespace Halloumi.Shuffler.Controls
         public EventHandler MixRankAssigned;
         public EventHandler GenerateClicked;
         public EventHandler GenerateNowClicked;
+        public EventHandler LeastMixedRouletteClicked;
         ///public EventHandler TrackClicked;
 
 
@@ -56,6 +57,7 @@ namespace Halloumi.Shuffler.Controls
             btnRemove.Click += btnRemove_Click;
             btnGenerate.Click += btnGenerate_Click;
             btnGenerateNow.Click += btnGenerateNow_Click;
+            btnLeastMixedRoulette.Click += btnLeastMixedRoulette_Click;
 
             Load += PlaylistControl_Load;
             TrackModels = new List<TrackModel>();
@@ -837,6 +839,11 @@ namespace Halloumi.Shuffler.Controls
         private void btnGenerateNow_Click(object sender, EventArgs e)
         {
             GenerateNowClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void btnLeastMixedRoulette_Click(object sender, EventArgs e)
+        {
+            LeastMixedRouletteClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
