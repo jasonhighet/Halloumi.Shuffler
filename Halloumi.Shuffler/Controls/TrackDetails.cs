@@ -92,8 +92,8 @@ namespace Halloumi.Shuffler.Controls
         {
             if (_shufflerApplication == null || _currentTrack == null)
             {
-                lblMixIn.Text = "In:  0E 0VG 0G";
-                lblMixOut.Text = "Out: 0E 0VG 0G";
+                lblMixIn.Text = "In:  0E 0VG 0G 0TOT";
+                lblMixOut.Text = "Out: 0E 0VG 0G 0TOT";
                 return;
             }
 
@@ -105,8 +105,8 @@ namespace Halloumi.Shuffler.Controls
             var outVg = _shufflerApplication.GetMixOutCount(_currentTrack, 4) - outEx;
             var outGd = _shufflerApplication.GetMixOutCount(_currentTrack, 3) - outEx - outVg;
 
-            lblMixIn.Text = $"In:  {inEx}E {inVg}VG {inGd}G";
-            lblMixOut.Text = $"Out: {outEx}E {outVg}VG {outGd}G";
+            lblMixIn.Text = $"In:  {inEx}E {inVg}VG {inGd}G {inEx + inVg + inGd}TOT";
+            lblMixOut.Text = $"Out: {outEx}E {outVg}VG {outGd}G {outEx + outVg + outGd}TOT";
         }
 
         private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)

@@ -164,15 +164,15 @@ namespace Halloumi.Shuffler.Controls
         {
             if (BassPlayer?.CurrentTrack == null)
             {
-                lblPlayerMixIn.Text = "In:  0E 0VG 0G";
-                lblPlayerMixOut.Text = "Out: 0E 0VG 0G";
+                lblPlayerMixIn.Text = "In:  0E 0VG 0G 0TOT";
+                lblPlayerMixOut.Text = "Out: 0E 0VG 0G 0TOT";
                 return;
             }
             var track = _application.GetTrackByFilename(BassPlayer.CurrentTrack.Filename);
             if (track == null)
             {
-                lblPlayerMixIn.Text = "In:  0E 0VG 0G";
-                lblPlayerMixOut.Text = "Out: 0E 0VG 0G";
+                lblPlayerMixIn.Text = "In:  0E 0VG 0G 0TOT";
+                lblPlayerMixOut.Text = "Out: 0E 0VG 0G 0TOT";
                 return;
             }
             var inEx = _application.GetMixInCount(track, 5);
@@ -181,8 +181,8 @@ namespace Halloumi.Shuffler.Controls
             var outEx = _application.GetMixOutCount(track, 5);
             var outVg = _application.GetMixOutCount(track, 4) - outEx;
             var outGd = _application.GetMixOutCount(track, 3) - outEx - outVg;
-            lblPlayerMixIn.Text = $"In:  {inEx}E {inVg}VG {inGd}G";
-            lblPlayerMixOut.Text = $"Out: {outEx}E {outVg}VG {outGd}G";
+            lblPlayerMixIn.Text = $"In:  {inEx}E {inVg}VG {inGd}G {inEx + inVg + inGd}TOT";
+            lblPlayerMixOut.Text = $"Out: {outEx}E {outVg}VG {outGd}G {outEx + outVg + outGd}TOT";
         }
 
         /// <summary>
