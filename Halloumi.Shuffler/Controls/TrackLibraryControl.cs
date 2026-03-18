@@ -71,6 +71,7 @@ namespace Halloumi.Shuffler.Controls
             mnuUpdateAudio.Click += mnuUpdateAudio_Click;
             mnuUpdateShufflerDetails.Click += mnuUpdateShufflerDetails_Click;
             mnuRemoveShufflerDetails.Click += mnuRemoveShufflerDetails_Click;
+            btnUnshuffledRoulette.Click += btnUnshuffledRoulette_Click;
             mnuQueue.Click += mnuQueue_Click;
             mnuPlay.Click += mnuPlay_Click;
             mnuTrack.Opening += mnuTrack_Opening;
@@ -1128,6 +1129,24 @@ namespace Halloumi.Shuffler.Controls
                 BindData();
 
                 ShufflerDetailsUpdatedEvent?.Invoke(this, new FileEventArgs(track.Filename)); 
+            }
+        }
+
+        private void btnUnshuffledRoulette_Click(object sender, EventArgs e)
+        {
+            var filter = new TrackFilter
+            {
+                Collection = CollectionFilter,
+                ExcludeCollection = ExcludeCollectionFilter,
+                ShufflerFilter = Library.ShufflerFilter.NonShufflerTracks
+            };
+            var unshuffled = ShufflerApplication.GetTracks(filter);
+            if (unshuffled == null || unshuffled.Count == 0) return;
+            var track = unshuffled[new Random().Next(unshuffled.Count)];
+            if (FrmShufflerDetails.OpenForm(track.Filename, ShufflerApplication.BassPlayer, ShufflerApplication.Library, ShufflerApplication) == DialogResult.OK)
+            {
+                BindData();
+                ShufflerDetailsUpdatedEvent?.Invoke(this, new FileEventArgs(track.Filename));
             }
         }
 
