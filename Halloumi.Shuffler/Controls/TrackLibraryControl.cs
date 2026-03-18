@@ -299,7 +299,6 @@ namespace Halloumi.Shuffler.Controls
         private void CalculateKey_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Cursor = Cursors.Default;
-            BindData(false, false, false);
         }
 
         private void mnuReloadMetadata_Click(object sender, EventArgs e)
@@ -351,6 +350,16 @@ namespace Halloumi.Shuffler.Controls
             mixableTracks.Initialize(ShufflerApplication, this);
 
             trackDetails.DisplayTrackDetails(null);
+
+            ShufflerApplication.OnTrackMetadataChanged += Application_OnTrackMetadataChanged;
+        }
+
+        private void Application_OnTrackMetadataChanged(object sender, TrackMetadataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+                BeginInvoke(new MethodInvoker(() => BindData(false, false, false)));
+            else
+                BindData(false, false, false);
         }
 
 

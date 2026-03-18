@@ -354,6 +354,15 @@ namespace Halloumi.Shuffler.Controls
             ShufflerApplication.OnTrackChanged += Application_OnTrackChanged;
             ShufflerApplication.OnFadeEnded += Application_OnFadeEnded;
             ShufflerApplication.OnMixRankChanged += Application_OnMixRankChanged;
+            ShufflerApplication.OnTrackMetadataChanged += Application_OnTrackMetadataChanged;
+        }
+
+        private void Application_OnTrackMetadataChanged(object sender, TrackMetadataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+                BeginInvoke(new MethodInvoker(BindData));
+            else
+                BindData();
         }
 
         private void Application_OnMixRankChanged(object sender, MixRankChangedEventArgs e)

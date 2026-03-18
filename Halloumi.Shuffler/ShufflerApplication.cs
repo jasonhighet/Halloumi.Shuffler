@@ -93,6 +93,11 @@ namespace Halloumi.Shuffler
         public event EventHandler OnAutoGenerateRequired;
 
         /// <summary>
+        /// Raised when a track's metadata (key, BPM, length) is updated in the library.
+        /// </summary>
+        public event EventHandler<TrackMetadataChangedEventArgs> OnTrackMetadataChanged;
+
+        /// <summary>
         /// Whether auto-generation is enabled.
         /// When true, ShufflerApplication checks the playlist track count on every fade
         /// end and fires <see cref="OnAutoGenerateRequired"/> when 5 or fewer tracks remain.
@@ -579,12 +584,14 @@ namespace Halloumi.Shuffler
         {
             KeyHelper.CalculateKey(filename);
             Library.LoadTrack(filename);
+            OnTrackMetadataChanged?.Invoke(this, new TrackMetadataChangedEventArgs { Filename = filename });
         }
 
         public void CalculateBpmForTrack(string filename)
         {
             BpmCalculator.CalculateBpm(filename);
             Library.LoadTrack(filename);
+            OnTrackMetadataChanged?.Invoke(this, new TrackMetadataChangedEventArgs { Filename = filename });
         }
 
         public List<Genre> GetGenresFromTracks(List<Track> tracks) => Library.GetGenresFromTracks(tracks);
@@ -873,5 +880,10 @@ namespace Halloumi.Shuffler
         public Track FromTrack { get; set; }
         public Track ToTrack { get; set; }
         public int MixRank { get; set; }
+    }
+
+    public class TrackMetadataChangedEventArgs : EventArgs
+    {
+        public string Filename { get; set; }
     }
 }

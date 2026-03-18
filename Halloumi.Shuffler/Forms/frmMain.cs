@@ -877,12 +877,10 @@ namespace Halloumi.Shuffler.Forms
             _application.ImportTracks(folder);
         }
 
-        private void QueueWorking(string filename) 
+        private void QueueWorking(string filename)
         {
-            SetView(SelectedView.Playlist);
-            trackLibraryControl.SetShufflerFilter(AudioLibrary.Library.ShufflerFilter.ShufflerTracks);
-            playlistControl.QueueWorkingFile(filename); 
-            OpenGeneratePlaylistForm();
+            playlistControl.QueueWorkingFile(filename);
+            shufflerController.AutoGenerateWorkingPlaylistNow();
         }
     }
 }

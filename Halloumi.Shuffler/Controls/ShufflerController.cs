@@ -150,5 +150,27 @@ namespace Halloumi.Shuffler.Controls
         {
             AutoGeneratePlaylist();
         }
+
+        public void AutoGenerateWorkingPlaylistNow()
+        {
+            if (_generateWorker.IsBusy) return;
+
+            var request = new PlaylistGenerationRequest
+            {
+                Strategy = TrackSelector.MixStrategy.Working,
+                MaxTracksToAdd = int.MaxValue,
+                ApproximateLengthMinutes = int.MaxValue,
+            };
+
+            var availableTracks = Application.GetTracks(new TrackFilter
+            {
+                ShufflerFilter = Library.ShufflerFilter.ShufflerTracks,
+                TrackRankFilter = Library.TrackRankFilter.GoodPlus,
+            });
+
+            var currentPlaylist = PlaylistControl.GetTracks();
+
+            _generateWorker.RunWorkerAsync(Tuple.Create(request, availableTracks, currentPlaylist));
+        }
     }
 }

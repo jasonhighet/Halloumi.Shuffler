@@ -449,10 +449,9 @@ namespace Halloumi.Shuffler.Forms
                 AutomationAttributes.TrackSamples.Add(sample);
             }
                        
-            KeyHelper.CalculateKey(Track.Filename);
-
             ExtenedAttributesHelper.SaveExtendedAttributes(Track);
             AutomationAttributesHelper.SaveAutomationAttributes(Track.Description, AutomationAttributes);
+            Application?.CalculateKeyForTrack(Filename);
             BassPlayer.ReloadTrack(Track.Filename);
 
             var libraryTrack = Application?.GetTrackByFilename(Filename);

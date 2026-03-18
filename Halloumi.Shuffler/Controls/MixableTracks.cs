@@ -46,6 +46,15 @@ namespace Halloumi.Shuffler.Controls
             ShufflerApplication = application;
             _libraryControl = libraryControl;
             LoadSettings();
+            application.OnTrackMetadataChanged += Application_OnTrackMetadataChanged;
+        }
+
+        private void Application_OnTrackMetadataChanged(object sender, TrackMetadataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+                BeginInvoke(new MethodInvoker(BindData));
+            else
+                BindData();
         }
 
         public void DisplayMixableTracks(Track parentTrack)
