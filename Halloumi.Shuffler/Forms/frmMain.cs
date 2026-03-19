@@ -97,7 +97,7 @@ namespace Halloumi.Shuffler.Forms
                 var track = _application.GetRandomLeastMixedShufflerTrack(trackLibraryControl.CollectionFilter, trackLibraryControl.ExcludeCollectionFilter);
                 if (track == null) return;
                 playlistControl.QueueWorkingFile(track.Filename);
-                shufflerController.AutoGenerateWorkingPlaylistNow(allowBearable: true);
+                shufflerController.AutoGenerateWorkingPlaylistNow();
             };
             playlistControl.MixableTracksToggled += (s, e) =>
             {

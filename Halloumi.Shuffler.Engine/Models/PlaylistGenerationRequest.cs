@@ -7,7 +7,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
             Strategy = TrackSelector.MixStrategy.BestMix;
             BpmDirection = TrackSelector.BpmDirection.Cycle;
             Direction = TrackSelector.GenerateDirection.Forwards;
-            AllowBearable = TrackSelector.AllowBearableMixStrategy.AfterTwoGoodTracks;
+            AllowBearable = TrackSelector.AllowBearableMixStrategy.WhenNecessary;
             ContinueMix = TrackSelector.ContinueMix.Yes;
             KeyMixStrategy = TrackSelector.KeyMixStrategy.VeryGood;
             UseExtendedMixes = TrackSelector.UseExtendedMixes.Any;
