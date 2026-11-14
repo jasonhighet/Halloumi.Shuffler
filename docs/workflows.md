@@ -240,15 +240,19 @@ On shutdown or explicit save:
 ## 12. Editing track audio sections
 
 ```
-User right-clicks track → Edit Audio Sections
-  └─► open frmUpdateTrackAudio
+User opens a track's Shuffler details
+  └─► open frmShufflerDetails
         waveform displayed via TrackWave control
-        user drags markers for:
+        beats analysed in the background (BeatAnalysis)
+          └─ a track with no saved attributes gets suggested fades when this finishes
+        user drags section edges / bands, or uses the keyboard, for:
           FadeInStart / FadeInEnd
           FadeOutStart / FadeOutEnd
           SkipStart / SkipEnd
           PreFadeInStart
-        user sets loop counts, BPM, power-down flag
+        beat grid on each fade section shows whether it is on the beat;
+        Snap puts positions on the detected beats
+        user sets loop counts, rank, power-down flag
         [Save]
           └─► ExtendedAttributesHelper.SaveAttributes(track, data)
                 └─ write <ShufflerFolder>/<Artist - Title>.xml

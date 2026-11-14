@@ -414,6 +414,16 @@ namespace Halloumi.Shuffler.Forms
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             mixerControl.Unload();
+
+            // keep pumping messages while the WinAmp plug-in stops, and don't wait forever if it hangs
+            var unload = _application.UnloadWinampPluginAsync();
+            var giveUpAt = DateTime.Now.AddSeconds(5);
+            while (!unload.IsCompleted && DateTime.Now < giveUpAt)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                System.Threading.Thread.Sleep(10);
+            }
+
             _application.Unload();
         }
 
@@ -886,6 +896,10 @@ namespace Halloumi.Shuffler.Forms
 
         private void QueueWorking(string filename)
         {
+            SetView(SelectedView.Playlist);
+            // mixes are only suggested from tracks shown in the library, so it must be showing shuffler tracks
+            trackLibraryControl.SetShufflerFilter(AudioLibrary.Library.ShufflerFilter.ShufflerTracks);
+            _application.EnsureTrackHasKey(filename);
             playlistControl.QueueWorkingFile(filename);
             shufflerController.AutoGenerateWorkingPlaylistNow();
         }

@@ -385,8 +385,47 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private List<Track> GetToTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
-            var toTracks = new HashSet<string>(mixRankings.Select(r => r.ToTrack), StringComparer.OrdinalIgnoreCase);
-            return AvailableTracks.Where(t => toTracks.Contains(t.Description)).ToList();
+            return GetAvailableTracksByDescription(mixRankings.Select(r => r.ToTrack));
+        }
+
+        private readonly object _indexLock = new object();
+        private List<Track> _indexedTracks;
+        private int _indexedCount;
+        private Dictionary<string, List<int>> _positionsByDescription;
+
+        /// <summary>
+        ///     The available tracks with any of the given descriptions, in available-track order. Uses an index
+        ///     because scanning the whole library for every mix lookup makes playlist generation take minutes.
+        /// </summary>
+        private List<Track> GetAvailableTracksByDescription(IEnumerable<string> descriptions)
+        {
+            List<Track> tracks;
+            Dictionary<string, List<int>> index;
+            lock (_indexLock)
+            {
+                tracks = AvailableTracks;
+                if (!ReferenceEquals(tracks, _indexedTracks) || tracks.Count != _indexedCount)
+                {
+                    _positionsByDescription = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
+                    for (var i = 0; i < tracks.Count; i++)
+                    {
+                        if (!_positionsByDescription.TryGetValue(tracks[i].Description, out var positions))
+                            _positionsByDescription[tracks[i].Description] = positions = new List<int>();
+                        positions.Add(i);
+                    }
+                    _indexedTracks = tracks;
+                    _indexedCount = tracks.Count;
+                }
+                index = _positionsByDescription;
+            }
+
+            var found = new List<int>();
+            foreach (var description in new HashSet<string>(descriptions, StringComparer.OrdinalIgnoreCase))
+            {
+                if (index.TryGetValue(description, out var positions)) found.AddRange(positions);
+            }
+            found.Sort();
+            return found.Select(i => tracks[i]).ToList();
         }
 
         private List<Track> GetDistinctToTracksFromMixes(List<MixRanking> mixRankings)
@@ -403,8 +442,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         private List<Track> GetFromTracksFromMixes(IEnumerable<MixRanking> mixRankings)
         {
-            var fromTracks = new HashSet<string>(mixRankings.Select(r => r.FromTrack), StringComparer.OrdinalIgnoreCase);
-            return AvailableTracks.Where(t => fromTracks.Contains(t.Description)).ToList();
+            return GetAvailableTracksByDescription(mixRankings.Select(r => r.FromTrack));
         }
 
         private IEnumerable<Track> GetDistinctFromTracksFromMixes(IEnumerable<MixRanking> mixRankings)

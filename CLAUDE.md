@@ -142,3 +142,4 @@ Detailed docs are in `docs/`:
 - [docs/ui.md](docs/ui.md) — forms and controls inventory
 - [docs/workflows.md](docs/workflows.md) — key user workflows end-to-end
 - [docs/settings.md](docs/settings.md) — settings reference
+- [docs/fade-suggestions.md](docs/fade-suggestions.md) — how fade positions are suggested, and the harness (`tools/fade-eval/`) that scores them against hand-set fades

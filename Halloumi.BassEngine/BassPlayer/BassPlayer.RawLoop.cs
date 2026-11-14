@@ -125,6 +125,39 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
+        ///     Moves the raw loop section without restarting it, so that a loop can be adjusted while it plays.
+        ///     Playback carries on from where it is (or from the new start, if it is now outside the section),
+        ///     and the loop wraps back to the new start.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        public void UpdateRawLoopPositions(long start, long end)
+        {
+            if (RawLoopTrack == null) return;
+            if (start < 0 || end > RawLoopTrack.Length) return;
+            if (end <= 0 || end <= start) return;
+
+            var maxEnd = RawLoopTrack.Length - 500;
+            if (end > maxEnd) end = maxEnd;
+            if (end <= start) return;
+
+            var track = RawLoopTrack;
+
+            track.RawLoopStart = start;
+            track.RawLoopEnd = end;
+            track.RawLoopOffset = start;
+
+            var position = AudioStreamHelper.GetPosition(track);
+            if (position < start || position >= end)
+                AudioStreamHelper.SetPosition(track, start);
+
+            ClearTrackSyncPositions(track);
+
+            SetTrackSync(track, track.Length, SyncType.TrackEnd);
+            SetTrackSync(track, track.RawLoopEnd, SyncType.EndRawLoop);
+        }
+
+        /// <summary>
         ///     Starts playing the raw loop track at the offset of the raw-loop section.
         /// </summary>
         public void PlayRawLoop()

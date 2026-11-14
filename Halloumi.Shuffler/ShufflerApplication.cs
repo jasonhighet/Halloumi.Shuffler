@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Halloumi.Common.Helpers;
 using Halloumi.Common.Windows.Forms;
@@ -182,6 +183,15 @@ namespace Halloumi.Shuffler
             var path = Path.Combine(folder, filename);
             if (!File.Exists(path))
                 StartupWarnings.Add($"{label} file not found:\n{path}");
+        }
+
+        /// <summary>
+        ///     Unloads the WinAmp DSP plug-in on a worker thread. Some plug-ins message the main window while stopping,
+        ///     so the UI thread must keep pumping messages until this completes, or the two wait on each other.
+        /// </summary>
+        public Task UnloadWinampPluginAsync()
+        {
+            return Task.Run(() => BassPlayer.UnloadAllWaPlugins());
         }
 
         public void Unload()
@@ -580,11 +590,73 @@ namespace Halloumi.Shuffler
 
         public void LoadTrack(string filename) => Library.LoadTrack(filename);
 
+        /// <summary>
+        ///     Runs KeyFinder on the track if it has no key: playlist generation filters on key, so a track without
+        ///     one gets no suggested mixes.
+        /// </summary>
+        public void EnsureTrackHasKey(string filename)
+        {
+            var track = Library.GetTrackByFilename(filename);
+            if (track != null && string.IsNullOrEmpty(track.Key)) CalculateKeyForTrack(filename);
+        }
+
         public void CalculateKeyForTrack(string filename)
         {
             KeyHelper.CalculateKey(filename);
             Library.LoadTrack(filename);
             OnTrackMetadataChanged?.Invoke(this, new TrackMetadataChangedEventArgs { Filename = filename });
+        }
+
+        /// <summary>
+        ///     Works out where fade sections usually go, from the tracks that have already been set up: those of
+        ///     the genre if there are at least 15 of them, otherwise all of them. Used to steer the suggested
+        ///     fade positions when setting up a new track.
+        /// </summary>
+        public FadeProfile GetFadeProfile(string genre)
+        {
+            var genreStarts = new List<double>();
+            var genreLengths = new List<double>();
+            var allStarts = new List<double>();
+            var allLengths = new List<double>();
+
+            foreach (var track in Library.GetTracks())
+            {
+                if (!track.IsShufflerTrack) continue;
+
+                var attributes = ExtenedAttributesHelper.GetExtendedAttributes(track.Description);
+                if (attributes == null) continue;
+
+                double fadeIn, fadeOut, fadeOutLength;
+                if (!TryGetSeconds(attributes, "FadeIn", out fadeIn)
+                    || !TryGetSeconds(attributes, "FadeOut", out fadeOut)
+                    || !TryGetSeconds(attributes, "FadeOutLengthInSeconds", out fadeOutLength)) continue;
+
+                double skipLength;
+                TryGetSeconds(attributes, "SkipLengthInSeconds", out skipLength);
+
+                var playedLength = fadeOut + fadeOutLength - fadeIn - skipLength;
+                if (playedLength <= 0) continue;
+
+                allStarts.Add(fadeIn);
+                allLengths.Add(playedLength);
+
+                if (!string.Equals(track.Genre, genre, StringComparison.OrdinalIgnoreCase)) continue;
+                genreStarts.Add(fadeIn);
+                genreLengths.Add(playedLength);
+            }
+
+            return genreStarts.Count >= 15
+                ? FadeProfile.Create(genreStarts, genreLengths)
+                : FadeProfile.Create(allStarts, allLengths);
+        }
+
+        private static bool TryGetSeconds(Dictionary<string, string> attributes, string key, out double seconds)
+        {
+            seconds = 0;
+            string value;
+            return attributes.TryGetValue(key, out value)
+                   && double.TryParse(value, System.Globalization.NumberStyles.Float,
+                       System.Globalization.CultureInfo.InvariantCulture, out seconds);
         }
 
         public void CalculateBpmForTrack(string filename)

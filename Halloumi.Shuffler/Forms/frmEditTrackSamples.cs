@@ -81,6 +81,31 @@ namespace Halloumi.Shuffler.Forms
             ZoomToSample();
         }
 
+        /// <summary>
+        ///     Passes keys to the waveform's shortcuts (Space, S, E, [, ], etc.) unless something is being typed.
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (!IsTyping() && trackWave.HandleKey(keyData)) return true;
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        /// <summary>
+        ///     True if the focus is on a control that needs the keyboard for itself (text, drop-downs, lists, ticks).
+        /// </summary>
+        private bool IsTyping()
+        {
+            Control control = this;
+            while (control is ContainerControl container && container.ActiveControl != null)
+                control = container.ActiveControl;
+
+            if (control is TextBoxBase || control is ComboBox || control is ListView || control is UpDownBase) return true;
+
+            var typeName = control.GetType().Name;
+            return typeName.Contains("TextBox") || typeName.Contains("ComboBox") || typeName.Contains("ListView")
+                   || typeName.Contains("CheckBox") || typeName.Contains("RadioButton");
+        }
+
         private void btnAddSample_Click(object sender, EventArgs e)
         {
             AddSample();

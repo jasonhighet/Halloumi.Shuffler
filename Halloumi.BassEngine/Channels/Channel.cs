@@ -508,27 +508,28 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         public void ClearWaPlugin()
         {
-            if (WaPlugin == null)
+            var plugin = WaPlugin;
+            if (plugin == null)
                 return;
 
-            // DebugHelper.WriteLine("Unload plug-in" + WaPlugin.Name);
+            // forgotten first, so that if the plug-in hangs while stopping, a second unload doesn't call into it again
+            WaPlugin = null;
+
             try
             {
-                BassWaDsp.BASS_WADSP_Stop(WaPlugin.Id);
+                BassWaDsp.BASS_WADSP_Stop(plugin.Id);
                 Thread.Sleep(20);
 
-                BassWaDsp.BASS_WADSP_ChannelRemoveDSP(WaPlugin.Id);
+                BassWaDsp.BASS_WADSP_ChannelRemoveDSP(plugin.Id);
                 Thread.Sleep(20);
 
-                BassWaDsp.BASS_WADSP_FreeDSP(WaPlugin.Id);
+                BassWaDsp.BASS_WADSP_FreeDSP(plugin.Id);
                 Thread.Sleep(20);
             }
             catch
             {
                 // ignored
             }
-
-            WaPlugin = null;
         }
 
         /// <summary>

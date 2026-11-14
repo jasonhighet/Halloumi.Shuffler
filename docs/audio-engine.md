@@ -237,6 +237,7 @@ Raw loop mode lets you define a start/end boundary within a track and loop that 
 LoadRawLoopTrack(filename)             Load an audio file for raw looping
 UnloadRawLoopTrack()                   Unload the current raw loop track
 SetRawLoopPositions(start, end, offset)  Define boundaries and initial offset
+UpdateRawLoopPositions(start, end)     Move the boundaries of a playing loop without restarting it
 PlayRawLoop()                          Start looping from offset
 StopRawLoop()                          Pause raw loop playback
 ```
@@ -304,6 +305,35 @@ PowerDownOnEnd                      Play power-down effect on fade-out
 ---
 
 ## Helper classes
+
+### BeatAnalysis
+`Halloumi.BassEngine/Helpers/BeatAnalysis.cs`
+
+Tempo detection, beat positions and fade suggestions from the audio itself. Adapted from TalentScout's `BpmDetector`: spectral-flux onset envelope → autocorrelation → comb-filter tempo scoring → fine tuning by fitting a beat grid. The grid fit gives the position of the beats as well as the tempo. It never writes to the file's tags.
+
+```
+BeatAnalysis.Analyse(filename [, cancellation])   Analyse a whole file (about a second per track; run it off the UI thread)
+BeatAnalysis.Analyse(filename, start, end)        Analyse a range (5 seconds or more)
+BeatAnalysis.DetectBpm(filename, start, end)      Tempo of a range of a file (use 20 seconds or more)
+
+DetectBpm(start, end)             Tempo of a range, 70–180 BPM (0 = none found)
+GetGrid(start, end, bpmHint)      Beat grid (tempo + position of a beat + confidence) fitted to a range
+GetGridAt(seconds)                Beat grid of the 40 seconds around a position (cached)
+SnapToBeat(seconds)               Nearest beat or half-beat
+SnapEndToBeat(start, end)         Moves an end so the section is a whole number of beats long
+GetFadeInCandidates(profile, count)                          Suggested fade-in positions, best first
+GetFadeOutCandidates(fadeInStart, fadeInLength, profile, count)   Suggested fade-out positions for that fade-in
+Save(filename) / BeatAnalysis.Load(filename)                 Cache an analysis (used by the test harness)
+```
+
+`FadeProfile` (same file) says where fade sections usually go for a kind of track; `FadeProfile.Create(fadeInStarts, playedLengths)` builds one from sections that have already been set. See [fade-suggestions.md](fade-suggestions.md).
+
+Things to know:
+
+- Tempos are returned as detected (70–180). Pass them through `BpmHelper.NormaliseBpm` before using them as Shuffler BPMs.
+- A detected grid is sometimes half a beat out (locked on to the off-beats), so snapping uses half-beats: the real beat is always one of the snap positions.
+- `BeatGrid.Confidence` is how much the beats stand out from the audio around them. Below `MinSnapConfidence` (2.5) the snap methods return the position unchanged.
+- Measured against hand-set fade points: on tracks with a steady beat the snapped position is typically within 10 ms of the hand-set one and the tempo within 0.05 BPM. Loosely played live recordings are much less reliable.
 
 ### BpmHelper
 `Halloumi.BassEngine/Helpers/BpmHelper.cs`

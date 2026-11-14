@@ -157,8 +157,11 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (AvailableTracks.Count == 0) return currentPlaylist;
 
-            _mixCache = new Dictionary<string, List<Track>>(AvailableTracks.Count * 4);
-            foreach (var track in AvailableTracks)
+            // only GetBestMixTracks reads this, and building it takes tens of seconds on a large library
+            var usesMixCache = strategy == MixStrategy.BestMix || strategy == MixStrategy.Variety ||
+                               strategy == MixStrategy.ExtraVariety;
+            _mixCache = new Dictionary<string, List<Track>>(usesMixCache ? AvailableTracks.Count * 4 : 0);
+            foreach (var track in usesMixCache ? AvailableTracks : new List<Track>())
             {
                 _mixCache["good:" + track.Description] = MixLibrary.GetGoodTracks(track);
                 _mixCache["bearable:" + track.Description] = MixLibrary.GetBearableTracks(track);

@@ -234,6 +234,9 @@ namespace Halloumi.Shuffler.Forms
         {
             trackWave.SetModeAndBassPlayer(Shuffler.Controls.TrackWave.TrackWaveMode.Shuffler, BassPlayer);
 
+            // suggested fade positions are steered by where the fades are on tracks of the same genre
+            trackWave.FadeProfile = Application?.GetFadeProfile(Application.GetTrackByFilename(Filename)?.Genre);
+
             Track = trackWave.LoadTrack(Filename);
 
             if (!ExtenedAttributesHelper.HasExtendedAttributes(Track.Description))
@@ -256,6 +259,10 @@ namespace Halloumi.Shuffler.Forms
                     Track.FadeOutEnd = Track.Length;
                     Track.FadeOutStart = Math.Max(0, Track.Length - defaultFadeLength);
                 }
+
+                // a track that has never been set up gets beat-aligned fades suggested once its beats have
+                // been analysed (unless the fades have been changed by then)
+                trackWave.SuggestFadesWhenAnalysed = true;
             }
 
             AutomationAttributes = AutomationAttributesHelper.GetAutomationAttributes(Track.Description);
@@ -767,6 +774,11 @@ namespace Halloumi.Shuffler.Forms
             txtSkipStart.Seconds = Track.SamplesToSeconds(Track.SkipStart);
             if (Track.SkipEnd != 0) cmbSkipLength.Seconds = Track.SamplesToSeconds(Track.SkipEnd - Track.SkipStart);
 
+            // the BPMs follow the fade lengths, which may have just been dragged on the waveform
+            lblStartBPM.Text = Track.StartBpm.ToString("0.00");
+            lblEndBPM.Text = Track.EndBpm.ToString("0.00");
+            RefreshBpmDropdowns();
+
             _bindingData = false;
         }
 
@@ -834,6 +846,34 @@ namespace Halloumi.Shuffler.Forms
         private void frmShufflerDetails_Load(object sender, EventArgs e)
         {
             Initialise();
+
+            // start with the focus on the waveform, so that its keyboard shortcuts work straight away
+            ActiveControl = trackWave;
+        }
+
+        /// <summary>
+        ///     Passes keys to the waveform's shortcuts (Space, S, E, [, ], etc.) unless something is being typed.
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (!IsTyping() && trackWave.HandleKey(keyData)) return true;
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        /// <summary>
+        ///     True if the focus is on a control that needs the keyboard for itself (text, drop-downs, lists, ticks).
+        /// </summary>
+        private bool IsTyping()
+        {
+            Control control = this;
+            while (control is ContainerControl container && container.ActiveControl != null)
+                control = container.ActiveControl;
+
+            if (control is TextBoxBase || control is ComboBox || control is ListView || control is UpDownBase) return true;
+
+            var typeName = control.GetType().Name;
+            return typeName.Contains("TextBox") || typeName.Contains("ComboBox") || typeName.Contains("ListView")
+                   || typeName.Contains("CheckBox") || typeName.Contains("RadioButton");
         }
 
         /// <summary>
@@ -932,16 +972,40 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnCalcStartBPM_Click(object sender, EventArgs e)
         {
-            var bpm = (decimal)BPMGuestimator.EstimateBPM(Track.Filename, Track.SamplesToSeconds(Track.FadeInStart));
-            bpm = BpmHelper.NormaliseBpm(bpm);
-            var length = BpmHelper.GetDefaultLoopLength(bpm);
+            var length = DetectFadeLength(Track.FadeInStart);
+            if (length == 0) return;
 
             cmbCustomFadeInLength.Seconds = length;
 
             RefreshBpmDropdowns();
-
-
             UpdateData();
+        }
+
+        /// <summary>
+        ///     Detects the tempo of the audio around the start of a fade section, and returns the length of
+        ///     16 beats at that tempo (0 if no tempo could be detected).
+        /// </summary>
+        private double DetectFadeLength(long fadeStart)
+        {
+            double detected;
+            Cursor = Cursors.WaitCursor;
+            try
+            {
+                detected = trackWave.DetectBpmAround(Track.SamplesToSeconds(fadeStart));
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+
+            if (detected <= 0)
+            {
+                MessageBox.Show(this, "Could not detect a tempo in the audio around this section.", "Calculate",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return 0;
+            }
+
+            return BpmHelper.GetDefaultLoopLength(BpmHelper.NormaliseBpm((decimal) detected));
         }
 
         private void RefreshBpmDropdowns()
@@ -965,9 +1029,8 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnCalcEndBPM_Click(object sender, EventArgs e)
         {
-            var bpm = (decimal)BPMGuestimator.EstimateBPM(Track.Filename, Track.SamplesToSeconds(Track.FadeOutStart));
-            bpm = BpmHelper.NormaliseBpm(bpm);
-            var length = BpmHelper.GetDefaultLoopLength(bpm);
+            var length = DetectFadeLength(Track.FadeOutStart);
+            if (length == 0) return;
 
             cmbCustomFadeOutLength.Seconds = length;
             RefreshBpmDropdowns();

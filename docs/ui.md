@@ -128,7 +128,60 @@ A single sample trigger UI element — shows sample name and play/stop state.
 
 `Controls/TrackWave.cs`
 
-Waveform visualisation for a track, with markers for fade-in, fade-out, and skip section boundaries.
+Waveform editor for a track. Used by `frmShufflerDetails` (Shuffler mode: fade-in, fade-out, skip and pre-fade-in) and `frmEditTrackSamples` (Sampler mode: the current sample and its offset).
+
+**View and sections are separate.** The view is what is on screen (`ZoomStart` → `ZoomEnd`). A section is a fade-in, fade-out, skip section or sample. One section can be the *active* section: it is drawn brighter and named after "Loop:" under the waveform.
+
+- With an active section, Play loops that section whatever the view shows, and the loop follows the section while it is edited (no restart).
+- With no active section, Play loops the view from the cursor. This is the original behaviour, and the forms' "Update" buttons still copy the view into a section.
+
+A section becomes active when you click its coloured band, drag one of its edges, use a Set/Move command on it, press I / O / K, or zoom exactly to it (the forms' Zoom buttons). Shift+click, dragging out a range, and the Zoom In / Zoom Out / Zoom Full / < / > buttons make the view the loop again.
+
+**What is drawn**
+
+| Element | Meaning |
+|---|---|
+| Ruler | Time, plus light-blue ticks for the beats detected in the audio (shown when zoomed in to 45 seconds or less and the beat is clear) |
+| Coloured band and tint | A section: green fade-in, orange fade-out, grey skip, purple sample. The band shows the length in beats and the tempo that length implies |
+| White lines inside a fade section or sample | Beat grid anchored on the section start at the section's own tempo, so the last line is the section end. Bar lines are brighter. If the drum hits sit on the lines, the section is on the beat |
+| Faint lines outside the sections | Bar lines of the active section's grid, carried on across the track (every fourth bar brighter) |
+| Red line | Cursor: the last place clicked. Set/Move commands act on it |
+| White line with a flag | Playhead |
+
+**Mouse**
+
+| Action | Result |
+|---|---|
+| Click | Move the cursor |
+| Drag a section edge | Move that edge only |
+| Drag a section's band | Move the whole section, keeping its length |
+| Click a section's band | Make it the active section |
+| Drag on empty waveform | Zoom to the range dragged (same as click then Shift+click) |
+| Wheel / Shift+wheel / middle-drag | Zoom around the pointer / scroll / pan |
+| Click a numbered box | Move the fade-in / fade-out to that suggestion |
+| Right-click | Set and Move commands at the cursor, Snap to Beat, Suggest Fade Sections |
+
+**Keyboard** (handled by `HandleKey`, called from the forms' `ProcessCmdKey` when the focus is not on a text box, drop-down, list or tick box; clicking the waveform takes the focus)
+
+| Key | Action |
+|---|---|
+| Space | Play / stop |
+| I / O / K | Select and show the fade-in / fade-out / skip section (Shuffler mode) |
+| S / E | Set the active section's start / end at the cursor (the playhead while playing) |
+| [ / ] | Halve / double the active section's length |
+| , / . | Move the active section back / forward by its own length |
+| Z | Show the active section with room to drag its edges |
+| Down / Up | Move the fade-in (or the fade-out, if it is the active section) to its next / previous suggestion |
+| 1 - 5 | Move it to that suggestion |
+| N | Snap to beat on / off |
+| + / - | Zoom in / out |
+| Ctrl+0 | Show the whole track |
+
+**Snap to beat** ("Snap" button, N). The beats of the whole track are analysed in the background when it loads (`BeatAnalysis`, see [audio-engine.md](audio-engine.md)). With Snap on, the cursor, dragged starts and moved sections land on the nearest beat or half-beat of the audio, and dragged ends land a whole number of beats from the section start. Holding Ctrl reverses the setting for one action. Snapping does nothing until the analysis has finished, or where the beat is too weak to trust (free-time or loosely played music).
+
+**Suggestions** (Shuffler mode). Once the beats have been analysed, five suggested positions for the fade-in (green) and five for the fade-out (orange) are shown as numbered boxes under the section bands; 1 is the best guess. Down / Up, the number keys, or a click on a box move the section there, select it and show it. A playing loop carries straight on at the new position, so the suggestions can be auditioned one after another without stopping. The text under the waveform says which suggestion the section is on. The fade-out suggestions follow from the fade-in, and are worked out again when it changes. How they are chosen, and how well they do, is in [fade-suggestions.md](fade-suggestions.md).
+
+**Auto Fades** ("Auto Fades" button). Moves both fade sections to their first suggestion. A track with no saved attributes gets this automatically when the analysis finishes, unless the fades have been changed by then. Nothing is saved until OK is pressed on the form: suggestions are starting points to audition and adjust.
 
 ### VolumeLevel
 
@@ -194,7 +247,7 @@ Visual editor for audio sections: set fade-in/fade-out boundaries, loop counts, 
 
 `Forms/frmShufflerDetails.cs`
 
-Read-only view of all extended attributes for a track: fade data, BPM override, automation triggers, linked samples.
+Editor for a track's Shuffler details: fade-in / fade-out / skip / pre-fade-in sections (on a `TrackWave`), loop counts, track rank, track FX triggers and track samples. The "Calculate" buttons detect the tempo of the audio around the fade section (`TrackWave.DetectBpmAround`) and set the fade length to 16 beats at that tempo.
 
 ### frmEditTrackSamples
 
