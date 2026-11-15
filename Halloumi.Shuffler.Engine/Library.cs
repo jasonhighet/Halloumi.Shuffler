@@ -78,7 +78,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         private List<Track> Tracks { get; }
 
-
         /// <summary>
         ///     Gets the name of the file where the track data is cached.
         /// </summary>
@@ -99,9 +98,8 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public string ShufflerFolder
         {
-            get { return ExtenedAttributesHelper.ShufflerFolder; }
+            get { return ExtendedAttributesHelper.ShufflerFolder; }
         }
-
 
         public Track GetTrack(string artist, string title, decimal length = 0)
         {
@@ -175,7 +173,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             return GetAlbumArtistsFromTracks(Tracks);
         }
-
 
         public int TrackCount()
         {
@@ -381,7 +378,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             return GetTracksByDescription(description).FirstOrDefault();
         }
 
-
         /// <summary>
         ///     Gets a track from the library matching the specified filename.
         /// </summary>
@@ -398,7 +394,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                 return track;
             }
         }
-
 
         /// <summary>
         ///     Reloads a track.
@@ -432,7 +427,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             TrackHelper.SetRank(tracks, rank);
         }
-
 
         /// <summary>
         ///     Imports the tracks.
@@ -476,7 +470,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// <param name="externalFolder">The external folder.</param>
         public void ImportExternalShufflerTracks(string externalFolder)
         {
-            
             var files = FileSystemHelper.SearchFiles(externalFolder, "*.mp3", true);
             
             ParallelHelper.ForEach(files, file => { ImportExternalShufflerTrack(file, externalFolder); });
@@ -487,7 +480,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         private void ImportExternalShufflerTrack(string file, string externalFolder)
         {
             var externalTrack = TrackHelper.LoadTrack(file, false);
-            var isShufflerFile = ExtenedAttributesHelper.HasExtendedAttributes(externalTrack.Description);
+            var isShufflerFile = ExtendedAttributesHelper.HasExtendedAttributes(externalTrack.Description);
 
             if (!isShufflerFile) return;
             if (GetTrack(externalTrack.Artist, externalTrack.Title) != null) return;
@@ -505,7 +498,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             return newFileName;
         }
         
-
         /// <summary>
         ///     Cancels the import.
         /// </summary>
@@ -670,7 +662,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         public void RemoveShufflerDetails(Track track)
         {
             if (!track.IsShufflerTrack) return;
-            ExtenedAttributesHelper.SaveExtendedAttributes(track.Description, new Dictionary<string, string>());
+            ExtendedAttributesHelper.SaveExtendedAttributes(track.Description, new Dictionary<string, string>());
             LoadTrack(track.Filename);
         }
 
@@ -691,7 +683,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             CopyAudioFromAnotherTrack(destinationTrack, sourceTrack.Filename);
         }
-
 
         public void CopyAudioFromAnotherTrack(Track destinationTrack, string sourceFilename)
         {
@@ -740,8 +731,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             // Optionally, load the track
             LoadTrack(destinationTrack.Filename);
         }
-
-
 
         /// <summary>
         ///     Updates the track title
@@ -845,7 +834,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-
         /// <summary>
         ///     Cleans the folder images.
         /// </summary>
@@ -883,7 +871,6 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             SaveToDatabase();
         }
-
 
         public Track LoadNonLibraryTrack(string filename)
         {
@@ -952,7 +939,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             var duplicateButDifferentTracks = new List<Track>();
 
-
             var duplicateTracksByTitle = Tracks
                 .Where(track => track.IsShufflerTrack)
                 .GroupBy(track => track.Description)
@@ -976,9 +962,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                     duplicateButDifferentTracks.AddRange(duplicateTracksByLength.SelectMany(x=>x));
             }
 
-
             return duplicateButDifferentTracks.OrderBy(x => x.Description).ToList();
         }
-
     }
 }

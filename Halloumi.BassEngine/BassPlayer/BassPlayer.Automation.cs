@@ -154,7 +154,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             LastSampleTriggerNextTrackDescription = "";
         }
 
-
         /// <summary>
         ///     Clears the track FX triggers for the specified track.
         /// </summary>
@@ -327,7 +326,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (CurrentTrack == null) return null;
             if (attributes == null)
                 attributes = AutomationAttributesHelper.GetAutomationAttributes(CurrentTrack.Description);
-
 
             var position = AudioStreamHelper.GetPosition(CurrentTrack);
 

@@ -1,6 +1,5 @@
 ﻿namespace Halloumi.Shuffler.AudioLibrary.Samples
 {
-
     public class SearchCriteria
     {
         public string SearchText { get; set; }

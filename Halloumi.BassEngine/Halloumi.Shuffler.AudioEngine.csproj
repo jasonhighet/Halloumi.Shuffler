@@ -77,20 +77,6 @@
     <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
   </ItemGroup>
 
-  <!-- Exclude orphaned legacy files in the root folder that are not part of this project -->
-  <ItemGroup>
-    <Compile Remove="BassPlayer.Samples.cs" />
-    <Compile Remove="ExtendedMix.cs" />
-    <Compile Remove="Library.cs" />
-    <Compile Remove="MixLibrary.cs" />
-    <Compile Remove="PlaylistPlayer.cs" />
-    <Compile Remove="Shuffler.cs" />
-    <Compile Remove="TrackFXAutomation.cs" />
-    <Compile Remove="TrackHistory.cs" />
-    <Compile Remove="TrackLibrary.cs" />
-    <Compile Remove="TrackSelector.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Resources\silence.mp3" />
     <None Include="Resources\Music-001.png" />

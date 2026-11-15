@@ -70,7 +70,6 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 default:
                     return _bassPlayer.MainVstPlugin;
             }
-
         }
 
         private void MidiManager_OnControlMessageEvent(ControlMessageEventArgs e)
@@ -228,7 +227,6 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                 else
                     _bassPlayer.PauseSample(2, index);
             }
-
         }
 
         private static bool IsControlOn(int value, ControlMapping controlMapping)
@@ -249,7 +247,6 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
             var adjustedMidiMax = Convert.ToSingle(vstMapping.MaxMidiValue - vstMapping.MinMidiValue);
             return adjustedMidiValue / adjustedMidiMax;
         }
-
 
         private class VstMapping
         {

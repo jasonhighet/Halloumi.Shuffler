@@ -20,10 +20,6 @@ namespace Halloumi.Shuffler.Controls
             DoubleBuffered = true;
 
             this.RowTemplate.Height = 44;
-            //this.MouseDown += new MouseEventHandler(DataGridView_MouseDown);
-            //this.DragDrop += new DragEventHandler(DataGridView_DragDrop);
-            //this.DragOver += new DragEventHandler(DataGridView_DragOver);
-            //this.MouseUp +=new MouseEventHandler(DataGridView_MouseUp);
         }
 
         #endregion
@@ -78,56 +74,6 @@ namespace Halloumi.Shuffler.Controls
 
             if (SortOrderChanged != null) SortOrderChanged(this, EventArgs.Empty);
         }
-
-        ///// <summary>
-        ///// Gets the index of the destination row of a drag/drop event
-        ///// </summary>
-        ///// <param name="e">The DragEventArgs containing the drag/drop.</param>
-        ///// <returns>The index of the destination row</returns>
-        //private int GetDestinationRowIndex(DragEventArgs e)
-        //{
-        //    if (!IsDropSourceThisGrid(e)) return -1;
-        //    var clientPoint = this.PointToClient(new Point(e.X, e.Y));
-        //    return this.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-        //}
-
-        ///// <summary>
-        ///// Gets the destination row of a drag/drop event
-        ///// </summary>
-        ///// <param name="e">The DragEventArgs containing the drag/drop.</param>
-        ///// <returns>The destiantion row </returns>
-        //private DataGridViewRow GetDestinationRow(DragEventArgs e)
-        //{
-        //    var rowIndex = this.GetDestinationRowIndex(e);
-        //    if (rowIndex >= 0 && rowIndex < this.Rows.Count) return this.Rows[rowIndex];
-        //    return null;
-        //}
-
-        ///// <summary>
-        ///// Determines whether the is drop source this grid
-        ///// </summary>
-        ///// <param name="e">The object containing the event data.</param>
-        ///// <returns>True if the source of the drop is this grid.
-        ///// </returns>
-        //private bool IsDropSourceThisGrid(DragEventArgs e)
-        //{
-        //    var gridView = e.Data.GetData(typeof(DataGridView)) as DataGridView;
-        //    return (gridView == this);
-        //}
-
-        ///// <summary>
-        ///// Raises the row drag drop event
-        ///// </summary>
-        ///// <param name="destinationRow">The destination row.</param>
-        //private void RaiseRowDragDrop(DataGridViewRow destinationRow)
-        //{
-        //    if (this.RowDragDrop != null)
-        //    {
-        //        var eventArgs = new RowDragDropEventArgs();
-        //        eventArgs.DestinationRowIndex = destinationRow.Index;
-        //        this.RowDragDrop(this, eventArgs);
-        //    }
-        //}
 
         #endregion
 
@@ -205,59 +151,7 @@ namespace Halloumi.Shuffler.Controls
             if (Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic) SetNewSortOrder(e.ColumnIndex);
         }
 
-        ///// <summary>
-        ///// Handles the DragDrop event of the DataGridView control.
-        ///// </summary>
-        //private void DataGridView_DragDrop(object sender, DragEventArgs e)
-        //{
-        //    if (!this.AllowDrop) return;
-
-        //    var row = GetDestinationRow(e);
-        //    if (row != null && !row.Selected) RaiseRowDragDrop(row);
-        //}
-
-        ///// <summary>
-        ///// Handles the DragOver event of the DataGridView control.
-        ///// </summary>
-        //private void DataGridView_DragOver(object sender, DragEventArgs e)
-        //{
-        //    if (!this.AllowDrop) return;
-
-        //    var row = GetDestinationRow(e);
-        //    if (row != null && !row.Selected) e.Effect = DragDropEffects.Move;
-        //}
-
-        ///// <summary>
-        ///// Handles the MouseClick event of the DataGridView control.
-        ///// </summary>
-        //private void DataGridView_MouseDown(object sender, MouseEventArgs e)
-        //{
-        //    var currentRow = this.HitTest(e.X, e.Y).RowIndex;
-
-        //    if (!this.AllowDrop) return;
-
-        //    if (e.Button == MouseButtons.Right && this.SelectedRows.Count > 0)
-        //    {
-        //        if (!(this.SelectedRows.Count == 1 && this.SelectedRows[0].Index == currentRow))
-        //        {
         //            // invoke drag-drop on right click
-        //            this.DoDragDrop(this, DragDropEffects.Move);
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Handles the MouseClick event of the DataGridView control.
-        ///// </summary>
-        //private void DataGridView_MouseUp(object sender, MouseEventArgs e)
-        //{
-        //    if (this.ContextMenuStrip == null) return;
-
-        //    if (e.Button == MouseButtons.Right && this.SelectedRows.Count == 1)
-        //    {
-        //        this.ContextMenuStrip.Show(this, new Point(e.X, e.Y));
-        //    }
-        //}
 
         #endregion
 
@@ -267,24 +161,6 @@ namespace Halloumi.Shuffler.Controls
         /// Occurs when the sort order is changed.
         /// </summary>
         public event EventHandler SortOrderChanged;
-
-        ///// <summary>
-        ///// Row Drag Drop event handler delegate
-        ///// </summary>
-        //public delegate void RowDragDropHandler(object sender, RowDragDropEventArgs e);
-
-        ///// <summary>
-        ///// Row Drag Drop event arguments
-        ///// </summary>
-        //public class RowDragDropEventArgs : EventArgs
-        //{
-        //    public int DestinationRowIndex { get; internal set; }
-        //}
-
-        ///// <summary>
-        ///// Occurs when rows are drag/dropped
-        ///// </summary>
-        //public event RowDragDropHandler RowDragDrop;
 
         #endregion
     }

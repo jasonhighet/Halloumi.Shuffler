@@ -17,7 +17,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     ///     Track mixing engine utilizing the Bass.Net audio engine
     /// </summary>
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public partial class BassPlayer : IDisposable, IBmpProvider
+    public partial class BassPlayer : IDisposable, IBpmProvider
     {
         /// <summary>
         ///     A collection of all loaded tracks
@@ -47,7 +47,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private MixerChannel _trackSendFxMixer;
 
         private MixerChannel _trackSendMixer;
-
 
         /// <summary>
         ///     Initializes a new instance of the BassPlayer class.
@@ -86,7 +85,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             InitialiseRawLoopMixer();
             InitialiseManualMixer();
 
-            ExtenedAttributesHelper.ShufflerFolder = "";
+            ExtendedAttributesHelper.ShufflerFolder = "";
         }
 
         public bool LoopFadeInForever { get; set; }
@@ -176,7 +175,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public bool IsManualMixMode { get; private set; }
 
-
         /// <summary>
         ///     Gets or sets a value indicating whether automatic track FX is enabled
         /// </summary>
@@ -192,8 +190,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void Dispose()
         {
-            // DebugHelper.WriteLine("Destroying Bass Engine");
-
             Stop();
 
             UnloadAllWaPlugins();
@@ -234,7 +230,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
 
-
         /// <summary>
         ///     Event raised when the currently playing track changes
         /// </summary>
@@ -266,8 +261,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void InitialiseTrackMixer()
         {
-            // DebugHelper.WriteLine("InitialiseTrackMixer");
-
             _currentTrackMixer = new MixerChannel(this);
             _previousTrackMixer = new MixerChannel(this);
 
@@ -283,16 +276,13 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             _trackSendMixer.AddInputChannel(_trackMixer);
             _trackSendMixer.SetVolume(0);
 
-            // add the track FX to the track FX mixer,
             _trackSendFxMixer = new MixerChannel(this);
             _trackSendFxMixer.AddInputChannel(_trackSendMixer);
             _trackSendFxMixer.CutBass();
             _trackSendFxMixer.SetVolume(80);
 
-            // then that to the main mixer
+            // add the track FX to the track FX mixer, then that to the main mixer
             SpeakerOutput.AddInputChannel(_trackSendFxMixer);
-
-            // DebugHelper.WriteLine("END InitialiseTrackMixer");
         }
 
         public void JumpBack()
@@ -305,7 +295,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (position < 0) return;
             SetTrackPosition(position);
         }
-
 
         /// <summary>
         ///     Sets the previous track.
@@ -353,8 +342,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void QueueTrack(Track track)
         {
             if (track == null) return;
-
-            // DebugHelper.WriteLine("Queuing track " + track.Description);
 
             IsForceFadeNowMode = false;
 
@@ -415,7 +402,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (track.IsAudioLoaded()) return track;
 
             LoadTrackAudioData(track);
-            ExtenedAttributesHelper.LoadExtendedAttributes(track);
+            ExtendedAttributesHelper.LoadExtendedAttributes(track);
 
             return track;
         }
@@ -436,8 +423,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                     CachedTracks.FirstOrDefault(
                         t => string.Equals(t.Filename, filename, StringComparison.CurrentCultureIgnoreCase));
 
-            // DebugHelper.WriteLine("Loading track " + filename);
-
             if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
 
             var track = new Track
@@ -448,7 +433,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             SetArtistAndTitle(track, title, artist);
 
-            ExtenedAttributesHelper.LoadExtendedAttributes(track);
+            ExtendedAttributesHelper.LoadExtendedAttributes(track);
 
             CachedTracks.Add(track);
 
@@ -462,7 +447,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             return CachedTracks.Exists(t => string.Equals(t.Filename, filename,
                 StringComparison.CurrentCultureIgnoreCase));
         }
-
 
         /// <summary>
         ///     Determines whether this instance is playing.
@@ -522,8 +506,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 if (track.TagDataLoaded) return;
 
-                // DebugHelper.WriteLine("Loading track tags - " + track.Description);
-
                 var tags = TagHelper.LoadTags(track.Filename);
 
                 track.Title = tags.Title;
@@ -557,7 +539,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void UnloadTrack(Track track)
         {
             if (track == null) return;
-            // DebugHelper.WriteLine("Unloading track " + track.Description);
 
             AudioStreamHelper.Pause(track);
             if (IsTrackInUse(track))
@@ -582,7 +563,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             // ensure mp3 tag data is loaded
             if (!track.TagDataLoaded) LoadTagData(track);
 
-            // DebugHelper.WriteLine("Loading track Audio Data " + track.Description);
             lock (track)
             {
                 AudioStreamHelper.LoadAudio(track);
@@ -595,7 +575,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 track.FadeOutStartVolume = (float) (DefaultFadeOutStartVolume / 100);
                 track.FadeOutEndVolume = (float) (DefaultFadeOutEndVolume / 100);
 
-                ExtenedAttributesHelper.LoadExtendedAttributes(track);
+                ExtendedAttributesHelper.LoadExtendedAttributes(track);
 
                 if (track.StartBpm == 0 || track.EndBpm == 0) 
                 {
@@ -629,8 +609,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             AddToRecentTracks(track);
 
-            // DebugHelper.WriteLine("Finished loading track Audio Data " + track.Description);
-
             return track;
         }
 
@@ -642,9 +620,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             if (!track.IsAudioLoaded()) return;
 
-            // DebugHelper.WriteLine("Unloading track Audio Data " + track.Description);
-
-            
             AudioStreamHelper.RemoveFromMixer(track, _currentTrackMixer);
             AudioStreamHelper.RemoveFromMixer(track, _previousTrackMixer);
 
@@ -700,8 +675,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             if (CurrentTrack != null)
             {
-                // DebugHelper.WriteLine("Play/resume playing current Track");
-
                 if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
 
                 AudioStreamHelper.SetPitch(CurrentTrack, 100F);
@@ -719,7 +692,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void ForcePlayNext()
         {
-            // DebugHelper.WriteLine("ForceNextPrevious");
             if (NextTrack == null) return;
             var trackName = NextTrack.Filename;
             ForcePlay(trackName);
@@ -730,7 +702,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void ForceCueNext()
         {
-            // DebugHelper.WriteLine("ForcePlayNext");
             if (NextTrack == null) return;
             var trackName = NextTrack.Filename;
             ForcePlay(trackName);
@@ -741,7 +712,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void ForcePlayPrevious()
         {
-            // DebugHelper.WriteLine("ForcePlayPrevious");
             if (PreviousTrack == null) return;
             var trackName = PreviousTrack.Filename;
             ForcePlay(trackName);
@@ -789,8 +759,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void Stop()
         {
-            // DebugHelper.WriteLine("Stop");
-
             Pause();
             if (CurrentTrack != null)
                 AudioStreamHelper.SetPosition(CurrentTrack, 0);
@@ -802,8 +770,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void Pause()
         {
-            // DebugHelper.WriteLine("Pause");
-
             StopSamples();
 
             if (CurrentTrack != null)
@@ -941,7 +907,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <param name="position">The position.</param>
         public void SetAdjustedTrackPosition(long position)
         {
-            // DebugHelper.WriteLine("Set track position");
             var track = ActiveTrack;
             if (track == null) return;
 
@@ -986,8 +951,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <param name="seconds">The seconds.</param>
         public void SetTrackPosition(double seconds)
         {
-            // DebugHelper.WriteLine("Set track position");
-
             var track = ActiveTrack;
             if (track == null) return;
 
@@ -1053,7 +1016,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             SetTrackSyncPositions(track);
         }
 
-
         /// <summary>
         ///     Adds to the mixer channel, and sets the sync points.
         /// </summary>
@@ -1062,13 +1024,10 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             if (track == null) return;
 
-            // DebugHelper.WriteLine("Add track to mixer " + track.Description);
-
             WaitForLock();
             Lock();
 
             track.ResetPowerDownOnEnd();
-
 
             // load audio data if not loaded
             if (!track.IsAudioLoaded())
@@ -1119,9 +1078,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void ResetTrackSyncPositions()
         {
-            ExtenedAttributesHelper.LoadExtendedAttributes(PreviousTrack);
-            ExtenedAttributesHelper.LoadExtendedAttributes(CurrentTrack);
-            ExtenedAttributesHelper.LoadExtendedAttributes(NextTrack);
+            ExtendedAttributesHelper.LoadExtendedAttributes(PreviousTrack);
+            ExtendedAttributesHelper.LoadExtendedAttributes(CurrentTrack);
+            ExtendedAttributesHelper.LoadExtendedAttributes(NextTrack);
 
             SetTrackSyncPositions(PreviousTrack);
             SetTrackSyncPositions(CurrentTrack);
@@ -1140,7 +1099,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (track == null) return;
 
             LoadTagData(track);
-            ExtenedAttributesHelper.LoadExtendedAttributes(track);
+            ExtendedAttributesHelper.LoadExtendedAttributes(track);
 
             if (IsTrackInUse(track))
                 SetTrackSyncPositions(track);
@@ -1155,8 +1114,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (track == null) return;
 
             ClearTrackSyncPositions(track);
-
-            // DebugHelper.WriteLine("Set track sync positions " + track.Description);
 
             // set end track sync
             SetTrackSync(track, 0, SyncType.TrackEnd);
@@ -1281,8 +1238,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <param name="track">The track.</param>
         private void ClearTrackSyncPositions(Track track)
         {
-            // DebugHelper.WriteLine("Clear track sync positions " + track.Description);
-
             if (track.IsAudioLoaded())
             {
                 if (track.FadeInStartSyncId != int.MinValue)
@@ -1346,8 +1301,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             AudioStreamHelper.Pause(track);
 
-            // DebugHelper.WriteLine("Remove track from mixer " + track.Description);
-
             ClearTrackSyncPositions(track);
 
             UnloadTrackAudioData(track);
@@ -1385,8 +1338,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             if (CurrentTrack == null) return;
 
-            // DebugHelper.WriteLine("Start fade-in:" + CurrentTrack.Description);
-
             Lock();
 
             SetTrackSyncPositions();
@@ -1421,8 +1372,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             SetDelayByBpm();
 
             Unlock();
-
-            // DebugHelper.WriteLine("End Start fade-in:" + CurrentTrack.Description);
         }
 
         /// <summary>
@@ -1430,8 +1379,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void EndFadeIn()
         {
-            // DebugHelper.WriteLine("End fade-in:" + CurrentTrack.Description);
-
             Lock();
 
             var isLooped = CurrentTrack.IsLoopedAtStart;
@@ -1442,9 +1389,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             // set to loop start if necessary
             if (isLooped && currentLoop < maxLoops - 1 || loopForever)
             {
-                //var message = $"Looping fade-in section - starting loop {currentLoop + 1} of {maxLoops}";
-                // DebugHelper.WriteLine(message);
-
                 CurrentTrack.CurrentStartLoop++;
                 if (loopForever && CurrentTrack.CurrentStartLoop == maxLoops) CurrentTrack.CurrentStartLoop = 0;
 
@@ -1463,8 +1407,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
                 UnloadUnusedAudioData();
             }
-
-            // DebugHelper.WriteLine("END End fade-in");
         }
 
         private void Unlock()
@@ -1494,8 +1436,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void StartFadeOut()
         {
-            // DebugHelper.WriteLine("Start fade-out");
-
             Lock();
 
             var oldPreviousTrack = PreviousTrack;
@@ -1732,8 +1672,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void EndFadeOut()
         {
-            // DebugHelper.WriteLine("End fade-out");
-
             IsForceFadeNowMode = false;
 
             if (PreviousTrack == null) return;
@@ -1746,9 +1684,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             // set to loop start if necessary
             if (isLooped && currentLoop < maxLoops - 1 || loopForever)
             {
-                //var message = $"Looping fade-out section - starting loop {currentLoop + 1} of {maxLoops}";
-                // DebugHelper.WriteLine(message);
-
                 PreviousTrack.CurrentEndLoop++;
 
                 // set position (add one to void StartFadeIn firing)
@@ -1766,9 +1701,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (IsManualMixMode) return;
             if (PreviousTrack == null) return;
             if (!HasExtendedMixAttributes()) return;
-
-            //var message = "Current End Loop: " + PreviousTrack.CurrentEndLoop + "  Fade End Loop: " + GetExtendedMixAttributes().FadeEndLoop;
-            // DebugHelper.WriteLine(message);
 
             var mixAttributes = GetExtendedMixAttributes();
             if (mixAttributes.FadeEndLoop != 0 && PreviousTrack.CurrentEndLoop != mixAttributes.FadeEndLoop) return;
@@ -1789,8 +1721,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void StartPreFadeIn()
         {
-            // DebugHelper.WriteLine("Start pre-fade-in");
-
             if (NextTrack == null || !NextTrack.UsePreFadeIn) return;
 
             if (!NextTrack.IsAudioLoaded()) LoadTrackAudioData(NextTrack);
@@ -1807,8 +1737,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             // start playing the track
             AudioStreamHelper.Play(NextTrack);
-
-            // DebugHelper.WriteLine("End Start pre-fade-in");
         }
 
         /// <summary>
@@ -1816,12 +1744,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void RaiseOnTrackChange()
         {
-            // DebugHelper.WriteLine("Track change event");
-            //Task.Run(() =>
-            //{
             OnTrackChange?.Invoke(CurrentTrack, EventArgs.Empty);
             SetDelayByBpm();
-            //});
         }
 
         /// <summary>
@@ -1829,10 +1753,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void RaiseOnEndFadeIn()
         {
-            // DebugHelper.WriteLine("End fade in event");
-            //Task.Run(() => {
                 OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty);
-            //});
         }
 
         /// <summary>
@@ -1840,10 +1761,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void RaiseOnSkipToEnd()
         {
-            // DebugHelper.WriteLine("Skip to end event");
-            //Task.Run(() => {
                 OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty);
-            //});
         }
 
         /// <summary>
@@ -1851,11 +1769,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void RaiseOnTrackQueued()
         {
-            // DebugHelper.WriteLine("Track queued event");
-            //Task.Run(() =>
-            //{
             OnTrackQueued?.Invoke(CurrentTrack, EventArgs.Empty);
-            //});
         }
 
         /// <summary>
@@ -1900,9 +1814,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
-        ///     Skips to the end of the current track
+        ///     Skips to shortly before the current track's fade-out, so the mix into the next track can be heard.
+        ///     Lands early enough for the next track's pre-fade-in to still play.
         /// </summary>
-        public void SkipToFadeOut()
+        /// <param name="beatsBeforeFadeOut">How many beats of the current track to play before the fade-out starts.</param>
+        public void SkipToFadeOut(int beatsBeforeFadeOut = 8)
         {
             if (CurrentTrack == null) return;
 
@@ -1915,8 +1831,15 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (NextTrack != null)
                 AudioStreamHelper.ResetTempo(NextTrack);
 
-            SetTrackPosition(CurrentTrack.ActiveLengthSeconds -
-                             BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm) / 2);
+            // the default loop is 16 beats
+            var beatLength = BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm) / 16D;
+            var runIn = beatLength * beatsBeforeFadeOut;
+
+            // the pre-fade-in starts when playback passes its position, so jumping past it would skip it
+            if (NextTrack != null && NextTrack.UsePreFadeIn)
+                runIn = Math.Max(runIn, NextTrack.PreFadeInLengthSeconds + beatLength);
+
+            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - runIn);
 
             RaiseOnSkipToEnd();
         }
@@ -1926,14 +1849,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void StartSkipSection()
         {
-            // DebugHelper.WriteLine("Start skip section");
-
             if (CurrentTrack == null || !CurrentTrack.HasSkipSection) return;
 
             // set position
             AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.SkipEnd);
         }
-
 
         /// <summary>
         ///     Called when the track sync event is fired
@@ -1942,9 +1862,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             var syncType = (SyncType) pointer.ToInt32();
             var track = GetInUseTracks().FirstOrDefault(x => x.ChannelId == channel);
-            //var description = track != null ? "Track: " + track.Description : "";
-
-            // DebugHelper.WriteLine("Event Fired: " + syncType + " " + description);
 
             switch (syncType)
             {

@@ -21,11 +21,11 @@ ShufflerFolder       Where per-track extended attribute XML files live
 ### Loading
 
 ```
-LoadFromDatabase()   Load cached XML. Falls back to scanning if cache is missing.
-SaveToDatabase()     Write current track list to XML cache.
+LoadFromDatabase()   Load the SQLite cache. If there is none, migrate the old XML cache once.
+SaveToDatabase()     Write the current track list to the SQLite cache.
 ```
 
-Cache location: `%APPDATA%\Halloumi\Halloumi.Shuffler.Library.xml`
+Cache location: `%APPDATA%\Halloumi Shuffler\Halloumi.Shuffler.Library.db` (see `Database/LibraryDatabase.cs`). The old `Halloumi.Shuffler.Library.xml` in the same folder is only read when the database doesn't exist.
 
 ### Querying tracks
 
@@ -106,7 +106,7 @@ GetMixLevel(fromTrack, toTrack)        Retrieve a stored rating
 HasExtendedMix(fromTrack, toTrack)     Check if a custom fade curve exists
 ```
 
-Cache location: `%APPDATA%\Halloumi\Halloumi.Shuffler.MixLibrary.xml`
+Location: `<ShufflerFolder>\Halloumi.Shuffler.MixLibrary.xml`
 
 Loading uses `Parallel.ForEach` to speed up deserialisation on large libraries.
 
@@ -148,7 +148,7 @@ CannotCalculateBpm  True if BPM detection failed
 ```
 Rank              Quality rating (0 = Forbidden … 5 = Excellent)
 Key               Musical key if detected
-IsShufflerTrack   True if a .xml extended attributes file exists for this track
+IsShufflerTrack   True if the track has saved Shuffler details in Halloumi.Shuffler.ExtendedAttributes.xml
 PowerDown         True if this track uses the power-down fade effect
 ```
 

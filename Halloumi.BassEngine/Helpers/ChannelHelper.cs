@@ -50,7 +50,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             return BassMix.BASS_Split_StreamCreate(mixerChannel, BASSFlag.BASS_STREAM_DECODE, null);
         }
 
-
         public static void AssignChannelToDevice(int channelId, int deviceId)
         {
             if (!Bass.BASS_ChannelSetDevice(channelId, deviceId))
@@ -61,7 +60,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             }
 
             Bass.BASS_ChannelPlay(channelId, false);
-
         }
     }
 }

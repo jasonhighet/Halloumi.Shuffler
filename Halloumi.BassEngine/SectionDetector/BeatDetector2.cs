@@ -22,9 +22,7 @@ public static class BeatDetector2
 
         try
         {
-
             double totalDuration = Bass.BASS_ChannelBytes2Seconds(stream, Bass.BASS_ChannelGetLength(stream, BASSMode.BASS_POS_BYTE));
-
 
             double windowStart = 0;
             while (true) 
@@ -46,7 +44,6 @@ public static class BeatDetector2
 
                 if(windowStart >= totalDuration) break;
             }
-
         }
         finally
         {

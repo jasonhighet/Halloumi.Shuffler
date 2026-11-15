@@ -52,7 +52,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 Gain = tags.replaygain_track_peak
             };
 
-
             var key = tags.NativeTag("InitialKey");
             if (key != "") tagDetails.Key = key;
 

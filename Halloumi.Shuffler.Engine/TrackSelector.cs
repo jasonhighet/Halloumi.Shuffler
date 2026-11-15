@@ -235,21 +235,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             var nextPaths = new List<TrackPath>();
             while (!IsGenerationHalted())
             {
-                //ParallelHelper.ForEach(currentPaths, currentPath => GeneratePaths(bpmDirection,
-                //    allowBearable,
-                //    strategy,
-                //    useExtendedMixes,
-                //    excludedMixes,
-                //    restrictArtistClumping,
-                //    restrictGenreClumping,
-                //    restrictTitleClumping,
-                //    keyMixStrategy,
-                //    workingTrack,
-                //    availableTrackDescriptions,
-                //    nextPaths,
-                //    currentPath, 
-                //    direction));
-
                 foreach (var currentPath in currentPaths)
                 {
                     GeneratePaths(bpmDirection,
@@ -310,7 +295,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 var currentTrack = resultPath.Tracks[resultPath.Tracks.Count - 1];
                 var nextTrack =
                     GetBestMixTracks(currentTrack, resultPath.Tracks, allowBearable, availableTrackDescriptions,
-                        excludeTrackDescriptions, restrictArtistClumping, restrictArtistClumping, restrictTitleClumping,
+                        excludeTrackDescriptions, restrictArtistClumping, restrictGenreClumping, restrictTitleClumping,
                         keyMixStrategy, direction)
                         .OrderBy(t => GetAverageTrackAndMixAndKeyRank(currentTrack, t))
                         .FirstOrDefault();
@@ -693,7 +678,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                         {
                             bearableAllowed = (!IsLastMixBearable(currentPath) && !IsPenultimateMixBearable(currentPath))
                                               || (currentTrack.PowerDown && mixTracks.Count == 0);
-        
                         }
                         else
                         {
@@ -722,8 +706,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                         throw new ArgumentOutOfRangeException(nameof(allowBearable), allowBearable, null);
                 }
            
-
-
             return bearableAllowed;
         }
 
@@ -748,7 +730,6 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             return (penultimateMixRank <= 2 || penultimateTrack.Rank == 2);
         }
-
 
         /// <summary>
         ///     Filters a mixable tracks by genre.
@@ -983,7 +964,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                    totalWeight;
         }
 
-
         /// <summary>
         ///     Filters the tracks by direction.
         /// </summary>
@@ -1177,8 +1157,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                     else
                         Tracks.Insert(0, newTrack);
                 }
-
-                
 
                 AverageRank = 0;
             }

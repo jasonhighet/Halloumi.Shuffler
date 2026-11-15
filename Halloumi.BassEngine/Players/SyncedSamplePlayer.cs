@@ -5,7 +5,7 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 
 namespace Halloumi.Shuffler.AudioEngine.Players
 {
-    public class SyncedSamplePlayer : IBmpProvider
+    public class SyncedSamplePlayer : IBpmProvider
     {
         private readonly OutputSplitter _outputSplitter;
 
@@ -103,7 +103,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         public void Play()
         {
-
             _mainPlayer.Unload(PatternPlayer);
             _mainPlayer.Load(PatternPlayer, SilenceHelper.GetSilenceAudioFile());
             _mainPlayer.AddSection(PatternPlayer, PatternPlayer, 0, _loopLength, bpm: _targetBpm);
@@ -153,7 +152,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             return positions;
         }
 
-
         public void Pause()
         {
             _mainPlayer.Pause();
@@ -174,7 +172,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
             _sampleKeys.Clear();
             _targetBpm = int.MinValue;
-
         }
 
         public void Mute()
@@ -211,7 +208,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                     player.Unmute(key);
                 }
                 catch { }
-                
             }
         }
     }

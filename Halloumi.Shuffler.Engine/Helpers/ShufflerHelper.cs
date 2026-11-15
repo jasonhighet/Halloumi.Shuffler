@@ -10,7 +10,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
     {
         public static string ShufflerFolder
         {
-            get { return ExtenedAttributesHelper.ShufflerFolder; }
+            get { return ExtendedAttributesHelper.ShufflerFolder; }
         }
 
         /// <summary>
@@ -24,19 +24,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         {
             try
             {
-                //var newAttributesFile = GetShufflerAttributeFile(track.Description);
-                //var newMixesFile = GetShufflerMixesFile(track);
-
-                //File.Move(track.ShufflerAttribuesFile, newAttributesFile);
-                //File.Move(track.ShufflerMixesFile, newMixesFile);
-
-                //track.ShufflerAttribuesFile = newAttributesFile;
-                //track.ShufflerMixesFile = newMixesFile;
-
-                //var replacer = new TextReplacer(track.OriginalDescription + ",", track.Description + ",", false, false,
-                //    false, false);
-
-                //replacer.Replace(ShufflerFolder, "*.Mixes.txt", false);
             }
             catch
             {
@@ -50,17 +37,13 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         /// <param name="track">The track.</param>
         public static Dictionary<string, string> LoadShufflerDetails(Track track)
         {
-            //if(track.Title.Contains("Escobar"))
-            //    DebugHelper.WriteLine("Stop");
-
             track.Key = KeyHelper.ParseKey(track.Key);
 
-            track.IsShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(track.Description);
+            track.IsShufflerTrack = ExtendedAttributesHelper.HasExtendedAttributes(track.Description);
 
             if (!track.IsShufflerTrack) return null;
 
-            var attributes = ExtenedAttributesHelper.GetExtendedAttributes(track.Description);
-
+            var attributes = ExtendedAttributesHelper.GetExtendedAttributes(track.Description);
 
             if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
 
@@ -109,110 +92,5 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
             return attributes;
         }
-
-        //    if (attributes == null) return;
-        //{
-        //public static void SetAttribute(string key, string value, IDictionary<string, string> attributes)
-        //    if (!attributes.ContainsKey(key))
-        //        attributes.Add(key, value);
-        //    else
-        //        attributes[key] = value;
-        //}
-
-        //public static void SaveShufflerAttributes(Track track, Dictionary<string, string> attributes)
-        //{
-        //    ExtenedAttributesHelper.SaveExtendedAttributes(track.Description, attributes);
-        //}
-
-        ///// <summary>
-        /////     Gets the shuffler attribute file for a track
-        ///// </summary>
-        ///// <param name="trackDescription">The track description.</param>
-        ///// <returns>
-        /////     The shuffler attribute file
-        ///// </returns>
-        //public static string GetShufflerAttributeFile(string trackDescription)
-        //{
-        //    var filename = $"{trackDescription}.ExtendedAttributes.txt";
-        //    filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-        //    filename = Path.Combine(ShufflerFolder, filename);
-        //    return filename;
-        //}
-
-        ///// <summary>
-        /////     Gets the shuffler mixes file for a track
-        ///// </summary>
-        ///// <param name="track">The track.</param>
-        ///// <returns>
-        /////     The shuffler mixes file
-        ///// </returns>
-        //public static string GetShufflerMixesFile(Track track)
-        //{
-        //    var filename = $"{track.Description}.Mixes.txt";
-        //    filename = FileSystemHelper.StripInvalidFileNameChars(filename);
-        //    filename = Path.Combine(ShufflerFolder, filename);
-        //    return filename;
-        //}
-
-        ///// <summary>
-        /////     Imports the shuffler details.
-        ///// </summary>
-        ///// <param name="importFolder">The import folder.</param>
-        ///// <param name="deleteAfterImport">If set to true, will delete Shuffler files after importing them</param>
-        //public static void ImportShufflerDetails(string importFolder, bool deleteAfterImport)
-        //{
-        //    if (!Directory.Exists(importFolder)) return;
-        //    var importFiles = FileSystemHelper.SearchFiles(importFolder,
-        //        "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
-        //    foreach (var importFile in importFiles)
-        //    {
-        //        var fileName = Path.GetFileName(importFile);
-        //        if (fileName == null) continue;
-
-        //        var existingFile = Path.Combine(ShufflerFolder, fileName);
-        //        if (!File.Exists(existingFile))
-        //        {
-        //            FileSystemHelper.Copy(importFile, existingFile);
-        //        }
-        //        else
-        //        {
-        //            var existingFileDate = File.GetLastWriteTime(existingFile);
-        //            var importFileDate = File.GetLastWriteTime(importFile);
-
-        //            if (existingFileDate < importFileDate)
-        //            {
-        //                FileSystemHelper.Copy(importFile, existingFile);
-        //                File.SetLastWriteTime(existingFile, importFileDate);
-        //            }
-        //            else if (!deleteAfterImport && existingFileDate != importFileDate)
-        //            {
-        //                FileSystemHelper.Copy(existingFile, importFile);
-        //                File.SetLastWriteTime(importFile, existingFileDate);
-        //            }
-        //        }
-        //        if (deleteAfterImport) File.Delete(importFile);
-        //    }
-
-        //    if (!deleteAfterImport)
-        //    {
-        //        var existingFiles = FileSystemHelper.SearchFiles(ShufflerFolder,
-        //            "*.ExtendedAttributes.txt;*.AutomationAttributes.xml;", false);
-        //        foreach (var existingFile in existingFiles)
-        //        {
-        //            var fileName = Path.GetFileName(existingFile);
-        //            if (fileName == null) continue;
-
-        //            var importFile = Path.Combine(importFolder, fileName);
-
-        //            if (File.Exists(importFile)) continue;
-
-        //            var existingFileDate = File.GetLastWriteTime(existingFile);
-        //            FileSystemHelper.Copy(existingFile, importFile);
-        //            File.SetLastWriteTime(importFile, existingFileDate);
-        //        }
-        //    }
-
-
-        //}
     }
 }

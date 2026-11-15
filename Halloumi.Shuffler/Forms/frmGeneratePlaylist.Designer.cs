@@ -43,11 +43,11 @@
             this.label5 = new Halloumi.Common.Windows.Controls.Label();
             this.label1 = new Halloumi.Common.Windows.Controls.Label();
             this.label4 = new Halloumi.Common.Windows.Controls.Label();
-            this.cmbBmpDirection = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.cmbBpmDirection = new Halloumi.Common.Windows.Controls.ComboBox();
             this.cmbAllowBearable = new Halloumi.Common.Windows.Controls.ComboBox();
             this.btnExcludeTracks = new Halloumi.Common.Windows.Controls.FileSelectButton();
             this.txtExcludeTracks = new Halloumi.Common.Windows.Controls.TextBox();
-            this.chkExlcudeMixesOnly = new Halloumi.Common.Windows.Controls.CheckBox();
+            this.chkExcludeMixesOnly = new Halloumi.Common.Windows.Controls.CheckBox();
             this.label7 = new Halloumi.Common.Windows.Controls.Label();
             this.label3 = new Halloumi.Common.Windows.Controls.Label();
             this.cmbMode = new Halloumi.Common.Windows.Controls.ComboBox();
@@ -75,7 +75,7 @@
             this.flpButtons.SuspendLayout();
             this.pnlMain.SuspendLayout();
             this.tblMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbBmpDirection)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbBpmDirection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbAllowBearable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbApproxLength)).BeginInit();
@@ -198,11 +198,11 @@
             this.tblMain.Controls.Add(this.label5, 0, 13);
             this.tblMain.Controls.Add(this.label1, 0, 5);
             this.tblMain.Controls.Add(this.label4, 0, 3);
-            this.tblMain.Controls.Add(this.cmbBmpDirection, 1, 3);
+            this.tblMain.Controls.Add(this.cmbBpmDirection, 1, 3);
             this.tblMain.Controls.Add(this.cmbAllowBearable, 1, 5);
             this.tblMain.Controls.Add(this.btnExcludeTracks, 3, 13);
             this.tblMain.Controls.Add(this.txtExcludeTracks, 1, 13);
-            this.tblMain.Controls.Add(this.chkExlcudeMixesOnly, 1, 14);
+            this.tblMain.Controls.Add(this.chkExcludeMixesOnly, 1, 14);
             this.tblMain.Controls.Add(this.label7, 0, 10);
             this.tblMain.Controls.Add(this.label3, 0, 1);
             this.tblMain.Controls.Add(this.cmbMode, 1, 1);
@@ -251,7 +251,7 @@
             // label5
             // 
             this.label5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label5.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
             this.label5.Location = new System.Drawing.Point(4, 403);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -264,7 +264,7 @@
             // 
             // label1
             // 
-            this.label1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(4, 155);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -277,7 +277,7 @@
             // 
             // label4
             // 
-            this.label4.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
             this.label4.Location = new System.Drawing.Point(4, 93);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -288,20 +288,20 @@
             this.label4.TabIndex = 20;
             this.label4.Text = "Bpm Direction:";
             // 
-            // cmbBmpDirection
+            // cmbBpmDirection
             // 
-            this.cmbBmpDirection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cmbBmpDirection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbBmpDirection.DropBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.InputControlCustom1;
-            this.cmbBmpDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBmpDirection.DropDownWidth = 264;
-            this.cmbBmpDirection.ErrorProvider = null;
-            this.cmbBmpDirection.IsRequired = true;
-            this.cmbBmpDirection.Location = new System.Drawing.Point(202, 97);
-            this.cmbBmpDirection.Margin = new System.Windows.Forms.Padding(4);
-            this.cmbBmpDirection.Name = "cmbBmpDirection";
-            this.cmbBmpDirection.Size = new System.Drawing.Size(195, 25);
-            this.cmbBmpDirection.TabIndex = 24;
+            this.cmbBpmDirection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cmbBpmDirection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbBpmDirection.DropBackStyle = ComponentFactory.Krypton.Toolkit.PaletteBackStyle.InputControlCustom1;
+            this.cmbBpmDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBpmDirection.DropDownWidth = 264;
+            this.cmbBpmDirection.ErrorProvider = null;
+            this.cmbBpmDirection.IsRequired = true;
+            this.cmbBpmDirection.Location = new System.Drawing.Point(202, 97);
+            this.cmbBpmDirection.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbBpmDirection.Name = "cmbBpmDirection";
+            this.cmbBpmDirection.Size = new System.Drawing.Size(195, 25);
+            this.cmbBpmDirection.TabIndex = 24;
             // 
             // cmbAllowBearable
             // 
@@ -334,6 +334,11 @@
             // txtExcludeTracks
             // 
             this.tblMain.SetColumnSpan(this.txtExcludeTracks, 2);
+            this.tblMain.SetColumnSpan(this.chkRestrictGenreClumping, 3);
+            this.tblMain.SetColumnSpan(this.chkRestrictArtistClumping, 3);
+            this.tblMain.SetColumnSpan(this.chkRestrictTitleClumping, 3);
+            this.tblMain.SetColumnSpan(this.chkDisplayedTracksOnly, 3);
+            this.tblMain.SetColumnSpan(this.chkExcludeMixesOnly, 3);
             this.txtExcludeTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtExcludeTracks.ErrorProvider = null;
             this.txtExcludeTracks.Location = new System.Drawing.Point(202, 407);
@@ -344,18 +349,18 @@
             this.txtExcludeTracks.Size = new System.Drawing.Size(276, 27);
             this.txtExcludeTracks.TabIndex = 30;
             // 
-            // chkExlcudeMixesOnly
+            // chkExcludeMixesOnly
             // 
-            this.chkExlcudeMixesOnly.Location = new System.Drawing.Point(201, 436);
-            this.chkExlcudeMixesOnly.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.chkExlcudeMixesOnly.Name = "chkExlcudeMixesOnly";
-            this.chkExlcudeMixesOnly.Size = new System.Drawing.Size(156, 24);
-            this.chkExlcudeMixesOnly.TabIndex = 33;
-            this.chkExlcudeMixesOnly.Values.Text = "Exclude Mixes Only";
+            this.chkExcludeMixesOnly.Location = new System.Drawing.Point(201, 436);
+            this.chkExcludeMixesOnly.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chkExcludeMixesOnly.Name = "chkExcludeMixesOnly";
+            this.chkExcludeMixesOnly.Size = new System.Drawing.Size(240, 24);
+            this.chkExcludeMixesOnly.TabIndex = 33;
+            this.chkExcludeMixesOnly.Values.Text = "Exclude Mixes Only";
             // 
             // label7
             // 
-            this.label7.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
             this.label7.Location = new System.Drawing.Point(4, 310);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -368,7 +373,7 @@
             // 
             // label3
             // 
-            this.label3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(4, 31);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -397,7 +402,7 @@
             // 
             // label8
             // 
-            this.label8.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.White;
             this.label8.Location = new System.Drawing.Point(4, 279);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -413,13 +418,13 @@
             this.chkRestrictGenreClumping.Location = new System.Drawing.Point(201, 281);
             this.chkRestrictGenreClumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkRestrictGenreClumping.Name = "chkRestrictGenreClumping";
-            this.chkRestrictGenreClumping.Size = new System.Drawing.Size(190, 24);
+            this.chkRestrictGenreClumping.Size = new System.Drawing.Size(240, 24);
             this.chkRestrictGenreClumping.TabIndex = 37;
             this.chkRestrictGenreClumping.Values.Text = "Restrict Genre Clumping";
             // 
             // label2
             // 
-            this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(4, 62);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -447,7 +452,7 @@
             // 
             // label6
             // 
-            this.label6.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.White;
             this.label6.Location = new System.Drawing.Point(4, 186);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -482,13 +487,13 @@
             this.chkRestrictArtistClumping.Location = new System.Drawing.Point(201, 312);
             this.chkRestrictArtistClumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkRestrictArtistClumping.Name = "chkRestrictArtistClumping";
-            this.chkRestrictArtistClumping.Size = new System.Drawing.Size(186, 24);
+            this.chkRestrictArtistClumping.Size = new System.Drawing.Size(240, 24);
             this.chkRestrictArtistClumping.TabIndex = 35;
             this.chkRestrictArtistClumping.Values.Text = "Restrict Artist Clumping";
             // 
             // label9
             // 
-            this.label9.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.White;
             this.label9.Location = new System.Drawing.Point(4, 372);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -504,13 +509,13 @@
             this.chkDisplayedTracksOnly.Location = new System.Drawing.Point(201, 374);
             this.chkDisplayedTracksOnly.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkDisplayedTracksOnly.Name = "chkDisplayedTracksOnly";
-            this.chkDisplayedTracksOnly.Size = new System.Drawing.Size(196, 24);
+            this.chkDisplayedTracksOnly.Size = new System.Drawing.Size(240, 24);
             this.chkDisplayedTracksOnly.TabIndex = 39;
             this.chkDisplayedTracksOnly.Values.Text = "Use displayed tracks only";
             // 
             // label10
             // 
-            this.label10.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.Color.White;
             this.label10.Location = new System.Drawing.Point(4, 341);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -526,13 +531,13 @@
             this.chkRestrictTitleClumping.Location = new System.Drawing.Point(201, 343);
             this.chkRestrictTitleClumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkRestrictTitleClumping.Name = "chkRestrictTitleClumping";
-            this.chkRestrictTitleClumping.Size = new System.Drawing.Size(178, 24);
+            this.chkRestrictTitleClumping.Size = new System.Drawing.Size(240, 24);
             this.chkRestrictTitleClumping.TabIndex = 41;
             this.chkRestrictTitleClumping.Values.Text = "Restrict Title Clumping";
             // 
             // label11
             // 
-            this.label11.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.White;
             this.label11.Location = new System.Drawing.Point(4, 248);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -545,7 +550,7 @@
             // 
             // label13
             // 
-            this.label13.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.Color.White;
             this.label13.Location = new System.Drawing.Point(4, 0);
             this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -573,7 +578,7 @@
             // 
             // label12
             // 
-            this.label12.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.White;
             this.label12.Location = new System.Drawing.Point(4, 217);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -629,7 +634,7 @@
             // 
             // label14
             // 
-            this.label14.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.ForeColor = System.Drawing.Color.White;
             this.label14.Location = new System.Drawing.Point(4, 124);
             this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -665,10 +670,13 @@
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.beveledLine);
             this.Controls.Add(this.pnlButtons);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.ShowInTaskbar = false;
+            this.MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmGeneratePlaylist";
-            this.Text = "Halloumi : Shuffler : Generate Playlist";
+            this.Text = "Generate Playlist";
             this.UseApplicationIcon = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGeneratePlaylist_FormClosing);
             this.pnlButtons.ResumeLayout(false);
@@ -676,7 +684,7 @@
             this.pnlMain.ResumeLayout(false);
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbBmpDirection)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbBpmDirection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbAllowBearable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbApproxLength)).EndInit();
@@ -704,7 +712,7 @@
         private Halloumi.Common.Windows.Controls.Label label2;
         private Halloumi.Common.Windows.Controls.Label label1;
         private Halloumi.Common.Windows.Controls.Label label4;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbBmpDirection;
+        private Halloumi.Common.Windows.Controls.ComboBox cmbBpmDirection;
         private Halloumi.Common.Windows.Controls.ComboBox cmbAllowBearable;
         private Halloumi.Common.Windows.Controls.ComboBox cmbApproxLength;
         private Halloumi.Common.Windows.Controls.Button btnStart;
@@ -715,7 +723,7 @@
         private Halloumi.Common.Windows.Controls.TextBox txtExcludeTracks;
         private Common.Windows.Controls.ComboBox cmbExtendedMixes;
         private Common.Windows.Controls.Label label6;
-        private Common.Windows.Controls.CheckBox chkExlcudeMixesOnly;
+        private Common.Windows.Controls.CheckBox chkExcludeMixesOnly;
         private Halloumi.Common.Windows.Controls.CheckBox chkRestrictArtistClumping;
         private Halloumi.Common.Windows.Controls.Label label7;
         private Halloumi.Common.Windows.Controls.Label label8;

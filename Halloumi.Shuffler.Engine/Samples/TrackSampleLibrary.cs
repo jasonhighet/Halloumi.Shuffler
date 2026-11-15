@@ -19,7 +19,21 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             BassPlayer = bassPlayer;
             TrackLibrary = trackLibrary;
 
-            SampleLibraryFolder = Path.Combine(Path.GetTempPath(), "SampleLibary");
+            SampleLibraryFolder = Path.Combine(ApplicationHelper.GetUserDataPath(), "SampleLibrary");
+            if (Directory.Exists(SampleLibraryFolder)) return;
+
+            // samples used to be kept in the temp folder, where Windows clean-up could delete them
+            var oldFolder = Path.Combine(Path.GetTempPath(), "SampleLibary");
+            try
+            {
+                if (Directory.Exists(oldFolder))
+                    Directory.Move(oldFolder, SampleLibraryFolder);
+            }
+            catch (IOException)
+            {
+                // different volume or in use; start with an empty folder
+            }
+
             if (!Directory.Exists(SampleLibraryFolder))
                 Directory.CreateDirectory(SampleLibraryFolder);
         }
@@ -67,30 +81,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
 
         public void LoadFromFiles()
         {
-
             //lock (Samples)
-            //{
-            //    Samples.Clear();
-            //}
-
-            //var tracks = TrackLibrary.GetTracks().Where(t => t.IsShufflerTrack);
-            //foreach(var track in tracks)
-            //{
-            //    if(!File.Exists(track.Filename))
-            //        continue;
-
-            //    var existingSamples = GetTrackSamples(track);
-            //    if (existingSamples.Count > 0)
-            //        continue;
-
-            //    var samples = GetMixSectionsAsSamples(track);
-            //    samples.ForEach(x => UpdateSampleFromTrack(x, track));
 
             //    lock (Samples)
-            //    {
-            //        Samples.AddRange(samples);
-            //    }
-            //};
         }
 
         /// <summary>
@@ -278,7 +271,5 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
 
             return tracks;
         }
-
-
     }
 }

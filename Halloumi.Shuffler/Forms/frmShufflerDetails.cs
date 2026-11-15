@@ -38,7 +38,6 @@ namespace Halloumi.Shuffler.Forms
             txtFadeOutStartPosition.TextChanged += txtFadeOutStartPosition_TextChanged;
             trackWave.PositionsChanged += trackWave_PositionsChanged;
 
-
             cmbSampleLength.SelectedIndexChanged += cmbSampleLength_SelectedIndexChanged;
             txtSampleStartPosition.TextChanged += txtSampleStartPosition_TextChanged;
             cmbSampleLength.TextChanged += cmbSampleLength_TextChanged;
@@ -72,7 +71,6 @@ namespace Halloumi.Shuffler.Forms
         }
 
         public Track Track { get; private set; }
-
 
         public ShufflerApplication Application { get; set; }
 
@@ -239,7 +237,7 @@ namespace Halloumi.Shuffler.Forms
 
             Track = trackWave.LoadTrack(Filename);
 
-            if (!ExtenedAttributesHelper.HasExtendedAttributes(Track.Description))
+            if (!ExtendedAttributesHelper.HasExtendedAttributes(Track.Description))
             {
                 if (Track.TagBpm == 0 || Track.TagBpm == 100)
                 {
@@ -281,7 +279,6 @@ namespace Halloumi.Shuffler.Forms
             SetBpmValues();
             PopulateTrackFxComboBox();
         }
-
 
         private static string GetRankDescription(int rank)
         {
@@ -341,7 +338,7 @@ namespace Halloumi.Shuffler.Forms
             lblStartBPM.Text = Track.StartBpm.ToString("0.00");
             lblEndBPM.Text = Track.EndBpm.ToString("0.00");
 
-            Text = @"Halloumi : Shuffler : Shuffler Details : " + Track.Description;
+            Text = "Shuffler Details: " + Track.Description;
 
             chkUsePreFadeIn.Checked = Track.UsePreFadeIn;
 
@@ -368,7 +365,7 @@ namespace Halloumi.Shuffler.Forms
 
             chkPowerDown.Checked = Track.PowerDownOnEnd;
 
-            var rankToShow = !ExtenedAttributesHelper.HasExtendedAttributes(Track.Description)
+            var rankToShow = !ExtendedAttributesHelper.HasExtendedAttributes(Track.Description)
                 ? "Good"
                 : GetRankDescription(Track.Rank);
             cmbTrackRank.SelectedItem = rankToShow;
@@ -439,7 +436,6 @@ namespace Halloumi.Shuffler.Forms
             lblEndBPM.Text = endBpm.ToString("0.00");
 
             PopulateVolumeDropDown(cmbPreFadeInStartVolume);
-
         }
 
         /// <summary>
@@ -456,7 +452,7 @@ namespace Halloumi.Shuffler.Forms
                 AutomationAttributes.TrackSamples.Add(sample);
             }
                        
-            ExtenedAttributesHelper.SaveExtendedAttributes(Track);
+            ExtendedAttributesHelper.SaveExtendedAttributes(Track);
             AutomationAttributesHelper.SaveAutomationAttributes(Track.Description, AutomationAttributes);
             Application?.CalculateKeyForTrack(Filename);
             BassPlayer.ReloadTrack(Track.Filename);
@@ -642,7 +638,6 @@ namespace Halloumi.Shuffler.Forms
             if (txtSampleStartPosition.Seconds != 0D) CurrentSample.Start = txtSampleStartPosition.Seconds;
             if (cmbSampleLength.Seconds != 0D) CurrentSample.Length = cmbSampleLength.Seconds;
         }
-
 
         /// <summary>
         ///     Handles the Click event of the btnOK control.
@@ -967,7 +962,6 @@ namespace Halloumi.Shuffler.Forms
 
         private void btnSaveAndShuffle_Click(object sender, EventArgs e)
         {
-
         }
 
         private void btnCalcStartBPM_Click(object sender, EventArgs e)
@@ -1010,7 +1004,6 @@ namespace Halloumi.Shuffler.Forms
 
         private void RefreshBpmDropdowns()
         {
-
             if (cmbCustomFadeInLength.Seconds != 0) 
             {
                 var bpm = BpmHelper.GetBpmFromLoopLength(cmbCustomFadeInLength.Seconds);

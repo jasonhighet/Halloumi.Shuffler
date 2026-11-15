@@ -105,7 +105,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 return GetSample(sampleIndex + nextTrackIndex - 1);
             else
                 return null;
-
         }
 
         /// <summary>
@@ -143,11 +142,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             StopRecordingSampleTrigger();
         }
 
-
         private void InitialiseSampler()
         {
-            // DebugHelper.WriteLine("InitialiseSampler");
-
             // create mixer channel
             _samplerMixer = new MixerChannel(this);
             _samplerMixer.SetVolume((decimal) DefaultFadeOutStartVolume);
@@ -158,8 +154,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             _samplerMixer.AddInputChannel(_samplePlayer.Output);
 
             _samplerMixer.SetVolume(50);
-
-            // DebugHelper.WriteLine("END InitialiseSampler");
         }
 
         private void RefreshSamples()
@@ -191,7 +185,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 .Replace("_", " ")
                 .Replace("-", " ")
                 .Replace(".", " ");
-
 
             attributes.LoopSamples.Add(new TrackSample
             {

@@ -33,8 +33,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             decimal bpm = 0,
             decimal targetBpm = 0)
         {
-            // DebugHelper.WriteLine("Saving portion of track as wave with offset - " + inFilename);
-
             var audioStream = new Sample
             {
                 Filename = inFilename,
@@ -44,7 +42,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             };
 
             AudioStreamHelper.LoadAudio(audioStream);
-
 
             if (targetBpm != 0)
             {
@@ -77,7 +74,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             BassEnc.BASS_Encode_Stop(audioStream.ChannelId);
 
             Bass.BASS_StreamFree(audioStream.ChannelId);
-
 
             AudioStreamHelper.UnloadAudio(audioStream);
         }
@@ -124,7 +120,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             audioDataHandle.Free();
         }
 
-
         /// <summary>
         ///     Saves an audio file as a mono wave.
         /// </summary>
@@ -169,8 +164,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <exception cref="System.Exception">Cannot load audio data</exception>
         public static void SaveAsMonoWave(byte[] audioData, string outFilename, double length, float gain)
         {
-            // DebugHelper.WriteLine("SaveAsMonoWave");
-
             var audioDataHandle = GCHandle.Alloc(audioData, GCHandleType.Pinned);
             var audioDataPointer = audioDataHandle.AddrOfPinnedObject();
 
@@ -217,8 +210,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Bass.BASS_StreamFree(mixer);
 
             audioDataHandle.Free();
-
-            // DebugHelper.WriteLine("END SaveAsMonoWave");
         }
 
         /// <summary>

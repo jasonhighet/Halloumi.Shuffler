@@ -62,7 +62,6 @@
             get { return Track == null ? "00:00" : Track.FormatSeconds(Track.SamplesToSeconds(ChannelPosition)); }
         }
 
-
         /// <summary>
         ///     The time remaining for the current track1 in a hh:mm:ss format
         /// </summary>
@@ -70,7 +69,6 @@
         {
             get { return Track == null ? "00:00" : Track.FormatSeconds(Track.SamplesToSeconds(Remaining)); }
         }
-
 
         public override string ToString()
         {

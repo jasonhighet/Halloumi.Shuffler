@@ -1546,7 +1546,7 @@
             Margin = new System.Windows.Forms.Padding(6);
             Name = "FrmShufflerDetails";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "Halloumi : Shuffler : Track";
+            Text = "Shuffler Details";
             UseApplicationIcon = true;
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
             FormClosed += frmTrack_FormClosed;

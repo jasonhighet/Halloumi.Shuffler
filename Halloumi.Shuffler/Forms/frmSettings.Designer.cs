@@ -229,7 +229,7 @@
             // label2
             // 
             this.label2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(3, 40);
             this.label2.Name = "label2";
@@ -275,8 +275,8 @@
             // tblMain
             // 
             this.tblMain.ColumnCount = 3;
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.50985F));
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68.49015F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38F));
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62F));
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 61F));
             this.tblMain.Controls.Add(this.txtLoopFolder, 1, 6);
             this.tblMain.Controls.Add(fsbKeyFinderFolder, 2, 5);
@@ -316,29 +316,29 @@
             // 
             // label7
             // 
-            this.label7.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
             this.label7.Location = new System.Drawing.Point(4, 260);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label7.Size = new System.Drawing.Size(183, 33);
+            this.label7.Size = new System.Drawing.Size(230, 33);
             this.label7.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label7.TabIndex = 36;
             this.label7.Text = "Key Finder Folder:";
             // 
             // label6
             // 
-            this.label6.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.White;
             this.label6.Location = new System.Drawing.Point(4, 208);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label6.Size = new System.Drawing.Size(183, 33);
+            this.label6.Size = new System.Drawing.Size(230, 33);
             this.label6.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label6.TabIndex = 31;
-            this.label6.Text = "AnlogX Scratch Folder:";
+            this.label6.Text = "AnalogX Scratch Folder:";
             // 
             // fsbVSTPluginFolder
             // 
@@ -395,21 +395,21 @@
             // label3
             // 
             this.label3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(4, 156);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label3.Size = new System.Drawing.Size(183, 33);
+            this.label3.Size = new System.Drawing.Size(230, 33);
             this.label3.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label3.TabIndex = 18;
-            this.label3.Text = "WinAmp Plugins Folder:";
+            this.label3.Text = "Winamp Plugins Folder:";
             // 
             // title1
             // 
             this.title1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.title1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.title1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.title1.ForeColor = System.Drawing.Color.White;
             this.title1.Location = new System.Drawing.Point(4, 52);
             this.title1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -423,13 +423,13 @@
             // label4
             // 
             this.label4.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label4.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
             this.label4.Location = new System.Drawing.Point(4, 0);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label4.Size = new System.Drawing.Size(183, 33);
+            this.label4.Size = new System.Drawing.Size(230, 33);
             this.label4.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label4.TabIndex = 19;
             this.label4.Text = "Library Folder:";
@@ -437,13 +437,13 @@
             // label5
             // 
             this.label5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label5.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
             this.label5.Location = new System.Drawing.Point(4, 104);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label5.Size = new System.Drawing.Size(183, 33);
+            this.label5.Size = new System.Drawing.Size(230, 33);
             this.label5.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label5.TabIndex = 20;
             this.label5.Text = "VST Plugins Folder:";
@@ -491,13 +491,13 @@
             // 
             // label1
             // 
-            this.label1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(4, 312);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label1.Size = new System.Drawing.Size(183, 33);
+            this.label1.Size = new System.Drawing.Size(230, 33);
             this.label1.Style = Halloumi.Common.Windows.Controls.LabelStyle.Caption;
             this.label1.TabIndex = 38;
             this.label1.Text = "Loop Folder:";
@@ -534,7 +534,7 @@
             this.MinimizeBox = false;
             this.Name = "FrmSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Halloumi : Shuffler : Settings";
+            this.Text = "Settings";
             this.UseApplicationIcon = true;
             this.Load += new System.EventHandler(this.frmSettings_Load);
             this.flpButtons.ResumeLayout(false);

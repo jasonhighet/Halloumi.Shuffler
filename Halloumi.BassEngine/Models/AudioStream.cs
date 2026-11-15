@@ -277,7 +277,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         public string FormatSeconds(double seconds)
         {
             return TimeFormatHelper.GetFormattedHours(seconds);
-            //return Utils.FixTimespan(seconds, seconds > 3600 ? "HMMSS" : "MMSS");
         }
 
         /// <summary>

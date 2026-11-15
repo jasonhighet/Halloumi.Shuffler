@@ -139,7 +139,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
             }
         }
 
-
         /// <summary>
         ///     Saves the track details to a cache file
         /// </summary>
@@ -150,7 +149,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
                 SerializationHelper<List<Sample>>.ToXmlFile(_samples, LibraryCacheFilename);
             }
         }
-
 
         /// <summary>
         ///     Gets the name of the file where the track data is cached.

@@ -12,7 +12,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
     {
         private static readonly Random Random = new Random(DateTime.Now.Millisecond);
 
-
         /// <summary>
         ///     Picks a random track from a list of tracks
         /// </summary>
@@ -125,7 +124,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             return description;
         }
-
 
         public static bool IsSameTrack(Track track1, Track track2)
         {

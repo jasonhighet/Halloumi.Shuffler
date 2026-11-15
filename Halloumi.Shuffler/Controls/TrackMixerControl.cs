@@ -314,7 +314,6 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
-
         /// <summary>
         ///     Gets the previous track.
         /// </summary>
@@ -326,7 +325,7 @@ namespace Halloumi.Shuffler.Controls
 
             var track = BassPlayer.LoadTrack(prevTrack.Filename);
             BassPlayer.LoadTrackAudioData(track);
-            ExtenedAttributesHelper.LoadExtendedAttributes(track);
+            ExtendedAttributesHelper.LoadExtendedAttributes(track);
             return track;
         }
 
@@ -410,7 +409,6 @@ namespace Halloumi.Shuffler.Controls
             _bindingVolumeSlider = false;
         }
 
-
         private void BassPlayer_OnManualMixVolumeChanged(object sender, EventArgs e)
         {
             if (InvokeRequired)
@@ -455,7 +453,6 @@ namespace Halloumi.Shuffler.Controls
         {
             BassPlayer.PausePreviousTrack();
         }
-
 
         /// <summary>
         ///     Handles the MouseDown event of the btnTrackFX control.

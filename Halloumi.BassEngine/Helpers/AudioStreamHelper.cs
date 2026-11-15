@@ -48,7 +48,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             SetVolume(audioStream.ChannelId, (float)(volume / 100));
         }
 
-
         /// <summary>
         ///     Sets current volume for the channel as a percentage (0 - 1)
         /// </summary>
@@ -75,7 +74,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, (float)(volume / 100));
         }
 
-
         /// <summary>
         ///     Gets the audio stream volume.
         /// </summary>
@@ -99,7 +97,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Bass.BASS_ChannelGetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, ref volume);
             return Convert.ToDecimal(volume * 100);
         }
-
 
         /// <summary>
         ///     Sets the duration and start/end volumes for an audio stream volume slide.
@@ -176,7 +173,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
         }
 
-
         /// <summary>
         ///     Sets the audio stream pitch to match another audioStream's BPM
         /// </summary>
@@ -191,7 +187,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var sampleRate = GetTrackTempoChangeAsSampleRate(changeTrack, matchTrack);
             Bass.BASS_ChannelSetAttribute(changeTrack.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
         }
-
 
         /// <summary>
         ///     Gets the audio stream tempo change as an audio stream rate
@@ -290,7 +285,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, percentChange);
         }
-
 
         /// <summary>
         ///     Resets the audio stream pitch.
@@ -469,7 +463,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Bass.BASS_FXSetParameters(audioStream.GainChannel, volumeParameters);
         }
 
-
         /// <summary>
         ///     Sets the replay gain for a channel.
         /// </summary>
@@ -485,7 +478,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var volumeParameters = new BASS_BFX_VOLUME(volume, BASSFXChan.BASS_BFX_CHANALL);
             Bass.BASS_FXSetParameters(fxChannel, volumeParameters);
         }
-
 
         /// <summary>
         ///     Sets the length of an audio stream.

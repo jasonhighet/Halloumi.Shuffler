@@ -58,8 +58,6 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
             ///     If true, the range between min and mix milliseconds should be calculated using a logarithmic scale
             /// </summary>
             public bool SyncUsingLogScale = false;
-
-
         }
     }
 }

@@ -5,8 +5,6 @@ using Un4seen.Bass;
 
 namespace Halloumi.Shuffler.AudioEngine.SectionDetector
 {
-
-
     public static class BeatInspector
     {
         private const int BUFFER_LENGTH = 256; // Buffer size

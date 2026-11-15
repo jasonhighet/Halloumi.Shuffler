@@ -21,7 +21,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         private DateTime _lastEvent = DateTime.Now;
 
-        public AudioPlayer(IBmpProvider bpmProvider = null)
+        public AudioPlayer(IBpmProvider bpmProvider = null)
         {
             Output = new MixerChannel(bpmProvider);
             _streamSections = new List<AudioStreamSection>();
@@ -112,7 +112,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             }
         }
 
-
         private AudioStreamSection GetStreamSection(string streamKey)
         {
             lock (_streamSections)
@@ -181,7 +180,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             return GetStreamKeys().Select(GetAudioStream).ToList();
         }
-
 
         public AudioStream GetAudioStream(string streamKey)
         {
@@ -359,11 +357,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             {
                 _audioStreamEvents.Add(audioStreamEvent);
             }
-
-            //var message = $"Added {eventType} on {streamKey} to {targetStreamKey} at {position}";
-            //DebugHelper.WriteLine(message);
         }
-
 
         private static AudioSync GetAudioSync(AudioStream audioStream, double position)
         {
@@ -385,7 +379,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 return _audioStreamEvents.Where(x => x.SyncId == syncId).ToList();
             }
         }
-
 
         public void QueueSection(string streamKey, string sectionKey)
         {
@@ -474,13 +467,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
 
         private void OnSync(int syncId, int channel)
         {
-            //var currentEvent = DateTime.Now;
-            //var timeSpan = currentEvent - _lastEvent;
-            //var secondsSinceLastEvent = Math.Round(timeSpan.TotalSeconds, 4);
-            //_lastEvent = currentEvent;
-
-            //DebugHelper.WriteLine(secondsSinceLastEvent);
-
             var streamSection = GetStreamSectionByChannel(channel);
             var audioSync = GetAudioSyncById(channel, syncId);
             if (audioSync == null) return;
@@ -514,7 +500,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 return;
 
             var players = audioStreamEvents.Select(x => x.Player).Distinct().ToList();
-            //ParallelHelper.ForEach(players, player =>
             Parallel.ForEach(players, player =>
             {
                 var playerEvents = audioStreamEvents.Where(x => x.Player == player);
@@ -556,7 +541,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                         default:
                             throw new Exception("Invalid Event Type");
                     }
-                    //DebugHelper.WriteLine("end event sycn:" + audioEvent.StreamEventType + " " + syncId);
                 }
             });
         }
@@ -582,7 +566,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         {
             if (!audioSection.AutoPlayNextSection)
             {
-                // DebugHelper.WriteLine("Pause " + streamSection.AudioStream.Description);
                 AudioStreamHelper.Pause(streamSection.AudioStream);
             }
             else
@@ -594,7 +577,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 }
                 else
                 {
-                    // DebugHelper.WriteLine("Pause " + streamSection.AudioStream.Description);
                     AudioStreamHelper.Pause(streamSection.AudioStream);
                 }
             }

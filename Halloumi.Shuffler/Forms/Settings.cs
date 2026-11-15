@@ -132,7 +132,6 @@ namespace Halloumi.Shuffler.Forms
 
         public string KeyFinderFolder { get; set; }
 
-
         public bool CutSamplerBass { get; set; }
 
         public bool BypassSamplerEffect1 { get; set; }

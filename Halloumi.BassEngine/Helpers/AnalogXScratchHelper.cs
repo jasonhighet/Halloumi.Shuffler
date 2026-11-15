@@ -41,7 +41,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);
             AudioExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, gain);
             
-
             var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
             Process.Start(scratchExePath);
         }

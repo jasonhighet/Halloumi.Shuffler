@@ -136,7 +136,7 @@
             // lblNextFadeDetails
             // 
             this.lblNextFadeDetails.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblNextFadeDetails.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblNextFadeDetails.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblNextFadeDetails.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblNextFadeDetails.Location = new System.Drawing.Point(7, 31);
             this.lblNextFadeDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -216,7 +216,7 @@
             // lblCurrentFadeDetails
             // 
             this.lblCurrentFadeDetails.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblCurrentFadeDetails.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblCurrentFadeDetails.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblCurrentFadeDetails.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblCurrentFadeDetails.Location = new System.Drawing.Point(7, 31);
             this.lblCurrentFadeDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -344,7 +344,7 @@
             // lblPreviousFadeDetails
             // 
             this.lblPreviousFadeDetails.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblPreviousFadeDetails.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblPreviousFadeDetails.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblPreviousFadeDetails.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblPreviousFadeDetails.Location = new System.Drawing.Point(7, 31);
             this.lblPreviousFadeDetails.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);

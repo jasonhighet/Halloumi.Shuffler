@@ -15,14 +15,13 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private Track _nextTrack;
         public string LoopFolder { get; set; }
 
-        private readonly IBmpProvider _bpmProvider;
+        private readonly IBpmProvider _bpmProvider;
 
-        public TrackSamplePlayer(IBmpProvider bpmProvider)
+        public TrackSamplePlayer(IBpmProvider bpmProvider)
         {
             _audioPlayer = new AudioPlayer(bpmProvider);
             _bpmProvider = bpmProvider;
         }
-
 
         public MixerChannel Output
         {
@@ -44,15 +43,12 @@ namespace Halloumi.Shuffler.AudioEngine.Players
                 LoadSamples(_currentTrack);
                 LoadSamples(_nextTrack);
             }
-
         }
 
         private void LoadSamples(Track track)
         {
             if (track == null)
                 return;
-
-            // DebugHelper.WriteLine("Loading samples for " + track.Description);
 
             var trackSamples = GetTrackSamples(track);
             foreach (var trackSample in trackSamples)
@@ -88,15 +84,11 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             _audioPlayer.QueueSection(sampleId, sampleId);
         }
 
-
         private static IEnumerable<TrackSample> GetTrackSamples(Track track)
         {
-            // DebugHelper.WriteLine("GetTrackSamples for " + track.Description);
-
             var trackSamples = new List<TrackSample>();
             if (track.UsePreFadeIn)
             {
-
                 trackSamples.Add(new TrackSample
                 {
                     IsLooped = false,

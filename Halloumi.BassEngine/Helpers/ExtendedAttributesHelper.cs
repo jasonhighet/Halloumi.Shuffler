@@ -3,30 +3,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
 
 namespace Halloumi.Shuffler.AudioEngine.Helpers
 {
-    public static class ExtenedAttributesHelper
+    public static class ExtendedAttributesHelper
     {
-        private static readonly Dictionary<string, ExtenedAttributes> AllAttributes = new Dictionary<string, ExtenedAttributes>();
-
-        //public static void LoadAllExtendedAttributes(List<string> trackDescriptions)
-        //{
-        //    foreach (var trackDescription in trackDescriptions)
-        //    {
-        //        var filepath = GetExtendedAttributeFile(trackDescription);
-        //        if (!File.Exists(filepath)) continue;
-
-        //        var attributeDictionary = GetExtendedAttributes(trackDescription);
-
-        //        var extendedAttributed = new ExtenedAttributes() {Track = trackDescription};
-        //        extendedAttributed.SetAttributeDictionary(attributeDictionary);
-
-        //        AllAttributes.Add(trackDescription, extendedAttributed);
-        //    }
-        //}
+        private static readonly Dictionary<string, ExtendedAttributes> AllAttributes = new Dictionary<string, ExtendedAttributes>();
 
         public static void LoadFromDatabase()
         {
@@ -35,7 +20,18 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             if (!File.Exists(filepath))
                 return;
 
-            var allAttributes = SerializationHelper<List<ExtenedAttributes>>.FromXmlFile(filepath);
+            // files saved before the class name's spelling was fixed use <ExtenedAttributes>;
+            // read them as the new name, and the next save writes the new name
+            var xml = File.ReadAllText(filepath)
+                .Replace("ArrayOfExtenedAttributes", "ArrayOfExtendedAttributes")
+                .Replace("<ExtenedAttributes>", "<ExtendedAttributes>")
+                .Replace("</ExtenedAttributes>", "</ExtendedAttributes>");
+            List<ExtendedAttributes> allAttributes;
+            using (var reader = new StringReader(xml))
+            {
+                allAttributes = (List<ExtendedAttributes>)new XmlSerializer(typeof(List<ExtendedAttributes>)).Deserialize(reader);
+            }
+
             foreach (var attributes in allAttributes)
             {
                 AllAttributes.Add(attributes.Track, attributes);
@@ -46,7 +42,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             var attributes = AllAttributes.Select(x => x.Value).ToList().OrderBy(x => x.Track).ToList();
             var filepath = ExtendedAttributesFile;
-            SerializationHelper<List<ExtenedAttributes>>.ToXmlFile(attributes, filepath);
+            SerializationHelper<List<ExtendedAttributes>>.ToXmlFile(attributes, filepath);
         }
 
         private static string ExtendedAttributesFile
@@ -67,8 +63,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             if (track == null) return;
             if (track.Artist == "" || track.Title == "") return;
-
-            // DebugHelper.WriteLine("Loading Extended Attributes " + track.Description);
 
             var attributes = GetExtendedAttributes(track.Description);
             if (attributes.ContainsKey("FadeIn"))
@@ -189,7 +183,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             AllAttributes.Remove(trackDescription);
             if (attributes.Count <= 0) return;
 
-            var extendedAttributes = new ExtenedAttributes() { Track = trackDescription };
+            var extendedAttributes = new ExtendedAttributes() { Track = trackDescription };
             extendedAttributes.SetAttributeDictionary(attributes);
             AllAttributes.Add(trackDescription, extendedAttributes);
         }
@@ -284,7 +278,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             SaveExtendedAttributes(track.Description, attributes);
         }
 
-        public class ExtenedAttributes
+        public class ExtendedAttributes
         {
             public string Track { get; set; }
 

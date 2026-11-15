@@ -237,11 +237,11 @@ Browse and manage loop and sample libraries. Assign samples to tracks. Preview s
 
 Edit track metadata: artist, title, album, genre, BPM, rank, key. Changes are written back to MP3 ID3 tags and the library cache.
 
-### frmUpdateTrackAudio
+### FrmChooseValue
 
-`Forms/frmUpdateTrackAudio.cs`
+`Forms/FrmChooseValue.cs`
 
-Visual editor for audio sections: set fade-in/fade-out boundaries, loop counts, skip sections, and pre-fade sections. Shows a waveform with draggable markers.
+Small dialog that asks for one value from a list, with an optional check box. Used to rename or update an artist, album artist, album or genre (library screen), and to pick a title or the source audio for similar tracks (Update Similar Tracks). The caller sets `Text`, `Items`, `InitialText` and an `Apply` action that runs on OK.
 
 ### frmShufflerDetails
 

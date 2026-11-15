@@ -17,7 +17,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
             return code.StartsWith("(");
         }
 
-
         public static string GetGenre(string code)
         {
             var genreCode = GetAllGenres().Where(g => g.Code == code).FirstOrDefault();
@@ -164,6 +163,5 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
             genreCodes.Add(new GenreCode(125, "Dance Hall"));
             return genreCodes;
         }
-
     }
 }

@@ -10,7 +10,6 @@ namespace Halloumi.Shuffler.Controls
     {
         private readonly Font _font = new Font("Segoe UI", 9, GraphicsUnit.Point);
 
-
         public ListBuilder()
         {
             InitializeComponent();

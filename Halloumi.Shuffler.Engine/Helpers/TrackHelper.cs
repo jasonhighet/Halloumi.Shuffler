@@ -102,7 +102,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             return File.GetLastWriteTime(filename);
         }
 
-
         /// <summary>
         ///     Calculates the length track and saves it in the tag data
         /// </summary>
@@ -200,15 +199,12 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.OriginalDescription = track.Description;
             track.FullLength = track.Length;
 
-
             var audioFile = AudioFile.Create(track.Filename, true);
             track.Bitrate = audioFile.Bitrate;
             track.Length = audioFile.TotalSeconds;
 
             if(updateLength)
                 UpdateLength(track);
-
-            //UpdateKey(track);
 
             track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
@@ -217,7 +213,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             if (track.EndBpm == 0 || track.EndBpm == 100) track.EndBpm = track.Bpm;
             if (track.StartBpm == 0 || track.StartBpm == 100) track.StartBpm = track.Bpm;
         }
-
 
         /// <summary>
         ///     Loads the artist and album artist for a track
@@ -243,9 +238,9 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                     bassTrack.Rank = track.Rank;
                 }
 
-                ExtenedAttributesHelper.SetExtendedAttribute(track.Description, "Rank", track.Rank.ToString());
+                ExtendedAttributesHelper.SetExtendedAttribute(track.Description, "Rank", track.Rank.ToString());
             }
-            Task.Run(() => ExtenedAttributesHelper.SaveToDatabase());
+            Task.Run(() => ExtendedAttributesHelper.SaveToDatabase());
         }
     }
 }

@@ -14,11 +14,11 @@ Program.Main()
         ├─ new LoopLibrary()
         ├─ new MixLibrary()
         ├─ new TrackSampleLibrary()
-        ├─ LoadSettings()                       read %APPDATA%\Halloumi\Settings.xml
+        ├─ LoadSettings()                       read %APPDATA%\Halloumi Shuffler\Halloumi.Shuffler.Settings.xml
         │     applies: volume, plugin paths, output routing, feature flags
         ├─ LoadFromDatabase()
-        │     ├─ Library.LoadFromDatabase()     read Library.xml (track cache)
-        │     ├─ MixLibrary.LoadFromDatabase()  read MixLibrary.xml
+        │     ├─ Library.LoadFromDatabase()     read Library.db (SQLite track cache)
+        │     ├─ MixLibrary.LoadFromDatabase()  read <ShufflerFolder>\MixLibrary.xml
         │     └─ TrackSampleLibrary.Load()      read sample associations
         └─ ResetMidi()                          enumerate MIDI devices, apply mapping
 
@@ -34,16 +34,19 @@ If `UpdateLibraryOnStartup` is set, `Library.LoadFromDatabase()` also rescans th
 
 ## 2. Loading the track library
 
-The library uses a two-level cache strategy:
+The track list is cached in SQLite so start-up doesn't re-read every MP3:
 
 ```
 Library.LoadFromDatabase()
-  ├─ If XML cache exists:
-  │     deserialise Track list from Halloumi.Shuffler.Library.xml
-  ├─ Else:
-  │     scan LibraryFolder for *.mp3
-  │     foreach file: read ID3 tags via IdSharp → create Track
-  └─ SaveToDatabase()   write XML cache for next launch
+  ├─ If Halloumi.Shuffler.Library.db exists:
+  │     load the Track list from it
+  └─ Else, if the old Halloumi.Shuffler.Library.xml exists:
+        load it, then write it to the database (one-time migration)
+
+Library rescan (when asked, or UpdateLibraryOnStartup):
+  scan LibraryFolder for *.mp3
+  foreach new/changed file: read ID3 tags via IdSharp → create Track
+  SaveToDatabase()   write the SQLite cache
 ```
 
 When the user explicitly refreshes (File → Rescan), the same path is taken but the cache is always rewritten.
@@ -232,7 +235,7 @@ User opens Mix Rating dialog (or uses keyboard shortcut)
 
 On shutdown or explicit save:
   MixLibrary.SaveToDatabase()
-    └─ write Halloumi.Shuffler.MixLibrary.xml
+    └─ write <ShufflerFolder>\Halloumi.Shuffler.MixLibrary.xml
 ```
 
 ---
@@ -255,7 +258,7 @@ User opens a track's Shuffler details
         user sets loop counts, rank, power-down flag
         [Save]
           └─► ExtendedAttributesHelper.SaveAttributes(track, data)
-                └─ write <ShufflerFolder>/<Artist - Title>.xml
+                └─ update the track's entry in <ShufflerFolder>\Halloumi.Shuffler.ExtendedAttributes.xml
 ```
 
 If the track is currently queued, `BassPlayer.QueueTrack()` is called again to reload with the new attributes.

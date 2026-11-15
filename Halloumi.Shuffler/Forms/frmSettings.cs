@@ -34,7 +34,6 @@ namespace Halloumi.Shuffler.Forms
             settings.KeyFinderFolder = txtKeyFinderFolder.Text;
             settings.LoopLibraryFolder = txtLoopFolder.Text;
 
-
             settings.Save();
             DialogResult = DialogResult.OK;
             Close();

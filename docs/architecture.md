@@ -127,21 +127,36 @@ There are two different `Track` classes. They serve different layers and should 
 | Layer | Library / data | Audio engine |
 | Purpose | Serialisable metadata | Runtime playback state |
 | Key fields | Artist, Title, Bpm, Rank, Genre, Filename | FadeInStart/End, FadeOutStart/End, LoopCounts, SyncHandles |
-| Persistence | Serialised to XML cache | In-memory only |
+| Persistence | SQLite track cache | In-memory only |
 
 ## Data persistence
 
-```
-%APPDATA%\Halloumi\
-├── Halloumi.Shuffler.Library.xml      # All track metadata (cached from MP3 tags)
-├── Halloumi.Shuffler.MixLibrary.xml   # Track-pair mix ratings
-└── Halloumi.Shuffler.Settings.xml     # Application settings
+Per-user data is in `%APPDATA%\Halloumi Shuffler\` (the folder is named after the exe, via `ApplicationHelper.GetUserDataPath()`). Shared Shuffler data is in the **Shuffler Folder** set in Settings, so it can be kept under version control or synced.
 
-<ShufflerFolder>\                       # Configured by user
-└── <ArtistTitle>.xml                  # Per-track extended attributes:
-                                       #   fade points, loop counts, skip sections,
-                                       #   automation triggers, manual mix curves
 ```
+%APPDATA%\Halloumi Shuffler\
+├── Halloumi.Shuffler.Library.db              # SQLite cache of track metadata read from MP3 tags
+├── Halloumi.Shuffler.Library.xml             # pre-SQLite cache; migrated once if no .db exists
+├── Halloumi.Shuffler.Settings.xml            # application settings
+├── Halloumi.Shuffler.LibraryView.xml         # library screen filter, search and sort
+├── Halloumi.Shuffler.WorkingPlaylist.xml     # current playlist
+├── Halloumi.Shuffler.LoopLibrary.xml         # loop samples
+├── <channel>.VstSettings.xml                 # VST parameters per mixer channel
+└── SampleLibrary\                            # exported sample .wav files
+
+%APPDATA%\Halloumi\
+└── Halloumi.Shuffler.PlaylistGenerationSettings.xml
+
+<ShufflerFolder>\
+├── Halloumi.Shuffler.ExtendedAttributes.xml  # all tracks: fade points and lengths, start/end BPM,
+│                                             #   skip section, loop counts, rank
+├── Halloumi.Shuffler.AutomationAttributes.xml # all tracks: automation triggers, manual mix curves
+├── Halloumi.Shuffler.MixLibrary.xml          # track-pair mix ratings (0–5)
+├── Halloumi.Shuffler.Collections.xml         # track collections
+└── Halloumi.Shuffler.SampleLibrary.xml       # sample definitions
+```
+
+Files in `ExtendedAttributes.xml` saved by older builds use `<ExtenedAttributes>` tags (a misspelling since fixed). They still load, and the next save writes `<ExtendedAttributes>`.
 
 ## Boundary rules
 

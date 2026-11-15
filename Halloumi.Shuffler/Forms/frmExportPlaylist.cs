@@ -18,13 +18,11 @@ namespace Halloumi.Shuffler.Forms
             InitializeComponent();
         }
 
-
         public ShufflerApplication Application { get; set; }
         public List<Track> Tracks { get; set; }
         public string PlaylistName { get; set; }
 
         private Image AlbumImage { get; set; }
-
 
         /// <summary>
         ///     Handles the Load event of the frmSettings control.
@@ -55,7 +53,6 @@ namespace Halloumi.Shuffler.Forms
 
             btnOK.Enabled = Tracks.Count > 0;
 
-
             txtOutputFolder.Text = Application.GetExportPlaylistFolder();
         }
 
@@ -73,7 +70,6 @@ namespace Halloumi.Shuffler.Forms
                    && txtAlbumName.IsValid()
                    && cmbAlbumArtist.IsValid();
         }
-
 
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -105,7 +101,6 @@ namespace Halloumi.Shuffler.Forms
                 if (!Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
             }
 
-
             try
             {
                 FileSystemHelper.DeleteFiles(destinationFolder, "*.mp3;*.jpg", false);
@@ -126,7 +121,6 @@ namespace Halloumi.Shuffler.Forms
                     FileSystemHelper.Copy(track.Filename, destination);
                     if (progressDialog.Cancelled) break;
 
-
                     var destinationTrack = Application.LoadNonLibraryTrack(destination);
 
                     destinationTrack.AlbumArtist = albumArtist;
@@ -140,7 +134,6 @@ namespace Halloumi.Shuffler.Forms
 
                     if (AlbumImage != null)
                         Application.SetTrackAlbumCover(destinationTrack, AlbumImage);
-
 
                     if (progressDialog.Cancelled) break;
 

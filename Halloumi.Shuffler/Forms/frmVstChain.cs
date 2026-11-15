@@ -69,7 +69,6 @@ namespace Halloumi.Shuffler.Forms
             return selectedPlugins;
         }
 
-
         private PluginModel GetPluginModelByName(string selectedItem)
         {
             return _plugins.FirstOrDefault(plugin => plugin.Name == selectedItem);

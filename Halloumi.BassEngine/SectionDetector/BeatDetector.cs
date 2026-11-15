@@ -36,7 +36,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
             var approximateBPM = BPMGuestimator.EstimateBPM(mp3FilePath);
             Console.WriteLine($"Approximate BPM:{approximateBPM}");
 
-      
             int stream = CreateStream(mp3FilePath);
             if (stream == 0)
             {
@@ -45,7 +44,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
 
             try
             {
-                // double approximateBPM = GetMetadataBpm(mp3FilePath);
                 var rawBeats = ProcessBeats(stream, approximateBPM);
 
                 return rawBeats;
@@ -139,7 +137,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
             return beatTimes;
         }
 
-
         private static double DetectFirstBeat(int stream, float energyThreshold)
         {
             float[] buffer = new float[BUFFER_LENGTH];
@@ -163,7 +160,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
                         long positionInBytes = Bass.BASS_ChannelGetPosition(stream);
                         double positionInSeconds = Bass.BASS_ChannelBytes2Seconds(stream, positionInBytes);
 
-                        // Return the time of the first significant sample
                         firstBeatTime = positionInSeconds;
                         break;
                     }
@@ -172,7 +168,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
                 if (foundSignificantSample) break;
             }
 
-            // If no significant sample was found, return -1
             return firstBeatTime;
         }
 

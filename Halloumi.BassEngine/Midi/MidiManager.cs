@@ -41,7 +41,6 @@ namespace Halloumi.Shuffler.AudioEngine.Midi
                         continue;
                     }
                         
-
                     _inDevice = new InputDevice(i);
                     _inDevice.ChannelMessageReceived += InDevice_ChannelMessageReceived;
                     _inDevice.StartRecording();

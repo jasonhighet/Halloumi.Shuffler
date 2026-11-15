@@ -103,13 +103,44 @@ namespace Halloumi.Shuffler.Forms
         {
             if (GetSelectedTracks().Count == 0) return;
 
-            var updateTrackAudio = new FrmUpdateTrackAudio
+            var destinationTracks = GetSelectedTracks();
+            var sourceTracks = GetSimilarTracks(GetSelectedTrack());
+
+            var choices = sourceTracks
+                .Where(t => destinationTracks.Count != 1 || t.Filename != destinationTracks[0].Filename)
+                .Select(t => new SourceAudioChoice
+                {
+                    Description = $"{t.Title} ({t.Album}) - {t.FullLengthFormatted}",
+                    Filename = t.Filename
+                })
+                .OrderBy(t => t.Description)
+                .ToList();
+            choices.Insert(0, new SourceAudioChoice { Description = "", Filename = "" });
+
+            var form = new FrmChooseValue
             {
-                Application = Application,
-                DestinationTracks = GetSelectedTracks(),
-                SourceTracks = GetSimilarTracks(GetSelectedTrack())
+                Text = "Select Source Audio",
+                Items = choices,
+                ItemDisplayMember = nameof(SourceAudioChoice.Description),
+                ItemValueMember = nameof(SourceAudioChoice.Filename),
+                AllowNewValue = false,
+                Apply = f =>
+                {
+                    var sourceFilename = (string)f.SelectedValue;
+                    foreach (var destinationTrack in destinationTracks.Where(t => t.Filename != sourceFilename))
+                    {
+                        try
+                        {
+                            Application.CopyAudioFromAnotherTrack(destinationTrack, sourceFilename);
+                        }
+                        catch (Exception exception)
+                        {
+                            f.ShowError(exception);
+                        }
+                    }
+                }
             };
-            updateTrackAudio.ShowDialog();
+            form.ShowDialog();
             BindData();
         }
 
@@ -120,13 +151,40 @@ namespace Halloumi.Shuffler.Forms
         {
             if (GetSelectedTracks().Count == 0) return;
 
-            var form = new FrmUpdateTrackTitle
+            var tracks = GetSelectedTracks();
+            var titles = tracks.Select(t => t.Title).OrderBy(t => t).Distinct().ToList();
+            titles.Insert(0, "");
+
+            var form = new FrmChooseValue
             {
-                Application = Application,
-                Tracks = GetSelectedTracks()
+                Text = "Select Title",
+                Items = titles,
+                AllowNewValue = false,
+                OptionText = "Rename in shuffler files, playlists etc.",
+                OptionChecked = true,
+                Apply = f =>
+                {
+                    foreach (var track in tracks.Where(t => t.Title != f.SelectedText))
+                    {
+                        try
+                        {
+                            Application.UpdateTitle(track, f.SelectedText, f.OptionChecked);
+                        }
+                        catch (Exception exception)
+                        {
+                            f.ShowError(exception);
+                        }
+                    }
+                }
             };
             form.ShowDialog();
             BindData();
+        }
+
+        private class SourceAudioChoice
+        {
+            public string Description { get; set; }
+            public string Filename { get; set; }
         }
 
         /// <summary>

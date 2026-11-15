@@ -30,12 +30,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         private void InitialiseRawLoopMixer()
         {
-            // DebugHelper.WriteLine("InitialiseRawLoopMixer");
-
             _rawLoopMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
             _rawLoopOutputSplitter = new OutputSplitter(_rawLoopMixer, SpeakerOutput, MonitorOutput);
-
-            // DebugHelper.WriteLine("END InitialiseRawLoopMixer");
         }
 
         /// <summary>
@@ -58,10 +54,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             SetArtistAndTitle(track, "", "");
             LoadTagData(track);
-            ExtenedAttributesHelper.LoadExtendedAttributes(track);
+            ExtendedAttributesHelper.LoadExtendedAttributes(track);
             LoadTrackAudioData(track);
-
-            // DebugHelper.WriteLine("Loaded raw loop track " + track.Description);
 
             // set track sync event
             track.SyncProc = OnTrackSync;
@@ -69,8 +63,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             track.CurrentEndLoop = 0;
             track.RawLoopStart = 0;
             track.RawLoopEnd = track.Length;
-
-            // DebugHelper.WriteLine("Loading raw loop track " + track.Description);
 
             AudioStreamHelper.AddToMixer(track, _rawLoopMixer);
             RawLoopTrack = track;
@@ -164,8 +156,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             if (RawLoopTrack == null) return;
 
-            // DebugHelper.WriteLine("Playing in raw-loop mode");
-
             AudioStreamHelper.Pause(RawLoopTrack);
             AudioStreamHelper.SetPosition(RawLoopTrack, RawLoopTrack.RawLoopOffset);
             AudioStreamHelper.Play(RawLoopTrack);
@@ -177,7 +167,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void StopRawLoop()
         {
             if (RawLoopTrack == null) return;
-            // DebugHelper.WriteLine("Pausing raw-loop");
             AudioStreamHelper.Pause(RawLoopTrack);
         }
     }

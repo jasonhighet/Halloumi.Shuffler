@@ -26,7 +26,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             SampleKey = "None";
         }
 
-
         /// <summary>
         ///     Gets or sets the sample description
         /// </summary>

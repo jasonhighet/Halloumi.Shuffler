@@ -42,8 +42,6 @@ namespace Halloumi.Shuffler.Forms
         {
             try
             {
-                //var settings = Halloumi.Shuffler.Forms.Settings.Default;
-                //SetVolume(settings.MonitorVolume);
             }
             catch
             { }

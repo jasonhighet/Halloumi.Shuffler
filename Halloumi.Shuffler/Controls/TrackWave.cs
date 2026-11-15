@@ -425,7 +425,7 @@ namespace Halloumi.Shuffler.Controls
             Filename = fileName;
             BassTrack = BassPlayer.LoadRawLoopTrack(Filename);
 
-            var isShufflerTrack = ExtenedAttributesHelper.HasExtendedAttributes(BassTrack.Description);
+            var isShufflerTrack = ExtendedAttributesHelper.HasExtendedAttributes(BassTrack.Description);
             if (!isShufflerTrack && (BassTrack.TagBpm == 0 || BassTrack.TagBpm == 100))
             {
                 var bpm = BpmCalculator.CalculateBpm(BassTrack.Filename);
@@ -579,7 +579,7 @@ namespace Halloumi.Shuffler.Controls
                 return;
             }
 
-            if (ExtenedAttributesHelper.HasExtendedAttributes(BassTrack.Description) &&
+            if (ExtendedAttributesHelper.HasExtendedAttributes(BassTrack.Description) &&
                 !MessageBoxHelper.Confirm("Replace the fade-in and fade-out sections with suggested ones?"))
                 return;
 

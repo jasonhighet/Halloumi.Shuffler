@@ -16,7 +16,6 @@ using AE = Halloumi.Shuffler.AudioEngine;
 using Track = Halloumi.Shuffler.AudioEngine.Models.Track;
 using Halloumi.Shuffler;
 
-
 namespace Halloumi.Shuffler.Forms
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
@@ -33,7 +32,6 @@ namespace Halloumi.Shuffler.Forms
             trackWave.PositionsChanged += trackWave_PositionsChanged;
             cmbSampleLength.TextChanged += cmbSampleLength_TextChanged;
         }
-
 
         public ShufflerApplication Application { get; set; }
 
@@ -121,11 +119,6 @@ namespace Halloumi.Shuffler.Forms
             RenameSample();
         }
 
-        //private void btnCalculateKey_Click(object sender, EventArgs e)
-        //{
-        //    KeyHelper.CalculateKey(trackWave.Filename);
-        //}
-
         private void txtSampleOffsetPosition_TextChanged(object sender, EventArgs e)
         {
             RefreshTrackWavePositions();
@@ -176,7 +169,6 @@ namespace Halloumi.Shuffler.Forms
                     }
             }
 
-
             trackWave.SetSamples(Samples);
 
             btnImportSamplesFromMix.Visible = LibraryTrack != null && LibraryTrack.IsShufflerTrack;
@@ -187,7 +179,6 @@ namespace Halloumi.Shuffler.Forms
             {
                 lstSamples.Items[i].Selected = lstSamples.Items[i].Text == InitialSample;
             }
-
         }
 
         /// <summary>
@@ -226,7 +217,7 @@ namespace Halloumi.Shuffler.Forms
         private void BindTrack()
         {
             lblTrackBPM.Text = Track.Bpm.ToString("0.00");
-            Text = @"Halloumi : Shuffler : Sample Details : " + Track.Description;
+            Text = "Track Samples: " + Track.Description;
 
             lblTrackArtist.Text = LibraryTrack.Artist;
             lblTrackTitle.Text = LibraryTrack.Title;
@@ -315,15 +306,13 @@ namespace Halloumi.Shuffler.Forms
                 txtTags.Text = string.Join(", ", CurrentSample.Tags.ToArray());
             }
 
-            // SetSampleCheckBoxes();
             SetSampleBpmLabel();
             cmbSampleLength.PopulateItemsFromSecondsList(loopLengths);
         }
 
         private void SetSampleBpmLabel()
         {
-            var bmp = CalculateSampleBpm();
-            lblSampleBPM.Text = bmp.ToString("0.00");
+            lblSampleBPM.Text = CalculateSampleBpm().ToString("0.00");
         }
 
         private void SetLoopModeOnDropdown(LoopMode loopMode)

@@ -43,12 +43,20 @@ A Windows desktop DJ mixing application built on .NET 4.8 and the Bass.Net audio
 
 ## Data files
 
-All persistent data lives in `%APPDATA%\Halloumi\`:
+Per-user data is in `%APPDATA%\Halloumi Shuffler\`:
 
 | File | Contents |
 |---|---|
-| `Halloumi.Shuffler.Library.xml` | Cached track metadata |
-| `Halloumi.Shuffler.MixLibrary.xml` | Track-pair compatibility ratings |
+| `Halloumi.Shuffler.Library.db` | Cached track metadata (SQLite) |
 | `Halloumi.Shuffler.Settings.xml` | Application settings |
+| `Halloumi.Shuffler.WorkingPlaylist.xml` | Current playlist |
 
-Per-track extended attributes (fade points, automation triggers, mix curves) are stored as individual XML files in the configured **Shuffler Folder**.
+Shuffler data is shared through the **Shuffler Folder** set in Settings:
+
+| File | Contents |
+|---|---|
+| `Halloumi.Shuffler.ExtendedAttributes.xml` | Every track's fade points, BPMs and skip section |
+| `Halloumi.Shuffler.AutomationAttributes.xml` | Automation triggers and manual mix curves |
+| `Halloumi.Shuffler.MixLibrary.xml` | Track-pair mix ratings |
+
+The full list is in [docs/architecture.md](docs/architecture.md#data-persistence).

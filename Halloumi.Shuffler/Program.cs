@@ -27,7 +27,6 @@ namespace Halloumi.Shuffler
             {
                 var application = new ShufflerApplication();
 
-
 #if DEBUG
                 Application.Run(new FrmMain(application));
 #else

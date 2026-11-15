@@ -8,7 +8,7 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private const string StreamKey = "RawLoop";
         private const string SectionKey = "RawLoop";
 
-        public RawLoopPlayer(IBmpProvider bpmProvider = null)
+        public RawLoopPlayer(IBpmProvider bpmProvider = null)
         {
             _audioPlayer = new AudioPlayer(bpmProvider);
         }

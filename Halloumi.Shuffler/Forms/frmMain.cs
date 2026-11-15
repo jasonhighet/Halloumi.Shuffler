@@ -31,13 +31,11 @@ namespace Halloumi.Shuffler.Forms
         private FrmGeneratePlaylist _autoGenerateSettings;
         private frmImportShufflerTracks _frmImportShufflerTracks;
 
-
         private FrmSampleLibrary _frmLoopLibrary;
         private FrmSampleLibrary _frmSampleLibrary;
 
         private FrmGeneratePlaylist _generatePlaylist;
         private FrmMonitorSettings _monitorSettings;
-
 
         /// <summary>
         // Required by VS designer — runtime always uses the parameterized overload
@@ -80,16 +78,15 @@ namespace Halloumi.Shuffler.Forms
             mnuSkipToEnd.Click += mnuSkipToEnd_Click;
             NotifyIcon.ContextMenuStrip = notificationContextMenu;
 
-
             var settings = Settings.Default;
             
             formStateController.FormStateSettings = settings.FormStateSettings;
 
             playlistControl.ToolStripLabel = lblPlaylistStatus;
 
-            playlistControl.Initalize(trackLibraryControl, application);
+            playlistControl.Initialize(trackLibraryControl, application);
             playlistControl.ShufflerDetailsUpdatedEvent += playlistControl_ShufflerDetailsUpdatedEvent;
-            playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(); };
+            playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(SkipAfterMixRankBeats); };
             playlistControl.GenerateClicked += (s, e) => OpenGeneratePlaylistForm();
             playlistControl.GenerateNowClicked += (s, e) => shufflerController.AutoGenerateNow();
             playlistControl.LeastMixedRouletteClicked += (s, e) =>
@@ -116,10 +113,6 @@ namespace Halloumi.Shuffler.Forms
 
             playerDetails.ToolStripLabel = lblPlayerStatus;
             
-
-
-            
-
             trackLibraryControl.PlaylistControl = playlistControl;
             trackLibraryControl.ShufflerApplication = application;
             trackLibraryControl.ToolStripLabel = lblLibraryStatus;
@@ -131,15 +124,13 @@ namespace Halloumi.Shuffler.Forms
             mixerControl.BassPlayer = application.BassPlayer;
             mixerControl.PlaylistControl = playlistControl;
 
-            trackLibraryControl.Initalize();
+            trackLibraryControl.Initialize();
             mixerControl.Initialize();
             
-            
-
             shufflerController.Application = _application;
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
-            shufflerController.Initalize();
+            shufflerController.Initialize();
 
             _application.LoadPlaylistGenerationSettings();
             mnuAutoshuffle.Checked = shufflerController.AutoGenerateEnabled;
@@ -201,7 +192,6 @@ namespace Halloumi.Shuffler.Forms
             if (_application.ShuffleAfterShuffling)
                 QueueWorking(e.FileName);
         }
-
 
         /// <summary>
         ///     Handles the LoadDocument event of the fileMenuController control.
@@ -309,7 +299,6 @@ namespace Halloumi.Shuffler.Forms
 
         private void mnuAutoshuffle_Click(object sender, EventArgs e)
         {
-            // Load existing settings, then re-apply the new toggle value before saving,
             // because LoadPlaylistGenerationSettings overwrites AutoGenerateEnabled from the file.
             var request = _application.LoadPlaylistGenerationSettings();
             shufflerController.AutoGenerateEnabled = mnuAutoshuffle.Checked;
@@ -346,7 +335,6 @@ namespace Halloumi.Shuffler.Forms
             else if (navCheckSet.CheckedIndex == 1) SetView(SelectedView.Playlist);
             else SetView(SelectedView.Mixer);
         }
-
 
         /// <summary>
         ///     Loads the UI settings.
@@ -407,7 +395,6 @@ namespace Halloumi.Shuffler.Forms
             trackLibraryControl.SaveSettings();
         }
 
-
         /// <summary>
         ///     Handles the FormClosed event of the frmMain control.
         /// </summary>
@@ -426,7 +413,6 @@ namespace Halloumi.Shuffler.Forms
 
             _application.Unload();
         }
-
 
         /// <summary>
         ///     Handles the Click event of the mnuVSTPluginConfig control.
@@ -572,7 +558,6 @@ namespace Halloumi.Shuffler.Forms
             _application.UseConservativeFadeOut = mnuConservativeFadeOut.Checked;
         }
 
-
         /// <summary>
         ///     Handles the FormClosing event of the frmMain control.
         /// </summary>
@@ -624,7 +609,6 @@ namespace Halloumi.Shuffler.Forms
         {
         }
 
-
         /// <summary>
         ///     Handles the Click event of the mnuMinimizeToTray control.
         /// </summary>
@@ -651,8 +635,11 @@ namespace Halloumi.Shuffler.Forms
             }
             playerDetails.DisplayCurrentTrackDetails();
 
-            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut();
+            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(SkipAfterMixRankBeats);
         }
+
+        // one bar of the outgoing track before the mix, to get through mixes quickly when setting up tracks
+        private const int SkipAfterMixRankBeats = 4;
 
         /// <summary>
         ///     Handles the Click event of the mnuSkipToEnd control.
@@ -836,14 +823,12 @@ namespace Halloumi.Shuffler.Forms
             pnlTop.AutoSize = !mnuShowPlayer.Checked;
 
             SaveSettings();
-
         }
 
         private void mnuFile_DropDownOpening(object sender, EventArgs e)
         {
             if (_application.BassPlayer.PlayState == PlayState.Playing)
             {
-
                 mnuFile.DropDownItems[0].Visible = false;
                 mnuFile.DropDownItems[1].Visible = true;
             }

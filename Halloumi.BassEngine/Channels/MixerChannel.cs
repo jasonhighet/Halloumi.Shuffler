@@ -9,7 +9,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         private int _eqChannel = int.MinValue;
 
-        public MixerChannel(IBmpProvider bpmProvider = null, MixerChannelOutputType outputType = MixerChannelOutputType.SingleOutput)
+        public MixerChannel(IBpmProvider bpmProvider = null, MixerChannelOutputType outputType = MixerChannelOutputType.SingleOutput)
             : base(bpmProvider)
         {
             ChannelId = ChannelHelper.InitializeMixerChannel();

@@ -32,8 +32,6 @@ namespace Halloumi.Shuffler.Controls
         public EventHandler GenerateClicked;
         public EventHandler GenerateNowClicked;
         public EventHandler LeastMixedRouletteClicked;
-        ///public EventHandler TrackClicked;
-
 
         /// <summary>
         ///     Initializes a new instance of the PlaylistControl class.
@@ -183,7 +181,6 @@ namespace Halloumi.Shuffler.Controls
                 trackModel.TrackRankDescription = trackRankDescription;
             }
 
-            //BindData();
             grdPlaylist.InvalidateDisplayedRows();
         }
 
@@ -205,7 +202,6 @@ namespace Halloumi.Shuffler.Controls
                 var trackModel = GetTrackModelByIndex(row.Index);
                 trackModel.MixRankDescription = mixRankDescription;
             }
-
 
             grdPlaylist.InvalidateDisplayedRows();
             MixRankAssigned?.Invoke(this, EventArgs.Empty);
@@ -281,7 +277,6 @@ namespace Halloumi.Shuffler.Controls
             QueueFiles(new List<string> {filename});
         }
 
-
         public void QueueFiles(List<string> files)
         {
             var tracks = files.Select(file => ShufflerApplication.GetTrackByFilename(file)).Where(track => track != null).ToList();
@@ -329,7 +324,6 @@ namespace Halloumi.Shuffler.Controls
 
             _doNotBind = false;
 
-            //BindData();
             grdPlaylist.InvalidateDisplayedRows();
         }
 
@@ -338,7 +332,7 @@ namespace Halloumi.Shuffler.Controls
             return TrackModels.Count - (GetCurrentTrackIndex() + 1);
         }
 
-        public void Initalize(TrackLibraryControl trackLibraryControl, ShufflerApplication application)
+        public void Initialize(TrackLibraryControl trackLibraryControl, ShufflerApplication application)
         {
             ShufflerApplication = application;
 
@@ -435,7 +429,6 @@ namespace Halloumi.Shuffler.Controls
             return track;
         }
 
-
         /// <summary>
         ///     Queues a tracks
         /// </summary>
@@ -468,7 +461,6 @@ namespace Halloumi.Shuffler.Controls
             TrackModels.InsertRange(index, TrackModel.ToList(queueTracks, t => ShufflerApplication.GetMixRankDescription(t.Rank)));
             RefreshPlaylist();
         }
-
 
         /// <summary>
         ///     Opens the play-list.
@@ -615,7 +607,6 @@ namespace Halloumi.Shuffler.Controls
             TrackModels[currentIndex - 1].IsCurrent = true;
             ShufflerApplication.ForcePlay(track.Filename);
         }
-
 
         private bool _binding;
         /// <summary>
@@ -787,7 +778,6 @@ namespace Halloumi.Shuffler.Controls
             Process.Start(directoryName);
         }
 
-
         /// <summary>
         ///     Updates the shuffler details.
         /// </summary>
@@ -829,7 +819,6 @@ namespace Halloumi.Shuffler.Controls
             var result = form.ShowDialog();
             if (result == DialogResult.OK) BindData();
         }
-
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
@@ -892,7 +881,6 @@ namespace Halloumi.Shuffler.Controls
                 }
 
                 SetNextBassPlayerTrack();
-                //BindData();
             }
 
             _bassPlayerOnTrackChange = false;

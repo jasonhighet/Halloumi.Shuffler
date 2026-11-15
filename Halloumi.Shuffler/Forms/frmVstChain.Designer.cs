@@ -55,7 +55,7 @@ namespace Halloumi.Shuffler.Forms
             this.Name = "FrmVstChain";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Falafel : Shuffler : VST Chain";
+            this.Text = "VST Chain";
             this.ResumeLayout(false);
 
         }

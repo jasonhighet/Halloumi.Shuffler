@@ -29,7 +29,6 @@ namespace Halloumi.Shuffler.Controls
         {
             Style = PanelStyle.Custom;
 
-            // KryptonManager.GlobalPaletteChanged += new EventHandler(KryptonManager_GlobalPaletteChanged);
             MouseDown += new MouseEventHandler(Slider_MouseDown);
             MouseUp += new MouseEventHandler(Slider_MouseUp);
             MouseWheel += new MouseEventHandler(Slider_MouseWheel);
@@ -268,7 +267,6 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void KryptonManager_GlobalPaletteChanged(object sender, EventArgs e)
         {
-            // SetThemeState();
         }
 
         /// <summary>

@@ -14,19 +14,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         private static readonly Dictionary<string, AutomationAttributes> AllAttributes =
             new Dictionary<string, AutomationAttributes>();
 
-        //public static void LoadAllAutomationAttributes(List<string> trackDescriptions, string folder)
-        //{
-        //    foreach (var trackDescription in trackDescriptions)
-        //    {
-        //        var filepath = GetAttributesFilePath(trackDescription);
-        //        if (!File.Exists(filepath)) continue;
-
-        //        var attributes = SerializationHelper<AutomationAttributes>.FromXmlFile(filepath);
-        //        attributes.Track = trackDescription;
-        //        AllAttributes.Add(trackDescription, attributes);
-        //    }
-        //}
-
         public static string ShufflerFolder { get; set; }
 
         public static void LoadFromDatabase()

@@ -26,8 +26,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
             public double Duration => EndTime - StartTime;
         }
 
-
-
         public static List<SectionInfo> SplitIntoSections(string mp3FilePath, List<Double> beatTimes, string csvFilePath = "")
         {
             var sections = new List<SectionInfo>();

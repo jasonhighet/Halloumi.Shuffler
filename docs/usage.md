@@ -14,7 +14,7 @@ Importing songs, verifying and correcting metadata: artist, title, album, genre,
 
 The most technically demanding phase. Each song must have its fade-in and fade-out sections defined before it can be mixed automatically.
 
-- Open each track in the audio section editor (`frmUpdateTrackAudio`)
+- Open each track in the Shuffler details editor (`frmShufflerDetails`)
 - Define **FadeInStart / FadeInEnd** — the section that fades up at the start of the track when mixed in
 - Define **FadeOutStart / FadeOutEnd** — the section that fades down at the end when mixing out
 - Optionally define a **SkipStart / SkipEnd** section to trim a middle portion of the song

@@ -118,20 +118,31 @@ The engine `Track` extends `AudioStream` and holds BASS channel handles. The lib
 
 - **Events not polling** — UI controls subscribe to `BassPlayer` events (`OnTrackChange`, `OnEndFadeIn`, `OnTrackQueued`, `OnVolumeChanged`, etc.)
 - **BASS sync callbacks** — automation triggers use `BASS_ChannelSetSync` for sample-accurate position callbacks, not timers
-- **Orphaned legacy files** — `Halloumi.BassEngine/` root contains several `.cs` files (`Shuffler.cs`, `Library.cs`, `TrackSelector.cs`, etc.) that are excluded from the project. Do not add them back.
-- **Slider.Designer.cs** — excluded from `Halloumi.Shuffler` project intentionally; do not add it back
+- **One value-picker dialog** — renaming an artist, album or genre, choosing a title and choosing source audio all use `FrmChooseValue`. The caller sets the title, list and starting value, and passes an `Apply` action.
 
 ## Data files (runtime, not in repo)
 
 ```
-%APPDATA%\Halloumi\
-├── Halloumi.Shuffler.Library.xml       # Cached track metadata
-├── Halloumi.Shuffler.MixLibrary.xml    # Track-pair mix ratings (0–5)
-└── Halloumi.Shuffler.Settings.xml      # Application settings
+%APPDATA%\Halloumi Shuffler\                  # per-user, folder named after the exe
+├── Halloumi.Shuffler.Library.db              # SQLite track cache (Library.xml there is the pre-SQLite copy, migrated once)
+├── Halloumi.Shuffler.Settings.xml            # application settings
+├── Halloumi.Shuffler.LibraryView.xml         # library screen filter and sort
+├── Halloumi.Shuffler.WorkingPlaylist.xml     # current playlist
+├── Halloumi.Shuffler.LoopLibrary.xml
+├── <channel>.VstSettings.xml
+└── SampleLibrary\                            # exported sample .wav files
 
-<ShufflerFolder>\<Artist - Title>.xml   # Per-track: fade points, loop counts,
-                                        # automation triggers, manual mix curves
+%APPDATA%\Halloumi\Halloumi.Shuffler.PlaylistGenerationSettings.xml
+
+<ShufflerFolder>\                             # shared, set in Settings
+├── Halloumi.Shuffler.ExtendedAttributes.xml  # every track's fade points, BPMs, skip section
+├── Halloumi.Shuffler.AutomationAttributes.xml
+├── Halloumi.Shuffler.MixLibrary.xml          # track-pair mix ratings (0–5)
+├── Halloumi.Shuffler.Collections.xml
+└── Halloumi.Shuffler.SampleLibrary.xml
 ```
+
+Attribute files saved before the `ExtendedAttributes` spelling fix use `<ExtenedAttributes>` tags. `ExtendedAttributesHelper.LoadFromDatabase` still reads them, and the next save writes the new spelling.
 
 ## Documentation
 

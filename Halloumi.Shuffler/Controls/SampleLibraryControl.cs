@@ -153,7 +153,6 @@ namespace Halloumi.Shuffler.Controls
             lock (_player)
             {
                 _playing = false;
-                //_player.Pause();
                 _player.Mute();
             }
         }
@@ -222,7 +221,6 @@ namespace Halloumi.Shuffler.Controls
             {
                 _player.Pause();
             }
-
 
             grdSamples.SaveSelectedRows();
 
@@ -505,7 +503,6 @@ namespace Halloumi.Shuffler.Controls
 
             var initialSample = sample.Description;
 
-
             var form = new FrmEditTrackSamples
             {
                 Application = Application,
@@ -577,8 +574,6 @@ namespace Halloumi.Shuffler.Controls
             SampleRecipient?.ImportLibrarySamples(GetSelectedSamples());
         }
 
-
-
         private void mnuExportSamples_Click(object sender, EventArgs e)
         {
             var samples = GetSelectedSamples();
@@ -591,7 +586,6 @@ namespace Halloumi.Shuffler.Controls
             StopSamples();
 
             Cursor = Cursors.WaitCursor;
-
 
             var folder = FileDialogHelper.OpenFolder();
             if (folder == "") return;
@@ -688,7 +682,6 @@ namespace Halloumi.Shuffler.Controls
                 return;
 
             StopSamples();
-
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -716,7 +709,6 @@ namespace Halloumi.Shuffler.Controls
             var sampleKey = sample.Filename.Replace(loopFolder, "");
 
             BassPlayer.LinkLoopSampleToTrack(sampleKey, track);
-
         }
 
         private void BtnReloadLibrary_Click(object sender, EventArgs e)

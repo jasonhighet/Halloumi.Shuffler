@@ -6,12 +6,16 @@ using System.Windows.Forms;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler.AudioLibrary.Models;
+using Halloumi.Shuffler.Forms;
 
 namespace Halloumi.Shuffler.Controls
 {
     public partial class ShufflerController : Component
     {
         private BackgroundWorker _generateWorker;
+
+        // the latest generate request made while the worker was busy; run when it finishes
+        private Action _pendingGenerate;
 
         /// <summary>
         ///     Initializes a new instance of the ShufflerController class.
@@ -46,7 +50,6 @@ namespace Halloumi.Shuffler.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TrackLibraryControl LibraryControl { get; set; }
 
-
         /// <summary>
         ///     Gets the playlist control.
         /// </summary>
@@ -69,9 +72,9 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        ///     Initalizes this instance.
+        ///     Initializes this instance.
         /// </summary>
-        public void Initalize()
+        public void Initialize()
         {
             _generateWorker = new BackgroundWorker();
             _generateWorker.DoWork += GenerateWorker_DoWork;
@@ -99,7 +102,11 @@ namespace Halloumi.Shuffler.Controls
 
         private void AutoGeneratePlaylist()
         {
-            if (_generateWorker.IsBusy) return;
+            if (_generateWorker.IsBusy)
+            {
+                _pendingGenerate = AutoGeneratePlaylist;
+                return;
+            }
 
             // Capture UI state on the UI thread before handing off to the worker
             var request = Application.GetPlaylistGenerationRequest();
@@ -126,7 +133,23 @@ namespace Halloumi.Shuffler.Controls
 
         private void GenerateWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Result == null) return;
+            if (e.Error != null)
+            {
+                CommonFunctions.LogException(e.Error);
+                MessageBox.Show("Playlist generation failed: " + e.Error.Message, "Generate Playlist",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // a request made while this one was running supersedes its result, which may be stale
+            if (_pendingGenerate != null)
+            {
+                var pending = _pendingGenerate;
+                _pendingGenerate = null;
+                pending();
+                return;
+            }
+
+            if (e.Error != null || e.Result == null) return;
 
             var result = (Tuple<List<Track>, TrackSelector.GenerateDirection>)e.Result;
             var tracks = result.Item1;
@@ -153,7 +176,11 @@ namespace Halloumi.Shuffler.Controls
 
         public void AutoGenerateWorkingPlaylistNow()
         {
-            if (_generateWorker.IsBusy) return;
+            if (_generateWorker.IsBusy)
+            {
+                _pendingGenerate = AutoGenerateWorkingPlaylistNow;
+                return;
+            }
 
             var request = new PlaylistGenerationRequest
             {

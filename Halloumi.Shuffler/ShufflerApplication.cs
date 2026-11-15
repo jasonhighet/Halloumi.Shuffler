@@ -45,7 +45,6 @@ namespace Halloumi.Shuffler
 
             CollectionHelper.Library = Library;
 
-
             LoopLibrary = new LoopLibrary(BassPlayer);
             LoadSettings();
 
@@ -54,9 +53,6 @@ namespace Halloumi.Shuffler
 
             MidiManager = new MidiManager();
             MidiMapper = new BassPlayerMidiMapper(BassPlayer, MidiManager);
-
-
-            //LoopLibrary = new LoopLibrary(BassPlayer, @"E:\OneDrive\Music\Samples\Hiphop\Future Loops Scratch Anthology");
 
             LoadFromDatabase();
 
@@ -160,9 +156,9 @@ namespace Halloumi.Shuffler
             MixLibrary.AvailableTracks = Library.GetTracks();
             MixLibrary.LoadFromDatabase();
 
-            ExtenedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
+            ExtendedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.ExtendedAttributes.xml", "Extended attributes");
-            ExtenedAttributesHelper.LoadFromDatabase();
+            ExtendedAttributesHelper.LoadFromDatabase();
             Library.LoadAllExtendedAttributes();
 
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
@@ -255,7 +251,7 @@ namespace Halloumi.Shuffler
             var s = Settings.Default;
             Library.LibraryFolder = s.LibraryFolder;
 
-            ExtenedAttributesHelper.ShufflerFolder = s.ShufflerFolder;
+            ExtendedAttributesHelper.ShufflerFolder = s.ShufflerFolder;
             PluginHelper.WaPluginsFolder            = s.WaPluginsFolder;
             PluginHelper.VstPluginsFolder           = s.VstPluginsFolder;
             BassPlayer.TrackFxAutomationEnabled     = s.EnableTrackFxAutomation;
@@ -623,7 +619,7 @@ namespace Halloumi.Shuffler
             {
                 if (!track.IsShufflerTrack) continue;
 
-                var attributes = ExtenedAttributesHelper.GetExtendedAttributes(track.Description);
+                var attributes = ExtendedAttributesHelper.GetExtendedAttributes(track.Description);
                 if (attributes == null) continue;
 
                 double fadeIn, fadeOut, fadeOutLength;

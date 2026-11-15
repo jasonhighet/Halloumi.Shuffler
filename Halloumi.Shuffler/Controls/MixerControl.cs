@@ -66,7 +66,6 @@ namespace Halloumi.Shuffler.Controls
 
         public void Unload()
         {
-            //SamplerControl.UnloadAll();
         }
     }
 }

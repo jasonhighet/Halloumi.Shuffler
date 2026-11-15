@@ -805,14 +805,12 @@ namespace Halloumi.Shuffler.Forms
                 PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin, settings.TrackFxvstPluginParameters);
             }
 
-
             var trackFxVstPlugin2 = PluginHelper.FindVstPluginByLocation(settings.TrackFxVstPlugin2);
             if (trackFxVstPlugin2 != null)
             {
                 LoadTrackFxVstPlugin2(trackFxVstPlugin2.Location);
                 PluginHelper.SetVstPluginParameters(BassPlayer.TrackSendFxVstPlugin2, settings.TrackFxvstPlugin2Parameters);
             }
-
 
             BindData();
         }

@@ -13,13 +13,12 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// <summary>
         ///     The BPM at the end of the song
         /// </summary>
-        private decimal _endBmp = 100;
+        private decimal _endBpm = 100;
 
         /// <summary>
         ///     The BPM at the start of the song
         /// </summary>
-        private decimal _startBmp = 100;
-
+        private decimal _startBpm = 100;
 
         /// <summary>
         ///     Initializes a new instance of the track class.
@@ -58,7 +57,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             Rank = 1;
         }
 
-
         /// <summary>
         ///     Gets or sets the track title.
         /// </summary>
@@ -89,11 +87,11 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                     return BpmHelper.GetBpmFromLoopLength(FadeInLengthSeconds);
 
                 if (!TagDataLoaded)
-                    return _startBmp;
+                    return _startBpm;
 
                 return TagBpm*BpmAdjustmentRatio;
             }
-            internal set { _startBmp = value; }
+            internal set { _startBpm = value; }
         }
 
         /// <summary>
@@ -107,11 +105,11 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                     return BpmHelper.GetBpmFromLoopLength(FadeOutLengthSeconds);
 
                 if (!TagDataLoaded)
-                    return _endBmp;
+                    return _endBpm;
 
                 return TagBpm*BpmAdjustmentRatio;
             }
-            internal set { _endBmp = value; }
+            internal set { _endBpm = value; }
         }
 
         public override decimal Bpm

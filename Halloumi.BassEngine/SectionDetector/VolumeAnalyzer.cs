@@ -115,7 +115,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
             double scaledMidVolume = (bandVolumes[1] / sampleCount) * 99;
             double scaledHighVolume = (bandVolumes[2] / sampleCount) * 99;
 
-            // Return a struct containing start/end times and all calculated volumes
             return new VolumeInfo(startTime, endTime, scaledVolume, scaledBassVolume, scaledMidVolume, scaledHighVolume);
         }
     }

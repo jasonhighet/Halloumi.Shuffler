@@ -955,11 +955,14 @@
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.linLine);
             this.Controls.Add(this.pnlButtons);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.ShowInTaskbar = false;
+            this.MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmEditTrackSamples";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Halloumi : Shuffler : Samples";
+            this.Text = "Track Samples";
             this.UseApplicationIcon = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmSamples_FormClosed);
             this.Load += new System.EventHandler(this.frmSamples_Load);

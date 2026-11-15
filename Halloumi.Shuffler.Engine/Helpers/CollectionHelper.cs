@@ -14,7 +14,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         private static Dictionary<string, Dictionary<string, Track>> _collectionTracks= new Dictionary<string, Dictionary<string, Track>>();
         private static List<Playlist> _collections = new List<Playlist>();
 
-
         public static void LoadFromDatabase()
         {
             var filepath = CollectionFile;
@@ -181,7 +180,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                 : _collectionTracks[collectionName].Select(x => x.Value).ToList();
         }
 
-
         /// <summary>
         /// Gets all the play-lists that contain a specific track.
         /// </summary>
@@ -246,7 +244,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             return tracks.SelectMany(GetCollectionsForTrack).Distinct().OrderBy(x => x).ToList();
         }
 
-
         private static Track LoadLibraryTrack(AudioEngine.Helpers.PlaylistHelper.PlaylistEntry entry)
         {
             var entryTitle = entry.Title.ToLower();
@@ -267,7 +264,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         {
             return path.StartsWith(Library.LibraryFolder) && File.Exists(path);
         }
-
 
         public static void SaveCollections()
         {
@@ -296,7 +292,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             SaveCollections();
         }
 
-
         /// <summary>
         /// Saves the play-list.
         /// </summary>
@@ -306,7 +301,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         {
             ExportPlaylist(filename, GetTracksInCollection(collectionName));
         }
-
 
         /// <summary>
         ///     Saves a list of tracks as a collection.

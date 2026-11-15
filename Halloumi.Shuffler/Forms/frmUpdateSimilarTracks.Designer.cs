@@ -193,7 +193,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1079, 598);
             this.Controls.Add(this.pnlTrack);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmUpdateSimilarTracks";
             this.ShowInTaskbar = false;

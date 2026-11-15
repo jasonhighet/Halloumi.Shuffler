@@ -61,7 +61,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             if (!_engineStarted) return;
 
-            // DebugHelper.WriteLine("Stop Engine");
             Bass.BASS_Stop();
             Bass.BASS_Free();
 

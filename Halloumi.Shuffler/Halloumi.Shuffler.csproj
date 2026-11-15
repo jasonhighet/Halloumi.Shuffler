@@ -69,11 +69,6 @@
     </Reference>
   </ItemGroup>
 
-  <!-- Slider.Designer.cs was intentionally excluded from the original project -->
-  <ItemGroup>
-    <Compile Remove="Controls\Slider.Designer.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Halloumi.BassEngine\Halloumi.Shuffler.AudioEngine.csproj" />
     <ProjectReference Include="..\Halloumi.Shuffler.Engine\Halloumi.Shuffler.AudioLibrary.csproj" />

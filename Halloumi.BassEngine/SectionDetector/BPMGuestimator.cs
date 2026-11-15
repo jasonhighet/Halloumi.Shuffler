@@ -7,7 +7,6 @@ using Un4seen.Bass;
 
 namespace Halloumi.Shuffler.AudioEngine.SectionDetector
 {
-
     public static class BPMGuestimator
     {
         private const int BUFFER_LENGTH = 1024; // Buffer size

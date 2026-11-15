@@ -55,7 +55,6 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
             BassWaDsp.BASS_WADSP_Config(plugin.Id);
         }
 
-
         /// <summary>
         ///     Shows the VST plug-in configuration screen.
         /// </summary>
@@ -180,6 +179,5 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
             public int Id { get; set; }
             public string Name { get; set; }
         }
-
     }
 }

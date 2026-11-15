@@ -39,7 +39,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
         {
             var sections = new List<SectionInfo>();
 
-
             int stream = CreateStream(mp3FilePath);
             if (stream == 0)
             {
@@ -56,7 +55,6 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
                 Bass.BASS_StreamFree(stream);
             }
             
-
             return sections;
         }
 
@@ -213,6 +211,5 @@ namespace Halloumi.Shuffler.AudioEngine.SectionDetector
 
             return sections;
         }
-
     }
 }

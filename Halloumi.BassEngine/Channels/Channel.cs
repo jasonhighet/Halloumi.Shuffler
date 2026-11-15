@@ -22,18 +22,17 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
         private decimal _syncNotes = 0.25M;
 
-        protected Channel(IBmpProvider bpmProvider = null)
+        protected Channel(IBpmProvider bpmProvider = null)
         {
             BpmProvider = bpmProvider;
             VstPlugins = new List<VstPlugin>();
         }
 
-        public IBmpProvider BpmProvider { get; }
+        public IBpmProvider BpmProvider { get; }
 
         public int ChannelId { get; internal set; }
 
         public List<VstPlugin> VstPlugins { get; internal set; }
-
 
         public VstPlugin GetVstPlugin(int index)
         {
@@ -102,7 +101,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                     throw new ArgumentOutOfRangeException();
             }
         }
-
 
         /// <summary>
         ///     Sets the volume (A value between 0 and 100)
@@ -222,7 +220,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             }
         }
 
-
         public void ClearVstPlugin(int index)
         {
             if (index >= VstPlugins.Count() || VstPlugins[index] == null) return;
@@ -231,11 +228,9 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             VstPlugins[index] = null;
         }
 
-
         private void RemoveVstPlugin(VstPlugin plugin)
         {
             if (plugin == null) return;
-            // DebugHelper.WriteLine("Unload plug-in" + plugin.Name);
             if (plugin.Form != null)
             {
                 if (!plugin.Form.IsDisposed)
@@ -452,7 +447,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                 maxMs = (double)parameter.MinSyncMilliSeconds;
             }
 
-
             if (syncLength < minMs) syncLength = minMs;
             if (syncLength > maxMs) syncLength = maxMs;
 
@@ -460,7 +454,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
                 ? (float) (Math.Log10(syncLength/minMs)/Math.Log10(maxMs/minMs))
                 : (float) ((syncLength - minMs)/(maxMs - minMs));
         }
-
 
         /// <summary>
         ///     Loads a WinAmp DSP plug-in and applies it to the mixer
@@ -478,7 +471,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             if (!_waDspLoaded) StartWaDspEngine();
 
-            // DebugHelper.WriteLine("Load WAPlugin " + location);
             var id = BassWaDsp.BASS_WADSP_Load(location, 10, 10, 300, 300, null);
             Thread.Sleep(20);
 
@@ -537,14 +529,13 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
         /// </summary>
         private static void StartWaDspEngine()
         {
-            // DebugHelper.WriteLine("StartWADSPEngine");
             BassWaDsp.BASS_WADSP_Init(IntPtr.Zero);
             Thread.Sleep(20);
             _waDspLoaded = true;
         }
     }
 
-    public interface IBmpProvider
+    public interface IBpmProvider
     {
         decimal GetCurrentBpm();
     }

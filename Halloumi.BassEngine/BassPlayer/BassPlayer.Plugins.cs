@@ -143,7 +143,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             return SpeakerOutput.LoadVstPlugin(location, index);
         }
 
-
         /// <summary>
         ///     Loads a VST plug-in and applies it to the sample mixer
         /// </summary>
@@ -185,11 +184,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (CurrentTrack == null || LastTrackFxTrigger == null || LastTrackFxTriggerTrack == null)
                 return;
 
-            // DebugHelper.WriteLine("Start StopTrackFXSend");
-
             _trackSendMixer.SetVolume(0);
-
-            // DebugHelper.WriteLine("Calculate TrackFXSend Length");
 
             var position = AudioStreamHelper.GetPosition(LastTrackFxTriggerTrack);
             var positionSeconds = LastTrackFxTriggerTrack.SamplesToSeconds(position);
@@ -200,8 +195,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                          LastTrackFxTrigger.Start;
 
             LastTrackFxTrigger.Length = length;
-
-            // DebugHelper.WriteLine("End StopTrackFXSend");
         }
 
         public void StartTrackFxSendHalf()
@@ -233,9 +226,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             TrackSendFxDelayNotes = 0.375M;
             StartTrackFxSend();
         }
-
-
-
 
         public void StartTrackFxSendSixteenth()
         {
@@ -279,7 +269,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             SpeakerOutput.ClearVstPlugin(index);
         }
-
 
         /// <summary>
         ///     Clears the trackFX VST plug-in.
@@ -326,7 +315,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             SpeakerOutput.ClearWaPlugin();
         }
-
 
         /// <summary>
         ///     Sets the delay by BPM.

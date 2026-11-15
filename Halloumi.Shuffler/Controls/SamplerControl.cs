@@ -10,7 +10,6 @@ using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler;
 using AE = Halloumi.Shuffler.AudioEngine;
 
-
 namespace Halloumi.Shuffler.Controls
 {
     public partial class SamplerControl : UserControl

@@ -36,7 +36,6 @@ namespace Halloumi.Shuffler.Controls
 
         public EventHandler SelectedTracksChanged;
 
-
         public TrackLibraryControl()
         {
             InitializeComponent();
@@ -164,7 +163,6 @@ namespace Halloumi.Shuffler.Controls
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SamplerControl SamplerControl { get; set; }
-
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -338,7 +336,7 @@ namespace Halloumi.Shuffler.Controls
             EditSamples();
         }
 
-        public void Initalize()
+        public void Initialize()
         {
             trackDetails.ShufflerApplication = ShufflerApplication;
             trackDetails.MixableTracksToggleRequested += (s, e) =>
@@ -362,7 +360,6 @@ namespace Halloumi.Shuffler.Controls
             else
                 BindData(false, false, false);
         }
-
 
         private List<Track> GetAvailableTracks()
         {
@@ -498,7 +495,6 @@ namespace Halloumi.Shuffler.Controls
             _binding = false;
         }
 
-
         /// <summary>
         ///     Binds the genres.
         /// </summary>
@@ -516,7 +512,6 @@ namespace Halloumi.Shuffler.Controls
 
             _binding = false;
         }
-
 
         internal void InitialBind()
         {
@@ -909,8 +904,6 @@ namespace Halloumi.Shuffler.Controls
             var itemCount = lstAlbum.Items.Count;
             for (var i = startIndex; i < endIndex; i++)
             {
-                //Application.DoEvents();
-
                 if (itemCount != lstAlbum.Items.Count) break;
 
                 var item = lstAlbum.Items[i];
@@ -950,14 +943,27 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void RenameGenre()
         {
-            var form = new FrmUpdateGenre
+            var genre = GetSelectedGenre();
+            ChooseValue("Rename Genre", ShufflerApplication.GetAllGenres(), genre,
+                value => ShufflerApplication.RenameGenre(genre, value));
+        }
+
+        /// <summary>
+        ///     Asks for a new artist, album or genre name from the existing ones, applies it, then refreshes the library.
+        /// </summary>
+        private void ChooseValue(string title, object names, string initialName, Action<string> apply,
+            bool rebindFilters = true)
+        {
+            var form = new FrmChooseValue
             {
-                Application = ShufflerApplication,
-                Genre = GetSelectedGenre()
+                Text = title,
+                Items = names,
+                ItemDisplayMember = "Name",
+                ItemValueMember = "Name",
+                InitialText = initialName,
+                Apply = f => apply(f.SelectedText)
             };
-            var result = form.ShowDialog();
-            if (result == DialogResult.OK)
-                BindData();
+            if (form.ShowDialog() == DialogResult.OK) BindData(rebindFilters);
         }
 
         /// <summary>
@@ -968,15 +974,8 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return;
 
-            var form = new FrmUpdateGenre
-            {
-                Application = ShufflerApplication,
-                Tracks = tracks
-            };
-            var result = form.ShowDialog();
-
-            if (result == DialogResult.OK)
-                BindData();
+            ChooseValue("Update Genre", ShufflerApplication.GetAllGenres(), tracks[0].Genre,
+                value => ShufflerApplication.UpdateGenre(tracks, value));
         }
 
         /// <summary>
@@ -984,14 +983,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void RenameAlbum()
         {
-            var form = new FrmUpdateAlbum
-            {
-                Application = ShufflerApplication,
-                Album = GetSelectedAlbum()
-            };
-            var result = form.ShowDialog();
-            if (result == DialogResult.OK)
-                BindData();
+            var album = GetSelectedAlbum();
+            ChooseValue("Rename Album", ShufflerApplication.GetAllAlbums(), album,
+                value => ShufflerApplication.RenameAlbum(album, value));
         }
 
         /// <summary>
@@ -1002,15 +996,8 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return;
 
-            var form = new FrmUpdateAlbum
-            {
-                Application = ShufflerApplication,
-                Tracks = tracks
-            };
-            var result = form.ShowDialog();
-
-            if (result == DialogResult.OK)
-                BindData();
+            ChooseValue("Update Album", ShufflerApplication.GetAllAlbums(), tracks[0].Album,
+                value => ShufflerApplication.UpdateAlbum(tracks, value));
         }
 
         /// <summary>
@@ -1018,14 +1005,13 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void UpdateAlbumArtist()
         {
-            var form = new FrmUpdateArtist
-            {
-                Application = ShufflerApplication,
-                Album = GetSelectedAlbum()
-            };
-            var result = form.ShowDialog();
-            if (result == DialogResult.OK)
-                BindData();
+            var album = GetSelectedAlbum();
+            if (string.IsNullOrEmpty(album)) return;
+
+            var albumTracks = ShufflerApplication.GetAllTracksForAlbum(album);
+            var albumArtist = albumTracks.Count > 0 ? albumTracks[0].AlbumArtist : "";
+            ChooseValue("Update Album Artist", ShufflerApplication.GetAllArtists(), albumArtist,
+                value => ShufflerApplication.UpdateAlbumArtist(album, value));
         }
 
         /// <summary>
@@ -1036,15 +1022,8 @@ namespace Halloumi.Shuffler.Controls
             var tracks = GetSelectedTracks();
             if (tracks.Count == 0) return;
 
-            var form = new FrmUpdateArtist
-            {
-                Application = ShufflerApplication,
-                Tracks = tracks
-            };
-            var result = form.ShowDialog();
-
-            if (result == DialogResult.OK)
-                BindData();
+            ChooseValue("Update Artist", ShufflerApplication.GetAllArtists(), tracks[0].Artist,
+                value => ShufflerApplication.UpdateArtist(tracks, value));
         }
 
         /// <summary>
@@ -1196,13 +1175,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void RenameArtist()
         {
-            var form = new FrmUpdateArtist
-            {
-                Application = ShufflerApplication,
-                Artist = GetSelectedArtist()
-            };
-            var result = form.ShowDialog();
-            if (result == DialogResult.OK) BindData(false);
+            var artist = GetSelectedArtist();
+            ChooseValue("Rename Artist", ShufflerApplication.GetAllArtists(), artist,
+                value => ShufflerApplication.RenameArtist(artist, value), false);
         }
 
         /// <summary>
@@ -1217,7 +1192,6 @@ namespace Halloumi.Shuffler.Controls
             DebugHelper.WriteLine("Search");
             BindData();
         }
-
 
         private void SetToolStripLabel(int libraryCount, int availableCount, int displayedCount)
         {
@@ -1239,7 +1213,10 @@ namespace Halloumi.Shuffler.Controls
 
             try
             {
-                var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.Library.xml");
+                var filename = UiSettingsFilename;
+                // these settings used to be kept in the temp folder
+                var oldFilename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.Library.xml");
+                if (!File.Exists(filename) && File.Exists(oldFilename)) filename = oldFilename;
                 if (!File.Exists(filename)) return;
                 var settings = SerializationHelper<Settings>.FromXmlFile(filename);
 
@@ -1296,7 +1273,6 @@ namespace Halloumi.Shuffler.Controls
                 ExcludedCollection = cmbExcludedCollection.SelectedText
             };
 
-
             if (cmbCollection.SelectedIndex > 0)
                 settings.Collection = cmbCollection.SelectedItem.ToString();
 
@@ -1304,10 +1280,11 @@ namespace Halloumi.Shuffler.Controls
             if (cmbExcludedCollection.SelectedIndex > 0)
                 settings.ExcludedCollection = cmbExcludedCollection.SelectedItem.ToString();
 
-            var filename = Path.Combine(Path.GetTempPath(), "Halloumi.Shuffler.Library.xml");
-            SerializationHelper<Settings>.ToXmlFile(settings, filename);
+            SerializationHelper<Settings>.ToXmlFile(settings, UiSettingsFilename);
         }
 
+        private static string UiSettingsFilename =>
+            Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.LibraryView.xml");
 
         /// <summary>
         ///     Handles the RowEnter event of the grdGenre control.
@@ -1642,7 +1619,6 @@ namespace Halloumi.Shuffler.Controls
             colInCount.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
             colOutCount.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
             colTrackKey.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
-
 
             colTrackStartBPM.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
             colTrackEndBPM.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;

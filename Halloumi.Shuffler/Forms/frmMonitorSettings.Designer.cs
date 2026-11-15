@@ -218,7 +218,7 @@
             this.MinimizeBox = false;
             this.Name = "FrmMonitorSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Halloumi : Shuffler : Monitor Settings";
+            this.Text = "Monitor Settings";
             this.UseApplicationIcon = true;
             this.Load += new System.EventHandler(this.frmMonitorSettings_Load);
             this.pnlMain.ResumeLayout(false);

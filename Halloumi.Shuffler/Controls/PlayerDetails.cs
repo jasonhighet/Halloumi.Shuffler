@@ -101,7 +101,6 @@ namespace Halloumi.Shuffler.Controls
         /// <summary>
         ///     Gets or sets the timer.
         /// </summary>
-        //private System.Windows.Forms.Timer Timer { get; set; }
         private BASSTimer Timer { get; }
 
         /// <summary>
@@ -114,7 +113,6 @@ namespace Halloumi.Shuffler.Controls
             get { return _playlistControl; }
             set
             {
-                //if (_playlistControl != null) _playlistControl.PlaylistChanged -= PlaylistControl_PlaylistChanged;
                 _playlistControl = value;
                 if (_playlistControl != null) _playlistControl.PlaylistChanged += PlaylistControl_PlaylistChanged;
             }
@@ -328,7 +326,6 @@ namespace Halloumi.Shuffler.Controls
             _application.SetMixLevel(prevTrack, currentTrack, mixRank);
         }
 
-
         /// <summary>
         ///     Handles the Slid event of the Slider control.
         /// </summary>
@@ -380,7 +377,6 @@ namespace Halloumi.Shuffler.Controls
 
             btnPause.Visible = BassPlayer.PlayState == PlayState.Playing;
             btnPlay.Visible = BassPlayer.PlayState != PlayState.Playing;
-
 
             if (ToolStripLabel != null)
             {
@@ -501,7 +497,6 @@ namespace Halloumi.Shuffler.Controls
             _bassPlayerOnTrackChange = false;
         }
 
-
         /// <summary>
         ///     Handles the PlaylistChanged event of the PlaylistControl control.
         /// </summary>
@@ -611,6 +606,5 @@ namespace Halloumi.Shuffler.Controls
                 lblNextTrack.Text = "Next Track:";
             }
         }
-
     }
 }

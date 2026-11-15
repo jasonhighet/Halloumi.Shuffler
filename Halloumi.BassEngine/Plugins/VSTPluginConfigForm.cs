@@ -52,7 +52,6 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
 
             Text = plugin.Name;
 
-
             BassVst.BASS_VST_EmbedEditor(plugin.Id, EditorPanelHandle);
             plugin.Form = this;
 
@@ -87,7 +86,6 @@ namespace Halloumi.Shuffler.AudioEngine.Plugins
 
             PluginHelper.SetVstPluginPreset(_plugin, presetId);
         }
-
 
         private void VSTPluginConfigForm_FormClosing(object sender, FormClosingEventArgs e)
         {

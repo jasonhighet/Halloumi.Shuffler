@@ -944,7 +944,7 @@
             Controls.Add(pnlTop);
             Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             Name = "FrmMain";
-            Text = "Halloumi : Shuffler";
+            Text = "Halloumi Shuffler";
             UseApplicationIcon = true;
             FormClosing += frmMain_FormClosing;
             FormClosed += frmMain_FormClosed;

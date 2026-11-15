@@ -15,7 +15,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         /// <param name="bpm1">The initial BPM.</param>
         /// <param name="bpm2">The BPM being matched.</param>
         /// <param name="percentVariance">The percent variance.</param>
-        /// <returns>True if BPM2 is in range of BMP1</returns>
+        /// <returns>True if BPM2 is in range of BPM1</returns>
         public static bool IsBpmInRange(decimal bpm1, decimal bpm2, decimal percentVariance)
         {
             percentVariance = Math.Abs(percentVariance);
@@ -78,8 +78,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static decimal GetBpmPercentChange(decimal bpm1, decimal bpm2)
         {
             if (bpm1 == 0M || bpm2 == 0M) return 100M;
-            //var bpmDiff = bpm2 - bpm1;
-            //var percentChange = (bpmDiff/bpm2)*100;
 
             return ((bpm2 / bpm1) - 1M) * 100M;
         }
@@ -236,7 +234,5 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             return (1 + percentChange / 100f);
         }
-
-
     }
 }

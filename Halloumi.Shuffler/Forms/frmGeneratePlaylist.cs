@@ -80,11 +80,11 @@ namespace Halloumi.Shuffler.Forms
             cmbDirection.Items.Add("Backwards");
             cmbDirection.SelectedIndex = 0;
 
-            cmbBmpDirection.Items.Add("Cycle");
-            cmbBmpDirection.Items.Add("Any");
-            cmbBmpDirection.Items.Add("Up");
-            cmbBmpDirection.Items.Add("Down");
-            cmbBmpDirection.SelectedIndex = 0;
+            cmbBpmDirection.Items.Add("Cycle");
+            cmbBpmDirection.Items.Add("Any");
+            cmbBpmDirection.Items.Add("Up");
+            cmbBpmDirection.Items.Add("Down");
+            cmbBpmDirection.SelectedIndex = 0;
 
             cmbAllowBearable.Items.Add("After Two Good Tracks");
             cmbAllowBearable.Items.Add("After Each Good Track");
@@ -169,7 +169,7 @@ namespace Halloumi.Shuffler.Forms
             try
             {
                 var request = Application.LoadPlaylistGenerationSettings();
-                SetComboFromEnum(cmbBmpDirection, request.BpmDirection);
+                SetComboFromEnum(cmbBpmDirection, request.BpmDirection);
                 SetComboFromEnum(cmbDirection, request.Direction);
                 SetComboFromEnum(cmbAllowBearable, request.AllowBearable);
                 SetComboFromEnum(cmbMode, request.Strategy);
@@ -177,7 +177,7 @@ namespace Halloumi.Shuffler.Forms
                 SetComboFromEnum(cmbContinueMix, request.ContinueMix);
                 SetComboFromEnum(cmbExtendedMixes, request.UseExtendedMixes);
                 txtExcludeTracks.Text = request.ExcludeFromPlaylistFile;
-                chkExlcudeMixesOnly.Checked = request.ExcludeMixesOnly;
+                chkExcludeMixesOnly.Checked = request.ExcludeMixesOnly;
                 chkRestrictArtistClumping.Checked = request.RestrictArtistClumping;
                 chkRestrictGenreClumping.Checked = request.RestrictGenreClumping;
                 chkRestrictTitleClumping.Checked = request.RestrictTitleClumping;
@@ -246,7 +246,7 @@ namespace Halloumi.Shuffler.Forms
             return new PlaylistGenerationRequest
             {
                 Strategy = ParseEnum<TrackSelector.MixStrategy>(cmbMode.Text),
-                BpmDirection = ParseEnum<TrackSelector.BpmDirection>(cmbBmpDirection.Text),
+                BpmDirection = ParseEnum<TrackSelector.BpmDirection>(cmbBpmDirection.Text),
                 Direction = ParseEnum<TrackSelector.GenerateDirection>(cmbDirection.Text),
                 AllowBearable = ParseEnum<TrackSelector.AllowBearableMixStrategy>(cmbAllowBearable.Text),
                 ContinueMix = ParseEnum<TrackSelector.ContinueMix>(cmbContinueMix.Text),
@@ -256,7 +256,7 @@ namespace Halloumi.Shuffler.Forms
                 RestrictGenreClumping = chkRestrictGenreClumping.Checked,
                 RestrictTitleClumping = chkRestrictTitleClumping.Checked,
                 ExcludeFromPlaylistFile = txtExcludeTracks.Text,
-                ExcludeMixesOnly = chkExlcudeMixesOnly.Checked,
+                ExcludeMixesOnly = chkExcludeMixesOnly.Checked,
                 DisplayedTracksOnly = chkDisplayedTracksOnly.Checked,
                 ApproximateLengthMinutes = ParseApproxLength(),
                 MaxTracksToAdd = ParseTracksToAdd()
@@ -291,12 +291,12 @@ namespace Halloumi.Shuffler.Forms
             chkDisplayedTracksOnly.Enabled = true;
             cmbDirection.Enabled = true;
             cmbApproxLength.Enabled = true;
-            cmbBmpDirection.Enabled = true;
+            cmbBpmDirection.Enabled = true;
             cmbAllowBearable.Enabled = true;
             cmbMode.Enabled = true;
             txtExcludeTracks.Enabled = true;
             btnExcludeTracks.Enabled = true;
-            chkExlcudeMixesOnly.Enabled = true;
+            chkExcludeMixesOnly.Enabled = true;
             cmbExtendedMixes.Enabled = true;
             cmbContinueMix.Enabled = true;
             cmbKeyMixing.Enabled = true;
@@ -315,7 +315,7 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictArtistClumping.Enabled = enabled;
             chkRestrictGenreClumping.Enabled = enabled;
             chkRestrictTitleClumping.Enabled = enabled;
-            cmbBmpDirection.Enabled = enabled;
+            cmbBpmDirection.Enabled = enabled;
             cmbDirection.Enabled = enabled;
             cmbAllowBearable.Enabled = enabled;
             cmbExtendedMixes.Enabled = enabled;
@@ -333,12 +333,12 @@ namespace Halloumi.Shuffler.Forms
             chkDisplayedTracksOnly.Enabled = false;
             cmbDirection.Enabled = false;
             cmbApproxLength.Enabled = false;
-            cmbBmpDirection.Enabled = false;
+            cmbBpmDirection.Enabled = false;
             cmbAllowBearable.Enabled = false;
             cmbMode.Enabled = false;
             txtExcludeTracks.Enabled = false;
             btnExcludeTracks.Enabled = false;
-            chkExlcudeMixesOnly.Enabled = false;
+            chkExcludeMixesOnly.Enabled = false;
             cmbExtendedMixes.Enabled = false;
             cmbContinueMix.Enabled = false;
             cmbKeyMixing.Enabled = false;

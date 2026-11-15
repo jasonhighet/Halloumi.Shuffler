@@ -23,7 +23,6 @@ namespace Halloumi.Shuffler.Forms
         public ShufflerApplication Application { get; set; }
         public List<Track> Tracks { get; set; }
 
-
         private void frmAddPlaylist_Load(object sender, EventArgs e)
         {
             BindData();

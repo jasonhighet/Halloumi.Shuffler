@@ -18,7 +18,6 @@ namespace Halloumi.Shuffler.Forms
 
         private List<Track> _tracks;
 
-
         public ShufflerApplication Application { get; set; }
 
         /// <summary>
@@ -52,7 +51,6 @@ namespace Halloumi.Shuffler.Forms
 
             return txtOutputFolder.IsValid();
         }
-
 
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -98,6 +96,5 @@ namespace Halloumi.Shuffler.Forms
         private void progressDialog_ProcessingCompleted(object sender, EventArgs e)
         {
         }
-
     }
 }

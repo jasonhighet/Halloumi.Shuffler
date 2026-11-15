@@ -417,7 +417,9 @@
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.beveledLine);
             this.Controls.Add(this.pnlButtons);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FrmUpdateTrackDetails";
             this.ShowInTaskbar = false;

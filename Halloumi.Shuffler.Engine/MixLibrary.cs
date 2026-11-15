@@ -47,7 +47,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public List<Track> AvailableTracks { get; set; }
 
-
         /// <summary>
         ///     Gets or sets the folder where mix detail files are stored
         /// </summary>
@@ -81,7 +80,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             var trackMixeses = SerializationHelper<List<TrackMix>>.FromXmlFile(mixLibraryDatabaseFile);
 
             Clear();
-
 
             Parallel.ForEach(trackMixeses, trackMixes =>
             {
@@ -257,7 +255,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             return GetMixableFromTracks(track, ranks);
         }
 
-
         /// <summary>
         ///     Gets the preferred tracks to mix with the supplied track
         /// </summary>
@@ -301,7 +298,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             // find tracks in range
             var tracksInRange = GetToTracksInRange(track);
 
-            // return tracks in range, except ranked tracks and current track
             return tracksInRange
                 .Where(t => !excludeTracks.Contains(t.Description))
                 .ToList();
@@ -317,7 +313,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             // find tracks in range
             var tracksInRange = GetFromTracksInRange(track);
 
-            // return tracks in range, except ranked tracks and current track
             return tracksInRange
                 .Where(t => !excludeTracks.Contains(t.Description))
                 .ToList();
@@ -466,7 +461,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (fromTrack == null || toTrack == null) return;
             SetMixLevel(fromTrack.Description, toTrack.Description, mixLevel);
-            //SaveMixRankings(fromTrack.Description);
             SaveMixRankings();
         }
 
@@ -551,7 +545,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                 ? description + "*"
                 : description;
         }
-
 
         /// <summary>
         ///     Gets the extended mix attributes.
@@ -703,8 +696,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-
-
         /// <summary>
         ///     Gets the 'mix-from tracks' for a track.
         /// </summary>
@@ -754,7 +745,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             Task.Run(() => SaveToDatabase());
         }
 
-
         /// <summary>
         ///     Loads the mix tracks.
         /// </summary>
@@ -788,7 +778,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             }
         }
 
-
         /// <summary>
         ///     Gets the name of the file used to store the details of a mix ranking object for a specific track
         /// </summary>
@@ -806,13 +795,11 @@ namespace Halloumi.Shuffler.AudioLibrary
             return Path.Combine(ShufflerFolder, filename);
         }
 
-
         public class TrackMix
         {
             public string Track { get; set; }
             public List<string> MixRankings { get; set; }
         }
-
 
         public class MixRanking
         {

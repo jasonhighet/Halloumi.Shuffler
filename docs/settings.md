@@ -1,6 +1,6 @@
 # Settings Reference
 
-Settings are managed by `Halloumi.Shuffler/Forms/Settings.cs` and persisted to `%APPDATA%\Halloumi\Halloumi.Shuffler.Settings.xml` via Windows Forms `Settings.Default`.
+Settings are managed by `Halloumi.Shuffler/Forms/Settings.cs` and persisted to `%APPDATA%\Halloumi Shuffler\Halloumi.Shuffler.Settings.xml` via Windows Forms `Settings.Default`.
 
 They are loaded by `ShufflerApplication.LoadSettings()` and saved by `ShufflerApplication.SaveSettings()` (called on shutdown and after any settings dialog change).
 

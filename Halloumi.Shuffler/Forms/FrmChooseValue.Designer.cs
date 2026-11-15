@@ -1,6 +1,6 @@
-﻿namespace Halloumi.Shuffler.Forms
+namespace Halloumi.Shuffler.Forms
 {
-    partial class FrmUpdateAlbum
+    partial class FrmChooseValue
     {
         /// <summary>
         /// Required designer variable.
@@ -29,48 +29,58 @@
         private void InitializeComponent()
         {
             this.pnlMain = new Halloumi.Common.Windows.Controls.Panel();
-            this.cmbAlbum = new Halloumi.Common.Windows.Controls.ComboBox();
+            this.chkOption = new Halloumi.Common.Windows.Controls.CheckBox();
+            this.cmbValue = new Halloumi.Common.Windows.Controls.ComboBox();
             this.flpButtonsRight = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new Halloumi.Common.Windows.Controls.Button();
             this.btnOK = new Halloumi.Common.Windows.Controls.Button();
             this.beveledLine = new Halloumi.Common.Windows.Controls.BeveledLine();
             this.pnlButtons = new Halloumi.Common.Windows.Controls.Panel();
             this.pnlMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cmbAlbum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbValue)).BeginInit();
             this.flpButtonsRight.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // pnlMain
-            // 
+            //
             this.pnlMain.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlMain.Controls.Add(this.cmbAlbum);
+            this.pnlMain.Controls.Add(this.chkOption);
+            this.pnlMain.Controls.Add(this.cmbValue);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
             this.pnlMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
-            this.pnlMain.Size = new System.Drawing.Size(591, 53);
+            this.pnlMain.Size = new System.Drawing.Size(591, 85);
             this.pnlMain.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlMain.TabIndex = 29;
-            // 
-            // cmbAlbum
-            // 
-            this.cmbAlbum.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cmbAlbum.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbAlbum.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cmbAlbum.DropDownWidth = 264;
-            this.cmbAlbum.ErrorMessage = "Please enter an album name";
-            this.cmbAlbum.ErrorProvider = null;
-            this.cmbAlbum.IsRequired = true;
-            this.cmbAlbum.Location = new System.Drawing.Point(13, 12);
-            this.cmbAlbum.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cmbAlbum.Name = "cmbAlbum";
-            this.cmbAlbum.Size = new System.Drawing.Size(565, 25);
-            this.cmbAlbum.TabIndex = 0;
-            // 
+            //
+            // chkOption
+            //
+            this.chkOption.AutoSize = false;
+            this.chkOption.Dock = System.Windows.Forms.DockStyle.Top;
+            this.chkOption.Location = new System.Drawing.Point(13, 37);
+            this.chkOption.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkOption.Name = "chkOption";
+            this.chkOption.Size = new System.Drawing.Size(565, 49);
+            this.chkOption.TabIndex = 1;
+            //
+            // cmbValue
+            //
+            this.cmbValue.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cmbValue.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbValue.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cmbValue.DropDownWidth = 264;
+            this.cmbValue.ErrorProvider = null;
+            this.cmbValue.Location = new System.Drawing.Point(13, 12);
+            this.cmbValue.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbValue.Name = "cmbValue";
+            this.cmbValue.Size = new System.Drawing.Size(565, 25);
+            this.cmbValue.TabIndex = 0;
+            //
             // flpButtonsRight
-            // 
+            //
             this.flpButtonsRight.BackColor = System.Drawing.Color.Transparent;
             this.flpButtonsRight.Controls.Add(this.btnCancel);
             this.flpButtonsRight.Controls.Add(this.btnOK);
@@ -82,9 +92,9 @@
             this.flpButtonsRight.Padding = new System.Windows.Forms.Padding(7, 2, 7, 6);
             this.flpButtonsRight.Size = new System.Drawing.Size(591, 53);
             this.flpButtonsRight.TabIndex = 0;
-            // 
+            //
             // btnCancel
-            // 
+            //
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(471, 7);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
@@ -92,9 +102,9 @@
             this.btnCancel.Size = new System.Drawing.Size(101, 38);
             this.btnCancel.TabIndex = 31;
             this.btnCancel.Text = "&Cancel";
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.Location = new System.Drawing.Point(360, 7);
             this.btnOK.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnOK.Name = "btnOK";
@@ -102,45 +112,48 @@
             this.btnOK.TabIndex = 6;
             this.btnOK.Text = "&OK";
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
+            //
             // beveledLine
-            // 
+            //
             this.beveledLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.beveledLine.Location = new System.Drawing.Point(0, 53);
+            this.beveledLine.Location = new System.Drawing.Point(0, 85);
             this.beveledLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.beveledLine.Name = "beveledLine";
             this.beveledLine.Size = new System.Drawing.Size(591, 2);
             this.beveledLine.TabIndex = 28;
-            // 
+            //
             // pnlButtons
-            // 
+            //
             this.pnlButtons.BackColor = System.Drawing.SystemColors.Control;
             this.pnlButtons.Controls.Add(this.flpButtonsRight);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 55);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 87);
             this.pnlButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(591, 53);
             this.pnlButtons.Style = Halloumi.Common.Windows.Controls.PanelStyle.ButtonStrip;
             this.pnlButtons.TabIndex = 27;
-            // 
-            // frmUpdateAlbum
-            // 
+            //
+            // FrmChooseValue
+            //
+            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(591, 108);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(591, 140);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.beveledLine);
             this.Controls.Add(this.pnlButtons);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "FrmUpdateAlbum";
+            this.Name = "FrmChooseValue";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Rename Album";
-            this.Load += new System.EventHandler(this.frmUpdateAlbum_Load);
+            this.Load += new System.EventHandler(this.FrmChooseValue_Load);
             this.pnlMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.cmbAlbum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbValue)).EndInit();
             this.flpButtonsRight.ResumeLayout(false);
             this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -155,6 +168,7 @@
         private Halloumi.Common.Windows.Controls.Button btnOK;
         private Halloumi.Common.Windows.Controls.BeveledLine beveledLine;
         private Halloumi.Common.Windows.Controls.Panel pnlButtons;
-        private Halloumi.Common.Windows.Controls.ComboBox cmbAlbum;
+        private Halloumi.Common.Windows.Controls.ComboBox cmbValue;
+        private Halloumi.Common.Windows.Controls.CheckBox chkOption;
     }
 }
