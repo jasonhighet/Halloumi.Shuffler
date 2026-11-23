@@ -524,14 +524,13 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 throw new Exception("Mixer channel not initialized");
 
             BassMix.BASS_Mixer_ChannelPause(audioStream.ChannelId);
-            Bass.BASS_ChannelLock(mixerChannel.ChannelId, true);
 
+            // No BASS_ChannelLock on the mixer around this: holding the mixer's lock while removing a
+            // source can deadlock with BASS's update thread, which locks the mixers above it first.
             foreach (var channel in audioStream.ChannelIds)
             {
                 BassMix.BASS_Mixer_ChannelRemove(channel);
             }
-
-            Bass.BASS_ChannelLock(mixerChannel.ChannelId, false);
 
             if (audioStream.MixerChannelId == mixerChannel.ChannelId)
                 audioStream.MixerChannelId = int.MinValue;

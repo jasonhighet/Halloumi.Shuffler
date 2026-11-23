@@ -74,15 +74,18 @@ Central orchestrator. Owns all major service instances and wires them together. 
 7. Subscribe to `BassPlayer.OnTrackQueued`
 
 ### BassPlayer (audio engine)
-The heart of the application. A large partial class split across five files:
+The heart of the application. `BassPlayer` is a facade: its public members pass through to internal components in `Halloumi.BassEngine/BassPlayer/`:
 
-| File | Responsibility |
+| Component | Responsibility |
 |---|---|
-| `BassPlayer.cs` | Core playback, track queue, crossfade, volume, events |
-| `BassPlayer.Plugins.cs` | VST and WinAmp plugin loading/unloading |
-| `BassPlayer.Automation.cs` | Position-triggered FX sends and sample playback |
-| `BassPlayer.Sampler.cs` | Sample and loop playback channel |
-| `BassPlayer.RawLoop.cs` | Looping of arbitrary track sections |
+| `MixerGraph` | Mixer channels, output routing, plug-in slots |
+| `TrackLoader` | Loading tracks and their audio |
+| `Playback` | Track slots, play/pause/queue, seeking, transitions |
+| `ManualMixer` | Manual mix mode and extended-mix recording |
+| `TrackFxSend` | The track FX send |
+| `Sampler` | Sample playback channel |
+| `AutomationPlayer` | Position-triggered FX sends and sample playback |
+| `RawLooper` | Looping of arbitrary track sections |
 
 See [audio-engine.md](audio-engine.md) for full detail.
 
@@ -197,7 +200,7 @@ It is assumed that `ShufflerApplication` will always be running on a Windows mac
 
 ## Design patterns in use
 
-**Partial classes** — `BassPlayer` split across five files to keep feature areas manageable without introducing separate types.
+**Facade over components** — `BassPlayer` holds no logic; each feature area is its own internal class that owns its channels and state. BASS sync callbacks reach them through `SyncDispatcher`, where each component registers the sync types it handles.
 
 **Observer / events** — UI controls subscribe to `BassPlayer` events (`OnTrackChange`, `OnEndFadeIn`, `OnTrackQueued`, `OnVolumeChanged`, etc.) rather than polling.
 

@@ -1,1998 +1,474 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Shuffler.AudioEngine.SectionDetector;
-using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Mix;
+using Halloumi.Shuffler.AudioEngine.Plugins;
 
 namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
     /// <summary>
-    ///     Track mixing engine utilizing the Bass.Net audio engine
+    ///     The audio engine's public face. It builds the components below and passes calls through
+    ///     to them; it holds no logic of its own.
+    ///     <list type="bullet">
+    ///         <item><see cref="MixerGraph" /> - every mixer channel, output routing, plug-in slots</item>
+    ///         <item><see cref="TrackLoader" /> - loading tracks and their audio</item>
+    ///         <item><see cref="Playback" /> - track slots, play/pause, seeking, transitions</item>
+    ///         <item><see cref="ManualMixer" /> - manual mix mode and extended-mix recording</item>
+    ///         <item><see cref="TrackFxSend" /> - the track FX send</item>
+    ///         <item><see cref="Sampler" /> - samples</item>
+    ///         <item><see cref="AutomationPlayer" /> - playing and editing saved automation</item>
+    ///         <item><see cref="RawLooper" /> - looping a section of a track</item>
+    ///     </list>
+    ///     BASS syncs reach the components through <see cref="SyncDispatcher" />; each component
+    ///     registers the sync types it handles.
     /// </summary>
-    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public partial class BassPlayer : IDisposable, IBpmProvider
+    public class BassPlayer : IDisposable, IBpmProvider
     {
-        /// <summary>
-        ///     A collection of all loaded tracks
-        /// </summary>
-        private static readonly List<Track> CachedTracks = new List<Track>();
+        private readonly MixerGraph _graph;
+        private readonly TrackDeck _deck = new TrackDeck();
+        private readonly TriggerRecorder _recorder = new TriggerRecorder();
+        private readonly TrackLoader _loader;
+        private readonly TrackFxSend _fxSend;
+        private readonly Sampler _sampler;
+        private readonly RawLooper _rawLooper;
+        private readonly AutomationPlayer _automation;
+        private readonly ManualMixer _manualMixer;
+        private readonly BackgroundQueue _background = new BackgroundQueue();
+        private readonly Playback _playback;
 
-        /// <summary>
-        ///     The next available track Id
-        /// </summary>
-        private static int _nextTrackId;
-
-        private static List<Track> _recentTracks = new List<Track>();
-
-        private static readonly object MixerLock = new object();
-        public MonitorOutputChannel MonitorOutput { get; }
-
-        private int _locked; // 0 = free, 1 = locked; use Interlocked for atomic access
-
-        private MixerChannel _trackMixer;
-
-        private MixerChannel _previousTrackMixer;
-
-        private MixerChannel _currentTrackMixer;
-
-        private OutputSplitter _trackOutputSplitter;
-
-        private MixerChannel _trackSendFxMixer;
-
-        private MixerChannel _trackSendMixer;
-
-        /// <summary>
-        ///     Initializes a new instance of the BassPlayer class.
-        /// </summary>
         public BassPlayer()
             : this(IntPtr.Zero)
         {
         }
 
-        /// <summary>
-        ///     Initializes a new instance of the BassPlayer class.
-        /// </summary>
         public BassPlayer(IntPtr windowHandle)
         {
-            LimitSongLength = false;
-            MaxSongLength = 5 * 60; // 5 minutes (if LimitSongLength set to true)
-            DefaultFadeLength = 10; // 10 seconds
-            DefaultFadeInStartVolume = 50; // 50 %
-            DefaultFadeInEndVolume = 100; // 100%
-            DefaultFadeOutStartVolume = 80; // 100%
-            DefaultFadeOutEndVolume = 0; // 0%
-            LoopFadeInForever = false;
-
-            TrackFxAutomationEnabled = false;
-
-            // start audio engine
             AudioEngineHelper.StartAudioEngine(windowHandle);
 
-            SpeakerOutput = new SpeakerOutputChannel();
-            MonitorOutput = new MonitorOutputChannel();
+            _graph = new MixerGraph(this);
+            var syncs = new SyncDispatcher(_deck.FindByChannel);
 
-            PlayState = PlayState.Stopped;
+            _loader = new TrackLoader(_graph);
+            _fxSend = new TrackFxSend(_graph, _deck, _recorder);
+            _sampler = new Sampler(this, _graph, _deck, _recorder);
+            _rawLooper = new RawLooper(_graph, _loader, syncs);
+            _automation = new AutomationPlayer(syncs, _deck, _fxSend, _sampler, _recorder,
+                () => _playback.ResetTrackSyncPositions());
+            _manualMixer = new ManualMixer(_deck, _loader.FadeDefaults, _recorder,
+                () => _playback.PlayState == PlayState.Playing);
+            _playback = new Playback(_graph, _deck, _loader, syncs, _automation, _sampler, _fxSend, _manualMixer,
+                _background);
 
-            InitialiseTrackMixer();
-            InitialiseSampler();
-            InitialiseRawLoopMixer();
-            InitialiseManualMixer();
+            _sampler.SamplesChanged += (sender, e) => OnTrackSamplesChanged?.Invoke(this, e);
 
             ExtendedAttributesHelper.ShufflerFolder = "";
         }
 
-        public bool LoopFadeInForever { get; set; }
-
-        /// <summary>
-        ///     Gets the current track.
-        /// </summary>
-        public Track CurrentTrack { get; private set; }
-
-        public SpeakerOutputChannel SpeakerOutput { get; }
-
-        /// <summary>
-        ///     Gets the preloaded track.
-        /// </summary>
-        public Track PreloadedTrack { get; private set; }
-
-        /// <summary>
-        ///     Gets the track queued to play next.
-        /// </summary>
-        public Track NextTrack { get; private set; }
-
-        /// <summary>
-        ///     Gets the last track that was previously played.
-        /// </summary>
-        public Track PreviousTrack { get; private set; }
-
-        /// <summary>
-        ///     Gets the active track - usually the current, unless the current
-        ///     has finished playing and there was no track queued to play next.
-        /// </summary>
-        public Track ActiveTrack
+        public void Dispose()
         {
-            get { return CurrentTrack ?? PreviousTrack; }
+            _playback.Stop();
+
+            // let queued work (events, freeing audio) finish before the audio is freed
+            _background.WaitUntilIdle(2000);
+
+            _graph.UnloadAllWaPlugins();
+            _graph.UnloadAllVstPlugins();
+
+            _loader.UnloadAll();
+
+            AudioEngineHelper.StopAudioEngine();
+        }
+
+        // ---------- events ----------
+
+        /// <summary>
+        ///     Raised when a new track becomes current. The sender is the current track. When a
+        ///     transition causes it, it arrives on a background thread just after the transition starts.
+        /// </summary>
+        public event EventHandler OnTrackChange
+        {
+            add { _playback.TrackChanged += value; }
+            remove { _playback.TrackChanged -= value; }
+        }
+
+        /// <summary>Raised when a track is queued. The sender is the current track.</summary>
+        public event EventHandler OnTrackQueued
+        {
+            add { _playback.TrackQueued += value; }
+            remove { _playback.TrackQueued -= value; }
         }
 
         /// <summary>
-        ///     Gets the state of the play - playing, paused, or stopped.
+        ///     Raised when the current track's fade-in ends (on a background thread), or when a manual
+        ///     mix is recorded.
         /// </summary>
-        public PlayState PlayState { get; private set; }
+        public event EventHandler OnEndFadeIn
+        {
+            add
+            {
+                _playback.FadeInEnded += value;
+                _manualMixer.MixRecorded += value;
+            }
+            remove
+            {
+                _playback.FadeInEnded -= value;
+                _manualMixer.MixRecorded -= value;
+            }
+        }
 
-        /// <summary>
-        ///     Gets or sets the volume of the bass player as decimal 0 - 100.
-        /// </summary>
+        /// <summary>Raised when playback skips to the end or to the fade-out.</summary>
+        public event EventHandler OnSkipToEnd
+        {
+            add { _playback.SkippedToEnd += value; }
+            remove { _playback.SkippedToEnd -= value; }
+        }
+
+        public event EventHandler OnManualMixModeChanged
+        {
+            add { _manualMixer.ModeChanged += value; }
+            remove { _manualMixer.ModeChanged -= value; }
+        }
+
+        public event EventHandler OnManualMixVolumeChanged
+        {
+            add { _manualMixer.VolumeChanged += value; }
+            remove { _manualMixer.VolumeChanged -= value; }
+        }
+
+        /// <summary>Raised when the mixer volume is set. The sender is the current track.</summary>
+        public event EventHandler OnVolumeChanged;
+
+        /// <summary>Raised (on a worker thread) when the loaded samples change. The sender is this player.</summary>
+        public event EventHandler OnTrackSamplesChanged;
+
+        // ---------- tracks ----------
+
+        public Track CurrentTrack => _deck.Current;
+
+        public Track NextTrack => _deck.Next;
+
+        public Track PreviousTrack => _deck.Previous;
+
+        public Track LoadTrack(string filename) => _loader.LoadTrack(filename);
+
+        public Track LoadTrackAndAudio(string filename) => _loader.LoadTrackAndAudio(filename);
+
+        public bool IsTrackLoaded(string filename) => _loader.IsTrackLoaded(filename);
+
+        public Track LoadTrackAudioData(Track track) => _loader.LoadTrackAudioData(track);
+
+        public void UnloadTrackAudioData(Track track) => _loader.UnloadTrackAudioData(track);
+
+        public void ReloadTrack(string filename) => _playback.ReloadTrack(filename);
+
+        public Track QueueTrack(string filename) => _playback.QueueTrack(filename);
+
+        public void QueueTrack(Track track) => _playback.QueueTrack(track);
+
+        public void PreloadTrack(string filename) => _playback.PreloadTrack(filename);
+
+        public void ClearTracks() => _playback.ClearTracks();
+
+        // ---------- playback ----------
+
+        public PlayState PlayState => _playback.PlayState;
+
+        public bool IsPlaying() => _playback.IsPlaying();
+
+        public void Play() => _playback.Play();
+
+        public void Pause() => _playback.Pause();
+
+        public void Stop() => _playback.Stop();
+
+        public void ForcePlay(string filename) => _playback.ForcePlay(filename);
+
+        public void ForcePlay(Track track) => _playback.ForcePlay(track.Filename);
+
+        public TrackPosition GetTrackPosition() => _playback.GetTrackPosition();
+
+        public void SetAdjustedTrackPosition(long position) => _playback.SetAdjustedTrackPosition(position);
+
+        public void JumpBack() => _playback.JumpBack();
+
+        public void SkipToEnd() => _playback.SkipToEnd();
+
+        public void SkipToFadeOut(int beatsBeforeFadeOut = 8) => _playback.SkipToFadeOut(beatsBeforeFadeOut);
+
+        public decimal GetCurrentBpm() => _playback == null ? BpmHelper.NormaliseBpm(100M) : _playback.GetCurrentBpm();
+
+        public bool LoopFadeInForever
+        {
+            get { return _playback.LoopFadeInForever; }
+            set { _playback.LoopFadeInForever = value; }
+        }
+
+        // ---------- fades ----------
+
+        /// <summary>Default crossfade length in seconds, for tracks with no saved fade points.</summary>
+        public double DefaultFadeLength
+        {
+            get { return _loader.FadeDefaults.FadeLength; }
+            set { _loader.FadeDefaults.FadeLength = value; }
+        }
+
+        public bool LimitSongLength
+        {
+            get { return _loader.FadeDefaults.LimitSongLength; }
+            set { _loader.FadeDefaults.LimitSongLength = value; }
+        }
+
+        /// <summary>Maximum song length in seconds when LimitSongLength is set.</summary>
+        public double MaxSongLength
+        {
+            get { return _loader.FadeDefaults.MaxSongLength; }
+            set { _loader.FadeDefaults.MaxSongLength = value; }
+        }
+
+        public void SetConservativeFadeOutSettings() => _playback.SetConservativeFadeOutSettings();
+
+        public void ForceFadeNow(ForceFadeType fadeType) => _playback.ForceFadeNow(fadeType);
+
+        public void PowerOffCurrentTrack() => _playback.PowerOffCurrentTrack();
+
+        public bool HasExtendedMixAttributes(Track fadeOutTrack, Track fadeInTrack) =>
+            _playback.HasExtendedMixAttributes(fadeOutTrack, fadeInTrack);
+
+        public ExtendedFadeType GetExtendedFadeType(Track fromTrack, Track toTrack) =>
+            _playback.GetExtendedFadeType(fromTrack, toTrack);
+
+        public double GetExtendedFadeOutLength(Track fromTrack, Track toTrack) =>
+            _playback.GetExtendedFadeOutLength(fromTrack, toTrack);
+
+        // ---------- manual mixing ----------
+
+        public bool IsManualMixMode => _manualMixer.IsOn;
+
+        /// <summary>In manual mix mode, the fade type for the transition out of the current track.</summary>
+        public ExtendedFadeType CurrentManualExtendedFadeType
+        {
+            get { return _manualMixer.FadeTypeOut; }
+            set { _manualMixer.FadeTypeOut = value; }
+        }
+
+        public void ToggleManualMixMode() => _manualMixer.Toggle();
+
+        public void EnableManualMixMode() => _manualMixer.Enable();
+
+        public void DisableManualMixMode() => _manualMixer.Disable();
+
+        public void SetManualMixVolume(decimal value) => _manualMixer.SetVolume(value);
+
+        public decimal GetManualMixVolume() => _manualMixer.GetVolume();
+
+        public void PowerOffPreviousTrack() => _manualMixer.PowerOffPreviousTrack();
+
+        public void PausePreviousTrack() => _manualMixer.PausePreviousTrack();
+
+        public void SaveExtendedMix() => _manualMixer.SaveMix();
+
+        public void ClearExtendedMix() => _manualMixer.ClearMix();
+
+        // ---------- volume and outputs ----------
+
+        /// <summary>Gets or sets the BASS output volume (0 - 100).</summary>
         public decimal Volume
         {
             get { return AudioEngineHelper.Volume; }
             set { AudioEngineHelper.Volume = value; }
         }
 
-        /// <summary>
-        ///     Gets or sets the maximum length of songs (in seconds)
-        /// </summary>
-        public double MaxSongLength { get; set; }
+        public SpeakerOutputChannel SpeakerOutput => _graph.SpeakerOutput;
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether song lengths should be limited
-        /// </summary>
-        public bool LimitSongLength { get; set; }
+        public MonitorOutputChannel MonitorOutput => _graph.MonitorOutput;
 
-        /// <summary>
-        ///     Gets or sets the default cross fade length (in seconds)
-        /// </summary>
-        public double DefaultFadeLength { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the default fade-in start volume.
-        /// </summary>
-        public double DefaultFadeInStartVolume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the default fade-in end volume.
-        /// </summary>
-        public double DefaultFadeInEndVolume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the default fade-out start volume.
-        /// </summary>
-        public double DefaultFadeOutStartVolume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the default fade-out end volume.
-        /// </summary>
-        public double DefaultFadeOutEndVolume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the volume fade out is manual or automatic
-        /// </summary>
-        public bool IsManualMixMode { get; private set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether automatic track FX is enabled
-        /// </summary>
-        public bool TrackFxAutomationEnabled { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether automatic track FX is enabled
-        /// </summary>
-        public bool SampleAutomationEnabled { get; set; }
-
-        /// <summary>
-        ///     Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        public void Dispose()
+        public SoundOutput TrackOutput
         {
-            Stop();
-
-            UnloadAllWaPlugins();
-            UnloadAllVstPlugins();
-
-            // unload all tracks
-            foreach (var track in CachedTracks)
-                UnloadTrackAudioData(track);
-            CachedTracks.Clear();
-
-            AudioEngineHelper.StopAudioEngine();
+            get { return _graph.TrackOutput; }
+            set { _graph.TrackOutput = value; }
         }
 
-        public void ToggleManualMixMode()
+        public SoundOutput SamplerOutput
         {
-            if (IsManualMixMode)
-                DisableManualMixMode();
-            else
-                EnableManualMixMode();
+            get { return _graph.SamplerOutput; }
+            set { _graph.SamplerOutput = value; }
         }
 
-        public void EnableManualMixMode()
+        public SoundOutput RawLoopOutput
         {
-            IsManualMixMode = true;
-            CurrentManualExtendedFadeType = ExtendedFadeType.Default;
-            PreviousManualExtendedFadeType = ExtendedFadeType.Default;
-            SetManualMixVolume(0);
-            OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
+            get { return _graph.RawLoopOutput; }
+            set { _graph.RawLoopOutput = value; }
         }
 
-        public void DisableManualMixMode()
-        {
-            IsManualMixMode = false;
-            CurrentManualExtendedFadeType = ExtendedFadeType.Default;
-            PreviousManualExtendedFadeType = ExtendedFadeType.Default;
-            PausePreviousTrack();
-            SetManualMixVolume(0);
-            OnManualMixModeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
-        }
+        /// <summary>Gets the output levels (0 - 32768).</summary>
+        public VolumeLevels GetVolumeLevels() => _graph.GetVolumeLevels();
 
-        /// <summary>
-        ///     Event raised when the currently playing track changes
-        /// </summary>
-        public event EventHandler OnTrackChange;
+        public decimal GetMixerVolume() => _graph.SpeakerOutput.GetVolume();
 
-        /// <summary>
-        ///     Event raised when a track is queued
-        /// </summary>
-        public event EventHandler OnTrackQueued;
-
-        /// <summary>
-        ///     Event raised when the fade in on the current track ends
-        /// </summary>
-        public event EventHandler OnEndFadeIn;
-
-        /// <summary>
-        ///     Event raised when the fade in on the current track ends
-        /// </summary>
-        public event EventHandler OnSkipToEnd;
-
-        public event EventHandler TrackTagsLoaded;
-
-        public event EventHandler OnVolumeChanged;
-
-        public event EventHandler OnManualMixModeChanged;
-
-        /// <summary>
-        ///     Initializes the track mixer.
-        /// </summary>
-        private void InitialiseTrackMixer()
-        {
-            _currentTrackMixer = new MixerChannel(this);
-            _previousTrackMixer = new MixerChannel(this);
-
-            // create mixer channels
-            _trackMixer = new MixerChannel(this, MixerChannelOutputType.MultipleOutputs);
-            _trackOutputSplitter = new OutputSplitter(_trackMixer, SpeakerOutput, MonitorOutput);
-
-            _trackMixer.AddInputChannel(_currentTrackMixer);
-            _trackMixer.AddInputChannel(_previousTrackMixer);
-
-            // create clone of mixer channel and mute it
-            _trackSendMixer = new MixerChannel(this);
-            _trackSendMixer.AddInputChannel(_trackMixer);
-            _trackSendMixer.SetVolume(0);
-
-            _trackSendFxMixer = new MixerChannel(this);
-            _trackSendFxMixer.AddInputChannel(_trackSendMixer);
-            _trackSendFxMixer.CutBass();
-            _trackSendFxMixer.SetVolume(80);
-
-            // add the track FX to the track FX mixer, then that to the main mixer
-            SpeakerOutput.AddInputChannel(_trackSendFxMixer);
-        }
-
-        public void JumpBack()
-        {
-            if (!IsPlaying())
-                return;
-
-            var loopLength = BpmHelper.GetDefaultLoopLength(GetCurrentBpm()) / 2;
-            var position = GetAdjustedPositionSeconds(CurrentTrack) - loopLength;
-            if (position < 0) return;
-            SetTrackPosition(position);
-        }
-
-        /// <summary>
-        ///     Sets the previous track.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        public void SetPreviousTrack(string filename)
-        {
-            var track = LoadTrack(filename);
-            PreviousTrack = track;
-        }
-
-        /// <summary>
-        ///     Enqueues a track for playing.
-        /// </summary>
-        /// <param name="filename">The filename of the track to play.</param>
-        /// <returns>A track object for the specified file</returns>
-        public Track QueueTrack(string filename)
-        {
-            var track = LoadTrack(filename);
-            QueueTrack(track);
-            return track;
-        }
-
-        public void PreloadTrack(string filename)
-        {
-            var track = LoadTrack(filename);
-
-            if (track == null) return;
-            if (TrackHelper.IsSameTrack(track, PreloadedTrack)) return;
-            if (track.IsAudioLoaded()) return;
-
-            // load audio data if not loaded
-            WaitForLock();
-            Lock();
-
-            PreloadedTrack = track;
-            LoadTrackAudioData(track);
-            Unlock();
-        }
-
-        /// <summary>
-        ///     Enqueues a track for playing as the next track, or current track if there is no current one.
-        /// </summary>
-        /// <param name="track">The track to enqueue.</param>
-        public void QueueTrack(Track track)
-        {
-            if (track == null) return;
-
-            IsForceFadeNowMode = false;
-
-            AddTrackToMixer(track);
-
-            if (CurrentTrack == null)
-            {
-                CurrentTrack = track;
-                SetTrackSyncPositions();
-                RaiseOnTrackChange();
-            }
-            else
-            {
-                var oldNextTrack = NextTrack;
-                NextTrack = track;
-                if (!IsTrackInUse(oldNextTrack))
-                    RemoveTrackFromMixers(oldNextTrack);
-
-                SetTrackSyncPositions();
-            }
-
-            RaiseOnTrackQueued();
-            RefreshSamples();
-        }
-
-        /// <summary>
-        ///     Clears the next track.
-        /// </summary>
-        public void ClearNextTrack()
-        {
-            if (NextTrack == null) return;
-            var oldNextTrack = NextTrack;
-            NextTrack = null;
-            if (!IsTrackInUse(oldNextTrack)) RemoveTrackFromMixers(oldNextTrack);
-
-            SetTrackSyncPositions(CurrentTrack);
-        }
-
-        public bool IsTrackDataEntered(Track track)
-        {
-            return track.FadeInStart != 0;
-        }
-
-        /// <summary>
-        ///     Loads the details and meta data about a track .
-        /// </summary>
-        /// <param name="filename">The filename of the track to load.</param>
-        /// <returns>A track object</returns>
-        public Track LoadTrack(string filename)
-        {
-            return LoadTrack(filename, "", "");
-        }
-
-        public Track LoadTrackAndAudio(string filename)
-        {
-            var track = LoadTrack(filename);
-
-            if (track.IsAudioLoaded()) return track;
-
-            LoadTrackAudioData(track);
-            ExtendedAttributesHelper.LoadExtendedAttributes(track);
-
-            return track;
-        }
-
-        /// <summary>
-        ///     Loads the details and meta data about a track .
-        /// </summary>
-        /// <param name="filename">The filename of the track to load.</param>
-        /// <param name="artist">The artist of the track.</param>
-        /// <param name="title">The title of the track.</param>
-        /// <returns>
-        ///     A track object
-        /// </returns>
-        public Track LoadTrack(string filename, string artist, string title)
-        {
-            if (IsTrackLoaded(filename))
-                return
-                    CachedTracks.FirstOrDefault(
-                        t => string.Equals(t.Filename, filename, StringComparison.CurrentCultureIgnoreCase));
-
-            if (!File.Exists(filename)) throw new Exception("Cannot find file " + filename);
-
-            var track = new Track
-            {
-                Id = _nextTrackId++,
-                Filename = filename
-            };
-
-            SetArtistAndTitle(track, title, artist);
-
-            ExtendedAttributesHelper.LoadExtendedAttributes(track);
-
-            CachedTracks.Add(track);
-
-            LoadTagData(track);
-
-            return track;
-        }
-
-        public bool IsTrackLoaded(string filename)
-        {
-            return CachedTracks.Exists(t => string.Equals(t.Filename, filename,
-                StringComparison.CurrentCultureIgnoreCase));
-        }
-
-        /// <summary>
-        ///     Determines whether this instance is playing.
-        /// </summary>
-        public bool IsPlaying()
-        {
-            return AudioStreamHelper.IsPlaying(CurrentTrack) 
-                || AudioStreamHelper.IsPlaying(NextTrack) 
-                || AudioStreamHelper.IsPlaying(PreviousTrack);
-        }
-
-        /// <summary>
-        ///     Sets the artist and title for a track.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="title">The title.</param>
-        /// <param name="artist">The artist.</param>
-        private static void SetArtistAndTitle(Track track, string title, string artist)
-        {
-            if (title == "" || artist == "")
-            {
-                GuessArtistAndTitleFromFilename(track);
-            }
-            else
-            {
-                track.Artist = artist;
-                track.Title = title;
-                if (!title.Contains("/")) return;
-
-                track.Artist = title.Split('/')[0].Trim();
-                track.Title = title.Split('/')[1].Trim();
-            }
-        }
-
-        /// <summary>
-        ///     Guesses the artist and title of a track from its filename.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private static void GuessArtistAndTitleFromFilename(Track track)
-        {
-            var trackDetails = TrackHelper.GuessTrackDetailsFromFilename(track.Filename);
-            track.Title = trackDetails.Title;
-            track.Artist = trackDetails.Artist;
-        }
-
-        /// <summary>
-        ///     Loads data for a track from its mp3 tags
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void LoadTagData(Track track)
-        {
-            if (track == null) return;
-
-            if ((Path.GetExtension(track.Filename) + "").ToLower() == ".wav") return;
-
-            lock (track)
-            {
-                if (track.TagDataLoaded) return;
-
-                var tags = TagHelper.LoadTags(track.Filename);
-
-                track.Title = tags.Title;
-                track.Artist = tags.Artist;
-
-                if (track.Title == "" || track.Artist == "")
-                    GuessArtistAndTitleFromFilename(track);
-
-                if (tags.Gain.HasValue)
-                    track.Gain = tags.Gain.Value;
-
-                if (!string.IsNullOrEmpty(tags.Key))
-                    track.Key = tags.Key;
-
-                if (tags.Bpm.HasValue)
-                    track.TagBpm = tags.Bpm.Value;
-
-                if (tags.Length.HasValue)
-                    track.Length = (long) tags.Length.Value * 1000;
-
-                track.TagDataLoaded = true;
-
-                TrackTagsLoaded?.Invoke(track, EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
-        ///     Unloads a track from the cached tracks
-        /// </summary>
-        /// <param name="track">The track to unload.</param>
-        public void UnloadTrack(Track track)
-        {
-            if (track == null) return;
-
-            AudioStreamHelper.Pause(track);
-            if (IsTrackInUse(track))
-                RemoveTrackFromMixers(track);
-
-            UnloadTrackAudioData(track);
-            CachedTracks.Remove(track);
-        }
-
-        /// <summary>
-        ///     Loads the track audio data.
-        /// </summary>
-        /// <param name="track">The track to load.</param>
-        /// <returns>
-        ///     The loaded track
-        /// </returns>
-        public Track LoadTrackAudioData(Track track)
-        {
-            // abort if audio data already loaded
-            if (track.IsAudioLoaded()) return track;
-
-            // ensure mp3 tag data is loaded
-            if (!track.TagDataLoaded) LoadTagData(track);
-
-            lock (track)
-            {
-                AudioStreamHelper.LoadAudio(track);
-
-                track.FadeInStart = 0;
-                track.FadeInStartVolume = (float) (DefaultFadeInStartVolume / 100);
-                track.FadeInEndVolume = (float) (DefaultFadeInEndVolume / 100);
-
-                track.FadeOutEnd = 0;
-                track.FadeOutStartVolume = (float) (DefaultFadeOutStartVolume / 100);
-                track.FadeOutEndVolume = (float) (DefaultFadeOutEndVolume / 100);
-
-                ExtendedAttributesHelper.LoadExtendedAttributes(track);
-
-                if (track.StartBpm == 0 || track.EndBpm == 0) 
-                {
-                    var bpm = BPMGuestimator.EstimateBPM(track.Filename);
-                    track.StartBpm = Convert.ToDecimal(bpm);
-                    track.EndBpm = Convert.ToDecimal(bpm);
-                }
-
-                if (track.FadeOutStart == 0)
-                    if (LimitSongLength && track.LengthSeconds > MaxSongLength)
-                        track.FadeOutStart = track.SecondsToSamples(MaxSongLength - DefaultFadeLength - 1);
-                    else
-                        track.FadeOutStart = track.SecondsToSamples(track.LengthSeconds - DefaultFadeLength - 1);
-
-                if (track.FadeInEnd == track.FadeInStart || track.FadeInEnd == 0)
-                    track.FadeInEnd = track.FadeInStart +
-                                      track.SecondsToSamples(BpmHelper.GetBestFitLoopLength(track.StartBpm,
-                                          DefaultFadeLength));
-
-                if (track.FadeOutEnd == track.FadeInStart || track.FadeOutEnd == 0)
-                    track.FadeOutEnd = track.FadeOutStart +
-                                       track.SecondsToSamples(BpmHelper.GetBestFitLoopLength(track.EndBpm,
-                                           DefaultFadeLength));
-
-                if (!track.UsePreFadeIn)
-                {
-                    track.PreFadeInStart = track.FadeInStart;
-                    track.PreFadeInStartVolume = 0;
-                }
-            }
-
-            AddToRecentTracks(track);
-
-            return track;
-        }
-
-        /// <summary>
-        ///     Unloads the track audio data.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void UnloadTrackAudioData(Track track)
-        {
-            if (!track.IsAudioLoaded()) return;
-
-            AudioStreamHelper.RemoveFromMixer(track, _currentTrackMixer);
-            AudioStreamHelper.RemoveFromMixer(track, _previousTrackMixer);
-
-            AudioStreamHelper.UnloadAudio(track);
-            track.SyncProc = null;
-        }
-
-        /// <summary>
-        ///     Unloads all unused audio data.
-        /// </summary>
-        private void UnloadUnusedAudioData()
-        {
-            try
-            {
-                List<Track> unusedTracks;
-                lock (_recentTracks)
-                {
-                    unusedTracks = CachedTracks
-                        .Where(t => t.IsAudioLoaded() && !IsTrackInUse(t))
-                        .Where(t => !_recentTracks.Exists(rt => rt.Description == t.Description))
-                        .ToList();
-                }
-
-                foreach (var track in unusedTracks)
-                    UnloadTrackAudioData(track);
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("UnloadUnusedAudioData failed: " + e.Message);
-            }
-        }
-
-        private static void AddToRecentTracks(Track track)
-        {
-            const int length = 5;
-            if (track == null) return;
-
-            lock (_recentTracks)
-            {
-                if (_recentTracks.Exists(rt => rt.Description == track.Description))
-                    _recentTracks.RemoveAll(rt => rt.Description == track.Description);
-
-                _recentTracks.Insert(0, track);
-                if (_recentTracks.Count > length)
-                    _recentTracks = _recentTracks.Take(length).ToList();
-            }
-        }
-
-        /// <summary>
-        ///     Plays the current track (or resumes playing if paused)
-        /// </summary>
-        public void Play()
-        {
-            if (CurrentTrack != null)
-            {
-                if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
-
-                AudioStreamHelper.SetPitch(CurrentTrack, 100F);
-                AudioStreamHelper.SetVolume(CurrentTrack, 1F);
-                AudioStreamHelper.Play(CurrentTrack);
-
-                PlayState = PlayState.Playing;
-            }
-
-            SetDelayByBpm();
-        }
-
-        /// <summary>
-        ///     Stops the current track and starts the next one
-        /// </summary>
-        public void ForcePlayNext()
-        {
-            if (NextTrack == null) return;
-            var trackName = NextTrack.Filename;
-            ForcePlay(trackName);
-        }
-
-        /// <summary>
-        ///     Stops the current track and starts the next one
-        /// </summary>
-        public void ForceCueNext()
-        {
-            if (NextTrack == null) return;
-            var trackName = NextTrack.Filename;
-            ForcePlay(trackName);
-        }
-
-        /// <summary>
-        ///     Stops the current track and replays the previous one
-        /// </summary>
-        public void ForcePlayPrevious()
-        {
-            if (PreviousTrack == null) return;
-            var trackName = PreviousTrack.Filename;
-            ForcePlay(trackName);
-        }
-
-        /// <summary>
-        ///     Forces the play.
-        /// </summary>
-        /// <param name="filename">The filename of the track to play.</param>
-        public void ForcePlay(string filename)
-        {
-            Stop();
-            StopSamples();
-            ClearTracks();
-            QueueTrack(filename);
-            RaiseOnTrackChange();
-            Play();
-            RefreshSamples();
-        }
-
-        /// <summary>
-        ///     Clears the next/current/previous tracks.
-        /// </summary>
-        public void ClearTracks()
-        {
-            RemoveTrackFromMixers(PreviousTrack);
-            PreviousTrack = null;
-            RemoveTrackFromMixers(NextTrack);
-            NextTrack = null;
-            RemoveTrackFromMixers(CurrentTrack);
-            CurrentTrack = null;
-        }
-
-        /// <summary>
-        ///     Forces a track to be played
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void ForcePlay(Track track)
-        {
-            ForcePlay(track.Filename);
-        }
-
-        /// <summary>
-        ///     Stops the current playback
-        /// </summary>
-        public void Stop()
-        {
-            Pause();
-            if (CurrentTrack != null)
-                AudioStreamHelper.SetPosition(CurrentTrack, 0);
-            PlayState = PlayState.Stopped;
-        }
-
-        /// <summary>
-        ///     Pauses the current playback
-        /// </summary>
-        public void Pause()
-        {
-            StopSamples();
-
-            if (CurrentTrack != null)
-                AudioStreamHelper.SmoothPauseSync(CurrentTrack);
-
-            if (NextTrack != null)
-                AudioStreamHelper.SmoothPauseSync(NextTrack);
-
-            if (PreviousTrack != null)
-                AudioStreamHelper.SmoothPauseSync(PreviousTrack);
-
-            StopTrackFxSend();
-            PlayState = PlayState.Paused;
-        }
-
-        /// <summary>
-        ///     Gets the current volume levels.
-        /// </summary>
-        /// <returns>A VolumeLevels object containing the left and right volume levels (0 - 32768)</returns>
-        public VolumeLevels GetVolumeLevels()
-        {
-            WaitForLock();
-
-            lock (MixerLock)
-            {
-                return SpeakerOutput.GetVolumeLevels();
-            }
-        }
-
-        /// <summary>
-        ///     Gets the mixer volume.
-        /// </summary>
-        /// <returns>A value between 0 and 100</returns>
-        public decimal GetMixerVolume()
-        {
-            return SpeakerOutput.GetVolume();
-        }
-
-        /// <summary>
-        ///     Sets the mixer volume.
-        /// </summary>
-        /// <param name="volume">The volume as a value between 0 and 100.</param>
         public void SetMixerVolume(decimal volume)
         {
-            SpeakerOutput.SetVolume(volume);
+            _graph.SpeakerOutput.SetVolume(volume);
             OnVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
 
-        /// <summary>
-        ///     Gets or sets whether the speaker and monitor outputs play in mono.
-        /// </summary>
+        public decimal GetMonitorVolume() => _graph.MonitorOutput.GetVolume();
+
+        public void SetMonitorVolume(decimal volume) => _graph.MonitorOutput.SetVolume(volume);
+
+        /// <summary>Gets or sets whether the speaker and monitor outputs play in mono.</summary>
         public bool Mono
         {
-            get => SpeakerOutput.Mono;
-            set
-            {
-                SpeakerOutput.Mono = value;
-                MonitorOutput.Mono = value;
-            }
+            get { return _graph.Mono; }
+            set { _graph.Mono = value; }
         }
+
+        // ---------- plug-ins ----------
+
+        public VstPlugin GetVstPlugin(PluginChannel channel, int index) => _graph.GetVstPlugin(channel, index);
+
+        public VstPlugin LoadVstPlugin(PluginChannel channel, string location, int index) =>
+            _graph.LoadVstPlugin(channel, location, index);
+
+        public void ClearVstPlugin(PluginChannel channel, int index) => _graph.ClearVstPlugin(channel, index);
+
+        // Named slot members, kept for the plug-in settings screen.
+
+        public VstPlugin MainVstPlugin => GetVstPlugin(PluginChannel.Main, 0);
+        public VstPlugin MainVstPlugin2 => GetVstPlugin(PluginChannel.Main, 1);
+        public VstPlugin SamplerVstPlugin => GetVstPlugin(PluginChannel.Sampler, 0);
+        public VstPlugin SamplerVstPlugin2 => GetVstPlugin(PluginChannel.Sampler, 1);
+        public VstPlugin TrackVstPlugin => GetVstPlugin(PluginChannel.Tracks, 0);
+        public VstPlugin TrackSendFxVstPlugin => GetVstPlugin(PluginChannel.TrackSendFx, 0);
+        public VstPlugin TrackSendFxVstPlugin2 => GetVstPlugin(PluginChannel.TrackSendFx, 1);
+
+        public VstPlugin LoadMainVstPlugin(string location, int index) => LoadVstPlugin(PluginChannel.Main, location, index);
+        public VstPlugin LoadSamplerVstPlugin(string location, int index) => LoadVstPlugin(PluginChannel.Sampler, location, index);
+        public VstPlugin LoadTracksVstPlugin(string location, int index) => LoadVstPlugin(PluginChannel.Tracks, location, index);
+        public VstPlugin LoadTrackSendFxvstPlugin(string location, int index) => LoadVstPlugin(PluginChannel.TrackSendFx, location, index);
+
+        public void ClearMainVstPlugin(int index) => ClearVstPlugin(PluginChannel.Main, index);
+        public void ClearSamplerVstPlugin(int index) => ClearVstPlugin(PluginChannel.Sampler, index);
+        public void ClearTracksVstPlugin(int index) => ClearVstPlugin(PluginChannel.Tracks, index);
+        public void ClearTrackSendFxvstPlugin(int index) => ClearVstPlugin(PluginChannel.TrackSendFx, index);
+
+        public WaPlugin WaPlugin => _graph.WaPlugin;
 
         /// <summary>
-        ///     Gets the monitor volume.
+        ///     Loads a WinAmp DSP plug-in onto the main output (pausing playback while it loads).
         /// </summary>
-        /// <returns>A value between 0 and 100</returns>
-        public decimal GetMonitorVolume()
+        public WaPlugin LoadWaPlugin(string location)
         {
-            return MonitorOutput.GetVolume();
+            var playing = PlayState == PlayState.Playing;
+            if (playing) Pause();
+
+            var plugin = _graph.LoadWaPlugin(location);
+
+            if (playing) Play();
+
+            return plugin;
         }
 
-        /// <summary>
-        ///     Sets the monitor volume.
-        /// </summary>
-        /// <param name="volume">The volume as a value between 0 and 100.</param>
-        public void SetMonitorVolume(decimal volume)
+        public void UnloadAllWaPlugins() => _graph.UnloadAllWaPlugins();
+
+        // ---------- track FX send ----------
+
+        public decimal TrackSendFxDelayNotes
         {
-            MonitorOutput.SetVolume(volume);
+            get { return _fxSend.DelayNotes; }
+            set { _fxSend.DelayNotes = value; }
         }
 
-        /// <summary>
-        ///     Gets the position of the active track, including elapsed/remaining times
-        /// </summary>
-        /// <returns>A track position object</returns>
-        public TrackPosition GetTrackPosition()
+        public void StartTrackFxSend() => _fxSend.Start();
+
+        public void StartTrackFxSendHalf() => _fxSend.Start(0.5M);
+
+        public void StartTrackFxSendQuarter() => _fxSend.Start(0.25M);
+
+        public void StartTrackFxSendEighth() => _fxSend.Start(0.125M);
+
+        public void StartTrackFxSendDottedEighth() => _fxSend.Start(0.1875M);
+
+        public void StartTrackFxSendDottedQuarter() => _fxSend.Start(0.375M);
+
+        public void StartTrackFxSendSixteenth() => _fxSend.Start(0.0625M);
+
+        public void StopTrackFxSend() => _fxSend.Stop();
+
+        // ---------- samples ----------
+
+        public string LoopFolder
         {
-            WaitForLock();
-            lock (MixerLock)
-            {
-                return GetPositionNoLock();
-            }
+            get { return _sampler.LoopFolder; }
+            set { _sampler.LoopFolder = value; }
         }
 
-        private TrackPosition GetPositionNoLock()
+        public decimal SamplerDelayNotes
         {
-            var position = new TrackPosition();
-            var track = ActiveTrack;
-            if (track == null) return position;
-
-            position.Track = track;
-
-            position.ChannelPosition = AudioStreamHelper.GetPosition(track);
-            position.Positition = GetAdjustedPosition(position.ChannelPosition, track);
-
-            if (NextTrack != null)
-                position.Length = track.ActiveLength;
-            else
-                position.Length = track.FadeOutEnd - track.FadeInStart + track.AdditionalEndLoopLength;
-            return position;
+            get { return _sampler.DelayNotes; }
+            set { _sampler.DelayNotes = value; }
         }
 
-        /// <summary>
-        ///     Gets the adjusted position.
-        /// </summary>
-        /// <param name="channelPosition">The channel position.</param>
-        /// <param name="track">The track.</param>
-        /// <returns>The adjusted position</returns>
-        private static long GetAdjustedPosition(long channelPosition, Track track)
+        public List<Sample> GetSamples() => _sampler.GetSamples();
+
+        public void PlaySample(Sample sample) => _sampler.Play(sample);
+
+        public void PlaySample(int sampleIndex) => _sampler.Play(_sampler.GetSample(sampleIndex));
+
+        public void PlaySample(int trackIndex, int sampleIndex) => _sampler.Play(_sampler.GetSample(trackIndex, sampleIndex));
+
+        public void PauseSample(Sample sample) => _sampler.Pause(sample);
+
+        public void PauseSample(int sampleIndex) => _sampler.Pause(_sampler.GetSample(sampleIndex));
+
+        public void PauseSample(int trackIndex, int sampleIndex) => _sampler.Pause(_sampler.GetSample(trackIndex, sampleIndex));
+
+        public void StopSamples() => _sampler.StopAll();
+
+        public void LinkLoopSampleToTrack(string loopKey, Track track) => _sampler.LinkLoopSampleToTrack(loopKey, track);
+
+        // ---------- automation ----------
+
+        /// <summary>If false, saved track FX triggers are not played.</summary>
+        public bool TrackFxAutomationEnabled
         {
-            var position = channelPosition - track.FadeInStart;
-
-            if (track.IsLoopedAtStart)
-                if (track.CurrentStartLoop < track.StartLoopCount)
-                    position += track.CurrentStartLoop * track.FadeInLength;
-                else
-                    position += track.AdditionalStartLoopLength;
-
-            if (track.HasSkipSection && channelPosition > track.SkipStart)
-                position -= track.SkipLength;
-
-            return position;
+            get { return _automation.TrackFxEnabled; }
+            set { _automation.TrackFxEnabled = value; }
         }
 
-        private static long GetAdjustedPosition(Track track)
+        /// <summary>If false, saved sample triggers are not played.</summary>
+        public bool SampleAutomationEnabled
         {
-            if (track == null) return 0;
-            var channelPosition = AudioStreamHelper.GetPosition(track);
-            return GetAdjustedPosition(channelPosition, track);
+            get { return _automation.SamplesEnabled; }
+            set { _automation.SamplesEnabled = value; }
         }
 
-        private static double GetAdjustedPositionSeconds(Track track)
-        {
-            return track?.SamplesToSeconds(GetAdjustedPosition(track)) ?? 0;
-        }
+        public void SaveLastTrackFxTrigger() => _automation.SaveTrackFxTrigger();
 
-        /// <summary>
-        ///     Sets the current track position.
-        /// </summary>
-        /// <param name="position">The position.</param>
-        public void SetAdjustedTrackPosition(long position)
-        {
-            var track = ActiveTrack;
-            if (track == null) return;
+        public void ClearTrackFxTriggers(Track track) => _automation.ClearTrackFxTriggers(track);
 
-            StopTrackFxSend();
+        public void RemovePreviousTrackFxTrigger() => _automation.RemovePreviousTrackFxTrigger();
 
-            track.CurrentEndLoop = 0;
+        public void SaveLastSampleTrigger() => _automation.SaveSampleTrigger();
 
-            var actualPosition = position;
+        public void ClearSampleTriggers() => _automation.ClearSampleTriggers();
 
-            var newCurrentStartLoop = track.CurrentStartLoop;
-            if (track.IsLoopedAtStart)
-                if (actualPosition >= track.FullStartLoopLength)
-                {
-                    newCurrentStartLoop = track.StartLoopCount;
-                    actualPosition = actualPosition - track.AdditionalStartLoopLength;
-                }
-                else
-                {
-                    newCurrentStartLoop = (int) (actualPosition / track.FadeInLength);
-                    actualPosition = actualPosition - newCurrentStartLoop * track.FadeInLength;
-                    if (newCurrentStartLoop > 0 && actualPosition == 0)
-                        actualPosition = 1; // avoid start-fade event when looping
-                }
+        public void RemovePreviousSampleTrigger() => _automation.RemovePreviousSampleTrigger();
 
-            actualPosition = actualPosition + track.FadeInStart;
+        // ---------- raw loop ----------
 
-            if (track.HasSkipSection && actualPosition > track.SkipStart)
-                actualPosition = actualPosition + track.SkipLength;
+        public Track RawLoopTrack => _rawLooper.Track;
 
-            if (actualPosition < track.FadeInStart || actualPosition > track.FadeOutStart)
-                return;
+        public Track LoadRawLoopTrack(string filename) => _rawLooper.Load(filename);
 
-            track.CurrentStartLoop = newCurrentStartLoop;
-            AudioStreamHelper.SetPosition(track, actualPosition);
+        public void UnloadRawLoopTrack() => _rawLooper.Unload();
 
-            if (PreviousTrack != null) AudioStreamHelper.Pause(PreviousTrack);
-        }
+        public void SetRawLoopPositions(long start, long end, long offset) => _rawLooper.SetPositions(start, end, offset);
 
-        /// <summary>
-        ///     Sets the current track position.
-        /// </summary>
-        /// <param name="seconds">The seconds.</param>
-        public void SetTrackPosition(double seconds)
-        {
-            var track = ActiveTrack;
-            if (track == null) return;
+        public void UpdateRawLoopPositions(long start, long end) => _rawLooper.UpdatePositions(start, end);
 
-            var posistion = track.SecondsToSamples(seconds);
+        public void PlayRawLoop() => _rawLooper.Play();
 
-            SetAdjustedTrackPosition(posistion);
-        }
-
-        /// <summary>
-        ///     Sets the default fade out settings.
-        /// </summary>
-        public void SetConservativeFadeOutSettings()
-        {
-            if (CurrentTrack == null || NextTrack == null) return;
-            if (CurrentTrack.PowerDownOnEnd) return;
-
-            var fadeType = ExtendedFadeType.QuickFade;
-
-            if (KeyHelper.GetKeyMixRank(CurrentTrack.Key, NextTrack.Key) < 3)
-                fadeType = ExtendedFadeType.PowerDown;
-            else if (!BpmHelper.IsBpmInRange(CurrentTrack.EndBpm, NextTrack.StartBpm, 10))
-                fadeType = ExtendedFadeType.EchoOut;
-
-            SetAutoFadeOutSettings(fadeType);
-        }
-
-        private void SetAutoFadeOutSettings(ExtendedFadeType fadeType, Track track = null)
-        {
-            if (track == null)
-                track = CurrentTrack;
-            if (track == null)
-                return;
-
-            double newFadeOutLength;
-            switch (fadeType)
-            {
-                case ExtendedFadeType.Default:
-                    break;
-                case ExtendedFadeType.PowerDown:
-                    track.PowerDownOnEnd = true;
-                    break;
-                case ExtendedFadeType.EchoOut:
-                    track.EndLoopCount = 8;
-                    track.FadeOutEnd = track.FadeOutStart +
-                                       track.SecondsToSamples(BpmHelper.GetDefaultLoopLength(track.EndBpm) / 32);
-                    break;
-                case ExtendedFadeType.Cut:
-                    newFadeOutLength = GetCutFadeLength(track);
-                    if (newFadeOutLength < track.FadeOutLengthSeconds)
-                        track.FadeOutEnd = track.FadeOutStart + track.SecondsToSamples(newFadeOutLength);
-                    track.EndLoopCount = 0;
-                    break;
-                case ExtendedFadeType.QuickFade:
-                    newFadeOutLength = GetQuickFadeLength(track);
-                    if (newFadeOutLength < track.FadeOutLengthSeconds)
-                        track.FadeOutEnd = track.FadeOutStart + track.SecondsToSamples(newFadeOutLength);
-                    track.EndLoopCount = 0;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(fadeType), fadeType, null);
-            }
-
-            SetTrackSyncPositions(track);
-        }
-
-        /// <summary>
-        ///     Adds to the mixer channel, and sets the sync points.
-        /// </summary>
-        /// <param name="track">The track to sync.</param>
-        private void AddTrackToMixer(Track track)
-        {
-            if (track == null) return;
-
-            WaitForLock();
-            Lock();
-
-            track.ResetPowerDownOnEnd();
-
-            // load audio data if not loaded
-            if (!track.IsAudioLoaded())
-                LoadTrackAudioData(track);
-
-            if (track != PreviousTrack && track != CurrentTrack)
-                lock (MixerLock)
-                {
-                    // add the new track to the mixer (in paused mode)
-                    AudioStreamHelper.AddToMixer(track, _currentTrackMixer);
-
-                    // set track sync event
-                    track.SyncProc = OnTrackSync;
-                    track.CurrentStartLoop = 0;
-                    track.CurrentEndLoop = 0;
-
-                    if (PreviousTrack == null)
-                    {
-                        AudioStreamHelper.SetPosition(track, 0);
-                        AudioStreamHelper.SetVolume(track, 1F);
-                    }
-                    else if (track.UsePreFadeIn)
-                    {
-                        AudioStreamHelper.SetPosition(track, track.PreFadeInStart);
-                        AudioStreamHelper.SetVolume(track, track.PreFadeInStartVolume);
-                    }
-                    else
-                    {
-                        AudioStreamHelper.SetPosition(track, track.FadeInStart);
-                        AudioStreamHelper.SetVolume(track, track.FadeInStartVolume);
-                    }
-                }
-
-            Unlock();
-        }
-
-        /// <summary>
-        ///     Resets the track sync positions.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public void ResetTrackSyncPositions(Track track)
-        {
-            SetTrackSyncPositions(track);
-        }
-
-        /// <summary>
-        ///     Resets the track sync positions.
-        /// </summary>
-        public void ResetTrackSyncPositions()
-        {
-            ExtendedAttributesHelper.LoadExtendedAttributes(PreviousTrack);
-            ExtendedAttributesHelper.LoadExtendedAttributes(CurrentTrack);
-            ExtendedAttributesHelper.LoadExtendedAttributes(NextTrack);
-
-            SetTrackSyncPositions(PreviousTrack);
-            SetTrackSyncPositions(CurrentTrack);
-            SetTrackSyncPositions(NextTrack);
-        }
-
-        /// <summary>
-        ///     Reloads the track.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        public void ReloadTrack(string filename)
-        {
-            var track =
-                CachedTracks.FirstOrDefault(
-                    t => string.Equals(t.Filename, filename, StringComparison.CurrentCultureIgnoreCase));
-            if (track == null) return;
-
-            LoadTagData(track);
-            ExtendedAttributesHelper.LoadExtendedAttributes(track);
-
-            if (IsTrackInUse(track))
-                SetTrackSyncPositions(track);
-        }
-
-        /// <summary>
-        ///     Sets the track sync positions.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private void SetTrackSyncPositions(Track track)
-        {
-            if (track == null) return;
-
-            ClearTrackSyncPositions(track);
-
-            // set end track sync
-            SetTrackSync(track, 0, SyncType.TrackEnd);
-
-            // set fade-in sync events
-            SetTrackSync(track, track.FadeInStart, SyncType.StartFadeIn);
-            SetTrackSync(track, track.FadeInEnd, SyncType.EndFadeIn);
-
-            // set fade-out sync events
-            SetTrackSync(track, track.FadeOutStart, SyncType.StartFadeOut);
-            SetTrackSync(track, track.FadeOutEnd, SyncType.EndFadeOut);
-
-            // set pre-fade-in start (of next track) sync event
-            if (NextTrack != null && NextTrack.UsePreFadeIn && track == CurrentTrack)
-            {
-                var preFadeInLength = track.SecondsToSamples(NextTrack.PreFadeInLengthSeconds);
-                SetTrackSync(track, track.FadeOutStart - preFadeInLength, SyncType.StartPreFadeIn);
-            }
-
-            // set pre-fade-in start (of previous track) sync event
-            if (track == NextTrack && track.UsePreFadeIn)
-            {
-                var preFadeInLength = CurrentTrack.SecondsToSamples(track.PreFadeInLengthSeconds);
-                SetTrackSync(CurrentTrack, CurrentTrack.FadeOutStart - preFadeInLength, SyncType.StartPreFadeIn);
-            }
-
-            if (track != CurrentTrack) return;
-
-            SetAutomationSyncPositions(track);
-            if (HasExtendedMixAttributes())
-                SetTrackSync(PreviousTrack, GetExtendedMixAttributes().FadeEnd, SyncType.EndExtendedMix);
-
-            if (track.HasSkipSection)
-                SetTrackSync(track, track.SkipStart, SyncType.StartSkipSection);
-        }
-
-        /// <summary>
-        ///     Sets the track sync positions.
-        /// </summary>
-        private void SetTrackSyncPositions()
-        {
-            // set track sync points
-            SetTrackSyncPositions(CurrentTrack);
-            SetTrackSyncPositions(NextTrack);
-        }
-
-        /// <summary>
-        ///     Sets a track sync.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="position">The position.</param>
-        /// <param name="syncType">Type of the sync.</param>
-        /// <returns>The sync Id</returns>
-        private static int SetTrackSync(Track track, long position, SyncType syncType)
-        {
-            if (!track.IsAudioLoaded()) throw new Exception("Track audio not loaded");
-
-            var flags = BASSSync.BASS_SYNC_POS | BASSSync.BASS_SYNC_MIXTIME;
-
-            if (syncType == SyncType.TrackEnd)
-            {
-                flags = BASSSync.BASS_SYNC_END;
-                position = 0;
-            }
-
-            lock (track)
-            {
-                var syncId = BassMix.BASS_Mixer_ChannelSetSync(track.ChannelId,
-                    flags,
-                    position,
-                    track.SyncProc,
-                    new IntPtr((int) syncType));
-
-                switch (syncType)
-                {
-                    case SyncType.StartPreFadeIn:
-                        track.PreFadeInStartSyncId = syncId;
-                        break;
-                    case SyncType.StartFadeIn:
-                        track.FadeInStartSyncId = syncId;
-                        break;
-                    case SyncType.EndFadeIn:
-                        track.FadeInEndSyncId = syncId;
-                        break;
-                    case SyncType.StartFadeOut:
-                        track.FadeOutStartSyncId = syncId;
-                        break;
-                    case SyncType.EndFadeOut:
-                        track.FadeOutEndSyncId = syncId;
-                        break;
-                    case SyncType.TrackEnd:
-                        track.TrackEndSyncId = syncId;
-                        break;
-                    case SyncType.EndRawLoop:
-                        track.RawLoopEndSyncId = syncId;
-                        break;
-                    case SyncType.EndExtendedMix:
-                        track.ExtendedMixEndSyncId = syncId;
-                        break;
-                    case SyncType.StartTrackFxTrigger:
-                        break;
-                    case SyncType.EndTrackFxTrigger:
-                        break;
-                    case SyncType.StartSampleTrigger:
-                        break;
-                    case SyncType.EndSampleTrigger:
-                        break;
-                    case SyncType.StartSkipSection:
-                        track.SkipSyncId = syncId;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(syncType), syncType, null);
-                }
-
-                return syncId;
-            }
-        }
-
-        /// <summary>
-        ///     Clears the track sync positions.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        private void ClearTrackSyncPositions(Track track)
-        {
-            if (track.IsAudioLoaded())
-            {
-                if (track.FadeInStartSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeInStartSyncId);
-                    track.FadeInStartSyncId = int.MinValue;
-                }
-                if (track.FadeInEndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeInEndSyncId);
-                    track.FadeInEndSyncId = int.MinValue;
-                }
-                if (track.FadeOutStartSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeOutStartSyncId);
-                    track.FadeOutStartSyncId = int.MinValue;
-                }
-                if (track.FadeOutEndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.FadeOutEndSyncId);
-                    track.FadeOutEndSyncId = int.MinValue;
-                }
-                if (track.PreFadeInStartSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.PreFadeInStartSyncId);
-                    track.PreFadeInStartSyncId = int.MinValue;
-                }
-                if (track.TrackEndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.TrackEndSyncId);
-                    track.TrackEndSyncId = int.MinValue;
-                }
-                if (track.RawLoopEndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.RawLoopEndSyncId);
-                    track.RawLoopEndSyncId = int.MinValue;
-                }
-                if (track.ExtendedMixEndSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.ExtendedMixEndSyncId);
-                    track.ExtendedMixEndSyncId = int.MinValue;
-                }
-                if (track.SkipSyncId != int.MinValue)
-                {
-                    BassMix.BASS_Mixer_ChannelRemoveSync(track.ChannelId, track.SkipSyncId);
-                    track.SkipSyncId = int.MinValue;
-                }
-            }
-
-            ClearAutomationSyncPositions(track);
-        }
-
-        /// <summary>
-        ///     Unloads the track stream data.
-        /// </summary>
-        /// <param name="track">The track to unload.</param>
-        private void RemoveTrackFromMixers(Track track)
-        {
-            if (track == null) return;
-            if (!track.IsAudioLoaded()) return;
-
-            AudioStreamHelper.Pause(track);
-
-            ClearTrackSyncPositions(track);
-
-            UnloadTrackAudioData(track);
-
-            track.SyncProc = null;
-        }
-
-        /// <summary>
-        ///     Determines whether a track is currently in use as the next/current/previous track
-        /// </summary>
-        /// <param name="track">The track to check.</param>
-        /// <returns>True if the track is in use; otherwise, false.</returns>
-        public bool IsTrackInUse(Track track)
-        {
-            // no track, so not in use
-            return track != null && GetInUseTracks().Any(t => TrackHelper.IsSameTrack(track, t));
-        }
-
-        private IEnumerable<Track> GetInUseTracks()
-        {
-            var tracks = new List<Track>();
-
-            if (CurrentTrack != null) tracks.Add(CurrentTrack);
-            if (NextTrack != null) tracks.Add(NextTrack);
-            if (PreviousTrack != null) tracks.Add(PreviousTrack);
-            if (PreloadedTrack != null) tracks.Add(PreloadedTrack);
-
-            return tracks;
-        }
-
-        /// <summary>
-        ///     Called when the StartFadeIn sync is fired
-        /// </summary>
-        private void StartFadeIn()
-        {
-            if (CurrentTrack == null) return;
-
-            Lock();
-
-            SetTrackSyncPositions();
-
-            if (!CurrentTrack.IsAudioLoaded()) LoadTrackAudioData(CurrentTrack);
-
-            // set loop count
-            CurrentTrack.CurrentStartLoop = 0;
-
-            // set position
-            AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.FadeInStart);
-
-            var startVolume = CurrentTrack.FadeInStartVolume;
-            var endVolume = CurrentTrack.FadeInEndVolume;
-
-            if (PreviousTrack != null && PreviousTrack.PowerDownOnEnd)
-            {
-                startVolume = CurrentTrack.FadeInEndVolume;
-                endVolume = 1F;
-            }
-
-            // set the volume slide
-            AudioStreamHelper.SetVolumeSlide(CurrentTrack, startVolume, endVolume,
-                GetFadeLength(PreviousTrack, CurrentTrack));
-
-            // set to standard pitch
-            AudioStreamHelper.SetPitch(CurrentTrack, 100);
-
-            // start playing the track
-            AudioStreamHelper.Play(CurrentTrack);
-
-            SetDelayByBpm();
-
-            Unlock();
-        }
-
-        /// <summary>
-        ///     Called when the EndFadeIn sync is fired
-        /// </summary>
-        private void EndFadeIn()
-        {
-            Lock();
-
-            var isLooped = CurrentTrack.IsLoopedAtStart;
-            var maxLoops = CurrentTrack.StartLoopCount;
-            var currentLoop = CurrentTrack.CurrentStartLoop;
-            var loopForever = LoopFadeInForever;
-
-            // set to loop start if necessary
-            if (isLooped && currentLoop < maxLoops - 1 || loopForever)
-            {
-                CurrentTrack.CurrentStartLoop++;
-                if (loopForever && CurrentTrack.CurrentStartLoop == maxLoops) CurrentTrack.CurrentStartLoop = 0;
-
-                // set position (add one to void StartFadeIn firing)
-                AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.FadeInStart + 1);
-                Unlock();
-            }
-            else
-            {
-                // set volume to full
-                AudioStreamHelper.SetVolume(CurrentTrack, 1F);
-                Unlock();
-
-                if (!IsManualMixMode || IsManualMixMode && PreviousManualExtendedFadeType == ExtendedFadeType.PowerDown)
-                    RaiseOnEndFadeIn();
-
-                UnloadUnusedAudioData();
-            }
-        }
-
-        private void Unlock()
-        {
-            Interlocked.Exchange(ref _locked, 0);
-        }
-
-        private void Lock()
-        {
-            while (Interlocked.CompareExchange(ref _locked, 1, 0) != 0)
-                Thread.Sleep(1);
-        }
-
-        private void WaitForLock()
-        {
-            while (Volatile.Read(ref _locked) != 0)
-                Thread.Sleep(50);
-        }
-
-        public bool IsLocked()
-        {
-            return Volatile.Read(ref _locked) != 0;
-        }
-
-        /// <summary>
-        ///     Called when the StartFadeOut sync is fired
-        /// </summary>
-        private void StartFadeOut()
-        {
-            Lock();
-
-            var oldPreviousTrack = PreviousTrack;
-
-            PreviousTrack = CurrentTrack;
-            CurrentTrack = NextTrack;
-            NextTrack = null;
-
-            PreviousManualExtendedFadeType = CurrentManualExtendedFadeType;
-            CurrentManualExtendedFadeType = GetCurrentExtendedFadeType();
-
-            if (!IsTrackInUse(oldPreviousTrack))
-                RemoveTrackFromMixers(oldPreviousTrack);
-
-            if (CurrentTrack != null)
-                RaiseOnTrackChange();
-            else
-                PlayState = PlayState.Stopped;
-
-            if (PreviousTrack != null)
-            {
-                // set loop count
-                PreviousTrack.CurrentEndLoop = 0;
-
-                // change tempo if required
-                AudioStreamHelper.SetTrackTempoToMatchAnotherTrack(PreviousTrack, CurrentTrack);
-
-                if (IsManualMixMode)
-                {
-                    SetAutoFadeOutSettings(PreviousManualExtendedFadeType, PreviousTrack);
-                    switch (PreviousManualExtendedFadeType)
-                    {
-                        case ExtendedFadeType.Cut:
-                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                GetCutFadeLength(CurrentTrack));
-                            StopRecordingAutoExtendedMix();
-                            break;
-                        case ExtendedFadeType.QuickFade:
-                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                GetQuickFadeLength(CurrentTrack));
-                            StopRecordingAutoExtendedMix();
-                            break;
-                        case ExtendedFadeType.EchoOut:
-                            AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                BpmHelper.GetDefaultLoopLength(CurrentTrack.StartBpm) / 32 * 8);
-                            StopRecordingAutoExtendedMix();
-                            break;
-                        case ExtendedFadeType.PowerDown:
-                            AudioStreamHelper.PowerDown(PreviousTrack);
-                            StopRecordingAutoExtendedMix();
-                            break;
-                        case ExtendedFadeType.Default:
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-                else
-                {
-                    if (HasExtendedMixAttributes())
-                    {
-                        var mixAttributes = GetExtendedMixAttributes();
-                        switch (mixAttributes.ExtendedFadeType)
-                        {
-                            case ExtendedFadeType.Default:
-                                if (PreviousTrack.PowerDownOnEnd)
-                                    AudioStreamHelper.PowerDown(PreviousTrack);
-                                else
-                                    AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
-                                        mixAttributes.FadeEndVolume, mixAttributes.FadeLength);
-                                break;
-                            case ExtendedFadeType.PowerDown:
-                                AudioStreamHelper.PowerDown(PreviousTrack);
-                                break;
-                            case ExtendedFadeType.Cut:
-                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                    GetCutFadeLength(CurrentTrack));
-                                StopRecordingAutoExtendedMix();
-                                break;
-                            case ExtendedFadeType.QuickFade:
-                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                    GetQuickFadeLength(CurrentTrack));
-                                StopRecordingAutoExtendedMix();
-                                break;
-                            case ExtendedFadeType.EchoOut:
-                                SetAutoFadeOutSettings(mixAttributes.ExtendedFadeType, PreviousTrack);
-                                AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume, 0,
-                                    BpmHelper.GetDefaultLoopLength(CurrentTrack.StartBpm) / 32 * 8);
-                                StopRecordingAutoExtendedMix();
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }
-                    else if (PreviousTrack.PowerDownOnEnd)
-                    {
-                        AudioStreamHelper.PowerDown(PreviousTrack);
-                    }
-                    else if (IsForceFadeNowMode)
-                    {
-                        AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
-                            PreviousTrack.FadeOutEndVolume, PreviousTrack.FadeOutLengthSeconds);
-                    }
-                    else
-                    {
-                        // set the volume slide
-                        AudioStreamHelper.SetVolumeSlide(PreviousTrack, PreviousTrack.FadeOutStartVolume,
-                            PreviousTrack.FadeOutEndVolume, GetFadeLength());
-                    }
-                }
-            }
-
-            Unlock();
-
-            if (CurrentTrack != null)
-                StartFadeIn();
-
-            RefreshSamples();
-        }
-
-        /// <summary>
-        ///     Determines whether the mix between the previous/current tracks has extended mix attributes
-        /// </summary>
-        public bool HasExtendedMixAttributes(string fadeOutTrackDescription, string fadeInTrackDescription)
-        {
-            return GetExtendedMixAttributes(fadeOutTrackDescription, fadeInTrackDescription) != null;
-        }
-
-        /// <summary>
-        ///     Determines whether the mix between the previous/current tracks has extended mix attributes
-        /// </summary>
-        public bool HasExtendedMixAttributes(Track fadeOutTrack, Track fadeInTrack)
-        {
-            return GetExtendedMixAttributes(fadeOutTrack, fadeInTrack) != null;
-        }
-
-        /// <summary>
-        ///     Determines whether the mix between the previous/current tracks has extended mix attributes
-        /// </summary>
-        private bool HasExtendedMixAttributes()
-        {
-            return GetExtendedMixAttributes() != null && GetExtendedMixAttributes().FadeLength != 0;
-        }
-
-        /// <summary>
-        ///     Gets the extended mix attributes.
-        /// </summary>
-        /// <returns>The extended mix attributes.</returns>
-        private ExtendedMixAttributes GetExtendedMixAttributes()
-        {
-            return GetExtendedMixAttributes(PreviousTrack, CurrentTrack);
-        }
-
-        /// <summary>
-        ///     Gets the extended mix attributes.
-        /// </summary>
-        /// <param name="fadeOutTrack">The fade out track.</param>
-        /// <param name="fadeInTrack">The fade in track.</param>
-        /// <returns>The extended mix attributes.</returns>
-        public ExtendedMixAttributes GetExtendedMixAttributes(Track fadeOutTrack, Track fadeInTrack)
-        {
-            if (fadeOutTrack == null || fadeInTrack == null) return null;
-            return GetExtendedMixAttributes(fadeOutTrack.Description, fadeInTrack.Description);
-        }
-
-        /// <summary>
-        ///     Gets the extended mix attributes.
-        /// </summary>
-        /// <param name="fadeOutTrackDescription">The fade out track description.</param>
-        /// <param name="fadeInTrackDescription">The fade in track description.</param>
-        /// <returns>The extended mix attributes.</returns>
-        private ExtendedMixAttributes GetExtendedMixAttributes(string fadeOutTrackDescription,
-            string fadeInTrackDescription)
-        {
-            var attributes = AutomationAttributesHelper.GetAutomationAttributes(fadeOutTrackDescription);
-            return attributes?.GetExtendedMixAttributes(fadeInTrackDescription);
-        }
-
-        private static double GetCutFadeLength(Track track)
-        {
-            if (track == null) return 0D;
-            return BpmHelper.GetDefaultLoopLength(track.StartBpm) / 16D;
-        }
-
-        private static double GetQuickFadeLength(Track track)
-        {
-            if (track == null) return 0D;
-            return BpmHelper.GetDefaultLoopLength(track.EndBpm) / 2D;
-        }
-
-        private static double GetPowerDownFadeLength(Track track)
-        {
-            if (track == null) return 0D;
-            return BpmHelper.GetDefaultLoopLength(track.EndBpm) / 4D;
-        }
-
-        private double GetFadeLength()
-        {
-            return GetFadeLength(PreviousTrack, CurrentTrack);
-        }
-
-        private double GetFadeLength(Track fromTrack, Track toTrack)
-        {
-            if (fromTrack == null && toTrack == null) return 0F;
-
-            if (toTrack == null) return fromTrack.SamplesToSeconds(fromTrack.FullEndLoopLength);
-            if (fromTrack == null) return BpmHelper.GetDefaultLoopLength(toTrack.StartBpm) / 4D;
-
-            var fadeInLength = toTrack.FullStartLoopLengthSeconds;
-            if (fadeInLength == 0)
-                fadeInLength = BpmHelper.GetDefaultLoopLength(toTrack.StartBpm);
-
-            var fadeOutLength = GetExtendedFadeOutLength(fromTrack, toTrack);
-
-            if (!HasExtendedMixAttributes(fromTrack, toTrack))
-            {
-                if (fromTrack.PowerDownOnEnd)
-                {
-                    fadeOutLength = GetPowerDownFadeLength(fromTrack);
-                    fadeOutLength = BpmHelper.GetLengthAdjustedToMatchAnotherTrack(fromTrack, toTrack, fadeOutLength);
-                }
-
-                if (toTrack.StartBpm > fromTrack.EndBpm * 1.1M)
-                    fadeOutLength = fadeOutLength / 2;
-            }
-
-            var fadeLength = fadeOutLength;
-            if (fadeInLength < fadeLength) fadeLength = fadeInLength;
-            return fadeLength;
-        }
-
-        /// <summary>
-        ///     Completes the fade-out.
-        /// </summary>
-        private void EndFadeOut()
-        {
-            IsForceFadeNowMode = false;
-
-            if (PreviousTrack == null) return;
-
-            var maxLoops = GetActiveEndLoopCount();
-            var isLooped = PreviousTrack.IsLoopedAtEnd;
-            var currentLoop = PreviousTrack.CurrentEndLoop;
-            var loopForever = isLooped && (IsManualMixMode || HasExtendedMixAttributes());
-
-            // set to loop start if necessary
-            if (isLooped && currentLoop < maxLoops - 1 || loopForever)
-            {
-                PreviousTrack.CurrentEndLoop++;
-
-                // set position (add one to void StartFadeIn firing)
-                AudioStreamHelper.SetPosition(PreviousTrack, PreviousTrack.FadeOutStart + 1);
-            }
-            else if (!IsManualMixMode && !HasExtendedMixAttributes())
-            {
-                // stop track
-                AudioStreamHelper.Pause(PreviousTrack);
-            }
-        }
-
-        private void EndExtendedMix()
-        {
-            if (IsManualMixMode) return;
-            if (PreviousTrack == null) return;
-            if (!HasExtendedMixAttributes()) return;
-
-            var mixAttributes = GetExtendedMixAttributes();
-            if (mixAttributes.FadeEndLoop != 0 && PreviousTrack.CurrentEndLoop != mixAttributes.FadeEndLoop) return;
-
-            if (GetExtendedMixAttributes().PowerDownAfterFade)
-                AudioStreamHelper.PowerDown(PreviousTrack);
-            else
-                AudioStreamHelper.Pause(PreviousTrack);
-        }
-
-        private int GetActiveEndLoopCount()
-        {
-            return PreviousTrack.EndLoopCount;
-        }
-
-        /// <summary>
-        ///     Starts the pre-fade.
-        /// </summary>
-        private void StartPreFadeIn()
-        {
-            if (NextTrack == null || !NextTrack.UsePreFadeIn) return;
-
-            if (!NextTrack.IsAudioLoaded()) LoadTrackAudioData(NextTrack);
-
-            // set position
-            AudioStreamHelper.SetPosition(NextTrack, NextTrack.PreFadeInStart);
-
-            // set the volume slide
-            AudioStreamHelper.SetVolumeSlide(NextTrack, NextTrack.PreFadeInStartVolume * NextTrack.FadeInStartVolume,
-                NextTrack.FadeInStartVolume, NextTrack.PreFadeInLength);
-
-            // set to standard pitch
-            AudioStreamHelper.SetPitch(NextTrack, 100);
-
-            // start playing the track
-            AudioStreamHelper.Play(NextTrack);
-        }
-
-        /// <summary>
-        ///     Raises the on-track-change event.
-        /// </summary>
-        private void RaiseOnTrackChange()
-        {
-            OnTrackChange?.Invoke(CurrentTrack, EventArgs.Empty);
-            SetDelayByBpm();
-        }
-
-        /// <summary>
-        ///     Raises the OnEndFadeIn
-        /// </summary>
-        private void RaiseOnEndFadeIn()
-        {
-                OnEndFadeIn?.Invoke(CurrentTrack, EventArgs.Empty);
-        }
-
-        /// <summary>
-        ///     Raises the OnSkipToEnd
-        /// </summary>
-        private void RaiseOnSkipToEnd()
-        {
-                OnSkipToEnd?.Invoke(CurrentTrack, EventArgs.Empty);
-        }
-
-        /// <summary>
-        ///     Raises the on-track-queued
-        /// </summary>
-        private void RaiseOnTrackQueued()
-        {
-            OnTrackQueued?.Invoke(CurrentTrack, EventArgs.Empty);
-        }
-
-        /// <summary>
-        ///     Skips to the start of the current track
-        /// </summary>
-        public void SkipToStart()
-        {
-            if (CurrentTrack == null) return;
-            SetAdjustedTrackPosition(0);
-            if (PreviousTrack != null)
-            {
-                AudioStreamHelper.Pause(PreviousTrack);
-                AudioStreamHelper.ResetTempo(PreviousTrack);
-            }
-            if (NextTrack != null)
-            {
-                AudioStreamHelper.Pause(NextTrack);
-                AudioStreamHelper.ResetTempo(NextTrack);
-            }
-            AudioStreamHelper.ResetTempo(CurrentTrack);
-        }
-
-        /// <summary>
-        ///     Skips to the end of the current track
-        /// </summary>
-        public void SkipToEnd()
-        {
-            if (CurrentTrack == null) return;
-
-            AudioStreamHelper.ResetTempo(CurrentTrack);
-            if (PreviousTrack != null)
-            {
-                AudioStreamHelper.ResetTempo(PreviousTrack);
-                AudioStreamHelper.Pause(PreviousTrack);
-            }
-            if (NextTrack != null)
-                AudioStreamHelper.ResetTempo(NextTrack);
-
-            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - 0.01D);
-
-            RaiseOnSkipToEnd();
-        }
-
-        /// <summary>
-        ///     Skips to shortly before the current track's fade-out, so the mix into the next track can be heard.
-        ///     Lands early enough for the next track's pre-fade-in to still play.
-        /// </summary>
-        /// <param name="beatsBeforeFadeOut">How many beats of the current track to play before the fade-out starts.</param>
-        public void SkipToFadeOut(int beatsBeforeFadeOut = 8)
-        {
-            if (CurrentTrack == null) return;
-
-            AudioStreamHelper.ResetTempo(CurrentTrack);
-            if (PreviousTrack != null)
-            {
-                AudioStreamHelper.ResetTempo(PreviousTrack);
-                AudioStreamHelper.Pause(PreviousTrack);
-            }
-            if (NextTrack != null)
-                AudioStreamHelper.ResetTempo(NextTrack);
-
-            // the default loop is 16 beats
-            var beatLength = BpmHelper.GetDefaultLoopLength(CurrentTrack.EndBpm) / 16D;
-            var runIn = beatLength * beatsBeforeFadeOut;
-
-            // the pre-fade-in starts when playback passes its position, so jumping past it would skip it
-            if (NextTrack != null && NextTrack.UsePreFadeIn)
-                runIn = Math.Max(runIn, NextTrack.PreFadeInLengthSeconds + beatLength);
-
-            SetTrackPosition(CurrentTrack.ActiveLengthSeconds - runIn);
-
-            RaiseOnSkipToEnd();
-        }
-
-        /// <summary>
-        ///     Skips the skip section.
-        /// </summary>
-        private void StartSkipSection()
-        {
-            if (CurrentTrack == null || !CurrentTrack.HasSkipSection) return;
-
-            // set position
-            AudioStreamHelper.SetPosition(CurrentTrack, CurrentTrack.SkipEnd);
-        }
-
-        /// <summary>
-        ///     Called when the track sync event is fired
-        /// </summary>
-        private void OnTrackSync(int handle, int channel, int data, IntPtr pointer)
-        {
-            var syncType = (SyncType) pointer.ToInt32();
-            var track = GetInUseTracks().FirstOrDefault(x => x.ChannelId == channel);
-
-            switch (syncType)
-            {
-                case SyncType.StartPreFadeIn:
-                    StartPreFadeIn();
-                    break;
-                case SyncType.StartFadeOut:
-                    // Start-Fade-Out also calls start fade in.
-                    // Old track fade out & new track fade-in
-                    // always start at same time.
-                    if (TrackHelper.IsSameTrack(track, CurrentTrack))
-                        StartFadeOut();
-                    break;
-                case SyncType.EndFadeOut:
-                    EndFadeOut();
-                    break;
-                case SyncType.EndFadeIn:
-                    EndFadeIn();
-                    break;
-                case SyncType.EndRawLoop:
-                    PlayRawLoop();
-                    break;
-                case SyncType.StartTrackFxTrigger:
-                    StartTrackFxTrigger();
-                    break;
-                case SyncType.EndTrackFxTrigger:
-                    StopTrackFxTrigger();
-                    break;
-                case SyncType.StartSampleTrigger:
-                    StartSampleTrigger();
-                    break;
-                case SyncType.EndSampleTrigger:
-                    StopSampleTrigger();
-                    break;
-                case SyncType.EndExtendedMix:
-                    EndExtendedMix();
-                    break;
-                case SyncType.StartSkipSection:
-                    StartSkipSection();
-                    break;
-                case SyncType.TrackEnd:
-                    break;
-                case SyncType.StartFadeIn:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        /// <summary>
-        ///     Enumeration style representing different types of sync events.
-        /// </summary>
-        private enum SyncType
-        {
-            /// <summary>
-            ///     track end sync event type
-            /// </summary>
-            TrackEnd = 0,
-
-            /// <summary>
-            ///     Start fade-in sync event type
-            /// </summary>
-            StartFadeIn = 1,
-
-            /// <summary>
-            ///     End fade-in sync event type
-            /// </summary>
-            EndFadeIn = 2,
-
-            /// <summary>
-            ///     Start fade-out sync event type
-            /// </summary>
-            StartFadeOut = 3,
-
-            /// <summary>
-            ///     End fade-out sync event type
-            /// </summary>
-            EndFadeOut = 4,
-
-            /// <summary>
-            ///     Start pre-fade-in sync event type
-            /// </summary>
-            StartPreFadeIn = 5,
-
-            /// <summary>
-            ///     End the loop section in raw-loop mode
-            /// </summary>
-            EndRawLoop = 6,
-
-            /// <summary>
-            ///     Start track effect sync event type
-            /// </summary>
-            StartTrackFxTrigger = 7,
-
-            /// <summary>
-            ///     End track effect sync event type
-            /// </summary>
-            EndTrackFxTrigger = 8,
-
-            /// <summary>
-            ///     Start sample sync event type
-            /// </summary>
-            StartSampleTrigger = 9,
-
-            /// <summary>
-            ///     End sample sync event type
-            /// </summary>
-            EndSampleTrigger = 10,
-
-            /// <summary>
-            ///     End of the extended mix
-            /// </summary>
-            EndExtendedMix = 11,
-
-            /// <summary>
-            ///     Start of the skip section
-            /// </summary>
-            StartSkipSection = 12
-        }
+        public void StopRawLoop() => _rawLooper.Stop();
     }
 }

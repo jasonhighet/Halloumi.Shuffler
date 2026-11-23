@@ -97,9 +97,7 @@ namespace Halloumi.Shuffler.Controls
             cmbTrackRankFilter.SelectedIndexChanged += cmbTrackRankFilter_SelectedIndexChanged;
 
             grdTracks.SortOrderChanged += grdTracks_SortOrderChanged;
-            grdTracks.CellValueNeeded += grdTracks_CellValueNeeded;
-            grdTracks.CellToolTipTextNeeded += grdTracks_CellToolTipTextNeeded;
-            grdTracks.SortColumnIndex = -1;
+            grdTracks.CellValueNeeded += grdTracks_CellValueNeeded;            grdTracks.SortColumnIndex = -1;
 
             lstAlbum.BackColor = grdArtist.StateNormal.Background.Color1;
             lstAlbum.ForeColor = grdArtist.ForeColor;
@@ -684,13 +682,6 @@ namespace Halloumi.Shuffler.Controls
             {
                 e.Value = trackModel.DateShuffledFormatted;
             }
-        }
-
-        private void grdTracks_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
-        {
-            if (e.RowIndex < 0 || e.ColumnIndex != colDateShuffled.Index) return;
-            var trackModel = GetTrackModelByIndex(e.RowIndex);
-            if (trackModel != null) e.ToolTipText = trackModel.DateShuffledToolTip;
         }
 
         /// <summary>
@@ -1892,35 +1883,13 @@ namespace Halloumi.Shuffler.Controls
                 Track = track;
                 Key = track.Key;
                 Bitrate = (int) decimal.Round(track.Bitrate, 0, MidpointRounding.AwayFromZero);
-                DateShuffledFormatted = FormatDateShuffled(track);
-                DateShuffledToolTip = DescribeDateShuffled(track);
+                DateShuffledFormatted = track.DateShuffled?.ToString("yyyy-MM") ?? "";
 
                 InCount = -1;
                 OutCount = -1;
             }
 
-            /// <summary>
-            ///     The latest possible date, prefixed with ~ when it is an estimate from history.
-            /// </summary>
-            private static string FormatDateShuffled(Track track)
-            {
-                if (track.DateShuffled == null) return "";
-                var date = track.DateShuffled.Value.ToString("yyyy-MM-dd");
-                return track.DateShuffledIsEstimate ? "~" + date : date;
-            }
-
-            private static string DescribeDateShuffled(Track track)
-            {
-                if (track.DateShuffled == null) return "";
-                var latest = track.DateShuffled.Value.ToString("d MMM yyyy");
-                if (!track.DateShuffledIsEstimate) return $"Shuffled {latest}";
-                if (track.DateShuffledEarliest == null) return $"Shuffled on or before {latest}";
-                return $"Shuffled between {track.DateShuffledEarliest.Value:d MMM yyyy} and {latest}";
-            }
-
             public string DateShuffledFormatted { get; }
-
-            public string DateShuffledToolTip { get; }
 
             public string Filename { get; }
 

@@ -2,12 +2,9 @@
 One-off backfill of the "Shuffled" extended attribute from the ShufflerAudioDatabase git history.
 
 For every track in Halloumi.Shuffler.ExtendedAttributes.xml, finds the first commit its shuffler details
-appear in, and writes the feasible date range into the track's attributes:
-
-    Shuffled=2018-05-02                 first seen in a commit made within a week of the one before it
-    Shuffled=2024-03-01..2024-09-27     first seen in a commit made more than a week after the one before it
-    Shuffled=..2016-04-10               already shuffled when the history starts (no earliest date)
-    Shuffled=<today>                    not committed yet
+appear in, and writes that commit's date into the track's attributes as Shuffled=yyyy-MM-dd.
+Tracks already shuffled when the history starts get the first commit's date (2016-04-10), and tracks not
+committed yet get today's date.
 
 Renamed tracks (a name disappears and a new one appears in the same commit with the same fade points)
 keep the date of the original name.
@@ -33,7 +30,6 @@ COMBINED_NAMES = {"Haloumi.Shuffler.ExtendedAtrributes.xml", "Halloumi.Shuffler.
                   "Halloumi.Shuffler.ExtendedAttributes.xml"}
 PER_TRACK_SUFFIX = ".ExtendedAttributes.txt"
 ENTRY_RE = re.compile(r"<Track>(.*?)</Track>\s*<Attributes>(.*?)</Attributes>", re.S)
-EXACT_WITHIN_DAYS = 7
 KEY = "Shuffled"
 # Fade points and duration identify a track's shuffler details well enough to spot a rename.
 FINGERPRINT_KEYS = ("Duration", "FadeIn", "FadeOut")
@@ -142,13 +138,6 @@ def first_seen(repo):
     return result
 
 
-def shuffled_value(earliest, latest):
-    if earliest is None:
-        return f"..{latest}"
-    gap = (datetime.date.fromisoformat(latest) - datetime.date.fromisoformat(earliest)).days
-    return latest if gap <= EXACT_WITHIN_DAYS else f"{earliest}..{latest}"
-
-
 def insert_attribute(attributes_text, value):
     """Adds Shuffled=value, keeping keys in roughly the order the app writes them (sorted by key)."""
     parts = [p for p in attributes_text.split(";") if p.strip()]
@@ -180,8 +169,8 @@ def main():
             kind, value, commit, note = "already set", existing[KEY], "", ""
         elif track in history:
             earliest, latest, commit, note = history[track]
-            value = shuffled_value(earliest, latest)
-            kind = "before history" if earliest is None else ("range" if ".." in value else "exact")
+            value = latest
+            kind = "before history" if earliest is None else "from history"
         else:
             kind, value, commit, note = "uncommitted", today, "", "not in any commit yet"
         counts[kind] = counts.get(kind, 0) + 1

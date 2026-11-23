@@ -81,17 +81,24 @@ These files legitimately bypass `ShufflerApplication` and should not be "fixed":
 | `SampleLibraryControl.cs` | Active DJing feature; holds `BassPlayer` for sample previewing and `LinkLoopSampleToTrack` — too low-level for the facade |
 | `SamplePlayer.cs` | Active DJing feature; `PlaySample`/`PauseSample` are direct `BassPlayer` calls from mouse events — low-level audio control that stays outside the facade |
 
-### BassPlayer — split partial class
+### BassPlayer — a facade over components
 
-`BassPlayer` is the audio engine core, split across five files in `Halloumi.BassEngine/BassPlayer/`:
+`BassPlayer` (`Halloumi.BassEngine/BassPlayer/BassPlayer.cs`) is the engine's public API and holds no logic: every member passes straight through to an internal component in the same folder. Put new logic in the component it belongs to, not in BassPlayer.
 
-| File | Responsibility |
+| Component | Responsibility |
 |---|---|
-| `BassPlayer.cs` | Core playback, track queue (Current/Previous/Next/Preloaded), crossfade, volume, events |
-| `BassPlayer.Plugins.cs` | VST and WinAmp DSP plugin loading across seven plugin slots |
-| `BassPlayer.Automation.cs` | Position-triggered FX sends and sample playback via `BASS_ChannelSetSync` |
-| `BassPlayer.Sampler.cs` | Sample/loop playback on a dedicated mixer channel |
-| `BassPlayer.RawLoop.cs` | Looping of arbitrary track sections |
+| `MixerGraph` | Builds and owns every mixer channel, output routing, VST/WinAmp plug-in slots |
+| `TrackLoader` | Loading tracks, tags, saved attributes and audio; freeing unused audio (`TrackCache`, `FadeDefaults`) |
+| `Playback` | Track slots (`TrackDeck`), play/pause/queue, seeking, fade-in/fade-out transitions, "fade now", the slot lock |
+| `ManualMixer` | Manual mix mode, the fader, recording and saving extended mixes |
+| `TrackFxSend` | The track FX send |
+| `Sampler` | Samples on the sampler mixer |
+| `AutomationPlayer` | Playing back, saving, clearing and removing track FX and sample triggers |
+| `RawLooper` | Looping a section of a track on its own mixer |
+
+Supporting types: `TrackSyncs`/`TrackSyncType` (BASS position callbacks on a track), `SyncDispatcher` (each component registers handlers for its sync types with `syncs.On(...)`), `BackgroundQueue` (ordered worker for what sync handlers hand off), `TriggerRecorder` (automation being recorded), `VstPluginSlot`/`PluginChannel`.
+
+**Threading rule:** sync handlers run on BASS's mixer thread while BASS holds its mixer lock, so the mixer thread must never wait for one of our locks (deadlock). Go through `Playback.RunSyncHandler`, keep `_slotLock` holds short, and never decode audio or raise events under it. Details in docs/audio-engine.md → "Threads and locking". In `Halloumi.BassEngine/Mixing/`, the BASS-free `TransitionPlanner`, `TrackTimeline` and `FadeDefaults`. See [docs/audio-engine.md](docs/audio-engine.md).
 
 ### Mixer channel topology
 

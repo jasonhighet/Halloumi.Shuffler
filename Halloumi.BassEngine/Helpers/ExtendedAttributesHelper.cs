@@ -181,9 +181,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     The attribute holding when shuffler details were first saved for a track: a date
-        ///     (yyyy-MM-dd), or a feasible range (earliest..latest, or ..latest when the earliest is unknown)
-        ///     for tracks backfilled from history.
+        ///     The attribute holding the date (yyyy-MM-dd) shuffler details were first saved for a track.
         /// </summary>
         public const string ShuffledKey = "Shuffled";
 

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 
 namespace Halloumi.Shuffler.AudioEngine.Models
@@ -25,13 +26,7 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// </summary>
         public Track()
         {
-            FadeInStartSyncId = int.MinValue;
-            FadeInEndSyncId = int.MinValue;
-            FadeOutStartSyncId = int.MinValue;
-            FadeOutEndSyncId = int.MinValue;
-            PreFadeInStartSyncId = int.MinValue;
-            TrackEndSyncId = int.MinValue;
-            ExtendedMixEndSyncId = int.MinValue;
+            Syncs = new TrackSyncs(this);
             UsePreFadeIn = false;
             PreFadeInStart = 0;
             PreFadeInStartVolume = 0;
@@ -49,10 +44,8 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             PowerDownOnEndOriginal = false;
             RawLoopStart = 0;
             RawLoopEnd = 0;
-            RawLoopEndSyncId = int.MinValue;
             SkipStart = 0;
             SkipEnd = 0;
-            SkipSyncId = int.MinValue;
 
             Rank = 1;
         }
@@ -316,44 +309,9 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         }
 
         /// <summary>
-        ///     Gets or sets the skip sync handle
+        ///     The BASS position callbacks BassPlayer has set on this track.
         /// </summary>
-        internal int SkipSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the fade-in-start sync handle
-        /// </summary>
-        internal int FadeInStartSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the pre-fade-in-start sync handle (where the pre-fade of the next track starts)
-        /// </summary>
-        internal int PreFadeInStartSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the fade-in-end sync handle
-        /// </summary>
-        internal int FadeInEndSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the fade-out-start sync handle
-        /// </summary>
-        internal int FadeOutStartSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the fade-out-end sync handle
-        /// </summary>
-        internal int FadeOutEndSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the extended mix end sync handle
-        /// </summary>
-        internal int ExtendedMixEndSyncId { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the track end sync handle
-        /// </summary>
-        internal int TrackEndSyncId { get; set; }
+        internal TrackSyncs Syncs { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether pre-fade-in should be used.
@@ -443,11 +401,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         ///     Gets or sets the end of the raw-loop section as a sample position
         /// </summary>
         public long RawLoopEnd { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the raw-loop-end sync handle
-        /// </summary>
-        internal int RawLoopEndSyncId { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this track is in raw-loop mode.

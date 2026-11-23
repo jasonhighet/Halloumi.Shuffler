@@ -2,52 +2,52 @@
 
 The audio engine lives entirely in `Halloumi.BassEngine/`. It wraps the [Bass.Net](https://www.un4seen.com/) library (Un4seen BASS) for all audio streaming, mixing, and DSP work.
 
-The entry point for almost everything is `BassPlayer`, a partial class split across five files.
+The entry point for almost everything is `BassPlayer`. It is a facade with no logic of its own: each public member passes through to an internal component (see [BassPlayer internals](#bassplayer-internals)), and the BASS-free decisions live in [Mixing](#mixing--transition-decisions-and-position-maths). The sections below describe the public API by feature area, naming the component behind each.
 
 ---
 
-## BassPlayer.cs — Core playback
+## Core playback
 
-`Halloumi.BassEngine/BassPlayer/BassPlayer.cs`
+`Playback.cs` (tracks loaded by `TrackLoader.cs`)
 
 ### Track queue
 
-BassPlayer maintains up to four track slots at once:
+BassPlayer keeps up to four track slots (in `TrackDeck`); three are public:
 
 | Property | Meaning |
 |---|---|
 | `CurrentTrack` | The track currently fading in / playing |
 | `PreviousTrack` | The track currently fading out |
 | `NextTrack` | The track queued to play after Current finishes |
-| `PreloadedTrack` | A track preloaded in advance to reduce seek latency |
-| `ActiveTrack` | Whichever of Current/Previous is still audible |
+
+The fourth, the preloaded track (`PreloadTrack(filename)`), has its audio loaded ahead of time so queueing it is quick.
 
 ### Playback control
 
 ```
-Play()                        Start or resume playback
-Pause()                       Pause playback
-Stop()                        Stop and reset
-JumpBack()                    Rewind within current track
-QueueTrack(Track)             Set the next track
-SetPositionByPercentage(pct)  Seek within current track
-GetCurrentBpm()               Dynamic BPM interpolated from position
+Play()                          Start or resume playback
+Pause()                         Pause playback
+Stop()                          Stop and reset
+ForcePlay(filename | track)     Stop, clear the slots and play this track now
+QueueTrack(filename | track)    Queue as next (or current if nothing is playing)
+JumpBack()                      Rewind half a loop within the current track
+SetAdjustedTrackPosition(pos)   Seek (position counted from the fade-in, see TrackTimeline)
+SkipToEnd() / SkipToFadeOut(n)  Jump to the end, or to n beats before the fade-out
+GetCurrentBpm()                 Dynamic BPM interpolated from position
 ```
 
 ### Crossfade configuration
 
-All fade values are set as properties on `BassPlayer`. They define defaults applied when loading a track that has no extended attributes set yet.
+These set the fades a track gets when it has no saved fade points (they are held in `FadeDefaults`):
 
 | Property | Default | Meaning |
 |---|---|---|
 | `DefaultFadeLength` | 10 s | Cross-fade duration |
-| `DefaultFadeInStartVolume` | 50 % | Volume at start of fade-in |
-| `DefaultFadeInEndVolume` | 100 % | Volume at end of fade-in |
-| `DefaultFadeOutStartVolume` | 80 % | Volume at start of fade-out |
-| `DefaultFadeOutEndVolume` | 0 % | Volume at end of fade-out |
 | `LimitSongLength` | false | Truncate tracks to `MaxSongLength` |
 | `MaxSongLength` | 5 min | Maximum track duration when limiting |
 | `LoopFadeInForever` | false | Loop the fade-in section indefinitely |
+
+The default fade volumes (fade-in 50 % → 100 %, fade-out 80 % → 0 %) are fixed in `FadeDefaults`.
 
 ### Mix modes
 
@@ -61,7 +61,6 @@ All fade values are set as properties on `BassPlayer`. They define defaults appl
 | `OnTrackQueued` | A track is added to the queue |
 | `OnEndFadeIn` | The fade-in section completes |
 | `OnSkipToEnd` | A force-skip is triggered |
-| `TrackTagsLoaded` | MP3 tag metadata has been read for a track |
 | `OnVolumeChanged` | Master volume changes |
 | `OnManualMixModeChanged` | Mix mode toggled |
 
@@ -75,43 +74,37 @@ All fade values are set as properties on `BassPlayer`. They define defaults appl
 
 ---
 
-## BassPlayer.Plugins.cs — Effects plugins
+## Effects plugins and the track FX send
 
-`Halloumi.BassEngine/BassPlayer/BassPlayer.Plugins.cs`
+`MixerGraph.cs` (plug-in slots), `TrackFxSend.cs` (the send)
 
 ### Plugin slots
 
-There are seven plugin slots organised by which mixer channel they sit on:
+There are seven VST plugin slots, each a `PluginChannel` and an index on that channel. `VstPluginSlot.All` lists them:
 
-| Slot | Property | Channel |
-|---|---|---|
-| Main 1 | `MainVstPlugin` | Main mixer |
-| Main 2 | `MainVstPlugin2` | Main mixer |
-| Sampler 1 | `SamplerVstPlugin` | Sampler |
-| Sampler 2 | `SamplerVstPlugin2` | Sampler |
-| Track | `TrackVstPlugin` | Track mixer |
-| Track FX 1 | `TrackSendFxVstPlugin` | FX send |
-| Track FX 2 | `TrackSendFxVstPlugin2` | FX send |
+| Slot | `PluginChannel`, index | Named property | Channel |
+|---|---|---|---|
+| Main 1 | `Main`, 0 | `MainVstPlugin` | Main mixer |
+| Main 2 | `Main`, 1 | `MainVstPlugin2` | Main mixer |
+| Sampler 1 | `Sampler`, 0 | `SamplerVstPlugin` | Sampler |
+| Sampler 2 | `Sampler`, 1 | `SamplerVstPlugin2` | Sampler |
+| Track | `Tracks`, 0 | `TrackVstPlugin` | Track mixer |
+| Track FX 1 | `TrackSendFx`, 0 | `TrackSendFxVstPlugin` | FX send |
+| Track FX 2 | `TrackSendFx`, 1 | `TrackSendFxVstPlugin2` | FX send |
 
 `WaPlugin` — a single WinAmp DSP plugin loaded globally.
 
 ### Loading / unloading
 
 ```
+GetVstPlugin(channel, index)
+LoadVstPlugin(channel, location, index)    # index is 0-based
+ClearVstPlugin(channel, index)
 LoadWaPlugin(location)
-LoadMainVstPlugin(location, index)       # index 1 or 2
-LoadSamplerVstPlugin(location, index)
-LoadTracksVstPlugin(location, index)
-LoadTrackSendFxvstPlugin(location, index)
-
-ClearMainVstPlugin(index)
-ClearSamplerVstPlugin(index)
-ClearTracksVstPlugin(index)
-ClearTrackSendFxvstPlugin(index)
-
-UnloadAllVstPlugins()
 UnloadAllWaPlugins()
 ```
+
+The named members (`LoadMainVstPlugin`, `ClearSamplerVstPlugin`, `MainVstPlugin2`, ...) are one-line wrappers over these, kept for `frmPluginSettings`. To add a slot, add it to `VstPluginSlot.All`; to add a channel, add it to `PluginChannel` and to `GetPluginHost`.
 
 ### Track FX send
 
@@ -129,9 +122,9 @@ The FX send channel lets you route the track audio through an effects chain and 
 
 ---
 
-## BassPlayer.Automation.cs — Position-triggered automation
+## Position-triggered automation
 
-`Halloumi.BassEngine/BassPlayer/BassPlayer.Automation.cs`
+`AutomationPlayer.cs` (triggers), `ManualMixer.cs` (manual and extended mixes), `Playback.cs` (force fades)
 
 Automation lets you record and replay two types of trigger at specific positions within a track:
 
@@ -150,7 +143,7 @@ StartTrackFxTrigger()                (internal) Activate FX at trigger position
 StopTrackFxSend()                    Deactivate the FX send
 ```
 
-`LastTrackFxTrigger` / `LastTrackFxTriggerTrack` — the most recently captured trigger, used before persisting.
+The trigger being recorded is held in `TriggerRecorder` until it is saved.
 
 ### Sample triggers
 
@@ -169,8 +162,9 @@ When `IsManualMixMode` is active the user drives the crossfade by hand. The resu
 ```
 SetManualMixVolume(value)            Drive crossfade volume manually (0–100)
 GetManualMixVolume()                 Query current manual mix volume
-StopRecordingManualExtendedMix(powerDown)  Finish recording; optionally power-down
-SaveExtendedMix()                    Persist the curve to extended attributes
+PausePreviousTrack()                 Stop the outgoing track; records the mix as it stands
+PowerOffPreviousTrack()              Power down the outgoing track; records the mix, ending in a power-down
+SaveExtendedMix()                    Persist the recorded mix to the automation attributes
 ClearExtendedMix()                   Remove saved curve
 ```
 
@@ -197,12 +191,15 @@ PausePreviousTrack()                 Smoothly pause previous track
 | `PowerDown` | Applies power-down pitch effect during fade |
 | `Cut` | Abrupt cut instead of fade |
 | `QuickFade` | Accelerated fade curve |
+| `EchoOut` | Loops a short slice of the fade-out eight times while fading |
+
+How each type is carried out is decided in `TransitionPlanner` (see Mixing below).
 
 ---
 
-## BassPlayer.Sampler.cs — Sample and loop playback
+## Sample and loop playback
 
-`Halloumi.BassEngine/BassPlayer/BassPlayer.Sampler.cs`
+`Sampler.cs`
 
 Samples and loops play on a dedicated mixer channel (`SamplerMixer`) separate from the track channel so they can be routed and level-controlled independently.
 
@@ -229,9 +226,9 @@ Sample sources:
 
 ---
 
-## BassPlayer.RawLoop.cs — Section looping
+## Section looping
 
-`Halloumi.BassEngine/BassPlayer/BassPlayer.RawLoop.cs`
+`RawLooper.cs`
 
 Raw loop mode lets you define a start/end boundary within a track and loop that section continuously. Useful for extending a breakdown or building tension before a mix.
 
@@ -304,7 +301,123 @@ PowerDownOnEnd                      Play power-down effect on fade-out
 
 ### Internal sync handles
 
-`BassPlayer.Automation.cs` attaches BASS sync callbacks (`StartSyncId`, `EndSyncId`) to each track instance for automation triggers. These are internal and managed automatically.
+Each track's BASS sync callbacks are held in its `Syncs` (a `TrackSyncs`, see below). Tracks and triggers no longer carry their own sync ids.
+
+---
+
+## BassPlayer internals
+
+`Halloumi.BassEngine/BassPlayer/` — the internal classes `BassPlayer` delegates to. None of them is visible outside the engine.
+
+### Components
+
+`BassPlayer`'s constructor builds them in this order, each getting only what it needs:
+
+| Component | Owns | Uses |
+|---|---|---|
+| `MixerGraph` | every `MixerChannel`, the output splitters, plug-in slots | — |
+| `TrackLoader` | `TrackCache`, `FadeDefaults` | `MixerGraph` (to remove tracks from mixers) |
+| `TrackFxSend` | — (drives the send channels) | `MixerGraph`, `TrackDeck`, `TriggerRecorder` |
+| `Sampler` | `TrackSamplePlayer` | `MixerGraph`, `TrackDeck`, `TriggerRecorder` |
+| `RawLooper` | the raw-loop track | `MixerGraph`, `TrackLoader`, `SyncDispatcher` |
+| `AutomationPlayer` | — | `TrackDeck`, `TrackFxSend`, `Sampler`, `TriggerRecorder`, `SyncDispatcher`, and a callback to `Playback.ResetTrackSyncPositions` |
+| `ManualMixer` | manual-mix mode and fade types, extended-mix recording and saving | `TrackDeck`, `FadeDefaults`, `TriggerRecorder`, and a callback for whether the player is playing |
+| `Playback` | `_slotLock`, play state, force-fade state | all of the above, and the `BackgroundQueue` |
+
+`BackgroundQueue` runs work handed off by sync handlers, in order, on a worker thread (see [Threads and locking](#threads-and-locking)).
+
+`TrackDeck` and `TriggerRecorder` are shared: the deck says which tracks are where, the recorder holds automation being recorded until it is saved.
+
+### SyncDispatcher — routing syncs to components
+
+BASS calls one callback (`SyncDispatcher.Callback`, set as each track's `SyncProc`) for every sync. The dispatcher looks up the handler registered for the sync type and calls it with the in-use track the sync fired on (null if none, e.g. the raw-loop track). Components register their handlers in their constructors:
+
+| Component | Sync types |
+|---|---|
+| `Playback` | `StartPreFadeIn`, `StartFadeOut`, `EndFadeOut`, `EndFadeIn`, `EndExtendedMix`, `StartSkipSection` |
+| `AutomationPlayer` | `StartTrackFxTrigger`, `EndTrackFxTrigger`, `StartSampleTrigger`, `EndSampleTrigger` |
+| `RawLooper` | `EndRawLoop` |
+
+`TrackEnd` and `StartFadeIn` are set but have no handler. Registering a second handler for a type throws.
+
+### TrackDeck — the track slots
+
+Owns `Previous`, `Current`, `Next` and `Preloaded`, and is the only place they change. Compound changes happen under a lock, so a sync callback never sees a half-made change.
+
+```
+Queue(track, out replacedNext)   Becomes current if there is none, otherwise next; true if it became current
+Advance()                        Start of a transition: current → previous, next → current; returns the old previous
+ClearPlaying()                   Empty the previous, next and current slots; returns what was in them
+SetPreloaded(track)
+InUse() / IsInUse(track) / FindByChannel(channelId)
+```
+
+### TrackCache — loaded tracks
+
+Every track the player has loaded, by filename (case-insensitive), plus the last five loaded, whose audio is kept even when they are not in a slot. Owned by `TrackLoader`. `GetUnloadable(isInUse)` gives the tracks whose audio `UnloadUnusedAudioData` frees.
+
+Default fade points are applied by `FadeDefaults` in `Mixing/` (`ResetFades` before a track's saved attributes load, `FillMissingFadePoints` after). `BassPlayer`'s `DefaultFadeLength`, `LimitSongLength` and `MaxSongLength` read and write it.
+
+### TrackSyncs and TrackSyncType — position callbacks
+
+Every BASS sync on a track goes through `track.Syncs`:
+
+```
+Set(type, position)   Set a sync. Replaces the existing one of that type, except trigger types, which a track can have many of
+Remove(types...)      Remove every sync of the given types
+Clear()               Remove all of them (only forgets them if the audio is already unloaded)
+```
+
+`UnloadTrackAudioData` clears a track's syncs. To add a sync: add a value to `TrackSyncType`, call `track.Syncs.Set` where it belongs (for the slot tracks, `Playback.SetTrackSyncPositions`), and register a handler with `syncs.On(type, ...)` in the component that handles it. If a track can have several at once, add it to `TrackSyncs.AllowsMany`.
+
+### Adding a feature
+
+Make a component class in this folder that owns its channel(s) and state. Give it only the components it needs in its constructor, register its sync handlers there, add it to `BassPlayer`'s constructor, and add one-line pass-throughs to `BassPlayer` for whatever the UI needs.
+
+### TriggerRecorder — recording automation
+
+Holds what is being recorded until it is saved: a track FX send (`StartTrackFxSend` / `StopTrackFxSend` → `SaveLastTrackFxTrigger`), a sample (`PlaySample` / `PauseSample` → `SaveLastSampleTrigger`) and a manual extended mix (`PausePreviousTrack` / `PowerOffPreviousTrack`, or an automatic fade type in manual mode → `SaveExtendedMix`). Saving writes the automation attributes. Positions are passed in, so it makes no BASS calls.
+
+---
+
+## Mixing — transition decisions and position maths
+
+`Halloumi.BassEngine/Mixing/`
+
+These classes hold logic that used to be inline in `BassPlayer`. They use only track metadata and make no BASS calls, so they can be run and checked without playing audio. With no channel loaded, a `Track` converts at 1 sample = 1 ms.
+
+### TrackTimeline
+
+Converts between a track's **channel position** (where BASS is in the file) and its **adjusted position** (where the listener is in the mix: counted from the fade-in start, including start loops already played, leaving out the skip section).
+
+```
+ToAdjustedPosition(track, channelPosition)        Channel → adjusted (uses the track's current start loop)
+TryToChannelPosition(track, adjusted, out channel, out startLoop)
+                                                  Adjusted → channel; false if outside fade-in start .. fade-out start
+```
+
+`BassPlayer.GetTrackPosition` and `SetAdjustedTrackPosition` use these.
+
+### TransitionPlanner
+
+Decides how one track hands over to the next. `BassPlayer` looks up the extended mix attributes for the pair and passes them in (null = no recorded mix).
+
+```
+PlanFadeOut(outgoing, incoming, mix, isManualMixMode, manualFadeType, isForceFadeNow)
+                                    → FadeOutPlan: what the outgoing track's volume does
+GetFadeLength(from, to, mix)        Crossfade length: shorter of incoming fade-in and outgoing fade-out
+GetExtendedFadeOutLength(from, to, mix)
+ShapeFadeOut(track, fadeType)       Reshape a track's fade-out section for a fade type (metadata only)
+GetConservativeFadeType(cur, next)  PowerDown if keys clash, EchoOut if tempos far apart, else QuickFade
+GetForceFadeLength(track, type)     Length for ForceFadeNow
+GetCut/Quick/PowerDown/EchoOutFadeLength(track)
+```
+
+`PlanFadeOut` checks these in order: manual mix mode, a recorded extended mix (with a non-zero length), the track's `PowerDownOnEnd`, a "fade now" request, and otherwise a normal crossfade.
+
+`FadeOutPlan` holds an `Action` (`None`, `VolumeSlide` or `PowerDown`), the slide's start volume, end volume and length, an optional `ReshapeAs` fade type, and `EndsAutoMixRecording`. `BassPlayer.StartFadeOut` builds the plan and `ApplyFadeOutPlan` carries it out. Carrying it out means reshaping the track and resetting its syncs, starting the slide or power-down, and finishing extended-mix recording.
+
+To add a fade type: add it to `ExtendedFadeType`, then handle it in `ShapeFadeOut` and in the two private planners (`PlanManualFadeOut`, `PlanExtendedMixFadeOut`).
 
 ---
 
@@ -389,27 +502,45 @@ Identifies structural sections (intro, verse, chorus, outro) by analysing energy
 
 ## Known issues and gotchas
 
-### Lock/Unlock is a coarse "fade in progress" guard, not a general mutex
+### Threads and locking
 
-`BassPlayer` has a custom `Lock()` / `Unlock()` pair used to signal that a fade operation is in progress. It is backed by an `int` field with `Interlocked.CompareExchange` to guarantee atomic acquisition:
+Three kinds of thread touch the slot tracks:
 
-```csharp
-private void Lock()   { while (Interlocked.CompareExchange(ref _locked, 1, 0) != 0) Thread.Sleep(1); }
-private void Unlock() { Interlocked.Exchange(ref _locked, 0); }
-```
+| Thread | Runs |
+|---|---|
+| UI (or MIDI) | the public methods |
+| BASS mixer thread | sync handlers, at the exact sample each sync is set for |
+| `BackgroundQueue` worker | work handed off by sync handlers, in order |
 
-`WaitForLock()` (used in `GetVolumeLevels`) spins until the fade completes without acquiring the lock itself. This is intentional — it just waits for stable state before sampling volume levels.
+`Playback._slotLock` covers changes to the slots and to the slot tracks' channels (position, volume, play/pause, syncs). The rules, each learnt from a deadlock or a missed transition found by stress testing:
 
-The pattern is fine for its current single-caller use (UI thread + BASS sync handlers), but is not designed for general multi-threaded access. Do not add concurrent callers without replacing this with a full synchronisation primitive.
+- **The mixer thread never waits for `_slotLock`.** BASS holds its own lock on the mixer while a sync handler runs, so a thread holding `_slotLock` can be stuck inside a BASS call waiting for that handler: if the handler then waited for `_slotLock`, neither would move. Sync handlers go through `Playback.RunSyncHandler`, which takes the lock if it is free and otherwise runs the work on the background queue a few milliseconds later.
+- **Hold `_slotLock` only for quick work.** Never while decoding audio (`QueueTrack` and `PreloadTrack` decode first), never while raising an event.
+- **Sync handlers hand off what can wait.** Events (`OnTrackChange`, `OnEndFadeIn`), freeing audio and reloading samples go to the background queue. So those events arrive on a worker thread, just after the transition starts.
+- **Only touch syncs that change.** `TrackSyncs` keeps a sync that is re-set at the same position. Removing and re-adding a sync while the mixer is working through that part of the track can make BASS miss it.
+- **"Fade now" starts the transition directly.** A sync set just ahead of the play position can already be behind what BASS has decoded.
+- **No `BASS_ChannelLock` around removing a source from a mixer** (`AudioStreamHelper.RemoveFromMixer`). It deadlocked with BASS's update thread, which locks the mixers above first.
 
-### Static shared track state
+Lock order: `_slotLock`, then the deck's, a track's syncs', or a track's own lock; never `_slotLock` while holding one of those. A track's syncs are only changed with `_slotLock` held (the raw-loop track's excepted: the mixer thread never changes them).
 
-`CachedTracks`, `_nextTrackId`, and `_recentTracks` are all `static`. The application is designed for a single `BassPlayer` instance; if a second instance is ever created (e.g. for a second audio device) the two instances will share the same ID space and track cache, which will break silently.
+What is still possible: if a transition's track was not loaded in advance (normally it is, when queued), the mixer thread loads it, which takes the track's own lock; if the UI were loading the same track at that moment, the two could wait on each other through BASS. This needs the next track to be queued and not loaded, which the queueing code prevents.
+
+### Static shared state
+
+The track cache is per player, but `AudioEngineHelper` (BASS start-up), `AudioDataHelper` (the loaded file buffers), `ExtendedAttributesHelper` and `AutomationAttributesHelper` are static. The application is designed for a single `BassPlayer` instance.
+
+### A track that has just faded out cannot be replayed straight away
+
+Once a track has finished fading out, its channel no longer reports a position (`-1`). Queueing that same track again while it is still the previous track (or before its audio is unloaded) gives silence: `AddTrackToMixer` skips tracks that are already current or previous. `ForcePlay` works, because it unloads and reloads the audio.
+
+### Automation trigger positions are not kept between lookups
+
+`AutomationAttributesHelper.GetAutomationAttributes` returns a clone each time. `SetAutomationSyncPositions` sets `StartSample` on its clone, but `GetCurrentTrackFxTrigger` / `GetCurrentSampleTrigger` fetch a fresh clone where `StartSample` is still 0. So "the trigger nearest the play position" does not really use the position. The syncs fire at the right times; it is which trigger's settings (delay notes, sample) are used that can be wrong when a track has several.
 
 ### Thread.Sleep(10) in AudioStreamHelper.Pause
 
 `AudioStreamHelper.Pause()` sleeps 10 milliseconds after calling `BASS_Mixer_ChannelPause`. This is a deliberate small settle wait to give BASS time to drain its output buffer before callers assume the channel is silent. The `PowerDownAsync` loop also uses `Thread.Sleep(interval)` intentionally to pace its pitch-slide animation — do not remove those.
 
-### Sync handlers fire on a BASS thread
+### Events can arrive on any thread
 
-`OnTrackSync` is called by BASS on an internal BASS thread, not the UI thread. UI interactions triggered from within `OnTrackSync` (via `Invoke`/`BeginInvoke`) are correct, but any code that directly touches UI controls without marshalling will throw cross-thread exceptions. Existing code is generally correct here but care is needed when adding new sync handling code.
+`OnTrackChange` and `OnEndFadeIn` raised by a transition arrive on a background worker thread; raised by a UI call (`QueueTrack`, `ForcePlay`) they arrive on the calling thread. UI handlers must marshal with `Invoke`/`BeginInvoke` (they all do).

@@ -88,7 +88,7 @@ Displays the current playlist and track queue. Lets the user reorder tracks, rem
 
 Browseable, filterable view of the track library. Supports filtering by genre, artist, album, BPM range, rank, and free-text search. Double-clicking or dragging a track sends it to the playlist.
 
-When the Shuffler filter is **Yes**, the grid swaps Album and Track # for the Shuffler columns (start/end BPM, In/Out mix counts, Rank, Key) and a **Shuffled** column: the date Shuffler details were first saved. Dates estimated from history show as `~yyyy-MM-dd` (the latest possible date), with the feasible range in the cell tooltip. Sorting by the column sorts by that latest date.
+When the Shuffler filter is **Yes**, the grid swaps Album and Track # for the Shuffler columns (start/end BPM, In/Out mix counts, Rank, Key) and a **Shuffled** column: the month Shuffler details were first saved (`yyyy-MM`). Click the header to sort by it.
 
 ### MixerControl / TrackMixerControl
 

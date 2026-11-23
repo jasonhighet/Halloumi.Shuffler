@@ -111,8 +111,8 @@ User moves crossfade slider
         └─ directly set PreviousTrack channel volume (bypasses automation)
 
 User finishes mix
-  └─► BassPlayer.StopRecordingManualExtendedMix(powerDownAfterFade)
-        ├─ capture recorded volume curve as ExtendedMixAttributes
+  └─► BassPlayer.PausePreviousTrack() / PowerOffPreviousTrack()
+        ├─ record the mix as it stands as ExtendedMixAttributes (TriggerRecorder)
         └─► BassPlayer.SaveExtendedMix()
               └─ AutomationAttributesHelper.SaveExtendedMix(track, attributes)
                     └─ write to <ShufflerFolder>/<track>.xml
@@ -295,7 +295,5 @@ frmMain.FormClosing
         ├─ Library.SaveToDatabase()
         ├─ MixLibrary.SaveToDatabase()
         ├─ SaveSettings()                 write Settings.xml
-        ├─ BassPlayer.UnloadAllVstPlugins()
-        ├─ BassPlayer.UnloadAllWaPlugins()
-        └─ BassPlayer.Dispose()           free all BASS streams and handles
+        └─ BassPlayer.Dispose()           unload plug-ins, free all BASS streams and handles
 ```

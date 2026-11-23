@@ -43,15 +43,15 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.IsShufflerTrack = ExtendedAttributesHelper.HasExtendedAttributes(track.Description);
 
             track.DateShuffled = null;
-            track.DateShuffledEarliest = null;
-            track.DateShuffledIsEstimate = false;
 
             if (!track.IsShufflerTrack) return null;
 
             var attributes = ExtendedAttributesHelper.GetExtendedAttributes(track.Description);
 
-            if (attributes.ContainsKey(ExtendedAttributesHelper.ShuffledKey))
-                LoadDateShuffled(track, attributes[ExtendedAttributesHelper.ShuffledKey]);
+            if (attributes.ContainsKey(ExtendedAttributesHelper.ShuffledKey)
+                && DateTime.TryParseExact(attributes[ExtendedAttributesHelper.ShuffledKey], "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateShuffled))
+                track.DateShuffled = dateShuffled;
 
             if (attributes.ContainsKey("Rank")) track.Rank = ConversionHelper.ToInt(attributes["Rank"], 1);
 
@@ -99,31 +99,5 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             track.Bpm = BpmHelper.GetAdjustedBpmAverage(track.StartBpm, track.EndBpm);
 
             return attributes;
-        }
-
-        /// <summary>
-        ///     Parses the Shuffled attribute: "2018-05-02", "2024-03-01..2024-09-27" (a feasible range,
-        ///     backfilled from history) or "..2016-04-10" (shuffled on or before that date).
-        /// </summary>
-        private static void LoadDateShuffled(Track track, string value)
-        {
-            var parts = value.Split(new[] {".."}, StringSplitOptions.None);
-            var latest = ParseDate(parts[parts.Length - 1]);
-            if (latest == null) return;
-
-            track.DateShuffled = latest;
-            if (parts.Length < 2) return;
-
-            track.DateShuffledIsEstimate = true;
-            track.DateShuffledEarliest = ParseDate(parts[0]);
-        }
-
-        private static DateTime? ParseDate(string value)
-        {
-            return DateTime.TryParseExact(value.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out var date)
-                ? date
-                : (DateTime?) null;
-        }
-    }
+        }    }
 }

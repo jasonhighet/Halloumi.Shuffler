@@ -149,8 +149,7 @@ CannotCalculateBpm  True if BPM detection failed
 Rank              Quality rating (0 = Forbidden … 5 = Excellent)
 Key               Musical key if detected
 IsShufflerTrack   True if the track has saved Shuffler details in Halloumi.Shuffler.ExtendedAttributes.xml
-DateShuffled      Latest possible date the Shuffler details were first saved (from the Shuffled attribute)
-DateShuffledEarliest / DateShuffledIsEstimate   Feasible range when DateShuffled was backfilled from history
+DateShuffled      Date the Shuffler details were first saved (from the Shuffled attribute)
 PowerDown         True if this track uses the power-down fade effect
 ```
 
@@ -212,15 +211,7 @@ Helpers that read/write these files:
 
 `ExtendedAttributesHelper` stamps `Shuffled=<yyyy-MM-dd>` the first time a track gets any extended attributes, and carries it over on every later save (the save paths rebuild the attribute set from the track, so the helper re-adds it). Clearing a track's Shuffler details removes it.
 
-Tracks shuffled before the date was recorded were backfilled from the `ShufflerAudioDatabase` git history by [tools/shuffled-backfill/backfill_shuffled.py](../tools/shuffled-backfill/backfill_shuffled.py). A commit date is the latest a track could have been shuffled and the commit before it the earliest, so backfilled values can be ranges:
-
-| Value | Meaning |
-|---|---|
-| `2018-05-02` | Exact, or first committed within a week of the previous commit |
-| `2024-03-01..2024-09-27` | Somewhere in that range (the commits were more than a week apart) |
-| `..2016-04-10` | Already shuffled when the history starts |
-
-Renamed tracks (same fade points under a new name in the same commit) keep the original name's date. `ShufflerHelper.LoadShufflerDetails` parses the value into `DateShuffled` (latest date), `DateShuffledEarliest` and `DateShuffledIsEstimate`.
+Tracks shuffled before the date was recorded were backfilled from the `ShufflerAudioDatabase` git history by [tools/shuffled-backfill/backfill_shuffled.py](../tools/shuffled-backfill/backfill_shuffled.py), using the date of the first commit each track appears in (renamed tracks keep the original name's date). Tracks already shuffled when the history starts are dated 2016-04-10. `ShufflerHelper.LoadShufflerDetails` parses the value into `DateShuffled`.
 
 ---
 

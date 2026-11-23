@@ -341,7 +341,6 @@ namespace Halloumi.Shuffler.AudioLibrary
                 case TrackSortField.DateShuffled:
                     tracks = tracks
                         .OrderBy(t => t.DateShuffled ?? DateTime.MinValue)
-                        .ThenBy(t => t.DateShuffledEarliest ?? DateTime.MinValue)
                         .ThenBy(t => t.Description)
                         .ToList();
                     break;
