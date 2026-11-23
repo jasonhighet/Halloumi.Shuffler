@@ -94,6 +94,7 @@
             mnuConservativeFadeOut = new System.Windows.Forms.ToolStripMenuItem();
             mnuShuffleAfterShuffling = new System.Windows.Forms.ToolStripMenuItem();
             mnuSkipAfterMix = new System.Windows.Forms.ToolStripMenuItem();
+            mnuMono = new System.Windows.Forms.ToolStripMenuItem();
             mnuResetMidi = new System.Windows.Forms.ToolStripMenuItem();
             mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
@@ -491,7 +492,7 @@
             // 
             // mnuOptions
             // 
-            mnuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuSettings, mnuMonitorSettings, toolStripSeparator4, mnuPlugins, mnuWinampDSPConfig, mnuVSTPluginConfig, mnuTrackVSTPluginConfig, mnuTrackFXVSTPluginConfig, mnuTrackFXVSTPluginConfig2, mnuSamplerVSTPluginConfig, mnuSamplerVSTPluginConfig2, toolStripSeparator5, mnuConservativeFadeOut, mnuShuffleAfterShuffling, mnuSkipAfterMix, mnuResetMidi });
+            mnuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuSettings, mnuMonitorSettings, toolStripSeparator4, mnuPlugins, mnuWinampDSPConfig, mnuVSTPluginConfig, mnuTrackVSTPluginConfig, mnuTrackFXVSTPluginConfig, mnuTrackFXVSTPluginConfig2, mnuSamplerVSTPluginConfig, mnuSamplerVSTPluginConfig2, toolStripSeparator5, mnuConservativeFadeOut, mnuShuffleAfterShuffling, mnuSkipAfterMix, mnuMono, mnuResetMidi });
             mnuOptions.Name = "mnuOptions";
             mnuOptions.Size = new System.Drawing.Size(73, 33);
             mnuOptions.Text = "&Options";
@@ -585,6 +586,13 @@
             mnuSkipAfterMix.Name = "mnuSkipAfterMix";
             mnuSkipAfterMix.Size = new System.Drawing.Size(296, 24);
             mnuSkipAfterMix.Text = "S&kip After Rating Mix";
+            // 
+            // mnuMono
+            // 
+            mnuMono.CheckOnClick = true;
+            mnuMono.Name = "mnuMono";
+            mnuMono.Size = new System.Drawing.Size(296, 24);
+            mnuMono.Text = "Play In M&ono";
             // 
             // mnuResetMidi
             // 
@@ -1006,6 +1014,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem mnuSkipAfterMix;
+        private System.Windows.Forms.ToolStripMenuItem mnuMono;
         private System.Windows.Forms.ToolStripMenuItem mnuReplayMix;
         private Halloumi.Common.Windows.Controls.Panel pnlMain;
         private ComponentFactory.Krypton.Toolkit.KryptonPanel pnlSideNav;

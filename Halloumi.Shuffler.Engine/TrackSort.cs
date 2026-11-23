@@ -19,7 +19,9 @@ namespace Halloumi.Shuffler.AudioLibrary
         MixInCount,
         /// <summary>Requires MixLibrary — handled in ShufflerApplication, not Library.</summary>
         MixOutCount,
-        Rank
+        Rank,
+        /// <summary>The latest possible date shuffler details were first saved; tracks without one sort first.</summary>
+        DateShuffled
     }
 
     /// <summary>

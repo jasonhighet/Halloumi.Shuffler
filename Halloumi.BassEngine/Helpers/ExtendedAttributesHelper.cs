@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -178,10 +180,31 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             Task.Run(() => SaveToDatabase());
         }
 
+        /// <summary>
+        ///     The attribute holding when shuffler details were first saved for a track: a date
+        ///     (yyyy-MM-dd), or a feasible range (earliest..latest, or ..latest when the earliest is unknown)
+        ///     for tracks backfilled from history.
+        /// </summary>
+        public const string ShuffledKey = "Shuffled";
+
         private static void SetExtendedAttributes(string trackDescription, Dictionary<string, string> attributes)
         {
+            var existingShuffled = AllAttributes.TryGetValue(trackDescription, out var existing)
+                ? existing.GetAttributeDictionary().TryGetValue(ShuffledKey, out var value) ? value : null
+                : null;
+
             AllAttributes.Remove(trackDescription);
             if (attributes.Count <= 0) return;
+
+            // Callers rebuild the attribute set from the track, so carry the shuffled date over,
+            // or stamp today's date the first time a track gets shuffler details.
+            if (!attributes.ContainsKey(ShuffledKey))
+            {
+                attributes = new Dictionary<string, string>(attributes)
+                {
+                    [ShuffledKey] = existingShuffled ?? DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                };
+            }
 
             var extendedAttributes = new ExtendedAttributes() { Track = trackDescription };
             extendedAttributes.SetAttributeDictionary(attributes);

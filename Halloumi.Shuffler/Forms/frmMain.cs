@@ -57,6 +57,7 @@ namespace Halloumi.Shuffler.Forms
             mnuExportPlaylistTracks.Click += mnuExportPlaylistTracks_Click;
             mnuConservativeFadeOut.Click += mnuConservativeFadeOut_Click;
             mnuShuffleAfterShuffling.Click += mnuShuffleAfterShuffling_Click;
+            mnuMono.Click += (s, e) => _application.Mono = mnuMono.Checked;
 
             mnuWinampDSPConfig.Click += mnuWinampDSPConfig_Click;
             mnuVSTPluginConfig.Click += mnuVSTPluginConfig_Click;
@@ -360,6 +361,7 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.ShowTrackDetailsAlbumArt = settings.AlbumArtShown;
             mnuViewAlbumArt.Checked = settings.AlbumArtShown;
             mnuSkipAfterMix.Checked = settings.SkipAfterMix;
+            mnuMono.Checked = _application.Mono;
             mnuShowPlayer.Checked = settings.ShowPlayer;
             playerDetails.Visible = mnuShowPlayer.Checked;
             pnlTop.AutoSize = !mnuShowPlayer.Checked;

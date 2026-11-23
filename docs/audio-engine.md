@@ -69,6 +69,10 @@ All fade values are set as properties on `BassPlayer`. They define defaults appl
 
 `Volume` — decimal 0–100. Affects the main output level. Separate from individual track fade curves.
 
+### Mono output
+
+`Mono` — bool. When true, the speaker and monitor outputs each get a `MonoDownmix` DSP that averages left and right into both channels. On `SpeakerOutputChannel` it runs at the lowest priority, after any VST or WinAmp plug-ins on the main output, so they still receive stereo. On `MonitorOutputChannel` it runs just before the `DSP_StreamCopy` (priority -1000) that sends the mix to the headphone device. Toggled from **Options → Play In Mono** and saved as the `Mono` setting.
+
 ---
 
 ## BassPlayer.Plugins.cs — Effects plugins

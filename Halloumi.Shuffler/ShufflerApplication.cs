@@ -148,6 +148,15 @@ namespace Halloumi.Shuffler
         public LoopLibrary LoopLibrary { get; internal set; }
         public bool ShuffleAfterShuffling { get; internal set; }
 
+        /// <summary>
+        ///     Gets or sets whether the speaker output plays in mono.
+        /// </summary>
+        public bool Mono
+        {
+            get => BassPlayer.Mono;
+            set => BassPlayer.Mono = value;
+        }
+
         private void LoadFromDatabase()
         {
             Library.LoadFromDatabase();
@@ -275,6 +284,7 @@ namespace Halloumi.Shuffler
             BassPlayer.LoopFolder = s.LoopLibraryFolder;
 
             ShuffleAfterShuffling = s.ShuffleAfterShuffling;
+            Mono = s.Mono;
         }
 
         public void SaveSettings()
@@ -302,6 +312,7 @@ namespace Halloumi.Shuffler
             s.TrackFxvstPlugin2Parameters = SavePluginParams(BassPlayer.TrackSendFxVstPlugin2);
 
             s.ShuffleAfterShuffling    = ShuffleAfterShuffling;
+            s.Mono                     = Mono;
             s.LimitSongLength          = UseConservativeFadeOut;
             s.Volume                   = BassPlayer.GetMixerVolume();
             s.SamplerDelayNotes        = BassPlayer.SamplerDelayNotes;

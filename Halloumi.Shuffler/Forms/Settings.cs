@@ -185,6 +185,8 @@ namespace Halloumi.Shuffler.Forms
 
         public bool ShuffleAfterShuffling { get; set; }
 
+        public bool Mono { get; set; }
+
         private static Settings LoadSetttings()
         {
             var settings = new Settings();

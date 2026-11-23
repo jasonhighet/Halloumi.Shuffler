@@ -88,6 +88,8 @@ Displays the current playlist and track queue. Lets the user reorder tracks, rem
 
 Browseable, filterable view of the track library. Supports filtering by genre, artist, album, BPM range, rank, and free-text search. Double-clicking or dragging a track sends it to the playlist.
 
+When the Shuffler filter is **Yes**, the grid swaps Album and Track # for the Shuffler columns (start/end BPM, In/Out mix counts, Rank, Key) and a **Shuffled** column: the date Shuffler details were first saved. Dates estimated from history show as `~yyyy-MM-dd` (the latest possible date), with the feasible range in the cell tooltip. Sorting by the column sorts by that latest date.
+
 ### MixerControl / TrackMixerControl
 
 `Controls/MixerControl.cs` / `Controls/TrackMixerControl.cs`
@@ -132,8 +134,10 @@ Waveform editor for a track. Used by `frmShufflerDetails` (Shuffler mode: fade-i
 
 **View and sections are separate.** The view is what is on screen (`ZoomStart` → `ZoomEnd`). A section is a fade-in, fade-out, skip section or sample. One section can be the *active* section: it is drawn brighter and named after "Loop:" under the waveform.
 
-- With an active section, Play loops that section whatever the view shows, and the loop follows the section while it is edited (no restart).
-- With no active section, Play loops the view from the cursor. This is the original behaviour, and the forms' "Update" buttons still copy the view into a section.
+- Play always starts from the red cursor.
+- If the cursor is inside the active section (or on its end), Play loops that section whatever the view shows, and the loop follows the section while it is edited (no restart).
+- Otherwise Play loops the view from the cursor, or plays on to the end of the track if the cursor is off screen. The section stays active, so S / E and the other section keys still edit it, but editing it doesn't move playback.
+- The forms' "Update" buttons still copy the view into a section.
 
 A section becomes active when you click its coloured band, drag one of its edges, use a Set/Move command on it, press I / O / K, or zoom exactly to it (the forms' Zoom buttons). Shift+click, dragging out a range, and the Zoom In / Zoom Out / Zoom Full / < / > buttons make the view the loop again.
 

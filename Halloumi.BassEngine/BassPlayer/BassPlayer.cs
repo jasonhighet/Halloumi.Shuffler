@@ -819,6 +819,19 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
+        ///     Gets or sets whether the speaker and monitor outputs play in mono.
+        /// </summary>
+        public bool Mono
+        {
+            get => SpeakerOutput.Mono;
+            set
+            {
+                SpeakerOutput.Mono = value;
+                MonitorOutput.Mono = value;
+            }
+        }
+
+        /// <summary>
         ///     Gets the monitor volume.
         /// </summary>
         /// <returns>A value between 0 and 100</returns>

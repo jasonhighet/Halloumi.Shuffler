@@ -115,6 +115,7 @@ namespace Halloumi.Shuffler.Controls
             colTrackRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             colTrackKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             colBitrate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colDateShuffled = new System.Windows.Forms.DataGridViewTextBoxColumn();
             trackDetails = new TrackDetails();
             pnlDivider = new Halloumi.Common.Windows.Controls.Panel();
             flpToolbarRight = new System.Windows.Forms.FlowLayoutPanel();
@@ -728,7 +729,7 @@ namespace Halloumi.Shuffler.Controls
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
             grdTracks.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             grdTracks.ColumnHeadersHeight = 44;
-            grdTracks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colTrackDescription, colTrackAlbum, colTrackGenre, colTrackLength, colTrackStartBPM, colTrackEndBPM, colTrackNumber, colInCount, colOutCount, colUnrankedCount, colTrackRank, colTrackKey, colBitrate });
+            grdTracks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colTrackDescription, colTrackAlbum, colTrackGenre, colTrackLength, colTrackStartBPM, colTrackEndBPM, colTrackNumber, colInCount, colOutCount, colUnrankedCount, colTrackRank, colTrackKey, colBitrate, colDateShuffled });
             grdTracks.ContextMenuStrip = mnuTrack;
             grdTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             grdTracks.GridStyles.Style = ComponentFactory.Krypton.Toolkit.DataGridViewStyle.Mixed;
@@ -913,6 +914,18 @@ namespace Halloumi.Shuffler.Controls
             colBitrate.ReadOnly = true;
             colBitrate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             colBitrate.Width = 77;
+            // 
+            // colDateShuffled
+            // 
+            colDateShuffled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            colDateShuffled.DataPropertyName = "DateShuffled";
+            colDateShuffled.HeaderText = "Shuffled";
+            colDateShuffled.MinimumWidth = 9;
+            colDateShuffled.Name = "colDateShuffled";
+            colDateShuffled.ReadOnly = true;
+            colDateShuffled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            colDateShuffled.Visible = false;
+            colDateShuffled.Width = 110;
             // 
             // trackDetails
             // 
@@ -1340,6 +1353,7 @@ namespace Halloumi.Shuffler.Controls
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackRank;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrackKey;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBitrate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDateShuffled;
         private System.Windows.Forms.ToolStripMenuItem mnuUpdateAudio;
         private Common.Windows.Controls.Button btnUnshuffledRoulette;
     }

@@ -103,6 +103,7 @@ They are loaded by `ShufflerApplication.LoadSettings()` and saved by `ShufflerAp
 | `EnableTrackFxAutomation` | bool | Auto-trigger FX sends at recorded positions |
 | `EnableSampleAutomation` | bool | Auto-trigger samples at recorded positions |
 | `ShuffleAfterShuffling` | bool | Re-shuffle playlist after extended attributes are updated |
+| `Mono` | bool | Fold the speaker and headphone outputs down to mono (Options → Play In Mono) |
 | `MinimizeToTray` | bool | Minimise to system tray instead of taskbar |
 | `ShufflerMode` | enum | Playlist generation strategy |
 

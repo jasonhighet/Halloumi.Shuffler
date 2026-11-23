@@ -733,6 +733,7 @@ namespace Halloumi.Shuffler.Controls
             }
             var currentTrack = TrackModels.FirstOrDefault(t => t.Description == currentDescription);
             if (currentTrack == null) return -1;
+            TrackModels.ForEach(t => t.IsCurrent = false);
             currentTrack.IsCurrent = true;
             return TrackModels.IndexOf(currentTrack);
         }
@@ -921,14 +922,25 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void grdPlaylist_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            var currentTrack = GetLibraryTrack(SetCurrentTrack(e.RowIndex));
+            var trackModel = GetTrackModelByIndex(e.RowIndex);
+            if (trackModel == null) return;
 
-            var forcePlay = new ForcePlayTrackHandler(ForcePlayTrack);
-            BeginInvoke(forcePlay, currentTrack);
+            // Mark the row as current only when the play is forced. Marking it here, before the
+            // deferred play, lets a repaint reconcile it against the still-playing old track and
+            // move the marker to another copy of that track.
+            BeginInvoke(new ForcePlayTrackHandler(ForcePlayTrack), trackModel);
         }
 
-        private void ForcePlayTrack(Track track)
+        private void ForcePlayTrack(TrackModel trackModel)
         {
+            var index = TrackModels.IndexOf(trackModel);
+            if (index == -1) return;
+
+            var track = GetLibraryTrack(trackModel);
+            if (track == null) return;
+
+            SetCurrentTrack(index);
+
             _doNotBind = true;
 
             ShufflerApplication.ForcePlay(track.Filename);
@@ -1096,8 +1108,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void mnuPlay_Click(object sender, EventArgs e)
         {
-            var track = GetSelectedTrack();
-            ShufflerApplication.ForcePlay(track.Filename);
+            var trackModel = GetSelectedTracks().FirstOrDefault();
+            if (trackModel == null) return;
+            ForcePlayTrack(trackModel);
         }
 
         private void SaveWorkingPlaylist()
@@ -1157,6 +1170,6 @@ namespace Halloumi.Shuffler.Controls
             }
         }
 
-        private delegate void ForcePlayTrackHandler(Track track);
+        private delegate void ForcePlayTrackHandler(TrackModel trackModel);
     }
 }

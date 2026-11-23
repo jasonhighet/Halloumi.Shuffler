@@ -104,6 +104,9 @@ namespace Halloumi.Shuffler.Controls
         private WaveSection _activeSection = WaveSection.None;
         private bool _snap;
         private bool _playing;
+
+        // true when playback is looping the active section (rather than playing from a cursor outside it)
+        private bool _loopingSection;
         private long _playPosition = -1;
 
         private BeatAnalysis _beatAnalysis;
@@ -2182,7 +2185,8 @@ namespace Halloumi.Shuffler.Controls
             MessageBox.Show(FindForm(),
                 "Click the waveform first if the keys are going to a text box.\n\n" +
                 "Playback\n" +
-                "  Space            Play / stop. Loops the selected section, or the view if none is selected\n\n" +
+                "  Space            Play / stop from the red cursor. Loops the selected section if the cursor is in it;\n" +
+                "                   otherwise loops the view (or plays on to the end if the cursor is off screen)\n\n" +
                 "Sections (the selected one is brighter, and named after 'Loop:')\n" +
                 sections +
                 "  S / E            Set the section's start / end at the cursor (the playhead while playing)\n" +
@@ -2207,27 +2211,34 @@ namespace Halloumi.Shuffler.Controls
         #region Playback
 
         /// <summary>
-        ///     Plays on a loop: the active section if there is one, otherwise the view (from the cursor).
+        ///     Plays from the red cursor. If the cursor is inside the selected section, loops that section;
+        ///     otherwise loops the view, or plays to the end of the track if the cursor is outside the view.
+        ///     The section stays selected either way, so it can still be edited.
         /// </summary>
         private void Play()
         {
             if (BassTrack == null || ZoomLength <= 0) return;
 
             long start, end;
-            if (GetSection(_activeSection, out start, out end))
+            if (GetSection(_activeSection, out start, out end) && CurrentPosition >= start && CurrentPosition <= end)
             {
-                // from the cursor if it's inside the section, wrapping back to the section's start
-                var from = CurrentPosition > start && CurrentPosition < end ? CurrentPosition : start;
+                // wraps back to the section's start (a cursor on the end, e.g. after setting the end, starts there)
+                var from = CurrentPosition < end ? CurrentPosition : start;
                 BassPlayer.SetRawLoopPositions(start, end, from);
                 BassPlayer.PlayRawLoop();
                 if (from != start) BassPlayer.UpdateRawLoopPositions(start, end);
+                _loopingSection = true;
             }
             else
             {
-                if (CurrentPosition >= ZoomEnd) CurrentPosition = ZoomStart;
-                if (CurrentPosition < ZoomStart) CurrentPosition = ZoomStart;
-                BassPlayer.SetRawLoopPositions(ZoomStart, ZoomEnd, CurrentPosition);
+                if (CurrentPosition < 0 || CurrentPosition >= BassTrack.Length) CurrentPosition = ZoomStart;
+                var inView = CurrentPosition >= ZoomStart && CurrentPosition < ZoomEnd;
+                var loopStart = inView ? ZoomStart : 0;
+                var loopEnd = inView ? ZoomEnd : BassTrack.Length;
+                BassPlayer.SetRawLoopPositions(loopStart, loopEnd, CurrentPosition);
                 BassPlayer.PlayRawLoop();
+                if (CurrentPosition != loopStart) BassPlayer.UpdateRawLoopPositions(loopStart, loopEnd);
+                _loopingSection = false;
             }
 
             _playing = true;
@@ -2249,7 +2260,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void SyncPlayingLoop()
         {
-            if (!_playing || BassPlayer == null) return;
+            // playing from the cursor outside the section: editing the section mustn't pull playback into it
+            if (!_playing || !_loopingSection || BassPlayer == null) return;
 
             long start, end;
             if (!GetSection(_activeSection, out start, out end)) return;

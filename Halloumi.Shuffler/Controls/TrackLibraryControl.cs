@@ -98,6 +98,7 @@ namespace Halloumi.Shuffler.Controls
 
             grdTracks.SortOrderChanged += grdTracks_SortOrderChanged;
             grdTracks.CellValueNeeded += grdTracks_CellValueNeeded;
+            grdTracks.CellToolTipTextNeeded += grdTracks_CellToolTipTextNeeded;
             grdTracks.SortColumnIndex = -1;
 
             lstAlbum.BackColor = grdArtist.StateNormal.Background.Color1;
@@ -679,6 +680,17 @@ namespace Halloumi.Shuffler.Controls
             {
                 e.Value = trackModel.Bitrate;
             }
+            else if (e.ColumnIndex == 13)
+            {
+                e.Value = trackModel.DateShuffledFormatted;
+            }
+        }
+
+        private void grdTracks_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex != colDateShuffled.Index) return;
+            var trackModel = GetTrackModelByIndex(e.RowIndex);
+            if (trackModel != null) e.ToolTipText = trackModel.DateShuffledToolTip;
         }
 
         /// <summary>
@@ -1623,6 +1635,7 @@ namespace Halloumi.Shuffler.Controls
             colTrackStartBPM.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
             colTrackEndBPM.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
             colTrackRank.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
+            colDateShuffled.Visible = shufflerFilter == Library.ShufflerFilter.ShufflerTracks;
 
             colUnrankedCount.Visible = false;
 
@@ -1664,6 +1677,7 @@ namespace Halloumi.Shuffler.Controls
                 case "InCount":         field = TrackSortField.MixInCount;   break;
                 case "OutCount":        field = TrackSortField.MixOutCount;  break;
                 case "RankDescription": field = TrackSortField.Rank;         break;
+                case "DateShuffled":    field = TrackSortField.DateShuffled; break;
             }
 
             return new TrackSort
@@ -1878,10 +1892,35 @@ namespace Halloumi.Shuffler.Controls
                 Track = track;
                 Key = track.Key;
                 Bitrate = (int) decimal.Round(track.Bitrate, 0, MidpointRounding.AwayFromZero);
+                DateShuffledFormatted = FormatDateShuffled(track);
+                DateShuffledToolTip = DescribeDateShuffled(track);
 
                 InCount = -1;
                 OutCount = -1;
             }
+
+            /// <summary>
+            ///     The latest possible date, prefixed with ~ when it is an estimate from history.
+            /// </summary>
+            private static string FormatDateShuffled(Track track)
+            {
+                if (track.DateShuffled == null) return "";
+                var date = track.DateShuffled.Value.ToString("yyyy-MM-dd");
+                return track.DateShuffledIsEstimate ? "~" + date : date;
+            }
+
+            private static string DescribeDateShuffled(Track track)
+            {
+                if (track.DateShuffled == null) return "";
+                var latest = track.DateShuffled.Value.ToString("d MMM yyyy");
+                if (!track.DateShuffledIsEstimate) return $"Shuffled {latest}";
+                if (track.DateShuffledEarliest == null) return $"Shuffled on or before {latest}";
+                return $"Shuffled between {track.DateShuffledEarliest.Value:d MMM yyyy} and {latest}";
+            }
+
+            public string DateShuffledFormatted { get; }
+
+            public string DateShuffledToolTip { get; }
 
             public string Filename { get; }
 

@@ -338,6 +338,13 @@ namespace Halloumi.Shuffler.AudioLibrary
                 case TrackSortField.Rank:
                     tracks = tracks.OrderByDescending(t => t.Rank).ToList();
                     break;
+                case TrackSortField.DateShuffled:
+                    tracks = tracks
+                        .OrderBy(t => t.DateShuffled ?? DateTime.MinValue)
+                        .ThenBy(t => t.DateShuffledEarliest ?? DateTime.MinValue)
+                        .ThenBy(t => t.Description)
+                        .ToList();
+                    break;
                 // MixInCount / MixOutCount: handled by ShufflerApplication (needs MixLibrary)
             }
 

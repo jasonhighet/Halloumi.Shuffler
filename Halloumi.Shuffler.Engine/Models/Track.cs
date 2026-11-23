@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 
 namespace Halloumi.Shuffler.AudioLibrary.Models
@@ -158,6 +159,26 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         ///     Gets or sets a value indicating whether shuffler attributes exist for this track.
         /// </summary>
         public bool IsShufflerTrack { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the latest date the shuffler details could have been first saved, or null if unknown.
+        ///     Loaded from the Shuffled extended attribute; not stored in the library cache.
+        /// </summary>
+        [XmlIgnore]
+        public DateTime? DateShuffled { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the earliest date the shuffler details could have been first saved, when
+        ///     <see cref="DateShuffled" /> is an estimate from history. Null if the date is exact or the earliest is unknown.
+        /// </summary>
+        [XmlIgnore]
+        public DateTime? DateShuffledEarliest { get; set; }
+
+        /// <summary>
+        ///     Gets or sets whether <see cref="DateShuffled" /> is only the latest possible date, not the exact one.
+        /// </summary>
+        [XmlIgnore]
+        public bool DateShuffledIsEstimate { get; set; }
 
         /// <summary>
         ///     Gets the description.
