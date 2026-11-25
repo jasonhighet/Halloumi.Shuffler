@@ -45,7 +45,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     {
         private readonly object _slotLock = new object();
 
-        private readonly MixerGraph _graph;
+        private readonly MixingDesk _desk;
         private readonly TrackDeck _deck;
         private readonly TrackLoader _loader;
         private readonly SyncDispatcher _syncs;
@@ -55,11 +55,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private readonly ManualMixer _manualMixer;
         private readonly BackgroundQueue _background;
 
-        public Playback(MixerGraph graph, TrackDeck deck, TrackLoader loader, SyncDispatcher syncs,
+        public Playback(MixingDesk desk, TrackDeck deck, TrackLoader loader, SyncDispatcher syncs,
             AutomationPlayer automation, Sampler sampler, TrackFxSend fxSend, ManualMixer manualMixer,
             BackgroundQueue background)
         {
-            _graph = graph;
+            _desk = desk;
             _deck = deck;
             _loader = loader;
             _syncs = syncs;
@@ -237,7 +237,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
-        ///     Adds a track to the current-track mixer (paused), at the position it will start from.
+        ///     Adds a track to the track mixer (paused), at the position it will start from.
         ///     Call with _slotLock held, after decoding the audio.
         /// </summary>
         private void AddTrackToMixer(Track track)
@@ -250,7 +250,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             if (track == PreviousTrack || track == CurrentTrack) return;
 
-            AudioStreamHelper.AddToMixer(track, _graph.CurrentTrackMixer);
+            AudioStreamHelper.AddToMixer(track, _desk.TrackMixer);
 
             track.SyncProc = _syncs.Callback;
             track.CurrentStartLoop = 0;
@@ -305,7 +305,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                     PlayState = PlayState.Playing;
                 }
 
-                _graph.SetDelayByBpm();
+                _desk.SetDelayByBpm();
             }
         }
 
@@ -497,10 +497,16 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
-        ///     Skips to shortly before the current track's fade-out, so the mix into the next track can be heard.
-        ///     Lands early enough for the next track's pre-fade-in to still play.
+        ///     How many beats before the current track's fade-out <see cref="SkipToFadeOut" /> lands.
         /// </summary>
-        public void SkipToFadeOut(int beatsBeforeFadeOut)
+        public int SkipToFadeOutBeats { get; set; } = 8;
+
+        /// <summary>
+        ///     Skips to <see cref="SkipToFadeOutBeats" /> beats before the current track's fade-out, so the mix into
+        ///     the next track can be heard. If that lands after the next track's pre-fade-in starts, the pre-fade-in
+        ///     is skipped.
+        /// </summary>
+        public void SkipToFadeOut()
         {
             var track = CurrentTrack;
             if (track == null) return;
@@ -509,12 +515,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             // the default loop is 16 beats
             var beatLength = BpmHelper.GetDefaultLoopLength(track.EndBpm) / 16D;
-            var runIn = beatLength * beatsBeforeFadeOut;
-
-            // the pre-fade-in starts when playback passes its position, so jumping past it would skip it
-            var next = NextTrack;
-            if (next != null && next.UsePreFadeIn)
-                runIn = Math.Max(runIn, next.PreFadeInLengthSeconds + beatLength);
+            var runIn = beatLength * SkipToFadeOutBeats;
 
             SetTrackPosition(track.ActiveLengthSeconds - runIn);
 
@@ -680,6 +681,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             track.CurrentStartLoop = 0;
 
+            // in case it was cut on an earlier fade-out and is playing again
+            AudioStreamHelper.RemoveHighPass(track);
+
             AudioStreamHelper.SetPosition(track, track.FadeInStart);
 
             var startVolume = track.FadeInStartVolume;
@@ -695,7 +699,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             AudioStreamHelper.SetPitch(track, 100);
             AudioStreamHelper.Play(track);
 
-            _graph.SetDelayByBpm();
+            _desk.SetDelayByBpm();
         }
 
         /// <summary>
@@ -810,10 +814,16 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// <summary>
         ///     Carries out a fade-out plan on the outgoing track. Call with _slotLock held.
         /// </summary>
+        // cuts the kick and bassline of the outgoing track, keeps its body
+        private const float FadeOutHighPassHz = 150f;
+
         private void ApplyFadeOutPlan(Track track, FadeOutPlan plan)
         {
             if (plan.ReshapeAs.HasValue)
                 ShapeFadeOut(track, plan.ReshapeAs.Value);
+
+            if (plan.HighPass)
+                AudioStreamHelper.SetHighPass(track, FadeOutHighPassHz);
 
             switch (plan.Action)
             {
@@ -966,7 +976,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         private void RaiseTrackChanged()
         {
-            _graph.SetDelayByBpm();
+            _desk.SetDelayByBpm();
             TrackChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
     }

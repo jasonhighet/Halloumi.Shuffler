@@ -12,13 +12,13 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     /// </summary>
     internal class RawLooper
     {
-        private readonly MixerGraph _graph;
+        private readonly MixingDesk _desk;
         private readonly TrackLoader _loader;
         private readonly SyncDispatcher _syncs;
 
-        public RawLooper(MixerGraph graph, TrackLoader loader, SyncDispatcher syncs)
+        public RawLooper(MixingDesk desk, TrackLoader loader, SyncDispatcher syncs)
         {
-            _graph = graph;
+            _desk = desk;
             _loader = loader;
             _syncs = syncs;
 
@@ -51,7 +51,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             track.RawLoopStart = 0;
             track.RawLoopEnd = track.Length;
 
-            AudioStreamHelper.AddToMixer(track, _graph.RawLoopMixer);
+            AudioStreamHelper.AddToMixer(track, _desk.RawLoopMixer);
             Track = track;
 
             SetPositions(0, track.Length, 0);

@@ -78,7 +78,7 @@ The heart of the application. `BassPlayer` is a facade: its public members pass 
 
 | Component | Responsibility |
 |---|---|
-| `MixerGraph` | Mixer channels, output routing, plug-in slots |
+| `MixingDesk` | Mixer channels, output routing, plug-in slots |
 | `TrackLoader` | Loading tracks and their audio |
 | `Playback` | Track slots, play/pause/queue, seeking, transitions |
 | `ManualMixer` | Manual mix mode and extended-mix recording |
@@ -103,23 +103,20 @@ Two implementations of `ISampleLibrary`:
 ## Mixer channel topology
 
 ```
-CurrentTrack stream ──► CurrentTrackMixer ──┐
-                                             │
-PreviousTrack stream ─► PreviousTrackMixer ──┼──► MainMixer ──► OutputSplitter ──► SpeakerOutput
-                                             │                                └──► MonitorOutput
-RawLoop stream ───────► RawLoopMixer ────────┤
-                                             │
-Sample streams ───────► SamplerMixer ────────┘
-                              │
-                         TrackSendMixer (effects send, routed back into MainMixer)
+Tracks (current, previous, next) ──► TrackMixer ──► splitter ──► SpeakerOutput / MonitorOutput
+                                         └──► TrackSendMixer (muted until a send) ──► TrackSendFxMixer ──► SpeakerOutput
+Sample streams ──► SamplerMixer ──► splitter ──► SpeakerOutput / MonitorOutput
+RawLoop stream ──► RawLoopMixer ──► splitter ──► SpeakerOutput / MonitorOutput
 ```
 
-Effects chain per channel:
-- `WaPlugin` (WinAmp DSP) on the main path
-- `MainVstPlugin`, `MainVstPlugin2` on the main mixer
-- `SamplerVstPlugin`, `SamplerVstPlugin2` on the sampler mixer
-- `TrackVstPlugin` on the track mixer
-- `TrackSendFxVstPlugin`, `TrackSendFxVstPlugin2` on the FX send
+Every playing track, both the outgoing and the incoming one during a crossfade, is on `TrackMixer`. Anything that must affect only one track (its volume slide, the fade-out high-pass) goes on that track's own stream, not on a mixer. Each splitter sends its group to the speakers, the monitor or both (`TrackOutput`, `SamplerOutput`, `RawLoopOutput` settings). `MixingDesk` builds all of this.
+
+Plug-in slots:
+
+- `WaPlugin` (WinAmp DSP) and the Main VST slots on `SpeakerOutput`
+- The Tracks VST slot on `TrackMixer`
+- The Sampler VST slots on `SamplerMixer` (which also has a fixed bass cut)
+- The Track FX VST slots on `TrackSendFxMixer` (which also has a fixed bass cut)
 
 ## Two Track models
 

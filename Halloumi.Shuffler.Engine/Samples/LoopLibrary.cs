@@ -146,7 +146,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
         {
             lock (_samples)
             {
-                SerializationHelper<List<Sample>>.ToXmlFile(_samples, LibraryCacheFilename);
+                SafeFile.ToXmlFile<List<Sample>>(_samples, LibraryCacheFilename);
             }
         }
 

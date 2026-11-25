@@ -46,6 +46,7 @@ namespace Halloumi.Shuffler.Forms
         public FrmMain(ShufflerApplication application)
         {
             InitializeComponent();
+            StepTimer.Startup.Mark("main window controls created");
 
             _application = application;
             _application.BaseForm = this;
@@ -58,6 +59,8 @@ namespace Halloumi.Shuffler.Forms
             mnuConservativeFadeOut.Click += mnuConservativeFadeOut_Click;
             mnuShuffleAfterShuffling.Click += mnuShuffleAfterShuffling_Click;
             mnuMono.Click += (s, e) => _application.Mono = mnuMono.Checked;
+            AddSkipToFadeOutBeatsMenu();
+            AddUnrankedBpmVarianceMenu();
 
             mnuWinampDSPConfig.Click += mnuWinampDSPConfig_Click;
             mnuVSTPluginConfig.Click += mnuVSTPluginConfig_Click;
@@ -86,8 +89,9 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.ToolStripLabel = lblPlaylistStatus;
 
             playlistControl.Initialize(trackLibraryControl, application);
+            StepTimer.Startup.Mark("playlist control");
             playlistControl.ShufflerDetailsUpdatedEvent += playlistControl_ShufflerDetailsUpdatedEvent;
-            playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(SkipAfterMixRankBeats); };
+            playlistControl.MixRankAssigned += (s, e) => { if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(); };
             playlistControl.GenerateClicked += (s, e) => OpenGeneratePlaylistForm();
             playlistControl.GenerateNowClicked += (s, e) => shufflerController.AutoGenerateNow();
             playlistControl.LeastMixedRouletteClicked += (s, e) =>
@@ -111,6 +115,7 @@ namespace Halloumi.Shuffler.Forms
             };
 
             playerDetails.Initialize(application, playlistControl);
+            StepTimer.Startup.Mark("player details");
 
             playerDetails.ToolStripLabel = lblPlayerStatus;
             
@@ -126,14 +131,18 @@ namespace Halloumi.Shuffler.Forms
             mixerControl.PlaylistControl = playlistControl;
 
             trackLibraryControl.Initialize();
+            StepTimer.Startup.Mark("library control");
             mixerControl.Initialize();
-            
+            StepTimer.Startup.Mark("mixer control");
+
             shufflerController.Application = _application;
             shufflerController.PlaylistControl = playlistControl;
             shufflerController.LibraryControl = trackLibraryControl;
             shufflerController.Initialize();
+            StepTimer.Startup.Mark("shuffler controller");
 
             _application.LoadPlaylistGenerationSettings();
+            StepTimer.Startup.Mark("playlist generation settings");
             mnuAutoshuffle.Checked = shufflerController.AutoGenerateEnabled;
 
             toolTipNav.SetToolTip(btnNavLibrary, "Library");
@@ -361,6 +370,7 @@ namespace Halloumi.Shuffler.Forms
             playlistControl.ShowTrackDetailsAlbumArt = settings.AlbumArtShown;
             mnuViewAlbumArt.Checked = settings.AlbumArtShown;
             mnuSkipAfterMix.Checked = settings.SkipAfterMix;
+            _application.BassPlayer.SkipToFadeOutBeats = settings.SkipToFadeOutBeats;
             mnuMono.Checked = _application.Mono;
             mnuShowPlayer.Checked = settings.ShowPlayer;
             playerDetails.Visible = mnuShowPlayer.Checked;
@@ -372,8 +382,10 @@ namespace Halloumi.Shuffler.Forms
             mnuUpdateLibraryOnStartup.Checked = settings.UpdateLibraryOnStartup;
 
             fileMenuController.RecentFiles = settings.RecentFiles;
+            StepTimer.Startup.Mark("UI settings and library view");
 
             playlistControl.LoadWorkingPlaylist();
+            StepTimer.Startup.Mark("working playlist queued (first tracks' audio loaded)");
         }
 
         /// <summary>
@@ -383,6 +395,7 @@ namespace Halloumi.Shuffler.Forms
         {
             var settings = Settings.Default;
             settings.SkipAfterMix = mnuSkipAfterMix.Checked;
+            settings.SkipToFadeOutBeats = _application.BassPlayer.SkipToFadeOutBeats;
             settings.MinimizeToTray = MinimizeToTrayEnabled;
             settings.FormStateSettings = formStateController.FormStateSettings;
             settings.VisualsShown = playerDetails.VisualsShown;
@@ -402,16 +415,21 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
+            StepTimer.Shutdown.Mark("main window closed");
             mixerControl.Unload();
 
+            // save everything first: if a plug-in crashes while shutting down, nothing is lost
+            _application.SaveAll();
+
             // keep pumping messages while the WinAmp plug-in stops, and don't wait forever if it hangs
-            var unload = _application.UnloadWinampPluginAsync();
+            var unload = _application.StopWinampPluginForExitAsync();
             var giveUpAt = DateTime.Now.AddSeconds(5);
             while (!unload.IsCompleted && DateTime.Now < giveUpAt)
             {
                 System.Windows.Forms.Application.DoEvents();
                 System.Threading.Thread.Sleep(10);
             }
+            StepTimer.Shutdown.Mark(unload.IsCompleted ? "WinAmp plug-in stopped" : "WinAmp plug-in stop gave up after 5 s");
 
             _application.Unload();
         }
@@ -565,7 +583,9 @@ namespace Halloumi.Shuffler.Forms
         /// </summary>
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            StepTimer.Shutdown.Mark("closing");
             SaveSettings();
+            StepTimer.Shutdown.Mark("UI settings and library view saved");
         }
 
         /// <summary>
@@ -637,11 +657,88 @@ namespace Halloumi.Shuffler.Forms
             }
             playerDetails.DisplayCurrentTrackDetails();
 
-            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut(SkipAfterMixRankBeats);
+            if (mnuSkipAfterMix.Checked) _application.BassPlayer.SkipToFadeOut();
         }
 
-        // one bar of the outgoing track before the mix, to get through mixes quickly when setting up tracks
-        private const int SkipAfterMixRankBeats = 4;
+        private static readonly int[] SkipToFadeOutBeatOptions = { 0, 1, 2, 4, 8, 16 };
+
+        private static string DescribeSkipToFadeOutBeats(int beats)
+        {
+            switch (beats)
+            {
+                case 0: return "Straight to the fade-out";
+                case 1: return "1 beat before the fade-out";
+                case 2: return "2 beats before the fade-out";
+                case 4: return "1 bar (4 beats) before the fade-out";
+                default: return beats / 4 + " bars (" + beats + " beats) before the fade-out";
+            }
+        }
+
+        /// <summary>
+        ///     Adds the "Skip To End Goes To" submenu after "Skip After Rating Mix": how many beats before the
+        ///     fade-out every skip-to-end lands.
+        /// </summary>
+        private void AddSkipToFadeOutBeatsMenu()
+        {
+            var menu = new ToolStripMenuItem("Skip To End Goes To");
+            foreach (var beats in SkipToFadeOutBeatOptions)
+            {
+                var item = new ToolStripMenuItem(DescribeSkipToFadeOutBeats(beats)) { Tag = beats };
+                item.Click += (s, e) =>
+                {
+                    _application.BassPlayer.SkipToFadeOutBeats = beats;
+                    UpdateSkipToFadeOutBeatsMenu(menu);
+                    SaveSettings();
+                };
+                menu.DropDownItems.Add(item);
+            }
+            menu.DropDownOpening += (s, e) => UpdateSkipToFadeOutBeatsMenu(menu);
+
+            mnuOptions.DropDownItems.Insert(mnuOptions.DropDownItems.IndexOf(mnuSkipAfterMix) + 1, menu);
+        }
+
+        private void UpdateSkipToFadeOutBeatsMenu(ToolStripMenuItem menu)
+        {
+            foreach (ToolStripMenuItem item in menu.DropDownItems)
+                item.Checked = (int)item.Tag == _application.BassPlayer.SkipToFadeOutBeats;
+        }
+
+        private static readonly decimal[] UnrankedBpmVarianceOptions = { 5M, 8M, 10M, 15M, 20M, 25M };
+
+        /// <summary>
+        ///     Adds the "Unranked BPM Range" submenu before "Mono": how far apart two tracks' BPMs can be
+        ///     for an unrated pair to count as unranked rather than forbidden.
+        /// </summary>
+        private void AddUnrankedBpmVarianceMenu()
+        {
+            var menu = new ToolStripMenuItem("Unranked BPM Range");
+            foreach (var variance in UnrankedBpmVarianceOptions)
+            {
+                var item = new ToolStripMenuItem("Within " + variance.ToString("0") + "%") { Tag = variance };
+                item.Click += (s, e) =>
+                {
+                    if (_application.UnrankedBpmVariance == variance) return;
+
+                    _application.UnrankedBpmVariance = variance;
+                    UpdateUnrankedBpmVarianceMenu(menu);
+                    _application.SaveSettings();
+
+                    trackLibraryControl.RefreshMixableTracks();
+                    playlistControl.RefreshMixableTracks();
+                    playerDetails.DisplayCurrentTrackDetails();
+                };
+                menu.DropDownItems.Add(item);
+            }
+            menu.DropDownOpening += (s, e) => UpdateUnrankedBpmVarianceMenu(menu);
+
+            mnuOptions.DropDownItems.Insert(mnuOptions.DropDownItems.IndexOf(mnuMono), menu);
+        }
+
+        private void UpdateUnrankedBpmVarianceMenu(ToolStripMenuItem menu)
+        {
+            foreach (ToolStripMenuItem item in menu.DropDownItems)
+                item.Checked = (decimal)item.Tag == _application.UnrankedBpmVariance;
+        }
 
         /// <summary>
         ///     Handles the Click event of the mnuSkipToEnd control.
@@ -796,7 +893,10 @@ namespace Halloumi.Shuffler.Forms
 
         private void FrmMain_Shown(object sender, EventArgs e)
         {
+            StepTimer.Startup.Mark("main window loaded");
             trackLibraryControl.InitialBind();
+            StepTimer.Startup.Mark("library list filled");
+            StepTimer.Startup.Write("main window shown");
         }
 
         private void mnuShowTrackDetails_Click(object sender, EventArgs e)

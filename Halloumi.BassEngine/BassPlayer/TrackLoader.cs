@@ -4,7 +4,6 @@ using System.IO;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Mixing;
 using Halloumi.Shuffler.AudioEngine.Models;
-using Halloumi.Shuffler.AudioEngine.SectionDetector;
 
 namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 {
@@ -17,11 +16,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     internal class TrackLoader
     {
         private readonly TrackCache _cache = new TrackCache();
-        private readonly MixerGraph _graph;
+        private readonly MixingDesk _desk;
 
-        public TrackLoader(MixerGraph graph)
+        public TrackLoader(MixingDesk desk)
         {
-            _graph = graph;
+            _desk = desk;
         }
 
         /// <summary>
@@ -140,13 +139,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
                 ExtendedAttributesHelper.LoadExtendedAttributes(track);
 
-                if (track.StartBpm == 0 || track.EndBpm == 0)
-                {
-                    var bpm = BPMGuestimator.EstimateBPM(track.Filename);
-                    track.StartBpm = Convert.ToDecimal(bpm);
-                    track.EndBpm = Convert.ToDecimal(bpm);
-                }
-
                 FadeDefaults.FillMissingFadePoints(track);
             }
 
@@ -164,8 +156,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
             track.Syncs.Clear();
 
-            AudioStreamHelper.RemoveFromMixer(track, _graph.CurrentTrackMixer);
-            AudioStreamHelper.RemoveFromMixer(track, _graph.PreviousTrackMixer);
+            AudioStreamHelper.RemoveFromMixer(track, _desk.TrackMixer);
 
             AudioStreamHelper.UnloadAudio(track);
             track.SyncProc = null;

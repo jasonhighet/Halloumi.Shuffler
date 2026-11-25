@@ -11,7 +11,6 @@ using Halloumi.Common.Windows.Forms;
 using Halloumi.Common.Windows.Helpers;
 using Halloumi.Shuffler.AudioEngine.BassPlayer;
 using AE = Halloumi.Shuffler.AudioEngine;
-using Halloumi.Shuffler.AudioEngine.SectionDetector;
 using Halloumi.Shuffler.AudioLibrary;
 using Halloumi.Shuffler;
 

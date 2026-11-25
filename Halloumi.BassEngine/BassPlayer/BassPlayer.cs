@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioEngine.Helpers;
@@ -11,7 +11,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     ///     The audio engine's public face. It builds the components below and passes calls through
     ///     to them; it holds no logic of its own.
     ///     <list type="bullet">
-    ///         <item><see cref="MixerGraph" /> - every mixer channel, output routing, plug-in slots</item>
+    ///         <item><see cref="MixingDesk" /> - every mixer channel, output routing, plug-in slots</item>
     ///         <item><see cref="TrackLoader" /> - loading tracks and their audio</item>
     ///         <item><see cref="Playback" /> - track slots, play/pause, seeking, transitions</item>
     ///         <item><see cref="ManualMixer" /> - manual mix mode and extended-mix recording</item>
@@ -25,7 +25,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     /// </summary>
     public class BassPlayer : IDisposable, IBpmProvider
     {
-        private readonly MixerGraph _graph;
+        private readonly MixingDesk _desk;
         private readonly TrackDeck _deck = new TrackDeck();
         private readonly TriggerRecorder _recorder = new TriggerRecorder();
         private readonly TrackLoader _loader;
@@ -46,18 +46,18 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             AudioEngineHelper.StartAudioEngine(windowHandle);
 
-            _graph = new MixerGraph(this);
+            _desk = new MixingDesk(this);
             var syncs = new SyncDispatcher(_deck.FindByChannel);
 
-            _loader = new TrackLoader(_graph);
-            _fxSend = new TrackFxSend(_graph, _deck, _recorder);
-            _sampler = new Sampler(this, _graph, _deck, _recorder);
-            _rawLooper = new RawLooper(_graph, _loader, syncs);
+            _loader = new TrackLoader(_desk);
+            _fxSend = new TrackFxSend(_desk, _deck, _recorder);
+            _sampler = new Sampler(this, _desk, _deck, _recorder);
+            _rawLooper = new RawLooper(_desk, _loader, syncs);
             _automation = new AutomationPlayer(syncs, _deck, _fxSend, _sampler, _recorder,
                 () => _playback.ResetTrackSyncPositions());
             _manualMixer = new ManualMixer(_deck, _loader.FadeDefaults, _recorder,
                 () => _playback.PlayState == PlayState.Playing);
-            _playback = new Playback(_graph, _deck, _loader, syncs, _automation, _sampler, _fxSend, _manualMixer,
+            _playback = new Playback(_desk, _deck, _loader, syncs, _automation, _sampler, _fxSend, _manualMixer,
                 _background);
 
             _sampler.SamplesChanged += (sender, e) => OnTrackSamplesChanged?.Invoke(this, e);
@@ -65,19 +65,27 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             ExtendedAttributesHelper.ShufflerFolder = "";
         }
 
-        public void Dispose()
+        public void Dispose() => Dispose(null);
+
+        /// <param name="step">Called after each step with what was done, for timing the shutdown.</param>
+        public void Dispose(Action<string> step)
         {
             _playback.Stop();
+            step?.Invoke("playback stopped");
 
             // let queued work (events, freeing audio) finish before the audio is freed
             _background.WaitUntilIdle(2000);
+            step?.Invoke("background work finished (gives up at 2 s)");
 
-            _graph.UnloadAllWaPlugins();
-            _graph.UnloadAllVstPlugins();
+            _desk.StopWaPluginsForExit();
+            _desk.UnloadAllVstPlugins();
+            step?.Invoke("VST plug-ins unloaded");
 
             _loader.UnloadAll();
+            step?.Invoke("track audio freed");
 
             AudioEngineHelper.StopAudioEngine();
+            step?.Invoke("audio engine stopped");
         }
 
         // ---------- events ----------
@@ -194,7 +202,13 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         public void SkipToEnd() => _playback.SkipToEnd();
 
-        public void SkipToFadeOut(int beatsBeforeFadeOut = 8) => _playback.SkipToFadeOut(beatsBeforeFadeOut);
+        public void SkipToFadeOut() => _playback.SkipToFadeOut();
+
+        public int SkipToFadeOutBeats
+        {
+            get { return _playback.SkipToFadeOutBeats; }
+            set { _playback.SkipToFadeOutBeats = value; }
+        }
 
         public decimal GetCurrentBpm() => _playback == null ? BpmHelper.NormaliseBpm(100M) : _playback.GetCurrentBpm();
 
@@ -279,58 +293,58 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             set { AudioEngineHelper.Volume = value; }
         }
 
-        public SpeakerOutputChannel SpeakerOutput => _graph.SpeakerOutput;
+        public SpeakerOutputChannel SpeakerOutput => _desk.SpeakerOutput;
 
-        public MonitorOutputChannel MonitorOutput => _graph.MonitorOutput;
+        public MonitorOutputChannel MonitorOutput => _desk.MonitorOutput;
 
         public SoundOutput TrackOutput
         {
-            get { return _graph.TrackOutput; }
-            set { _graph.TrackOutput = value; }
+            get { return _desk.TrackOutput; }
+            set { _desk.TrackOutput = value; }
         }
 
         public SoundOutput SamplerOutput
         {
-            get { return _graph.SamplerOutput; }
-            set { _graph.SamplerOutput = value; }
+            get { return _desk.SamplerOutput; }
+            set { _desk.SamplerOutput = value; }
         }
 
         public SoundOutput RawLoopOutput
         {
-            get { return _graph.RawLoopOutput; }
-            set { _graph.RawLoopOutput = value; }
+            get { return _desk.RawLoopOutput; }
+            set { _desk.RawLoopOutput = value; }
         }
 
         /// <summary>Gets the output levels (0 - 32768).</summary>
-        public VolumeLevels GetVolumeLevels() => _graph.GetVolumeLevels();
+        public VolumeLevels GetVolumeLevels() => _desk.GetVolumeLevels();
 
-        public decimal GetMixerVolume() => _graph.SpeakerOutput.GetVolume();
+        public decimal GetMixerVolume() => _desk.SpeakerOutput.GetVolume();
 
         public void SetMixerVolume(decimal volume)
         {
-            _graph.SpeakerOutput.SetVolume(volume);
+            _desk.SpeakerOutput.SetVolume(volume);
             OnVolumeChanged?.Invoke(CurrentTrack, EventArgs.Empty);
         }
 
-        public decimal GetMonitorVolume() => _graph.MonitorOutput.GetVolume();
+        public decimal GetMonitorVolume() => _desk.MonitorOutput.GetVolume();
 
-        public void SetMonitorVolume(decimal volume) => _graph.MonitorOutput.SetVolume(volume);
+        public void SetMonitorVolume(decimal volume) => _desk.MonitorOutput.SetVolume(volume);
 
         /// <summary>Gets or sets whether the speaker and monitor outputs play in mono.</summary>
         public bool Mono
         {
-            get { return _graph.Mono; }
-            set { _graph.Mono = value; }
+            get { return _desk.Mono; }
+            set { _desk.Mono = value; }
         }
 
         // ---------- plug-ins ----------
 
-        public VstPlugin GetVstPlugin(PluginChannel channel, int index) => _graph.GetVstPlugin(channel, index);
+        public VstPlugin GetVstPlugin(PluginChannel channel, int index) => _desk.GetVstPlugin(channel, index);
 
         public VstPlugin LoadVstPlugin(PluginChannel channel, string location, int index) =>
-            _graph.LoadVstPlugin(channel, location, index);
+            _desk.LoadVstPlugin(channel, location, index);
 
-        public void ClearVstPlugin(PluginChannel channel, int index) => _graph.ClearVstPlugin(channel, index);
+        public void ClearVstPlugin(PluginChannel channel, int index) => _desk.ClearVstPlugin(channel, index);
 
         // Named slot members, kept for the plug-in settings screen.
 
@@ -352,7 +366,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void ClearTracksVstPlugin(int index) => ClearVstPlugin(PluginChannel.Tracks, index);
         public void ClearTrackSendFxvstPlugin(int index) => ClearVstPlugin(PluginChannel.TrackSendFx, index);
 
-        public WaPlugin WaPlugin => _graph.WaPlugin;
+        public WaPlugin WaPlugin => _desk.WaPlugin;
 
         /// <summary>
         ///     Loads a WinAmp DSP plug-in onto the main output (pausing playback while it loads).
@@ -362,14 +376,16 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             var playing = PlayState == PlayState.Playing;
             if (playing) Pause();
 
-            var plugin = _graph.LoadWaPlugin(location);
+            var plugin = _desk.LoadWaPlugin(location);
 
             if (playing) Play();
 
             return plugin;
         }
 
-        public void UnloadAllWaPlugins() => _graph.UnloadAllWaPlugins();
+        public void UnloadAllWaPlugins() => _desk.UnloadAllWaPlugins();
+
+        public void StopWaPluginsForExit() => _desk.StopWaPluginsForExit();
 
         // ---------- track FX send ----------
 

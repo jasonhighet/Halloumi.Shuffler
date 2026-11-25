@@ -1283,7 +1283,7 @@ namespace Halloumi.Shuffler.Controls
             if (cmbExcludedCollection.SelectedIndex > 0)
                 settings.ExcludedCollection = cmbExcludedCollection.SelectedItem.ToString();
 
-            SerializationHelper<Settings>.ToXmlFile(settings, UiSettingsFilename);
+            SafeFile.ToXmlFile<Settings>(settings, UiSettingsFilename);
         }
 
         private static string UiSettingsFilename =>
@@ -1798,6 +1798,16 @@ namespace Halloumi.Shuffler.Controls
             if (_binding || _neverBind) return;
             ShowCurrentTrackDetails();
             RaiseSelectedTracksChanged();
+        }
+
+        /// <summary>
+        ///     Re-lists the tracks and the mixable tracks panel, after something that changes which
+        ///     tracks are mixable (such as the unranked BPM range).
+        /// </summary>
+        public void RefreshMixableTracks()
+        {
+            BindData();
+            ShowCurrentTrackDetails();
         }
 
         private void ShowCurrentTrackDetails()

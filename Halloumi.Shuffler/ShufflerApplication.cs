@@ -41,18 +41,22 @@ namespace Halloumi.Shuffler
         public ShufflerApplication()
         {
             BassPlayer = new BassPlayer();
+            StepTimer.Startup.Mark("audio engine");
             Library = new Library(BassPlayer);
 
             CollectionHelper.Library = Library;
 
             LoopLibrary = new LoopLibrary(BassPlayer);
             LoadSettings();
+            StepTimer.Startup.Mark("settings and plug-ins");
 
             MixLibrary = new MixLibrary(Library.ShufflerFolder);
+            UnrankedBpmVariance = Settings.Default.UnrankedBpmVariance;
             TrackSampleLibrary = new TrackSampleLibrary(BassPlayer, Library);
 
             MidiManager = new MidiManager();
             MidiMapper = new BassPlayerMidiMapper(BassPlayer, MidiManager);
+            StepTimer.Startup.Mark("MIDI");
 
             LoadFromDatabase();
 
@@ -160,26 +164,34 @@ namespace Halloumi.Shuffler
         private void LoadFromDatabase()
         {
             Library.LoadFromDatabase();
+            StepTimer.Startup.Mark("library database");
             TrackSampleLibrary.LoadFromCache();
+            StepTimer.Startup.Mark("track sample library");
 
             MixLibrary.AvailableTracks = Library.GetTracks();
             MixLibrary.LoadFromDatabase();
+            StepTimer.Startup.Mark("mix library");
 
             ExtendedAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.ExtendedAttributes.xml", "Extended attributes");
             ExtendedAttributesHelper.LoadFromDatabase();
+            StepTimer.Startup.Mark("extended attributes file");
             Library.LoadAllExtendedAttributes();
+            StepTimer.Startup.Mark("extended attributes applied to tracks");
 
             AutomationAttributesHelper.ShufflerFolder = Library.ShufflerFolder;
             WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.AutomationAttributes.xml", "Automation attributes");
             AutomationAttributesHelper.LoadFromDatabase();
+            StepTimer.Startup.Mark("automation attributes");
 
             WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.Collections.xml", "Collections");
             CollectionHelper.LoadFromDatabase();
+            StepTimer.Startup.Mark("collections");
 
             WarnIfMissing(Library.ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml", "Mix library");
 
             LoopLibrary.LoadFromCache();
+            StepTimer.Startup.Mark("loop library");
         }
 
         private void WarnIfMissing(string folder, string filename, string label)
@@ -191,22 +203,34 @@ namespace Halloumi.Shuffler
         }
 
         /// <summary>
-        ///     Unloads the WinAmp DSP plug-in on a worker thread. Some plug-ins message the main window while stopping,
-        ///     so the UI thread must keep pumping messages until this completes, or the two wait on each other.
+        ///     Stops the WinAmp DSP plug-in for exit on a worker thread. Some plug-ins message the main window while
+        ///     stopping, so the UI thread must keep pumping messages until this completes, or the two wait on each other.
         /// </summary>
-        public Task UnloadWinampPluginAsync()
+        public Task StopWinampPluginForExitAsync()
         {
-            return Task.Run(() => BassPlayer.UnloadAllWaPlugins());
+            return Task.Run(() => BassPlayer.StopWaPluginsForExit());
+        }
+
+        /// <summary>
+        ///     Saves settings, the library, mix ratings and the loop library. Called on exit before any plug-in is
+        ///     stopped, so a plug-in crashing during shutdown can't lose the data.
+        /// </summary>
+        public void SaveAll()
+        {
+            SaveSettings();
+            StepTimer.Shutdown.Mark("settings saved");
+            Library.SaveToDatabase();
+            StepTimer.Shutdown.Mark("library database saved");
+            MixLibrary.SaveIfChanged(StepTimer.Shutdown.Mark);
+            LoopLibrary.SaveToCache();
+            StepTimer.Shutdown.Mark("loop library saved");
         }
 
         public void Unload()
         {
-            SaveSettings();
-            Library.SaveToDatabase();
-            MixLibrary.SaveToDatabase();
-            LoopLibrary.SaveToCache();
-            BassPlayer.Dispose();
+            BassPlayer.Dispose(StepTimer.Shutdown.Mark);
             MidiManager.Dispose();
+            StepTimer.Shutdown.Mark("MIDI closed");
         }
 
         // ── Plugin load/save helpers ─────────────────────────────────────────
@@ -287,6 +311,16 @@ namespace Halloumi.Shuffler
             Mono = s.Mono;
         }
 
+        /// <summary>
+        ///     How far apart (percent) two tracks' BPMs can be for an unrated pair to count as unranked
+        ///     rather than forbidden.
+        /// </summary>
+        public decimal UnrankedBpmVariance
+        {
+            get => MixLibrary.UnrankedBpmVariance;
+            set => MixLibrary.UnrankedBpmVariance = value > 0 ? value : 5M;
+        }
+
         public void SaveSettings()
         {
             var s = Settings.Default;
@@ -313,6 +347,7 @@ namespace Halloumi.Shuffler
 
             s.ShuffleAfterShuffling    = ShuffleAfterShuffling;
             s.Mono                     = Mono;
+            s.UnrankedBpmVariance      = UnrankedBpmVariance;
             s.LimitSongLength          = UseConservativeFadeOut;
             s.Volume                   = BassPlayer.GetMixerVolume();
             s.SamplerDelayNotes        = BassPlayer.SamplerDelayNotes;
@@ -355,6 +390,8 @@ namespace Halloumi.Shuffler
                 }
             }
 
+            _trackSelector.FavourRecentTracks = request.FavourRecentTracks;
+
             return _trackSelector.GeneratePlayList(
                 availableTracks,
                 MixLibrary,
@@ -394,7 +431,7 @@ namespace Halloumi.Shuffler
             request.AutoGenerateEnabled = AutoGenerateEnabled;
 
             Directory.CreateDirectory(Path.GetDirectoryName(PlaylistSettingsFilename));
-            SerializationHelper<PlaylistGenerationRequest>.ToXmlFile(request, PlaylistSettingsFilename);
+            SafeFile.ToXmlFile<PlaylistGenerationRequest>(request, PlaylistSettingsFilename);
         }
 
         public PlaylistGenerationRequest LoadPlaylistGenerationSettings()
@@ -907,7 +944,7 @@ namespace Halloumi.Shuffler
 
         public void SaveWorkingPlaylist(List<string> trackDescriptions)
         {
-            SerializationHelper<List<string>>.ToXmlFile(trackDescriptions, WorkingPlaylistFilename);
+            SafeFile.ToXmlFile<List<string>>(trackDescriptions, WorkingPlaylistFilename);
         }
 
         public List<string> LoadWorkingPlaylist()

@@ -114,7 +114,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 content.AppendLine(track.Filename);
             }
 
-            File.WriteAllText(filename, content.ToString(), Encoding.UTF8);
+            SafeFile.WriteAllText(filename, content.ToString(), Encoding.UTF8);
         }
 
         /// <summary>

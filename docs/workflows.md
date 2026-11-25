@@ -174,9 +174,9 @@ TrackFxAutomationEnabled = true
   └─► BassPlayer.StartTrackFxTrigger()
         ├─ wait DelayNotes (BPM-synced)
         └─► StartTrackFxSend*(delayNotes)
-              ├─ open TrackSendMixer channel
-              ├─ route CurrentTrack through TrackSendFxVstPlugin chain
-              └─ blend back into MainMixer
+              ├─ unmute TrackSendMixer (a copy of TrackMixer)
+              ├─ which feeds TrackSendFxMixer and its Track FX VST slots
+              └─ which plays on SpeakerOutput alongside the dry tracks
 
 [BASS fires sync at trigger end position]
   └─► BassPlayer.StopTrackFxSend()
@@ -276,7 +276,7 @@ User opens Plugins menu → VST Plugin (Main) 1
           └─► BassPlayer.LoadMainVstPlugin(path, 1)
                 ├─ unload previous plugin if any
                 ├─ create VSTPlugin instance via BASS_VST_ChannelSetDSP
-                └─ apply to MainMixerChannel DSP chain
+                └─ apply to SpeakerOutput's DSP chain
         [Settings button]
           └─► VSTPlugin.ShowEditor()   open the VST plugin's own GUI
         [Clear]

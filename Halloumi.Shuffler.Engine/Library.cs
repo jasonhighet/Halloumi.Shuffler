@@ -103,13 +103,35 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         public Track GetTrack(string artist, string title, decimal length = 0)
         {
-            var tracks = Tracks.Where(x => string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase)
-                                           && string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase))
+            return PickTrack(Tracks.Where(x => string.Equals(x.Artist, artist, StringComparison.CurrentCultureIgnoreCase)), title, length);
+        }
+
+        /// <summary>
+        ///     Returns a function that finds tracks the same way as <see cref="GetTrack" />, for looking up many tracks at
+        ///     once. It indexes the library by artist first, so each lookup only compares that artist's tracks. It sees the
+        ///     library as it was when this was called.
+        /// </summary>
+        public Func<string, string, decimal, Track> GetTrackFinder()
+        {
+            var byArtist = Tracks.ToList().ToLookup(x => x.Artist ?? "", StringComparer.CurrentCultureIgnoreCase);
+            return (artist, title, length) => PickTrack(byArtist[artist ?? ""], title, length);
+        }
+
+        /// <summary>
+        ///     Picks the track with the given title. When there are several, the one closest to the given length; with no
+        ///     length (0), the longest.
+        /// </summary>
+        private static Track PickTrack(IEnumerable<Track> artistTracks, string title, decimal length)
+        {
+            var tracks = artistTracks
+                .Where(x => string.Equals(x.Title, title, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
 
-            return tracks.Count == 1
-                ? tracks[0]
-                : tracks.OrderByDescending(x => Math.Abs(x.Length - length)).FirstOrDefault();
+            if (tracks.Count <= 1) return tracks.FirstOrDefault();
+
+            return length > 0
+                ? tracks.OrderBy(x => Math.Abs(x.Length - length)).First()
+                : tracks.OrderByDescending(x => x.Length).First();
         }
 
         /// <summary>

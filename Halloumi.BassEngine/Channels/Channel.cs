@@ -168,7 +168,7 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             var vstSettings = GetVstSettings();
 
             var filename = GetChannelVstSettingsFilename(name);
-            SerializationHelper<VstSettings>.ToXmlFile(vstSettings, filename);
+            SafeFile.ToXmlFile<VstSettings>(vstSettings, filename);
         }
 
         public VstSettings GetVstSettings()
@@ -498,7 +498,15 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             return plugin;
         }
 
-        public void ClearWaPlugin()
+        /// <summary>
+        ///     Takes the WinAmp DSP plug-in off this channel and stops it.
+        /// </summary>
+        /// <param name="freePlugin">
+        ///     Whether to also unload the plug-in's DLL. Pass false when the application is exiting: some plug-ins
+        ///     (iZotope Ozone) still have threads or windows running their code after they stop, and unloading the DLL
+        ///     under them crashes the process. Windows releases it when the process ends.
+        /// </param>
+        public void ClearWaPlugin(bool freePlugin = true)
         {
             var plugin = WaPlugin;
             if (plugin == null)
@@ -509,14 +517,18 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             try
             {
-                BassWaDsp.BASS_WADSP_Stop(plugin.Id);
-                Thread.Sleep(20);
-
+                // detached from the channel first, so the mixer thread stops calling into it before it is stopped
                 BassWaDsp.BASS_WADSP_ChannelRemoveDSP(plugin.Id);
                 Thread.Sleep(20);
 
-                BassWaDsp.BASS_WADSP_FreeDSP(plugin.Id);
+                BassWaDsp.BASS_WADSP_Stop(plugin.Id);
                 Thread.Sleep(20);
+
+                if (freePlugin)
+                {
+                    BassWaDsp.BASS_WADSP_FreeDSP(plugin.Id);
+                    Thread.Sleep(20);
+                }
             }
             catch
             {

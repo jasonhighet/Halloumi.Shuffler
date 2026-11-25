@@ -87,7 +87,7 @@ These files legitimately bypass `ShufflerApplication` and should not be "fixed":
 
 | Component | Responsibility |
 |---|---|
-| `MixerGraph` | Builds and owns every mixer channel, output routing, VST/WinAmp plug-in slots |
+| `MixingDesk` | Builds and owns every mixer channel, output routing, VST/WinAmp plug-in slots |
 | `TrackLoader` | Loading tracks, tags, saved attributes and audio; freeing unused audio (`TrackCache`, `FadeDefaults`) |
 | `Playback` | Track slots (`TrackDeck`), play/pause/queue, seeking, fade-in/fade-out transitions, "fade now", the slot lock |
 | `ManualMixer` | Manual mix mode, the fader, recording and saving extended mixes |
@@ -103,12 +103,13 @@ Supporting types: `TrackSyncs`/`TrackSyncType` (BASS position callbacks on a tra
 ### Mixer channel topology
 
 ```
-CurrentTrack  ──► CurrentTrackMixer  ──┐
-PreviousTrack ──► PreviousTrackMixer ──┼──► MainMixer ──► OutputSplitter ──► SpeakerOutput
-RawLoop       ──► RawLoopMixer       ──┤                               └──► MonitorOutput
-Samples       ──► SamplerMixer       ──┘
-                      └──► TrackSendMixer (FX send, routed back to MainMixer)
+Tracks (current, previous, next) ──► TrackMixer ──► splitter ──► SpeakerOutput / MonitorOutput
+                                         └──► TrackSendMixer (muted until a send) ──► TrackSendFxMixer ──► SpeakerOutput
+Samples  ──► SamplerMixer ──► splitter ──► SpeakerOutput / MonitorOutput
+RawLoop  ──► RawLoopMixer ──► splitter ──► SpeakerOutput / MonitorOutput
 ```
+
+Both tracks in a crossfade are on `TrackMixer`, so anything that must affect one track only goes on that track's own stream, not on a mixer.
 
 ### Critical: two Track classes
 
@@ -125,6 +126,7 @@ The engine `Track` extends `AudioStream` and holds BASS channel handles. The lib
 
 - **Events not polling** — UI controls subscribe to `BassPlayer` events (`OnTrackChange`, `OnEndFadeIn`, `OnTrackQueued`, `OnVolumeChanged`, etc.)
 - **BASS sync callbacks** — automation triggers use `BASS_ChannelSetSync` for sample-accurate position callbacks, not timers
+- **Safe saves** — write files with `SafeFile.ToXmlFile` / `SafeFile.WriteAllText` (`Halloumi.BassEngine/Helpers/SafeFile.cs`), not `SerializationHelper.ToXmlFile`. They write a temporary file and swap it in, so a crash mid-save leaves the old file intact instead of an empty one.
 - **One value-picker dialog** — renaming an artist, album or genre, choosing a title and choosing source audio all use `FrmChooseValue`. The caller sets the title, list and starting value, and passes an `Apply` action.
 
 ## Data files (runtime, not in repo)

@@ -32,7 +32,8 @@ ForcePlay(filename | track)     Stop, clear the slots and play this track now
 QueueTrack(filename | track)    Queue as next (or current if nothing is playing)
 JumpBack()                      Rewind half a loop within the current track
 SetAdjustedTrackPosition(pos)   Seek (position counted from the fade-in, see TrackTimeline)
-SkipToEnd() / SkipToFadeOut(n)  Jump to the end, or to n beats before the fade-out
+SkipToEnd() / SkipToFadeOut()   Jump to the end, or to SkipToFadeOutBeats beats before the fade-out
+                                (a pre-fade-in that starts before that point is skipped)
 GetCurrentBpm()                 Dynamic BPM interpolated from position
 ```
 
@@ -76,7 +77,7 @@ The default fade volumes (fade-in 50 % → 100 %, fade-out 80 % → 0 %) are fix
 
 ## Effects plugins and the track FX send
 
-`MixerGraph.cs` (plug-in slots), `TrackFxSend.cs` (the send)
+`MixingDesk.cs` (plug-in slots), `TrackFxSend.cs` (the send)
 
 ### Plugin slots
 
@@ -102,7 +103,10 @@ LoadVstPlugin(channel, location, index)    # index is 0-based
 ClearVstPlugin(channel, index)
 LoadWaPlugin(location)
 UnloadAllWaPlugins()
+StopWaPluginsForExit()
 ```
+
+A WinAmp plug-in is detached from the speaker channel before it is stopped, so the mixer thread never calls a stopped plug-in. `StopWaPluginsForExit` (used on exit and by `Dispose`) stops it without unloading its DLL: iZotope Ozone still runs code after stopping, and unloading the DLL under it crashed the process. On exit `frmMain` saves settings, the library, mix ratings and the loop library before stopping the plug-in. Mix ratings are saved in the background after every rating, so on exit they are only saved if something changed since (`MixLibrary.SaveIfChanged`). Each step's time goes to `%APPDATA%\Halloumi Shuffler\Halloumi.Shuffler.Shutdown.log` (start-up: `Halloumi.Shuffler.Startup.log`).
 
 The named members (`LoadMainVstPlugin`, `ClearSamplerVstPlugin`, `MainVstPlugin2`, ...) are one-line wrappers over these, kept for `frmPluginSettings`. To add a slot, add it to `VstPluginSlot.All`; to add a channel, add it to `PluginChannel` and to `GetPluginHost`.
 
@@ -315,11 +319,11 @@ Each track's BASS sync callbacks are held in its `Syncs` (a `TrackSyncs`, see be
 
 | Component | Owns | Uses |
 |---|---|---|
-| `MixerGraph` | every `MixerChannel`, the output splitters, plug-in slots | — |
-| `TrackLoader` | `TrackCache`, `FadeDefaults` | `MixerGraph` (to remove tracks from mixers) |
-| `TrackFxSend` | — (drives the send channels) | `MixerGraph`, `TrackDeck`, `TriggerRecorder` |
-| `Sampler` | `TrackSamplePlayer` | `MixerGraph`, `TrackDeck`, `TriggerRecorder` |
-| `RawLooper` | the raw-loop track | `MixerGraph`, `TrackLoader`, `SyncDispatcher` |
+| `MixingDesk` | every `MixerChannel`, the output splitters, plug-in slots | — |
+| `TrackLoader` | `TrackCache`, `FadeDefaults` | `MixingDesk` (to remove tracks from mixers) |
+| `TrackFxSend` | — (drives the send channels) | `MixingDesk`, `TrackDeck`, `TriggerRecorder` |
+| `Sampler` | `TrackSamplePlayer` | `MixingDesk`, `TrackDeck`, `TriggerRecorder` |
+| `RawLooper` | the raw-loop track | `MixingDesk`, `TrackLoader`, `SyncDispatcher` |
 | `AutomationPlayer` | — | `TrackDeck`, `TrackFxSend`, `Sampler`, `TriggerRecorder`, `SyncDispatcher`, and a callback to `Playback.ResetTrackSyncPositions` |
 | `ManualMixer` | manual-mix mode and fade types, extended-mix recording and saving | `TrackDeck`, `FadeDefaults`, `TriggerRecorder`, and a callback for whether the player is playing |
 | `Playback` | `_slotLock`, play state, force-fade state | all of the above, and the `BackgroundQueue` |
@@ -415,7 +419,9 @@ GetCut/Quick/PowerDown/EchoOutFadeLength(track)
 
 `PlanFadeOut` checks these in order: manual mix mode, a recorded extended mix (with a non-zero length), the track's `PowerDownOnEnd`, a "fade now" request, and otherwise a normal crossfade.
 
-`FadeOutPlan` holds an `Action` (`None`, `VolumeSlide` or `PowerDown`), the slide's start volume, end volume and length, an optional `ReshapeAs` fade type, and `EndsAutoMixRecording`. `BassPlayer.StartFadeOut` builds the plan and `ApplyFadeOutPlan` carries it out. Carrying it out means reshaping the track and resetting its syncs, starting the slide or power-down, and finishing extended-mix recording.
+`FadeOutPlan` holds an `Action` (`None`, `VolumeSlide` or `PowerDown`), the slide's start volume, end volume and length, an optional `ReshapeAs` fade type, `EndsAutoMixRecording`, and `HighPass`. `BassPlayer.StartFadeOut` builds the plan and `ApplyFadeOutPlan` carries it out. Carrying it out means reshaping the track and resetting its syncs, cutting its bass if `HighPass` is set, starting the slide or power-down, and finishing extended-mix recording.
+
+`HighPass` is set on every fade-out: normal crossfades, "fade now", manual mix mode and recorded extended mixes (and power-downs, where it makes no audible difference). It puts a 150 Hz high-pass filter (BASS_FX biquad) on the outgoing track's own stream, not on a mixer, because both tracks play through `TrackMixer`. The filter is removed when the track next starts fading in, and is freed with the stream when its audio is unloaded.
 
 To add a fade type: add it to `ExtendedFadeType`, then handle it in `ShapeFadeOut` and in the two private planners (`PlanManualFadeOut`, `PlanExtendedMixFadeOut`).
 
@@ -482,15 +488,6 @@ Wraps BASS stream creation, seeking, and metadata extraction.
 
 ### AudioDataHelper
 FFT and waveform data extraction from streams.
-
-### VolumeAnalyzer
-Real-time volume analysis using FFT data for the level meters.
-
-### BeatDetector / BeatDetector2
-Analyses audio data to detect beat positions and calculate BPM. `BeatDetector2` is an improved version.
-
-### SectionDetector / SectionDetector2
-Identifies structural sections (intro, verse, chorus, outro) by analysing energy/frequency patterns.
 
 ---
 

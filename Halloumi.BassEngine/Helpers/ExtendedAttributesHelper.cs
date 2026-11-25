@@ -44,7 +44,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             var attributes = AllAttributes.Select(x => x.Value).ToList().OrderBy(x => x.Track).ToList();
             var filepath = ExtendedAttributesFile;
-            SerializationHelper<List<ExtendedAttributes>>.ToXmlFile(attributes, filepath);
+            SafeFile.ToXmlFile<List<ExtendedAttributes>>(attributes, filepath);
         }
 
         private static string ExtendedAttributesFile

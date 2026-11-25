@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Halloumi.Shuffler.AudioEngine.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -748,7 +749,7 @@ namespace Halloumi.Shuffler.Forms
 
             var filename = FileDialogHelper.SaveAs("Plugin Settings (*.PluginSettings.xml)|*.PluginSettings.xml", "");
             if (filename != "")
-                SerializationHelper<PluginSettings>.ToXmlFile(settings, filename);
+                SafeFile.ToXmlFile<PluginSettings>(settings, filename);
         }
 
         private void btnImport_Click(object sender, EventArgs e)

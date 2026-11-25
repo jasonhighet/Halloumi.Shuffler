@@ -31,8 +31,14 @@ namespace Halloumi.Shuffler.AudioEngine.Models
             ChannelIds = new List<int>();
             Gain = 0;
             GainChannel = int.MinValue;
+            HighPassChannel = int.MinValue;
             MixerChannelId = int.MinValue;
         }
+
+        /// <summary>
+        ///     The high-pass filter FX on <see cref="ChannelId" />, or int.MinValue if there is none.
+        /// </summary>
+        internal int HighPassChannel { get; set; }
 
         public AudioData AudioData { get; set; }
 

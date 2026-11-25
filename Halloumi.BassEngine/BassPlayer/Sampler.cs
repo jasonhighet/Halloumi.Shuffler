@@ -16,19 +16,19 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     /// </summary>
     internal class Sampler
     {
-        private readonly MixerGraph _graph;
+        private readonly MixingDesk _desk;
         private readonly TrackDeck _deck;
         private readonly TriggerRecorder _recorder;
         private readonly TrackSamplePlayer _samplePlayer;
 
-        public Sampler(IBpmProvider bpmProvider, MixerGraph graph, TrackDeck deck, TriggerRecorder recorder)
+        public Sampler(IBpmProvider bpmProvider, MixingDesk desk, TrackDeck deck, TriggerRecorder recorder)
         {
-            _graph = graph;
+            _desk = desk;
             _deck = deck;
             _recorder = recorder;
 
             _samplePlayer = new TrackSamplePlayer(bpmProvider);
-            _graph.SamplerMixer.AddInputChannel(_samplePlayer.Output);
+            _desk.SamplerMixer.AddInputChannel(_samplePlayer.Output);
         }
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public decimal DelayNotes
         {
-            get { return _graph.SamplerMixer.SyncNotes; }
-            set { _graph.SamplerMixer.SyncNotes = value; }
+            get { return _desk.SamplerMixer.SyncNotes; }
+            set { _desk.SamplerMixer.SyncNotes = value; }
         }
 
         public List<Sample> GetSamples()
@@ -99,7 +99,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (sample == null) return;
 
             _samplePlayer.PlaySample(sample.SampleId);
-            _graph.SamplerMixer.SetPluginBpm();
+            _desk.SamplerMixer.SetPluginBpm();
 
             var track = _deck.Current;
             if (track == null) return;

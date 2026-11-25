@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Helpers;
@@ -57,21 +58,61 @@ namespace Halloumi.Shuffler.AudioLibrary
             get { return Path.Combine(ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml"); }
         }
 
-        public void SaveToDatabase()
+        // one save at a time: a rating starts a background save, and exit saves too
+        private readonly object _saveLock = new object();
+
+        // bumped by every rating change; _savedChanges is its value as of the last finished save (or the load)
+        private int _changes;
+        private int _savedChanges;
+
+        public bool HasUnsavedChanges => Volatile.Read(ref _changes) != Volatile.Read(ref _savedChanges);
+
+        /// <param name="step">Called after each step with what was done, for timing the shutdown.</param>
+        public void SaveToDatabase(Action<string> step = null)
         {
-            var mixes = _toMixes.Select(x => new TrackMix
+            lock (_saveLock)
             {
-                Track = x.Key,
-                MixRankings = x.Value
-                    .OrderByDescending(y => y.MixLevel)
-                    .ThenBy(y => y.FromTrack)
-                    .Select(y => y.ToString())
-                    .ToList()
-            }).OrderBy(x => x.Track).ToList();
+                step?.Invoke("mix library: waited for any background save");
 
-            var mixLibraryDatabaseFile = Path.Combine(ShufflerFolder, "Halloumi.Shuffler.MixLibrary.xml");
+                int changes;
+                List<TrackMix> mixes;
+                lock (_toMixes)
+                {
+                    step?.Invoke("mix library: waited for the ratings lock");
 
-            SerializationHelper<List<TrackMix>>.ToXmlFile(mixes, mixLibraryDatabaseFile);
+                    changes = _changes;
+                    mixes = _toMixes.Select(x => new TrackMix
+                    {
+                        Track = x.Key,
+                        MixRankings = x.Value
+                            .OrderByDescending(y => y.MixLevel)
+                            .ThenBy(y => y.FromTrack)
+                            .Select(y => y.ToString())
+                            .ToList()
+                    }).OrderBy(x => x.Track).ToList();
+                }
+                step?.Invoke("mix library: ratings listed");
+
+                SafeFile.ToXmlFile<List<TrackMix>>(mixes, MixLibraryDatabaseFile);
+                step?.Invoke("mix library: file written");
+
+                Volatile.Write(ref _savedChanges, changes);
+            }
+        }
+
+        /// <summary>
+        ///     Saves only when a rating has changed since the last save. Every rating already starts a background save,
+        ///     so on exit there is usually nothing left to do.
+        /// </summary>
+        public void SaveIfChanged(Action<string> step = null)
+        {
+            lock (_saveLock)
+            {
+                if (HasUnsavedChanges)
+                    SaveToDatabase(step);
+                else
+                    step?.Invoke("mix library: no unsaved changes");
+            }
         }
 
         public void LoadFromDatabase()
@@ -165,6 +206,12 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
         /// <summary>
+        ///     How far apart (percent) two tracks' BPMs can be for an unrated pair to count as unranked
+        ///     rather than forbidden. Half and double time count as the same BPM.
+        /// </summary>
+        public decimal UnrankedBpmVariance { get; set; } = 5M;
+
+        /// <summary>
         ///     Gets all preferred tracks for the specified track
         /// </summary>
         /// <param name="track">The track.</param>
@@ -173,7 +220,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (track == null) return new List<Track>();
 
-            var tracksInRange = GetTracksInStartBpmRange(track.EndBpm, 5M, AvailableTracks);
+            var tracksInRange = GetTracksInStartBpmRange(track.EndBpm, UnrankedBpmVariance, AvailableTracks);
             return tracksInRange
                 .Where(t => t.Description != track.Description)
                 .ToList();
@@ -188,7 +235,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (track == null) return new List<Track>();
 
-            var tracksInRange = GetTracksInEndBpmRange(track.StartBpm, 5M, AvailableTracks);
+            var tracksInRange = GetTracksInEndBpmRange(track.StartBpm, UnrankedBpmVariance, AvailableTracks);
             return tracksInRange
                 .Where(t => t.Description != track.Description)
                 .ToList();
@@ -461,6 +508,7 @@ namespace Halloumi.Shuffler.AudioLibrary
         {
             if (fromTrack == null || toTrack == null) return;
             SetMixLevel(fromTrack.Description, toTrack.Description, mixLevel);
+            Interlocked.Increment(ref _changes);
             SaveMixRankings();
         }
 
@@ -615,7 +663,7 @@ namespace Halloumi.Shuffler.AudioLibrary
             var mixRank = GetMixRank(track1.Description, track2.Description);
             if (mixRank != null) return mixRank.MixLevel;
 
-            return BpmHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, 5M) ? 1 : 0;
+            return BpmHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, UnrankedBpmVariance) ? 1 : 0;
         }
 
         public int GetKeyMixedOutCount(Track track)
@@ -776,6 +824,9 @@ namespace Halloumi.Shuffler.AudioLibrary
             {
                 SetMixLevel(mixRank.FromTrack, mixRank.ToTrack, mixRank.MixLevel);
             }
+
+            // ratings merged from an old per-track file aren't in the mix library file yet
+            Interlocked.Increment(ref _changes);
         }
 
         /// <summary>

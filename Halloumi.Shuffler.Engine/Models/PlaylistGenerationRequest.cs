@@ -39,6 +39,12 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         public string ExcludeFromPlaylistFile { get; set; }
         public bool ExcludeMixesOnly { get; set; }
         public bool DisplayedTracksOnly { get; set; }
+
+        /// <summary>
+        ///     Score recently shuffled tracks higher (Best Mix, Variety and Extra Variety only).
+        /// </summary>
+        public bool FavourRecentTracks { get; set; }
+
         public bool AutoGenerateEnabled { get; set; }
     }
 }

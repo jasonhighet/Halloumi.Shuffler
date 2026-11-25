@@ -589,7 +589,53 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             }
             audioStream.ChannelIds.Clear();
 
+            // freeing the stream freed its FX
+            audioStream.HighPassChannel = int.MinValue;
+
             AudioDataHelper.UnloadAudioData(audioStream);
+        }
+
+        /// <summary>
+        ///     Cuts everything below a frequency, with a high-pass filter on the stream.
+        /// </summary>
+        public static void SetHighPass(AudioStream audioStream, float cutoffHz)
+        {
+            if (audioStream == null || !audioStream.IsAudioLoaded()) return;
+
+            var parameters = new BASS_BFX_BQF
+            {
+                lFilter = BASSBFXBQF.BASS_BFX_BQF_HIGHPASS,
+                fCenter = cutoffHz,
+                fGain = 0f,
+                fBandwidth = 0f,
+                fQ = 0.707f,
+                fS = 0f,
+                lChannel = BASSFXChan.BASS_BFX_CHANALL
+            };
+
+            if (audioStream.HighPassChannel == int.MinValue)
+                audioStream.HighPassChannel = Bass.BASS_ChannelSetFX(audioStream.ChannelId, BASSFXType.BASS_FX_BFX_BQF, 0);
+
+            if (audioStream.HighPassChannel == 0)
+            {
+                audioStream.HighPassChannel = int.MinValue;
+                return;
+            }
+
+            Bass.BASS_FXSetParameters(audioStream.HighPassChannel, parameters);
+        }
+
+        /// <summary>
+        ///     Removes the high-pass filter set by <see cref="SetHighPass" />, if there is one.
+        /// </summary>
+        public static void RemoveHighPass(AudioStream audioStream)
+        {
+            if (audioStream == null || audioStream.HighPassChannel == int.MinValue) return;
+
+            if (audioStream.IsAudioLoaded())
+                Bass.BASS_ChannelRemoveFX(audioStream.ChannelId, audioStream.HighPassChannel);
+
+            audioStream.HighPassChannel = int.MinValue;
         }
     }
 }

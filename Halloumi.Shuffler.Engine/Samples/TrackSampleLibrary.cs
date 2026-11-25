@@ -91,7 +91,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Samples
         /// </summary>
         public void SaveToCache()
         {
-            SerializationHelper<List<Sample>>.ToXmlFile(Samples, SampleLibraryFilename);
+            SafeFile.ToXmlFile<List<Sample>>(Samples, SampleLibraryFilename);
         }
 
         public void UpdateSampleFromTrack(Sample sample, Track track)

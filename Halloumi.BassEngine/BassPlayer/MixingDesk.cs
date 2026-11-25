@@ -8,31 +8,26 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     /// <summary>
     ///     Builds and owns every mixer channel, and the plug-in slots on them.
     ///     <code>
-    ///     CurrentTrack  ──► CurrentTrackMixer  ──┐
-    ///     PreviousTrack ──► PreviousTrackMixer ──┴► TrackMixer ──► splitter ──► speaker / monitor
-    ///                                                   └► TrackSendMixer (muted until a send) ──► TrackSendFxMixer ──► speaker
+    ///     Tracks (current, previous, next) ──► TrackMixer ──► splitter ──► speaker / monitor
+    ///                                               └► TrackSendMixer (muted until a send) ──► TrackSendFxMixer ──► speaker
     ///     Samples       ──► SamplerMixer ──► splitter ──► speaker / monitor
     ///     Raw loop      ──► RawLoopMixer ──► splitter ──► speaker / monitor
     ///     </code>
     /// </summary>
-    internal class MixerGraph
+    internal class MixingDesk
     {
         private readonly OutputSplitter _trackOutputSplitter;
         private readonly OutputSplitter _samplerOutputSplitter;
         private readonly OutputSplitter _rawLoopOutputSplitter;
 
-        public MixerGraph(IBpmProvider bpmProvider)
+        public MixingDesk(IBpmProvider bpmProvider)
         {
             SpeakerOutput = new SpeakerOutputChannel();
             MonitorOutput = new MonitorOutputChannel();
 
-            // tracks
-            CurrentTrackMixer = new MixerChannel(bpmProvider);
-            PreviousTrackMixer = new MixerChannel(bpmProvider);
+            // tracks: every playing track, outgoing and incoming, is on TrackMixer
             TrackMixer = new MixerChannel(bpmProvider, MixerChannelOutputType.MultipleOutputs);
             _trackOutputSplitter = new OutputSplitter(TrackMixer, SpeakerOutput, MonitorOutput);
-            TrackMixer.AddInputChannel(CurrentTrackMixer);
-            TrackMixer.AddInputChannel(PreviousTrackMixer);
 
             // track FX send: a muted copy of the track mix, through the send FX, into the speakers
             TrackSendMixer = new MixerChannel(bpmProvider);
@@ -59,10 +54,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public SpeakerOutputChannel SpeakerOutput { get; }
 
         public MonitorOutputChannel MonitorOutput { get; }
-
-        public MixerChannel CurrentTrackMixer { get; }
-
-        public MixerChannel PreviousTrackMixer { get; }
 
         public MixerChannel TrackMixer { get; }
 
@@ -156,6 +147,14 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void UnloadAllWaPlugins()
         {
             SpeakerOutput.ClearWaPlugin();
+        }
+
+        /// <summary>
+        ///     Detaches and stops the WinAmp plug-in on exit without unloading its DLL (see Channel.ClearWaPlugin).
+        /// </summary>
+        public void StopWaPluginsForExit()
+        {
+            SpeakerOutput.ClearWaPlugin(false);
         }
 
         private Channel GetPluginHost(PluginChannel channel)

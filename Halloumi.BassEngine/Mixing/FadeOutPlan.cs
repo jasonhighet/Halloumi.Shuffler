@@ -46,6 +46,11 @@ namespace Halloumi.Shuffler.AudioEngine.Mixing
         /// </summary>
         public bool EndsAutoMixRecording { get; set; }
 
+        /// <summary>
+        ///     True if the outgoing track's bass is cut with a high-pass filter for the fade-out.
+        /// </summary>
+        public bool HighPass { get; set; }
+
         public static FadeOutPlan None()
         {
             return new FadeOutPlan { Action = FadeOutAction.None };

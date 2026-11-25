@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Halloumi.Shuffler.AudioEngine.Helpers;
+using System.IO;
 using Halloumi.Common.Helpers;
 using Halloumi.Shuffler.AudioEngine.Channels;
 using Halloumi.Shuffler.AudioLibrary;
@@ -65,6 +66,8 @@ namespace Halloumi.Shuffler.Forms
             RecentFiles = "";
             ShowTrackDetails = true;
             ShowPlayer = true;
+            SkipToFadeOutBeats = 1;
+            UnrankedBpmVariance = 5M;
         }
 
         public static Settings Default
@@ -172,6 +175,10 @@ namespace Halloumi.Shuffler.Forms
 
         public bool SkipAfterMix { get; set; }
 
+        public int SkipToFadeOutBeats { get; set; }
+
+        public decimal UnrankedBpmVariance { get; set; }
+
         public TrackSelector.MixStrategy ShufflerMode { get; set; }
 
         public bool UpdateLibraryOnStartup { get; set; }
@@ -207,7 +214,7 @@ namespace Halloumi.Shuffler.Forms
         public void Save()
         {
             var filename = Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.Settings.xml");
-            SerializationHelper<Settings>.ToXmlFile(this, filename);
+            SafeFile.ToXmlFile<Settings>(this, filename);
         }
     }
 }

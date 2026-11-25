@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Halloumi.Shuffler.AudioEngine.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,12 +24,13 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
             _collections = SerializationHelper<List<Playlist>>.FromXmlFile(filepath);
             
             _collectionTracks = new Dictionary<string, Dictionary<string, Track>>();
+            var findTrack = Library.GetTrackFinder();
 
             foreach (var collection in _collections)
             {
                 var tracks = collection
                     .Entries
-                    .Select(entry => Library.GetTrack(entry.Artist, entry.Title, entry.Length))
+                    .Select(entry => findTrack(entry.Artist, entry.Title, entry.Length))
                     .Where(track => track != null)
                     .OrderBy(x=>x.Description)
                     .ToList();
@@ -53,7 +55,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         {
             var collections = _collections.ToList().OrderBy(x => x.Name).ToList();
             var filepath = CollectionFile;
-            SerializationHelper<List<Playlist>>.ToXmlFile(collections, filepath);
+            SafeFile.ToXmlFile<List<Playlist>>(collections, filepath);
         }
 
         /// <summary>
@@ -323,7 +325,7 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
                 content.AppendLine(track.Filename);
             }
 
-            File.WriteAllText(filename, content.ToString(), Encoding.UTF8);
+            SafeFile.WriteAllText(filename, content.ToString(), Encoding.UTF8);
         }
 
         public static List<Track> GetTracksInPlaylistFile(string filename)

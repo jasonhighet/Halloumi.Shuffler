@@ -296,6 +296,16 @@ namespace Halloumi.Shuffler.Controls
             Debug.WriteLine("end show current");
         }
 
+        /// <summary>
+        ///     Redraws the mix ranks and the mixable tracks panel, after something that changes which
+        ///     tracks are mixable (such as the unranked BPM range).
+        /// </summary>
+        public void RefreshMixableTracks()
+        {
+            ShowCurrentTrackDetails();
+            grdPlaylist.InvalidateDisplayedRows();
+        }
+
         private void ShowCurrentTrackDetails()
         {
             var track = GetSelectedTrack();
@@ -1121,6 +1131,7 @@ namespace Halloumi.Shuffler.Controls
         public void LoadWorkingPlaylist()
         {
             var playlistFiles = ShufflerApplication.LoadWorkingPlaylist();
+            StepTimer.Startup.Mark("working playlist file read and matched to tracks");
             if (playlistFiles.Count == 0)
                 return;
 

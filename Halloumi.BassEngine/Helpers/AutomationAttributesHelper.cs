@@ -39,7 +39,7 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         {
             var attributes = AllAttributes.Select(x => x.Value).ToList().OrderBy(x => x.Track).ToList();
             var filepath = AutomationAttributesFile;
-            SerializationHelper<List<AutomationAttributes>>.ToXmlFile(attributes, filepath);
+            SafeFile.ToXmlFile<List<AutomationAttributes>>(attributes, filepath);
         }
 
         public static AutomationAttributes GetAutomationAttributes(string trackDescription)

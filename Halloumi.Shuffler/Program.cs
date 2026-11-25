@@ -15,6 +15,7 @@ namespace Halloumi.Shuffler
         [STAThread]
         private static void Main()
         {
+            StepTimer.Startup.Mark("started");
             WindowsApplicationHelper.InitialiseWindowsApplication();
 
             CommonFunctions.SetDefaultSettings();
@@ -25,6 +26,7 @@ namespace Halloumi.Shuffler
             }
             if (!InvalidSettingsFolders(settings))
             {
+                StepTimer.Startup.Mark("settings checked");
                 var application = new ShufflerApplication();
 
 #if DEBUG
@@ -39,6 +41,7 @@ namespace Halloumi.Shuffler
                     CommonFunctions.LogException(exception);
                 }
 #endif
+                StepTimer.Shutdown.Write("message loop ended, process exiting");
             }
         }
 

@@ -204,6 +204,17 @@ namespace Halloumi.Shuffler.AudioEngine.Mixing
         public static FadeOutPlan PlanFadeOut(Track outgoingTrack, Track incomingTrack, ExtendedMixAttributes mix,
             bool isManualMixMode, ExtendedFadeType manualFadeType, bool isForceFadeNow)
         {
+            var plan = PlanFadeOutVolume(outgoingTrack, incomingTrack, mix, isManualMixMode, manualFadeType,
+                isForceFadeNow);
+
+            // the outgoing track's bass is cut on every fade, so it does not clash with the incoming track's
+            plan.HighPass = true;
+            return plan;
+        }
+
+        private static FadeOutPlan PlanFadeOutVolume(Track outgoingTrack, Track incomingTrack,
+            ExtendedMixAttributes mix, bool isManualMixMode, ExtendedFadeType manualFadeType, bool isForceFadeNow)
+        {
             if (isManualMixMode)
             {
                 var plan = PlanManualFadeOut(outgoingTrack, incomingTrack, manualFadeType);

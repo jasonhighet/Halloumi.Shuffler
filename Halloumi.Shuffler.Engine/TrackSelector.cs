@@ -84,6 +84,29 @@ namespace Halloumi.Shuffler.AudioLibrary
 
         public string GeneratePlayListStatus { get; internal set; }
 
+        /// <summary>
+        ///     When set, the score for each mix also counts how recently the incoming track was first shuffled
+        ///     (see <see cref="GetRecencyRank" />). Set before each <see cref="GeneratePlayList" /> call.
+        /// </summary>
+        public bool FavourRecentTracks { get; set; }
+
+        private const double RecentFullBonusDays = 91;
+        private const double RecentNoBonusDays = 3 * 365;
+
+        /// <summary>
+        ///     0–5: 5 for a track first shuffled in the last three months, falling evenly to 0 at three years.
+        ///     Tracks with no shuffled date count as old.
+        /// </summary>
+        private static double GetRecencyRank(Track track)
+        {
+            if (track.DateShuffled == null) return 0;
+
+            var days = (DateTime.Today - track.DateShuffled.Value.Date).TotalDays;
+            if (days <= RecentFullBonusDays) return 5;
+            if (days >= RecentNoBonusDays) return 0;
+            return 5 * (RecentNoBonusDays - days) / (RecentNoBonusDays - RecentFullBonusDays);
+        }
+
         public void CancelGeneratePlayList()
         {
             _cancelGeneratePlayList = true;
@@ -297,7 +320,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                     GetBestMixTracks(currentTrack, resultPath.Tracks, allowBearable, availableTrackDescriptions,
                         excludeTrackDescriptions, restrictArtistClumping, restrictGenreClumping, restrictTitleClumping,
                         keyMixStrategy, direction)
-                        .OrderBy(t => GetAverageTrackAndMixAndKeyRank(currentTrack, t))
+                        .OrderByDescending(t => GetAverageTrackAndMixAndKeyRank(currentTrack, t))
                         .FirstOrDefault();
 
                 if (nextTrack != null) resultPath.Tracks.Add(nextTrack);
@@ -907,8 +930,8 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             mixTracks =
                 mixTracks.OrderByDescending(t => KeyHelper.GetKeyMixRank(currentTrack.Key, t.Key))
-                    .ThenBy(t => t.Rank)
-                    .ThenBy(t => BpmHelper.GetAdjustedBpmPercentChange(currentTrack.EndBpm, t.StartBpm))
+                    .ThenByDescending(t => t.Rank)
+                    .ThenBy(t => Math.Abs(BpmHelper.GetAdjustedBpmPercentChange(currentTrack.EndBpm, t.StartBpm)))
                     .ToList();
 
             return mixTracks;
@@ -953,15 +976,25 @@ namespace Halloumi.Shuffler.AudioLibrary
             const double mixRankWeight = 1.3D;
             const double trackRankWeight = 0.9D;
             const double keyRankWeight = 0.8D;
-            // must equal 3
-            const double totalWeight = mixRankWeight + trackRankWeight + keyRankWeight;
+            // a brand-new track gains up to 2/3.4 ≈ 0.59 over an old one: enough for its Good mix to beat an old
+            // track's Very Good mix (1.3/3.4 ≈ 0.38), not an old track's Excellent mix (2.6/3.4 ≈ 0.76)
+            const double recencyWeight = 0.4D;
 
             var mixRank = MixLibrary.GetExtendedMixLevel(track1, track2);
             var keyMixRank = GetAdjustedKeyMixRank(track1, track2, KeyMixStrategy.Any);
             if (keyMixRank == 5) keyMixRank = 4;
             if (keyMixRank == 0) keyMixRank = 1;
-            return ((mixRank*mixRankWeight) + (track2.Rank*trackRankWeight) + ((double) keyMixRank*keyMixRank))/
-                   totalWeight;
+
+            var total = (mixRank*mixRankWeight) + (track2.Rank*trackRankWeight) + (keyMixRank*keyRankWeight);
+            var totalWeight = mixRankWeight + trackRankWeight + keyRankWeight;
+
+            if (FavourRecentTracks)
+            {
+                total += GetRecencyRank(track2)*recencyWeight;
+                totalWeight += recencyWeight;
+            }
+
+            return total/totalWeight;
         }
 
         /// <summary>

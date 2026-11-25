@@ -8,13 +8,13 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
     /// </summary>
     internal class TrackFxSend
     {
-        private readonly MixerGraph _graph;
+        private readonly MixingDesk _desk;
         private readonly TrackDeck _deck;
         private readonly TriggerRecorder _recorder;
 
-        public TrackFxSend(MixerGraph graph, TrackDeck deck, TriggerRecorder recorder)
+        public TrackFxSend(MixingDesk desk, TrackDeck deck, TriggerRecorder recorder)
         {
-            _graph = graph;
+            _desk = desk;
             _deck = deck;
             _recorder = recorder;
         }
@@ -24,8 +24,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public decimal DelayNotes
         {
-            get { return _graph.TrackSendFxMixer.SyncNotes; }
-            set { _graph.TrackSendFxMixer.SyncNotes = value; }
+            get { return _desk.TrackSendFxMixer.SyncNotes; }
+            set { _desk.TrackSendFxMixer.SyncNotes = value; }
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public bool IsSending
         {
-            get { return _graph.TrackSendMixer.GetVolume() != 0M; }
+            get { return _desk.TrackSendMixer.GetVolume() != 0M; }
         }
 
         /// <summary>
@@ -50,14 +50,14 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         /// </summary>
         public void Start()
         {
-            _graph.TrackSendMixer.SetVolume(50M);
+            _desk.TrackSendMixer.SetVolume(50M);
 
             var track = _deck.Current;
             if (track == null) return;
 
             _recorder.StartTrackFx(track, AudioStreamHelper.GetPosition(track), DelayNotes);
 
-            _graph.TrackSendMixer.SetPluginBpm();
+            _desk.TrackSendMixer.SetPluginBpm();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (_deck.Current == null || _recorder.TrackFxTrigger == null || _recorder.TrackFxTrack == null)
                 return;
 
-            _graph.TrackSendMixer.SetVolume(0);
+            _desk.TrackSendMixer.SetVolume(0);
             _recorder.EndTrackFx(AudioStreamHelper.GetPosition(_recorder.TrackFxTrack));
         }
     }

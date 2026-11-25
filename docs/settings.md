@@ -104,6 +104,9 @@ They are loaded by `ShufflerApplication.LoadSettings()` and saved by `ShufflerAp
 | `EnableSampleAutomation` | bool | Auto-trigger samples at recorded positions |
 | `ShuffleAfterShuffling` | bool | Re-shuffle playlist after extended attributes are updated |
 | `Mono` | bool | Fold the speaker and headphone outputs down to mono (Options → Play In Mono) |
+| `SkipAfterMix` | bool | Skip to the fade-out after rating a mix (Options → Skip After Rating Mix) |
+| `SkipToFadeOutBeats` | int | How many beats before the fade-out every skip-to-end lands; default 1 (Options → Skip To End Goes To) |
+| `UnrankedBpmVariance` | decimal | How far apart (percent) an unrated pair's BPMs can be to count as Unranked instead of Forbidden; default 5 (Options → Unranked BPM Range) |
 | `MinimizeToTray` | bool | Minimise to system tray instead of taskbar |
 | `ShufflerMode` | enum | Playlist generation strategy |
 

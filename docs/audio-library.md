@@ -89,11 +89,15 @@ Stores a compatibility rating for every track-pair transition that has been eval
 | 4 | Very Good |
 | 5 | Excellent |
 
+A pair with no stored rating is Unranked (1) if the outgoing track's end BPM and the incoming track's start BPM are within `UnrankedBpmVariance` percent of each other (half and double time count as the same BPM), and Forbidden (0) otherwise. The same range decides the unranked to/from track lists, so the mixable tracks panel, the library's unranked counts, the least-mixed roulette and the playlist generator's Unranked mode all follow it.
+
 ### Configuration
 
 ```
-AvailableTracks   The set of tracks to consider when generating playlists
-ShufflerFolder    Where mix data is persisted
+AvailableTracks       The set of tracks to consider when generating playlists
+ShufflerFolder        Where mix data is persisted
+UnrankedBpmVariance   BPM range (percent) for an unrated pair to count as Unranked; default 5,
+                      set from Settings by ShufflerApplication (Options → Unranked BPM Range)
 ```
 
 ### API
@@ -109,6 +113,31 @@ HasExtendedMix(fromTrack, toTrack)     Check if a custom fade curve exists
 Location: `<ShufflerFolder>\Halloumi.Shuffler.MixLibrary.xml`
 
 Loading uses `Parallel.ForEach` to speed up deserialisation on large libraries.
+
+---
+
+## Playlist generation
+
+`Halloumi.Shuffler.Engine/TrackSelector.cs`, called through `ShufflerApplication.GeneratePlaylist` with a `PlaylistGenerationRequest` (saved in `%APPDATA%\Halloumi\Halloumi.Shuffler.PlaylistGenerationSettings.xml`).
+
+**Best Mix, Variety and Extra Variety** grow many candidate playlists a track at a time:
+
+1. **Candidates.** From the last track, only tracks rated Good or better (3–5) as a mix, plus Bearable (2) according to *Allow Bearables*.
+2. **Filters.** Tracks already used; title, artist and genre clumping; the *Key Mixing* minimum; BPM direction (only applied if something is left); extended mixes; excluded mixes.
+3. **Score** for each mix (`GetAverageTrackAndMixAndKeyRank`), a weighted average on a 0–5 scale:
+
+   | Part | Weight |
+   |---|---|
+   | Mix rating (+0.5 with an extended mix, else +0.25 if the track powers down) | 1.3 |
+   | Incoming track's rank | 0.9 |
+   | Key compatibility, raised by the mix rating (+1/+2/+3 for Good/Very Good/Excellent) and kept within 1–4 | 0.8 |
+   | *Favour recently shuffled tracks* only: recency, 5 for a track first shuffled in the last three months, falling to 0 at three years (no date counts as old) | 0.4 |
+
+   With recency on, a brand-new track gains up to about 0.6: enough for its Good mix to beat an old track's Very Good mix, but not an old track's Excellent mix.
+4. **Pruning.** Each step keeps the best 3 × CPU-core candidates per playlist and the best 50 × CPU-core playlists. Variety drops a random half of the candidates first; Extra Variety sometimes drops every other one instead.
+5. **Result.** The playlist with the highest average score. If it is one track short, the best-scoring next track is added.
+
+**Unranked** picks from unrated pairs within the unranked BPM range: best key match first, then the highest-ranked track, then the smallest BPM change.
 
 ---
 
