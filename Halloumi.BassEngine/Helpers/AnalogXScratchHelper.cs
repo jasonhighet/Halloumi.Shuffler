@@ -24,27 +24,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             _applicationFolder = applicationFolder;
         }
 
-        /// <summary>
-        ///     Saves the specified sample as a mono wave in the Scratch folder and launches Scratch
-        /// </summary>
-        /// <param name="sample">The sample.</param>
-        public static void Launch(Sample sample)
-        {
-            if (_applicationFolder == "") return;
-            if (sample == null) return;
-
-            SilenceHelper.GenerateSilenceAudioFile(GetSilenceFilename());
-            SaveSample(sample);
-
-            var gain = GetGain(sample.Filename);
-
-            var scratchFilePath = Path.Combine(_applicationFolder, ScratchFile);
-            AudioExportHelper.SaveAsMonoWave(sample.Filename, scratchFilePath, gain);
-            
-            var scratchExePath = Path.Combine(_applicationFolder, ScratchExe);
-            Process.Start(scratchExePath);
-        }
-
         private static void SaveSample(AudioStream sample)
         {
             if (!File.Exists(sample.Filename))

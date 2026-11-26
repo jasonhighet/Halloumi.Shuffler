@@ -672,18 +672,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         }
 
         /// <summary>
-        ///     Updates the track number.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <param name="trackNumber">The track number.</param>
-        public void UpdateTrackNumber(Track track, int trackNumber)
-        {
-            track.TrackNumber = trackNumber;
-            SaveTrack(track);
-            SaveToDatabase();
-        }
-
-        /// <summary>
         ///     Removes the shuffler details for a track
         /// </summary>
         /// <param name="track">The track.</param>

@@ -86,22 +86,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             }
         }
 
-        public void RemoveInputChannel(MixerChannel inputChannel)
-        {
-            switch (inputChannel.OutputType)
-            {
-                case MixerChannelOutputType.SingleOutput:
-                    ChannelHelper.AddChannelToMixer(ChannelId, inputChannel.ChannelId);
-                    break;
-                case MixerChannelOutputType.MultipleOutputs:
-                    var splitOutputChannel = ChannelHelper.SplitDecoderMixer(inputChannel.ChannelId);
-                    ChannelHelper.AddChannelToMixer(ChannelId, splitOutputChannel);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         /// <summary>
         ///     Sets the volume (A value between 0 and 100)
         /// </summary>
@@ -133,65 +117,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             return levels;
         }
 
-        public void LoadVstSettings(string name)
-        {
-            var filename = GetChannelVstSettingsFilename(name);
-            if(!File.Exists(filename)) return;
-
-            var vstSettings = SerializationHelper<VstSettings>.FromXmlFile(filename);
-
-            ApplyVstSettings(vstSettings);
-        }
-
-        public void ApplyVstSettings(VstSettings vstSettings)
-        {
-            foreach (var plugin in VstPlugins)
-            {
-                ClearVstPlugin(VstPlugins.IndexOf(plugin));
-            }
-
-            foreach (var settings in vstSettings.Plugins)
-            {
-                var index = vstSettings.Plugins.IndexOf(settings);
-                var plugin = LoadVstPlugin(settings.Key, index);
-                PluginHelper.SetVstPluginParameters(plugin, settings.Value);
-            }
-        }
-
-        private static string GetChannelVstSettingsFilename(string name)
-        {
-            return Path.Combine(ApplicationHelper.GetUserDataPath(), FileSystemHelper.StripInvalidFileNameChars(name) + ".VstSettings.xml");
-        }
-
-        public void SaveVstSettings(string name)
-        {
-            var vstSettings = GetVstSettings();
-
-            var filename = GetChannelVstSettingsFilename(name);
-            SafeFile.ToXmlFile<VstSettings>(vstSettings, filename);
-        }
-
-        public VstSettings GetVstSettings()
-        {
-            var vstSettings = new VstSettings();
-            foreach (var plugin in VstPlugins)
-            {
-                var settings = new KeyValuePair<string, string>(plugin.Location,
-                    PluginHelper.GetVstPluginParameters(plugin));
-                vstSettings.Plugins.Add(settings);
-            }
-            return vstSettings;
-        }
-
-        public class VstSettings
-        {
-            public VstSettings()
-            {
-                Plugins = new List<KeyValuePair<string, string>>();
-            }
-            public List<KeyValuePair<string, string>> Plugins { get; set; }
-        }
-
         public VstPlugin LoadVstPlugin(string location, int index)
         {
             if (VstPlugins.Count() > index
@@ -210,14 +135,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
 
             SetPluginBpm(VstPlugins[index]);
             return VstPlugins[index];
-        }
-
-        public void ClearVstPlugins()
-        {
-            for (var i = 0; i < VstPlugins.Count; i++)
-            {
-                ClearVstPlugin(i);
-            }
         }
 
         public void ClearVstPlugin(int index)

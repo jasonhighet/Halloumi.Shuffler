@@ -174,34 +174,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Sets the audio stream pitch to match another audioStream's BPM
-        /// </summary>
-        /// <param name="changeTrack">The audio stream to change the pitch of.</param>
-        /// <param name="matchTrack">The audio stream to match the BPM of</param>
-        public static void SetTrackPitchToMatchAnotherTrack(Track changeTrack, Track matchTrack)
-        {
-            if (changeTrack == null || matchTrack == null) return;
-            if (!changeTrack.IsAudioLoaded()) return;
-            if (!matchTrack.IsAudioLoaded()) return;
-
-            var sampleRate = GetTrackTempoChangeAsSampleRate(changeTrack, matchTrack);
-            Bass.BASS_ChannelSetAttribute(changeTrack.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_FREQ, sampleRate);
-        }
-
-        /// <summary>
-        ///     Gets the audio stream tempo change as an audio stream rate
-        /// </summary>
-        /// <param name="track1">The audio stream being fading out</param>
-        /// <param name="track2">The audio stream being faded into.</param>
-        /// <returns>The audio stream rate the first audioStream needs to be changed to in order to match the second audioStream</returns>
-        private static float GetTrackTempoChangeAsSampleRate(Track track1, Track track2)
-        {
-            if (track1 == null || track2 == null) return DefaultSampleRate;
-
-            return track1.DefaultSampleRate * BpmHelper.GetTrackTempoChangeAsRatio(track1, track2);
-        }
-
-        /// <summary>
         ///     Sets the audio stream tempo to match another audio stream's tempo
         /// </summary>
         /// <param name="changeTrack">The audio stream to change the temp of.</param>
@@ -284,17 +256,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
 
             var percentChange = (float)(BpmHelper.GetAdjustedBpmPercentChange(streamBpm, matchBpm));
             Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, percentChange);
-        }
-
-        /// <summary>
-        ///     Resets the audio stream pitch.
-        /// </summary>
-        /// <param name="audioStream">The audio stream.</param>
-        public static void ResetPitch(AudioStream audioStream)
-        {
-            if (audioStream == null || !audioStream.IsAudioLoaded()) return;
-
-            Bass.BASS_ChannelSetAttribute(audioStream.ChannelId, BASSAttribute.BASS_ATTRIB_TEMPO_PITCH, 0F);
         }
 
         /// <summary>
@@ -477,18 +438,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
             var volume = DecibelToPercent(gain);
             var volumeParameters = new BASS_BFX_VOLUME(volume, BASSFXChan.BASS_BFX_CHANALL);
             Bass.BASS_FXSetParameters(fxChannel, volumeParameters);
-        }
-
-        /// <summary>
-        ///     Sets the length of an audio stream.
-        /// </summary>
-        /// <param name="audioStream">The audio stream.</param>
-        public static void SetLength(AudioStream audioStream)
-        {
-            if (audioStream == null || !audioStream.IsAudioLoaded())
-                throw new Exception("Audio file null or not audio not loaded");
-
-            audioStream.Length = Bass.BASS_ChannelGetLength(audioStream.ChannelId);
         }
 
         /// <summary>

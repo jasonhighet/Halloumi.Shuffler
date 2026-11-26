@@ -199,12 +199,6 @@ Animated level meter driven by FFT data from `VolumeAnalyzer`.
 
 Custom horizontal slider used for the manual mix crossfade control and other volume/position inputs.
 
-### ListBuilder
-
-`Controls/ListBuilder.cs`
-
-Helper control for building dynamic filtered lists, used by TrackLibraryControl.
-
 ---
 
 ## Dialogs
@@ -264,12 +258,6 @@ Link specific samples to a track so they load automatically into the sampler whe
 `Forms/frmMonitorSettings.cs`
 
 Configure the monitor output device and volume (the "headphone cue" output, separate from the main speaker output).
-
-### frmVstChain
-
-`Forms/frmVstChain.cs`
-
-Visual editor for the VST plugin chain order and bypass states.
 
 ### frmImportShufflerTracks
 

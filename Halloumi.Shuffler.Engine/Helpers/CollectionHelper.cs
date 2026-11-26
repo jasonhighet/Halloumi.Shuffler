@@ -73,27 +73,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         }
 
         /// <summary>
-        /// Creates the new play-list.
-        /// </summary>
-        /// <param name="collectionName">Name of the play-list.</param>
-        public static void CreateNewCollection(string collectionName)
-        {
-            if (!_collectionTracks.ContainsKey(collectionName))
-            {
-                _collectionTracks.Add(collectionName, new Dictionary<string, Track>());
-            }
-
-            var collection = _collections.FirstOrDefault(x => string.Equals(x.Name, collectionName, StringComparison.CurrentCultureIgnoreCase));
-            if (collection == null)
-            {
-                collection = new Playlist() { Name = collectionName };
-                _collections.Add(collection);
-            }
-
-            SaveCollections();
-        }
-
-        /// <summary>
         /// Adds tracks to play-list.
         /// </summary>
         /// <param name="collectionName">Name of the collection.</param>
@@ -156,23 +135,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
 
                 collection.Entries.RemoveAll(x => x.Artist == track.Artist && x.Title == track.Title);
             }
-        }
-
-        /// <summary>
-        ///     Removes a track from all play-lists.
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public static void RemoveTrackFromAllCollections(Track track)
-        {
-            var collections = GetCollectionsForTrack(track);
-            var tracks = new List<Track> {track};
-
-            foreach (var collection in collections)
-            {
-                RemoveTracks(collection, tracks);
-            }
-
-            SaveCollections();
         }
 
         public static List<Track> GetTracksInCollection(string collectionName)

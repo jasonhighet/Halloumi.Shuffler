@@ -553,34 +553,6 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        ///     Gets the last track.
-        /// </summary>
-        /// <returns>The last track</returns>
-        public Track GetLastTrack()
-        {
-            return TrackModels.Count == 0 ? null : GetLibraryTrack(TrackModels.Last());
-        }
-
-        /// <summary>
-        ///     Gets the last track.
-        /// </summary>
-        /// <returns>The last track</returns>
-        public Track GetSecondToLastTrack()
-        {
-            return TrackModels.Count < 2 ? null : GetLibraryTrack(TrackModels[TrackModels.Count - 2]);
-        }
-
-        /// <summary>
-        ///     Removes the last track.
-        /// </summary>
-        public void RemoveLastTrack()
-        {
-            if (TrackModels.Count == 0) return;
-            var lastTrack = TrackModels.Last();
-            if (lastTrack != null) RemoveTrack(lastTrack);
-        }
-
-        /// <summary>
         ///     Gets the tracks in the play-list
         /// </summary>
         /// <returns>The tracks in the play-list</returns>
@@ -746,17 +718,6 @@ namespace Halloumi.Shuffler.Controls
             TrackModels.ForEach(t => t.IsCurrent = false);
             currentTrack.IsCurrent = true;
             return TrackModels.IndexOf(currentTrack);
-        }
-
-        /// <summary>
-        ///     Removes a track.
-        /// </summary>
-        /// <param name="trackToRemove">The track to remove.</param>
-        private void RemoveTrack(TrackModel trackToRemove)
-        {
-            if (trackToRemove == null) return;
-            var tracksToRemove = new[] {trackToRemove}.ToList();
-            RemoveTracks(tracksToRemove);
         }
 
         /// <summary>

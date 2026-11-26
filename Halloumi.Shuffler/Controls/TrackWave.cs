@@ -228,17 +228,6 @@ namespace Halloumi.Shuffler.Controls
         }
 
         /// <summary>
-        ///     The section that Play loops and that the keyboard shortcuts act on (None = the view is looped).
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WaveSection ActiveSection
-        {
-            get { return _activeSection; }
-            set { SetActiveSection(value); }
-        }
-
-        /// <summary>
         ///     When on, the cursor and anything dragged or moved lands on the nearest beat (or half-beat) of the
         ///     audio, and section ends land a whole number of beats from their start. Hold Ctrl to do the opposite.
         /// </summary>

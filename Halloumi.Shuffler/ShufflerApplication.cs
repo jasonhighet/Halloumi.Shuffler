@@ -703,13 +703,6 @@ namespace Halloumi.Shuffler
                        System.Globalization.CultureInfo.InvariantCulture, out seconds);
         }
 
-        public void CalculateBpmForTrack(string filename)
-        {
-            BpmCalculator.CalculateBpm(filename);
-            Library.LoadTrack(filename);
-            OnTrackMetadataChanged?.Invoke(this, new TrackMetadataChangedEventArgs { Filename = filename });
-        }
-
         public List<Genre> GetGenresFromTracks(List<Track> tracks) => Library.GetGenresFromTracks(tracks);
 
         public List<Artist> GetAlbumArtistsFromTracks(List<Track> tracks) => Library.GetAlbumArtistsFromTracks(tracks);

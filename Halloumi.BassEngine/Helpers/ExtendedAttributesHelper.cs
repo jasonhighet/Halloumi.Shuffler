@@ -163,11 +163,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
                 : new Dictionary<string, string>();
         }
 
-        public static void ClearExtendedAttributes(string trackDescription)
-        {
-            SaveExtendedAttributes(trackDescription, new Dictionary<string, string>());
-        }
-
         /// <summary>
         /// Saves the extended attributes.
         /// </summary>

@@ -959,10 +959,6 @@ namespace Halloumi.Shuffler.Forms
             UpdateData();
         }
 
-        private void btnSaveAndShuffle_Click(object sender, EventArgs e)
-        {
-        }
-
         private void btnCalcStartBPM_Click(object sender, EventArgs e)
         {
             var length = DetectFadeLength(Track.FadeInStart);

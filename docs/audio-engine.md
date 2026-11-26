@@ -43,7 +43,6 @@ These set the fades a track gets when it has no saved fade points (they are held
 
 | Property | Default | Meaning |
 |---|---|---|
-| `DefaultFadeLength` | 10 s | Cross-fade duration |
 | `LimitSongLength` | false | Truncate tracks to `MaxSongLength` |
 | `MaxSongLength` | 5 min | Maximum track duration when limiting |
 | `LoopFadeInForever` | false | Loop the fade-in section indefinitely |
@@ -282,7 +281,6 @@ EndLoopCount            How many times to repeat the fade-out section
 CurrentEndLoop          Current iteration counter
 IsLoopedAtStart / IsLoopedAtEnd   Quick boolean checks
 FullStartLoopLength / FullEndLoopLength  Total looped section length
-LoopFadeInIndefinitely  Loop forever flag
 ```
 
 ### BPM properties
@@ -360,7 +358,7 @@ InUse() / IsInUse(track) / FindByChannel(channelId)
 
 Every track the player has loaded, by filename (case-insensitive), plus the last five loaded, whose audio is kept even when they are not in a slot. Owned by `TrackLoader`. `GetUnloadable(isInUse)` gives the tracks whose audio `UnloadUnusedAudioData` frees.
 
-Default fade points are applied by `FadeDefaults` in `Mixing/` (`ResetFades` before a track's saved attributes load, `FillMissingFadePoints` after). `BassPlayer`'s `DefaultFadeLength`, `LimitSongLength` and `MaxSongLength` read and write it.
+Default fade points are applied by `FadeDefaults` in `Mixing/` (`ResetFades` before a track's saved attributes load, `FillMissingFadePoints` after). `BassPlayer`'s `LimitSongLength` and `MaxSongLength` read and write it.
 
 ### TrackSyncs and TrackSyncType — position callbacks
 

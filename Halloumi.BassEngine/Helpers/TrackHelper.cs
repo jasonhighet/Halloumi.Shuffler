@@ -13,17 +13,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         private static readonly Random Random = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
-        ///     Picks a random track from a list of tracks
-        /// </summary>
-        /// <param name="tracks">The track list.</param>
-        /// <returns>A randomly selected track</returns>
-        public static Track GetRandomTrack(List<Track> tracks)
-        {
-            if (tracks == null) return null;
-            return tracks.Count == 0 ? null : tracks[Random.Next(0, tracks.Count)];
-        }
-
-        /// <summary>
         ///     Guesses the artist and title of a track from its filename.
         /// </summary>
         /// <param name="filename">The filename.</param>

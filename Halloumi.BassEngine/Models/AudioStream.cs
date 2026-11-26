@@ -60,11 +60,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// </summary>
         public int MixerChannelId { get; set; }
 
-        public int InitialChannel
-        {
-            get { return ChannelIds.Count == 0 ? int.MinValue : ChannelIds[ChannelIds.Count - 1]; }
-        }
-
         /// <summary>
         ///     Gets the BPM.
         /// </summary>

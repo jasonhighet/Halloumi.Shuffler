@@ -141,7 +141,6 @@ Per-user data is in `%APPDATA%\Halloumi Shuffler\` (the folder is named after th
 ├── Halloumi.Shuffler.LibraryView.xml         # library screen filter, search and sort
 ├── Halloumi.Shuffler.WorkingPlaylist.xml     # current playlist
 ├── Halloumi.Shuffler.LoopLibrary.xml         # loop samples
-├── <channel>.VstSettings.xml                 # VST parameters per mixer channel
 └── SampleLibrary\                            # exported sample .wav files
 
 %APPDATA%\Halloumi\

@@ -274,17 +274,6 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         /// <param name="track">The track.</param>
         /// <returns>The preferred tracks to mix with the supplied track</returns>
-        public List<Track> GetPreferredTracks(Track track)
-        {
-            var ranks = new[] {5, 4, 3, 2}.ToList();
-            return GetMixableToTracks(track, ranks);
-        }
-
-        /// <summary>
-        ///     Gets the preferred tracks to mix with the supplied track
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>The preferred tracks to mix with the supplied track</returns>
         public List<Track> GetGoodFromTracks(Track track)
         {
             var ranks = new[] { 5, 4, 3 }.ToList();
@@ -324,17 +313,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             return GetMixableToTracks(track, ranks);
         }
 
-        /// <summary>
-        ///     Gets the forbidden tracks for a particular track
-        /// </summary>
-        /// <param name="track">The track.</param>
-        /// <returns>The tracks forbidden to mix with the supplied track</returns>
-        public List<Track> GetForbiddenTracks(Track track)
-        {
-            var ranks = new[] {0}.ToList();
-            return GetMixableToTracks(track, ranks);
-        }
-
         public List<Track> GetUnrankedToTracks(Track track)
         {
             // excluded all ranked tracks and current track
@@ -363,12 +341,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             return tracksInRange
                 .Where(t => !excludeTracks.Contains(t.Description))
                 .ToList();
-        }
-
-        public List<Track> GetRankedTracks(Track track)
-        {
-            var toMixes = GetToMixes(track.Description);
-            return GetDistinctToTracksFromMixes(toMixes);
         }
 
         /// <summary>
@@ -664,18 +636,6 @@ namespace Halloumi.Shuffler.AudioLibrary
             if (mixRank != null) return mixRank.MixLevel;
 
             return BpmHelper.IsBpmInRange(track1.EndBpm, track2.StartBpm, UnrankedBpmVariance) ? 1 : 0;
-        }
-
-        public int GetKeyMixedOutCount(Track track)
-        {
-            var outTracks = GetMixableToTracks(track, new List<int> {5, 4, 3});
-            return outTracks.Count(t => KeyHelper.GetKeyMixRank(track.Key, t.Key) >= 3);
-        }
-
-        public int GetKeyMixedInCount(Track track)
-        {
-            var inTracks = GetMixableFromTracks(track, new List<int> {5, 4, 3});
-            return inTracks.Count(t => KeyHelper.GetKeyMixRank(t.Key, track.Key) >= 3);
         }
 
         public int GetMixOutCount(Track track)

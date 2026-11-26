@@ -220,13 +220,6 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         // ---------- fades ----------
 
-        /// <summary>Default crossfade length in seconds, for tracks with no saved fade points.</summary>
-        public double DefaultFadeLength
-        {
-            get { return _loader.FadeDefaults.FadeLength; }
-            set { _loader.FadeDefaults.FadeLength = value; }
-        }
-
         public bool LimitSongLength
         {
             get { return _loader.FadeDefaults.LimitSongLength; }

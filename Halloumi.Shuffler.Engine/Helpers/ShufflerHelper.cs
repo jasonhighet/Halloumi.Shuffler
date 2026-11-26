@@ -15,24 +15,6 @@ namespace Halloumi.Shuffler.AudioLibrary.Helpers
         }
 
         /// <summary>
-        ///     Updates the Shuffler files after a track has been changed.
-        ///     Assumes the OriginalDescription is the old description,
-        ///     and that the ShufflerAttribuesFile/ShufflerMixesFile properties
-        ///     point to the old files
-        /// </summary>
-        /// <param name="track">The track.</param>
-        public static void RenameShufferFiles(Track track)
-        {
-            try
-            {
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        /// <summary>
         ///     Loads the shuffler details for a track
         /// </summary>
         /// <param name="track">The track.</param>

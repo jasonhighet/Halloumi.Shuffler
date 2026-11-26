@@ -19,8 +19,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
         private readonly List<Event> _audioStreamEvents = new List<Event>();
         private readonly List<AudioStreamSection> _streamSections;
 
-        private DateTime _lastEvent = DateTime.Now;
-
         public AudioPlayer(IBpmProvider bpmProvider = null)
         {
             Output = new MixerChannel(bpmProvider);

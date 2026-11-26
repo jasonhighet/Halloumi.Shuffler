@@ -402,19 +402,6 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         /// </summary>
         public long RawLoopEnd { get; set; }
 
-        /// <summary>
-        ///     Gets a value indicating whether this track is in raw-loop mode.
-        /// </summary>
-        public bool IsInRawLoopMode
-        {
-            get { return (RawLoopEnd != 0); }
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the fade in section should loop fade in indefinitely.
-        /// </summary>
-        public bool LoopFadeInIndefinitely { get; set; }
-
         public int Rank { get; set; }
 
         internal void ResetPowerDownOnEnd()

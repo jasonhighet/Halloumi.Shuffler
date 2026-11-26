@@ -25,14 +25,6 @@ namespace Halloumi.Shuffler.AudioEngine.Channels
             SetBassEq(-15);
         }
 
-        public void RestoreBass()
-        {
-            if (!IsMixerEqIntialised())
-                InitialiseMixerEq();
-
-            SetBassEq(0);
-        }
-
         private void InitialiseMixerEq()
         {
             _eqChannel = Bass.BASS_ChannelSetFX(ChannelId, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);

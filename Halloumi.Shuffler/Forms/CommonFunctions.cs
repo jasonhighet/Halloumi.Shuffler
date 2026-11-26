@@ -9,18 +9,6 @@ namespace Halloumi.Shuffler.Forms
     public static class CommonFunctions
     {
         /// <summary>
-        /// Gets a list of default track numbers.
-        /// </summary>
-        /// <returns>A list of default track numbers.</returns>
-        public static List<string> GetDefaultTrackNumbers()
-        {
-            var trackNumbers = new List<string>();
-            trackNumbers.Add("");
-            for (var i = 1; i <= 80; i++) trackNumbers.Add(i.ToString());
-            return trackNumbers;
-        }
-
-        /// <summary>
         /// Sets the default settings.
         /// </summary>
         public static void SetDefaultSettings()

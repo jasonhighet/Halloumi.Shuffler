@@ -13,11 +13,5 @@ namespace Halloumi.Shuffler.Controls
             volLeft.Min = 0;
             volRight.Min = 0;
         }
-
-        public void SetLevels(int left, int right)
-        {
-            volLeft.Value = left;
-            volRight.Value = right;
-        }
     }
 }

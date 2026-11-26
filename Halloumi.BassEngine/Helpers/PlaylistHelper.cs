@@ -94,30 +94,6 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
-        ///     Saves a list of tracks as a playlist.
-        /// </summary>
-        /// <param name="filename">The filename of the playlist.</param>
-        /// <param name="tracks">The tracks to write to the playlist.</param>
-        public static void SaveAsPlaylist(string filename, List<Track> tracks)
-        {
-            var content = new StringBuilder();
-            content.AppendLine("#EXTM3U");
-            foreach (var track in tracks)
-            {
-                content.AppendLine("#EXTINF:"
-                                   + track.LengthSeconds.ToString("0")
-                                   + ","
-                                   + track.Artist
-                                   + " - "
-                                   + track.Title);
-
-                content.AppendLine(track.Filename);
-            }
-
-            SafeFile.WriteAllText(filename, content.ToString(), Encoding.UTF8);
-        }
-
-        /// <summary>
         ///     Represents an entry in a m3u playlist
         /// </summary>
         public class PlaylistEntry

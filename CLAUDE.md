@@ -138,7 +138,6 @@ The engine `Track` extends `AudioStream` and holds BASS channel handles. The lib
 ├── Halloumi.Shuffler.LibraryView.xml         # library screen filter and sort
 ├── Halloumi.Shuffler.WorkingPlaylist.xml     # current playlist
 ├── Halloumi.Shuffler.LoopLibrary.xml
-├── <channel>.VstSettings.xml
 └── SampleLibrary\                            # exported sample .wav files
 
 %APPDATA%\Halloumi\Halloumi.Shuffler.PlaylistGenerationSettings.xml

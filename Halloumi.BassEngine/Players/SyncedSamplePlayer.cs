@@ -96,11 +96,6 @@ namespace Halloumi.Shuffler.AudioEngine.Players
             section.LoopIndefinitely = loopIndefinitely;
         }
 
-        public List<string> GetSampleKeys()
-        {
-            return _sampleKeys;
-        }
-
         public void Play()
         {
             _mainPlayer.Unload(PatternPlayer);

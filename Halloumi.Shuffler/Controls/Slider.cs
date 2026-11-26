@@ -96,12 +96,6 @@ namespace Halloumi.Shuffler.Controls
         private bool _slidingWithMouse = false;
 
         /// <summary>
-        /// Gets a value indicating whether this Slider is sliding.
-        /// </summary>
-        [Browsable(false)]
-        public bool Sliding { get { return _slidingWithMouse; } }
-
-        /// <summary>
         /// Gets or sets the dock.
         /// </summary>
         [Browsable(true)]
