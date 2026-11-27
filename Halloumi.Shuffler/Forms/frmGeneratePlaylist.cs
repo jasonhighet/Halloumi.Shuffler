@@ -34,7 +34,11 @@ namespace Halloumi.Shuffler.Forms
         public FrmGeneratePlaylist()
         {
             InitializeComponent();
-            AddFavourRecentTracksRow();
+            // rows under "Displayed Tracks"
+            chkFavourRecentTracks = AddCheckBoxRow(13, "Recent Tracks:", "chkFavourRecentTracks",
+                "Favour recently shuffled tracks");
+            chkSpreadQualityEvenly = AddCheckBoxRow(14, "Spread Quality:", "chkSpreadQualityEvenly",
+                "Save some of the best mixes for later");
 
             Load += frmGeneratePlaylist_Load;
 
@@ -42,13 +46,14 @@ namespace Halloumi.Shuffler.Forms
         }
 
         private Halloumi.Common.Windows.Controls.CheckBox chkFavourRecentTracks;
+        private Halloumi.Common.Windows.Controls.CheckBox chkSpreadQualityEvenly;
 
         /// <summary>
-        ///     Adds the "Recent Tracks" row under "Displayed Tracks", moving the rows below it down.
+        ///     Adds a labelled check box row at the given row, moving the rows below it down.
         /// </summary>
-        private void AddFavourRecentTracksRow()
+        private Halloumi.Common.Windows.Controls.CheckBox AddCheckBoxRow(int row, string labelText, string name,
+            string text)
         {
-            const int row = 13;
             const int rowHeight = 31;
 
             tblMain.SuspendLayout();
@@ -71,23 +76,25 @@ namespace Halloumi.Shuffler.Forms
                 Padding = label10.Padding,
                 Size = label10.Size,
                 Style = label10.Style,
-                Text = "Recent Tracks:"
+                Text = labelText
             };
 
-            chkFavourRecentTracks = new Halloumi.Common.Windows.Controls.CheckBox
+            var checkBox = new Halloumi.Common.Windows.Controls.CheckBox
             {
                 Margin = chkRestrictTitleClumping.Margin,
-                Name = "chkFavourRecentTracks",
+                Name = name,
                 Size = chkRestrictTitleClumping.Size
             };
-            chkFavourRecentTracks.Values.Text = "Favour recently shuffled tracks";
+            checkBox.Values.Text = text;
 
             tblMain.Controls.Add(label, 0, row);
-            tblMain.Controls.Add(chkFavourRecentTracks, 1, row);
-            tblMain.SetColumnSpan(chkFavourRecentTracks, 3);
+            tblMain.Controls.Add(checkBox, 1, row);
+            tblMain.SetColumnSpan(checkBox, 3);
 
             tblMain.ResumeLayout();
             ClientSize = new System.Drawing.Size(ClientSize.Width, ClientSize.Height + rowHeight);
+
+            return checkBox;
         }
 
         /// <summary>
@@ -233,6 +240,7 @@ namespace Halloumi.Shuffler.Forms
                 chkRestrictTitleClumping.Checked = request.RestrictTitleClumping;
                 chkDisplayedTracksOnly.Checked = request.DisplayedTracksOnly;
                 chkFavourRecentTracks.Checked = request.FavourRecentTracks;
+                chkSpreadQualityEvenly.Checked = request.SpreadQualityEvenly;
                 SetApproxLengthCombo(request.ApproximateLengthMinutes);
                 SetTracksToGenerateCombo(request.MaxTracksToAdd);
             }
@@ -310,6 +318,7 @@ namespace Halloumi.Shuffler.Forms
                 ExcludeMixesOnly = chkExcludeMixesOnly.Checked,
                 DisplayedTracksOnly = chkDisplayedTracksOnly.Checked,
                 FavourRecentTracks = chkFavourRecentTracks.Checked,
+                SpreadQualityEvenly = chkSpreadQualityEvenly.Checked,
                 ApproximateLengthMinutes = ParseApproxLength(),
                 MaxTracksToAdd = ParseTracksToAdd()
             };
@@ -342,6 +351,7 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictTitleClumping.Enabled = true;
             chkDisplayedTracksOnly.Enabled = true;
             chkFavourRecentTracks.Enabled = true;
+            chkSpreadQualityEvenly.Enabled = true;
             cmbDirection.Enabled = true;
             cmbApproxLength.Enabled = true;
             cmbBpmDirection.Enabled = true;
@@ -369,6 +379,7 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictGenreClumping.Enabled = enabled;
             chkRestrictTitleClumping.Enabled = enabled;
             chkFavourRecentTracks.Enabled = enabled;
+            chkSpreadQualityEvenly.Enabled = enabled;
             cmbBpmDirection.Enabled = enabled;
             cmbDirection.Enabled = enabled;
             cmbAllowBearable.Enabled = enabled;
@@ -386,6 +397,7 @@ namespace Halloumi.Shuffler.Forms
             chkRestrictTitleClumping.Enabled = false;
             chkDisplayedTracksOnly.Enabled = false;
             chkFavourRecentTracks.Enabled = false;
+            chkSpreadQualityEvenly.Enabled = false;
             cmbDirection.Enabled = false;
             cmbApproxLength.Enabled = false;
             cmbBpmDirection.Enabled = false;

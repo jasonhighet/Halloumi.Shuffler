@@ -61,6 +61,7 @@ namespace Halloumi.Shuffler.Forms
             mnuMono.Click += (s, e) => _application.Mono = mnuMono.Checked;
             AddSkipToFadeOutBeatsMenu();
             AddUnrankedBpmVarianceMenu();
+            AddAudioDiagnosticsMenu();
 
             mnuWinampDSPConfig.Click += mnuWinampDSPConfig_Click;
             mnuVSTPluginConfig.Click += mnuVSTPluginConfig_Click;
@@ -672,6 +673,40 @@ namespace Halloumi.Shuffler.Forms
                 case 4: return "1 bar (4 beats) before the fade-out";
                 default: return beats / 4 + " bars (" + beats + " beats) before the fade-out";
             }
+        }
+
+        /// <summary>
+        ///     Adds Help > Audio Diagnostics (Ctrl+Shift+D): press it while the audio is clicking to see whether the
+        ///     output buffer is running dry or something is playing that shouldn't be.
+        /// </summary>
+        private void AddAudioDiagnosticsMenu()
+        {
+            var menu = new ToolStripMenuItem("Audio &Diagnostics")
+            {
+                ShortcutKeys = Keys.Control | Keys.Shift | Keys.D
+            };
+            menu.Click += async (s, e) =>
+            {
+                menu.Enabled = false;
+                try
+                {
+                    // the capture watches the output for a few seconds: keep the UI responsive meanwhile, so
+                    // the UI behaves as it did when the clicking started
+                    var report = await System.Threading.Tasks.Task.Run(() => _application.CaptureAudioDiagnostics());
+                    MessageBox.Show(this, report + "\nSaved to " + ShufflerApplication.AudioDiagnosticsFilename,
+                        "Audio Diagnostics", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, ex.Message, "Audio Diagnostics", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    menu.Enabled = true;
+                }
+            };
+
+            mnuHelp.DropDownItems.Insert(0, menu);
         }
 
         /// <summary>

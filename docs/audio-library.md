@@ -137,6 +137,15 @@ Loading uses `Parallel.ForEach` to speed up deserialisation on large libraries.
 4. **Pruning.** Each step keeps the best 3 × CPU-core candidates per playlist and the best 50 × CPU-core playlists. Variety drops a random half of the candidates first; Extra Variety sometimes drops every other one instead.
 5. **Result.** The playlist with the highest average score. If it is one track short, the best-scoring next track is added.
 
+Ranking playlists by their average so far front-loads quality. A playlist that uses its Excellent mixes early always leads one that saves them, so by halfway every surviving playlist has used them up. This shows most when the playlist covers most of a small pool, such as one genre at a fixed length.
+
+**Save some of the best mixes for later** (`SpreadQualityEvenly`) changes steps 4 and 5:
+
+- **Pruning** ranks playlists by an estimated final average (`GetSpreadScore`). That is the mixes so far plus one estimated mix for each slot still to fill. For each unused track, the estimate takes the best Good-or-better mix into it from another unused track or the playlist's open end. The best of these, one per remaining slot, are added up. Using up the best links lowers the estimate, so saving them is no longer penalised. Tracks with no Good link left add nothing. The links are scored once per generation (`BuildSpreadLinks`), and the per-step scoring runs in parallel.
+- **Result** is chosen on the average of two numbers: the overall average and the weakest run of 5 consecutive mixes (`GetWeakestStretchRank`). An even playlist can beat one with a slightly higher average but a weak tail.
+
+The estimate only helps when the good links are scarce. Generating 30 tracks from a large library behaves almost as before.
+
 **Unranked** picks from unrated pairs within the unranked BPM range: best key match first, then the highest-ranked track, then the smallest BPM change.
 
 ---

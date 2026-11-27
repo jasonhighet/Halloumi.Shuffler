@@ -90,6 +90,22 @@ namespace Halloumi.Shuffler.AudioLibrary
         /// </summary>
         public bool FavourRecentTracks { get; set; }
 
+        /// <summary>
+        ///     When set, the best mixes are spread through the playlist instead of being used up at the start.
+        ///     Partial playlists are ranked on their mixes so far plus an estimate of how good the mixes between
+        ///     the tracks they have left can still be (see <see cref="GetSpreadScore" />), and the finished
+        ///     playlist is chosen partly on its weakest stretch. Set before each <see cref="GeneratePlayList" /> call.
+        /// </summary>
+        public bool SpreadQualityEvenly { get; set; }
+
+        /// <summary>
+        ///     For each available track, best first: the available tracks it can be joined to by a Good or better
+        ///     mix in the direction the playlist grows, with that mix's score. Only built when spreading quality.
+        /// </summary>
+        private Dictionary<string, List<KeyValuePair<string, double>>> _spreadLinks;
+
+        private const int WeakestStretchMixes = 5;
+
         private const double RecentFullBonusDays = 91;
         private const double RecentNoBonusDays = 3 * 365;
 
@@ -194,6 +210,9 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             var availableTrackDescriptions = GetDistinctTrackDescriptions(AvailableTracks);
 
+            var spreadQuality = SpreadQualityEvenly && usesMixCache;
+            _spreadLinks = spreadQuality ? BuildSpreadLinks(direction) : null;
+
             var trackCountLimit = int.MaxValue;
             if (approximateLength > 0 && approximateLength != int.MaxValue)
             {
@@ -229,7 +248,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 var trackPaths = AvailableTracks.Select(track => new TrackPath(track, direction));
                 foreach (var path in trackPaths)
                 {
-                    CalculateAverageRankForPath(path);
+                    CalculateAverageRankForPath(path, direction);
                     currentPaths.Add(path);
                 }
             }
@@ -241,14 +260,14 @@ namespace Halloumi.Shuffler.AudioLibrary
 
                 foreach (var path in trackPaths)
                 {
-                    CalculateAverageRankForPath(path);
+                    CalculateAverageRankForPath(path, direction);
                     currentPaths.Add(path);
                 }
             }
             else
             {
                 var path = new TrackPath(currentPlaylist);
-                CalculateAverageRankForPath(path);
+                CalculateAverageRankForPath(path, direction);
                 currentPaths.Add(path);
             }
 
@@ -285,7 +304,18 @@ namespace Halloumi.Shuffler.AudioLibrary
 
                 var max = 50*Environment.ProcessorCount;
 
-                if (nextPaths.Count > max)
+                if (nextPaths.Count > max && spreadQuality)
+                {
+                    var limit = trackCountLimit;
+                    nextPaths = nextPaths
+                        .AsParallel()
+                        .Select(p => new {Path = p, Score = GetSpreadScore(p, limit, direction)})
+                        .OrderByDescending(p => p.Score)
+                        .Take(max)
+                        .Select(p => p.Path)
+                        .ToList();
+                }
+                else if (nextPaths.Count > max)
                 {
                     nextPaths = nextPaths
                         .OrderByDescending(t => t.AverageRank)
@@ -302,8 +332,11 @@ namespace Halloumi.Shuffler.AudioLibrary
 
             if (_cancelGeneratePlayList) return currentPlaylist;
 
+            // when spreading, a playlist with a weak run of mixes loses out to a slightly lower-average even one
             var resultPath = currentPaths
-                .OrderByDescending(t => GetAverageTrackAndMixAndKeyRank(t.Tracks))
+                .OrderByDescending(t => spreadQuality
+                    ? (GetAverageTrackAndMixAndKeyRank(t.Tracks) + GetWeakestStretchRank(t.Tracks))/2
+                    : GetAverageTrackAndMixAndKeyRank(t.Tracks))
                 .FirstOrDefault();
 
             if ((strategy == MixStrategy.BestMix || strategy == MixStrategy.Variety ||
@@ -448,7 +481,7 @@ namespace Halloumi.Shuffler.AudioLibrary
                 lock (nextPaths)
                 {
                     nextPaths.Add(newPath);
-                    CalculateAverageRankForPath(newPath);
+                    CalculateAverageRankForPath(newPath, direction);
                 }
 
                 if (IsGenerationHalted()) break;
@@ -494,20 +527,117 @@ namespace Halloumi.Shuffler.AudioLibrary
             return mixTracks;
         }
 
-        private void CalculateAverageRankForPath(TrackPath path)
+        private Dictionary<string, List<KeyValuePair<string, double>>> BuildSpreadLinks(GenerateDirection direction)
+        {
+            var available = AvailableTracks
+                .GroupBy(t => t.Description)
+                .Select(g => g.First())
+                .ToList();
+            var availableDescriptions = GetDistinctTrackDescriptions(available);
+
+            // forwards, each unused track will be mixed into from another unused track (or the playlist's last
+            // track); backwards, each unused track will mix out to another unused track (or the playlist's first)
+            var cacheKey = direction == GenerateDirection.Forwards ? "goodFrom:" : "good:";
+
+            var links = new Dictionary<string, List<KeyValuePair<string, double>>>(available.Count);
+            foreach (var track in available)
+            {
+                links[track.Description] = _mixCache[cacheKey + track.Description]
+                    .Where(t => t.Description != track.Description && availableDescriptions.Contains(t.Description))
+                    .GroupBy(t => t.Description)
+                    .Select(g => g.First())
+                    .Select(t => new KeyValuePair<string, double>(t.Description,
+                        direction == GenerateDirection.Forwards
+                            ? GetAverageTrackAndMixAndKeyRank(t, track)
+                            : GetAverageTrackAndMixAndKeyRank(track, t)))
+                    .OrderByDescending(l => l.Value)
+                    .ToList();
+            }
+
+            return links;
+        }
+
+        /// <summary>
+        ///     Estimates a partial playlist's final average mix score: its mixes so far, plus, for each mix still to
+        ///     add, the best Good-or-better mix into one of the tracks it has not used yet. A playlist that has used
+        ///     up the best links scores lower than one that has kept some, so saving Excellent mixes for later is not
+        ///     penalised. Tracks with no Good link left add nothing, as the playlist would finish short or on
+        ///     bearable mixes.
+        /// </summary>
+        private double GetSpreadScore(TrackPath path, int trackCountLimit, GenerateDirection direction)
+        {
+            var usedMixes = Math.Max(0, path.Tracks.Count - 1);
+            var remainingMixes = trackCountLimit - path.Tracks.Count;
+            if (remainingMixes <= 0 || path.Tracks.Count == 0) return path.AverageRank;
+
+            var used = GetDistinctTrackDescriptions(path.Tracks);
+            var openEnd = (direction == GenerateDirection.Forwards ? path.Tracks.Last() : path.Tracks.First())
+                .Description;
+
+            var bestLinks = new List<double>();
+            foreach (var trackLinks in _spreadLinks)
+            {
+                if (used.Contains(trackLinks.Key)) continue;
+
+                foreach (var link in trackLinks.Value)
+                {
+                    if (link.Key != openEnd && used.Contains(link.Key)) continue;
+                    bestLinks.Add(link.Value);
+                    break;
+                }
+            }
+
+            var potential = bestLinks
+                .OrderByDescending(r => r)
+                .Take(remainingMixes)
+                .Sum();
+
+            return (path.AverageRank*usedMixes + potential)/(usedMixes + remainingMixes);
+        }
+
+        /// <summary>
+        ///     The lowest average score of any run of <see cref="WeakestStretchMixes" /> consecutive mixes.
+        /// </summary>
+        private double GetWeakestStretchRank(IReadOnlyList<Track> tracks)
+        {
+            if (tracks == null || tracks.Count < 2) return 0;
+
+            var ranks = new List<double>();
+            for (var i = 1; i < tracks.Count; i++)
+                ranks.Add(GetAverageTrackAndMixAndKeyRank(tracks[i - 1], tracks[i]));
+
+            if (ranks.Count <= WeakestStretchMixes) return ranks.Average();
+
+            var windowSum = ranks.Take(WeakestStretchMixes).Sum();
+            var weakest = windowSum;
+            for (var i = WeakestStretchMixes; i < ranks.Count; i++)
+            {
+                windowSum += ranks[i] - ranks[i - WeakestStretchMixes];
+                if (windowSum < weakest) weakest = windowSum;
+            }
+
+            return weakest/WeakestStretchMixes;
+        }
+
+        /// <summary>
+        ///     Updates the path's average mix score after one track was added at the end (forwards) or the start
+        ///     (backwards). AverageRank is the average over the path's mixes, one fewer than its tracks.
+        /// </summary>
+        private void CalculateAverageRankForPath(TrackPath path, GenerateDirection direction)
         {
             if (path.AverageRank == 0 || path.Tracks.Count < 3)
             {
                 path.AverageRank = GetAverageTrackAndMixAndKeyRank(path.Tracks);
+                return;
             }
-            else
-            {
-                var track1 = path.Tracks[path.Tracks.Count - 2];
-                var track2 = path.Tracks[path.Tracks.Count - 1];
-                var trackRank = GetAverageTrackAndMixAndKeyRank(track1, track2);
 
-                path.AverageRank = (((path.Tracks.Count - 1)*path.AverageRank) + trackRank)/path.Tracks.Count;
-            }
+            var count = path.Tracks.Count;
+            var newMixRank = direction == GenerateDirection.Forwards
+                ? GetAverageTrackAndMixAndKeyRank(path.Tracks[count - 2], path.Tracks[count - 1])
+                : GetAverageTrackAndMixAndKeyRank(path.Tracks[0], path.Tracks[1]);
+
+            var previousMixes = count - 2;
+            path.AverageRank = (previousMixes*path.AverageRank + newMixRank)/(previousMixes + 1);
         }
 
         /// <summary>

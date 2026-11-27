@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using Halloumi.Shuffler.AudioEngine.Helpers;
 using Halloumi.Shuffler.AudioEngine.Mixing;
 using Halloumi.Shuffler.AudioEngine.Models;
@@ -186,6 +188,14 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 System.Diagnostics.Debug.WriteLine("UnloadUnusedAudioData failed: " + e.Message);
             }
+        }
+
+        /// <summary>
+        ///     Gets every track whose audio is loaded, whether or not it is in a slot.
+        /// </summary>
+        public List<Track> GetLoadedTracks()
+        {
+            return _cache.GetAll().Where(t => t.IsAudioLoaded()).ToList();
         }
 
         /// <summary>

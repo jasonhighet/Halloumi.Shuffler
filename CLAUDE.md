@@ -95,6 +95,7 @@ These files legitimately bypass `ShufflerApplication` and should not be "fixed":
 | `Sampler` | Samples on the sampler mixer |
 | `AutomationPlayer` | Playing back, saving, clearing and removing track FX and sample triggers |
 | `RawLooper` | Looping a section of a track on its own mixer |
+| `AudioDiagnostics` | Read-only glitch report (output buffer level, BASS CPU, what is playing); Help > Audio Diagnostics, Ctrl+Shift+D |
 
 Supporting types: `TrackSyncs`/`TrackSyncType` (BASS position callbacks on a track), `SyncDispatcher` (each component registers handlers for its sync types with `syncs.On(...)`), `BackgroundQueue` (ordered worker for what sync handlers hand off), `TriggerRecorder` (automation being recorded), `VstPluginSlot`/`PluginChannel`.
 

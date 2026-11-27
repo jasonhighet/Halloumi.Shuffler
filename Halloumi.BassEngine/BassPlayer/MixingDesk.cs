@@ -89,7 +89,17 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         public VolumeLevels GetVolumeLevels()
         {
-            return SpeakerOutput.GetVolumeLevels();
+            // from the tap, not the output channel: reading the output itself takes audio from it once
+            // it is a decode channel (ASIO)
+            return SpeakerOutput.Tap.GetLevels();
+        }
+
+        /// <summary>
+        ///     A decode channel of what is being heard, for drawing visuals. Reading it doesn't touch the output.
+        /// </summary>
+        public int VisualsChannelId
+        {
+            get { return SpeakerOutput.Tap.VisualsChannelId; }
         }
 
         public bool Mono

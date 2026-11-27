@@ -67,6 +67,17 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
+        ///     Gets every track in the cache.
+        /// </summary>
+        public List<Track> GetAll()
+        {
+            lock (_lock)
+            {
+                return _tracks.ToList();
+            }
+        }
+
+        /// <summary>
         ///     Takes every track out of the cache.
         /// </summary>
         /// <returns>The tracks that were in it.</returns>

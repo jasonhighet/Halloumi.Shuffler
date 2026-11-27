@@ -290,8 +290,22 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static void Pause(AudioStream audioStream)
         {
             if (audioStream == null || !audioStream.IsAudioLoaded()) return;
-            BassMix.BASS_Mixer_ChannelPause(audioStream.ChannelId);
+            PauseWithoutWaiting(audioStream);
+
+            // gives the mixer time to act on the pause, for callers that change the stream straight after
+            // (SmoothPauseSync restores the volume, which would otherwise be heard)
             Thread.Sleep(10);
+        }
+
+        /// <summary>
+        ///     Pauses an audio stream and returns straight away. Use this in sync handlers: they run on the
+        ///     mixer thread, which must never sleep (the mixer applies the pause from its next block anyway).
+        /// </summary>
+        /// <param name="audioStream">The audio stream.</param>
+        public static void PauseWithoutWaiting(AudioStream audioStream)
+        {
+            if (audioStream == null || !audioStream.IsAudioLoaded()) return;
+            BassMix.BASS_Mixer_ChannelPause(audioStream.ChannelId);
         }
 
         /// <summary>

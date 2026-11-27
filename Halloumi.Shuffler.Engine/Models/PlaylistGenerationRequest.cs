@@ -45,6 +45,12 @@ namespace Halloumi.Shuffler.AudioLibrary.Models
         /// </summary>
         public bool FavourRecentTracks { get; set; }
 
+        /// <summary>
+        ///     Save some of the best mixes for later in the playlist instead of using them all at the start
+        ///     (Best Mix, Variety and Extra Variety only).
+        /// </summary>
+        public bool SpreadQualityEvenly { get; set; }
+
         public bool AutoGenerateEnabled { get; set; }
     }
 }

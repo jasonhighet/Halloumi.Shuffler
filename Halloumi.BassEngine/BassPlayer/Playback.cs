@@ -760,7 +760,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             }
             else if (!manual && !HasExtendedMixAttributes())
             {
-                AudioStreamHelper.Pause(track);
+                AudioStreamHelper.PauseWithoutWaiting(track);
             }
         }
 
@@ -780,7 +780,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             if (mixAttributes.PowerDownAfterFade)
                 AudioStreamHelper.PowerDown(track);
             else
-                AudioStreamHelper.Pause(track);
+                AudioStreamHelper.PauseWithoutWaiting(track);
         }
 
         /// <summary>

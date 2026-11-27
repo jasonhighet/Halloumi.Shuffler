@@ -36,6 +36,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private readonly ManualMixer _manualMixer;
         private readonly BackgroundQueue _background = new BackgroundQueue();
         private readonly Playback _playback;
+        private readonly AudioDiagnostics _diagnostics;
 
         public BassPlayer()
             : this(IntPtr.Zero)
@@ -59,6 +60,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 () => _playback.PlayState == PlayState.Playing);
             _playback = new Playback(_desk, _deck, _loader, syncs, _automation, _sampler, _fxSend, _manualMixer,
                 _background);
+            _diagnostics = new AudioDiagnostics(_desk, _deck, _loader, _sampler);
 
             _sampler.SamplesChanged += (sender, e) => OnTrackSamplesChanged?.Invoke(this, e);
 
@@ -310,6 +312,18 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         /// <summary>Gets the output levels (0 - 32768).</summary>
         public VolumeLevels GetVolumeLevels() => _desk.GetVolumeLevels();
+
+        /// <summary>
+        ///     A decode channel of what is being heard, for drawing visuals (spectrum, levels). Read this, never
+        ///     <see cref="SpeakerOutput" /> itself.
+        /// </summary>
+        public int VisualsChannelId => _desk.VisualsChannelId;
+
+        /// <summary>
+        ///     Watches the output buffer for a while, then reports what is playing, for tracking down
+        ///     glitches. Blocks for the sampling time, so call it off the UI thread.
+        /// </summary>
+        public string CaptureDiagnostics(int sampleMilliseconds) => _diagnostics.Capture(sampleMilliseconds);
 
         public decimal GetMixerVolume() => _desk.SpeakerOutput.GetVolume();
 

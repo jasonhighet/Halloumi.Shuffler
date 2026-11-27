@@ -22,7 +22,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             _loader = loader;
             _syncs = syncs;
 
-            syncs.On(TrackSyncType.EndRawLoop, track => Play());
+            syncs.On(TrackSyncType.EndRawLoop, track => LoopBack());
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         }
 
         /// <summary>
-        ///     Plays from the loop offset. Also called each time the loop end is reached.
+        ///     Plays from the loop offset.
         /// </summary>
         public void Play()
         {
@@ -132,6 +132,18 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             AudioStreamHelper.Pause(track);
             AudioStreamHelper.SetPosition(track, track.RawLoopOffset);
             AudioStreamHelper.Play(track);
+        }
+
+        /// <summary>
+        ///     The loop end has been reached: jump back to the loop offset. Runs on the mixer thread, so it only
+        ///     moves the position (no pause and replay, which would sleep on the mixer thread).
+        /// </summary>
+        private void LoopBack()
+        {
+            var track = Track;
+            if (track == null) return;
+
+            AudioStreamHelper.SetPosition(track, track.RawLoopOffset);
         }
 
         public void Stop()

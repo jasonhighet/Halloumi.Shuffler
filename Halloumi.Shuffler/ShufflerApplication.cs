@@ -391,6 +391,7 @@ namespace Halloumi.Shuffler
             }
 
             _trackSelector.FavourRecentTracks = request.FavourRecentTracks;
+            _trackSelector.SpreadQualityEvenly = request.SpreadQualityEvenly;
 
             return _trackSelector.GeneratePlayList(
                 availableTracks,
@@ -929,6 +930,36 @@ namespace Halloumi.Shuffler
         }
 
         // ── Playlist file I/O ────────────────────────────────────────────────
+
+        /// <summary>
+        ///     Where <see cref="CaptureAudioDiagnostics" /> appends its reports.
+        /// </summary>
+        public static string AudioDiagnosticsFilename
+        {
+            get { return Path.Combine(ApplicationHelper.GetUserDataPath(), "Halloumi.Shuffler.AudioDiagnostics.log"); }
+        }
+
+        /// <summary>
+        ///     Watches the audio output for a few seconds and reports what is playing, for tracking down
+        ///     glitches such as clicking. The report is appended to <see cref="AudioDiagnosticsFilename" />.
+        ///     Blocks for the sampling time, so call it off the UI thread.
+        /// </summary>
+        /// <returns>The report.</returns>
+        public string CaptureAudioDiagnostics()
+        {
+            var report = BassPlayer.CaptureDiagnostics(3000);
+
+            try
+            {
+                File.AppendAllText(AudioDiagnosticsFilename, report + Environment.NewLine + Environment.NewLine);
+            }
+            catch (IOException)
+            {
+                // the report is still returned
+            }
+
+            return report;
+        }
 
         private static string WorkingPlaylistFilename
         {

@@ -25,6 +25,7 @@ namespace Halloumi.Shuffler.Controls
         private bool _bassPlayerOnTrackChange;
         private bool _bindingVolumeSlider;
         private int _visualWarmupTicks;
+        private string _notifyIconDescription = "";
 
         private bool _loaded;
 
@@ -283,19 +284,30 @@ namespace Halloumi.Shuffler.Controls
 
             RefreshPlayerMixCounts();
 
-            var mainForm = (BaseMinimizeToTrayForm) ParentForm;
-            if (mainForm == null) return;
+            _notifyIconDescription = track?.Description.Replace("&", "&&") ?? "";
+            UpdateNotifyIconText();
+        }
 
-            if (track != null)
-            {
-                var text = track.Description.Replace("&", "&&");
-                if (text.Length > 63) text = text.Substring(0, 63);
-                mainForm.NotifyIcon.Text = text;
-            }
-            else
-            {
-                mainForm.NotifyIcon.Text = "";
-            }
+        /// <summary>
+        ///     Sets the tray icon tooltip to the current track, with the time remaining in brackets while it plays.
+        /// </summary>
+        private void UpdateNotifyIconText()
+        {
+            var mainForm = ParentForm as BaseMinimizeToTrayForm;
+            if (mainForm?.NotifyIcon == null) return;
+
+            var text = _notifyIconDescription;
+            var suffix = "";
+            if (text != "" && BassPlayer.PlayState == PlayState.Playing)
+                suffix = $" ({BassPlayer.GetTrackPosition().RemainingFormatted})";
+
+            // NotifyIcon.Text throws past 63 characters: trim the description, keep the time
+            const int maxLength = 63;
+            if (text.Length + suffix.Length > maxLength)
+                text = text.Substring(0, Math.Max(0, maxLength - suffix.Length));
+            text += suffix;
+
+            if (mainForm.NotifyIcon.Text != text) mainForm.NotifyIcon.Text = text;
         }
 
         public int GetCurrentMixRank()
@@ -360,6 +372,9 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void Timer_Tick()
         {
+            // before the minimized check: the tray tooltip is what shows while minimized
+            UpdateNotifyIconText();
+
             var form = FindForm();
             if (form != null && form.WindowState == FormWindowState.Minimized) return;
 
@@ -405,20 +420,21 @@ namespace Halloumi.Shuffler.Controls
                 _visualWarmupTicks++;
                 if (_visualWarmupTicks < 3) return;
 
-                //lock (BassPlayer.ExternalMixerLock)
-                {
-                    picVisuals.Image = _bassVisuals.CreateSpectrumLine(BassPlayer.SpeakerOutput.ChannelId,
-                        picVisuals.Width,
-                        picVisuals.Height,
-                        _volumeColor1,
-                        _volumeColor2,
-                        Color.Transparent,
-                        10,
-                        1,
-                        false,
-                        true,
-                        false);
-                }
+                var oldImage = picVisuals.Image;
+                picVisuals.Image = _bassVisuals.CreateSpectrumLine(BassPlayer.VisualsChannelId,
+                    picVisuals.Width,
+                    picVisuals.Height,
+                    _volumeColor1,
+                    _volumeColor2,
+                    Color.Transparent,
+                    10,
+                    1,
+                    false,
+                    true,
+                    false);
+
+                // a new bitmap every tick: free the old one now rather than leaving it to the garbage collector
+                oldImage?.Dispose();
             }
             else
             {

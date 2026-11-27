@@ -229,6 +229,21 @@ Sample sources:
 
 ---
 
+## Audio diagnostics
+
+`AudioDiagnostics.cs`, reached through `BassPlayer.CaptureDiagnostics(ms)` and `ShufflerApplication.CaptureAudioDiagnostics()`. In the app: **Help > Audio Diagnostics** (Ctrl+Shift+D). Press it while a glitch (such as clicking) is happening.
+
+It watches the speaker output for 3 seconds, then lists:
+- **Output buffer**: minimum and average buffered audio, how often it was below 30 ms, and any stalled readings. Also BASS CPU and the garbage collections during the window. A buffer that runs low means dropouts (the audio thread isn't keeping up). A buffer that stays full means the glitch is in the audio itself.
+- **Streams**: every track slot and every other track with audio loaded. For each: whether it is actually playing in its mixer (`BASS_Mixer_ChannelIsActive`), its volume, tempo, position and end loop. Also any samples that are playing.
+- **Mixers and plug-ins**: mixer volumes (including whether the track FX send is open) and the loaded VST and WinAmp plug-ins.
+- **Process**: memory, GDI objects and handles.
+- **Notes**: what looks wrong, such as a track playing that isn't in any slot, the previous track still on its end loop, or the FX send left open.
+
+The report is shown in a message box and appended to `%APPDATA%\Halloumi Shuffler\Halloumi.Shuffler.AudioDiagnostics.log`. It runs on a worker thread and changes nothing.
+
+---
+
 ## Section looping
 
 `RawLooper.cs`
@@ -325,6 +340,7 @@ Each track's BASS sync callbacks are held in its `Syncs` (a `TrackSyncs`, see be
 | `AutomationPlayer` | — | `TrackDeck`, `TrackFxSend`, `Sampler`, `TriggerRecorder`, `SyncDispatcher`, and a callback to `Playback.ResetTrackSyncPositions` |
 | `ManualMixer` | manual-mix mode and fade types, extended-mix recording and saving | `TrackDeck`, `FadeDefaults`, `TriggerRecorder`, and a callback for whether the player is playing |
 | `Playback` | `_slotLock`, play state, force-fade state | all of the above, and the `BackgroundQueue` |
+| `AudioDiagnostics` | — (read-only; takes no locks) | `MixingDesk`, `TrackDeck`, `TrackLoader`, `Sampler` |
 
 `BackgroundQueue` runs work handed off by sync handlers, in order, on a worker thread (see [Threads and locking](#threads-and-locking)).
 
@@ -514,6 +530,8 @@ Three kinds of thread touch the slot tracks:
 - **Sync handlers hand off what can wait.** Events (`OnTrackChange`, `OnEndFadeIn`), freeing audio and reloading samples go to the background queue. So those events arrive on a worker thread, just after the transition starts.
 - **Only touch syncs that change.** `TrackSyncs` keeps a sync that is re-set at the same position. Removing and re-adding a sync while the mixer is working through that part of the track can make BASS miss it.
 - **"Fade now" starts the transition directly.** A sync set just ahead of the play position can already be behind what BASS has decoded.
+- **The mixer thread never sleeps.** Sync handlers pause with `AudioStreamHelper.PauseWithoutWaiting`, not `Pause` (which sleeps 10 ms so callers that change the stream straight after don't get heard). The raw looper's `EndRawLoop` handler only moves the position. Today the 200 ms output buffer hides a short stall; with ASIO's few-millisecond buffer every stall is a click.
+- **Nothing reads the output channel.** Level meters and the spectrum visual read `SpeakerOutput.Tap` (`OutputTap`): a DSP at the very end of the output chain (lowest priority, after the mono fold-down) copies each block into a ring buffer without locking or allocating. `BassPlayer.VisualsChannelId` is a decode channel served from that copy, delayed by what the output has buffered so it matches what is heard. `BASS_ChannelGetData`/`GetLevel` on the output itself would take audio out of the mix once the output is a decode channel pulled by ASIO.
 - **No `BASS_ChannelLock` around removing a source from a mixer** (`AudioStreamHelper.RemoveFromMixer`). It deadlocked with BASS's update thread, which locks the mixers above first.
 
 Lock order: `_slotLock`, then the deck's, a track's syncs', or a track's own lock; never `_slotLock` while holding one of those. A track's syncs are only changed with `_slotLock` held (the raw-loop track's excepted: the mixer thread never changes them).
