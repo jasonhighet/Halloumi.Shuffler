@@ -118,6 +118,8 @@ They are loaded by `ShufflerApplication.LoadSettings()` and saved by `ShufflerAp
 |---|---|---|
 | `ShowMixableTracks` | bool | Show the compatible-tracks panel |
 | `VisualsShown` | bool | Show visualisation panel |
+| `MixOverviewHidden` | bool | Hide the Mixer view's waveform strip (View > Mixer Waveform) |
+| `MixOverviewHeight` | int | Height of the Mixer view's waveform strip in pixels; 0 until the splitter is first dragged |
 | `AlbumArtShown` | bool | Show album art |
 | `ShowTrackDetails` | bool | Show track detail panel |
 | `ShowPlayer` | bool | Show the player controls panel |

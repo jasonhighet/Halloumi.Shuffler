@@ -40,6 +40,24 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         public ExtendedFadeType ExtendedFadeType { get; set; }
 
         /// <summary>
+        ///     How many whole fade-out sections the outgoing track's fade-out was moved when this mix was recorded
+        ///     (negative is earlier). Moved on the Mixer view's waveform strip; see docs/mixer-waveform.md.
+        /// </summary>
+        public int FadeOutShift { get; set; }
+
+        /// <summary>
+        ///     How many whole fade-in sections the incoming track's fade-in was moved when this mix was recorded.
+        /// </summary>
+        public int FadeInShift { get; set; }
+
+        /// <summary>
+        ///     True if this holds a recorded (manual) mix. An entry can also hold just sample triggers, which leave
+        ///     the transition itself as normal.
+        /// </summary>
+        [XmlIgnore]
+        public bool IsRecordedMix => FadeLength != 0;
+
+        /// <summary>
         /// Gets or sets the sample triggers.
         /// </summary>
         public List<SampleTrigger> SampleTriggers { get; set; }
@@ -68,7 +86,9 @@ namespace Halloumi.Shuffler.AudioEngine.Models
                 FadeEndVolume = FadeEndVolume,
                 FadeLength = FadeLength,
                 PowerDownAfterFade = PowerDownAfterFade,
-                TrackDescription = TrackDescription
+                TrackDescription = TrackDescription,
+                FadeOutShift = FadeOutShift,
+                FadeInShift = FadeInShift
             };
         }
     }

@@ -72,6 +72,7 @@
             mnuShowTrackDetails = new System.Windows.Forms.ToolStripMenuItem();
             mnuShowMixableTracks = new System.Windows.Forms.ToolStripMenuItem();
             mnuViewVisuals = new System.Windows.Forms.ToolStripMenuItem();
+            mnuViewMixerWaveform = new System.Windows.Forms.ToolStripMenuItem();
             mnuViewAlbumArt = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             mnuMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
@@ -393,7 +394,7 @@
             // 
             // mnuView
             // 
-            mnuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuViewPlaylist, mnuViewLibrary, mnuViewMixer, toolStripSeparator12, mnuShowPlayer, mnuShowTrackDetails, mnuShowMixableTracks, mnuViewVisuals, mnuViewAlbumArt, toolStripSeparator6, mnuMinimizeToTray });
+            mnuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuViewPlaylist, mnuViewLibrary, mnuViewMixer, toolStripSeparator12, mnuShowPlayer, mnuShowTrackDetails, mnuShowMixableTracks, mnuViewVisuals, mnuViewMixerWaveform, mnuViewAlbumArt, toolStripSeparator6, mnuMinimizeToTray });
             mnuView.Name = "mnuView";
             mnuView.Size = new System.Drawing.Size(53, 33);
             mnuView.Text = "&View";
@@ -451,6 +452,13 @@
             mnuViewVisuals.Text = "&Visuals";
             mnuViewVisuals.Click += mnuViewVisuals_Click;
             // 
+            // mnuViewMixerWaveform
+            //
+            mnuViewMixerWaveform.Name = "mnuViewMixerWaveform";
+            mnuViewMixerWaveform.Size = new System.Drawing.Size(190, 24);
+            mnuViewMixerWaveform.Text = "Mixer &Waveform";
+            mnuViewMixerWaveform.Click += mnuViewMixerWaveform_Click;
+            //
             // mnuViewAlbumArt
             // 
             mnuViewAlbumArt.Name = "mnuViewAlbumArt";
@@ -1051,6 +1059,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripMenuItem mnuShowMixableTracks;
         private System.Windows.Forms.ToolStripMenuItem mnuViewVisuals;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewMixerWaveform;
         private System.Windows.Forms.ToolStripMenuItem mnuViewAlbumArt;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem mnuMinimizeToTray;

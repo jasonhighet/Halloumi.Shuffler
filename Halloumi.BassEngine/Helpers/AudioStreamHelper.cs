@@ -362,6 +362,17 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         }
 
         /// <summary>
+        ///     True if an audio stream is on a mixer and actually playing there. Unlike <see cref="IsPlaying" />,
+        ///     a stream paused in the mixer counts as not playing.
+        /// </summary>
+        public static bool IsPlayingInMixer(AudioStream audioStream)
+        {
+            if (audioStream == null || !audioStream.IsAudioLoaded()) return false;
+            if (BassMix.BASS_Mixer_ChannelGetMixer(audioStream.ChannelId) == 0) return false;
+            return BassMix.BASS_Mixer_ChannelIsActive(audioStream.ChannelId) == BASSActive.BASS_ACTIVE_PLAYING;
+        }
+
+        /// <summary>
         ///     Plays a 'power down' effect on an audio stream.
         /// </summary>
         /// <param name="audioStream">The audio file.</param>

@@ -408,5 +408,77 @@ namespace Halloumi.Shuffler.AudioEngine.Models
         {
             PowerDownOnEnd = PowerDownOnEndOriginal;
         }
+
+        // ---------- live fade moves (docs/mixer-waveform.md) ----------
+        // A fade section moved for this play only. The fade points above hold the moved positions; these hold how
+        // far they were moved, so a reload from disk can put the move back and an unload can take it away.
+
+        /// <summary>
+        ///     How far the fade-in section (and the pre-fade-in start with it) has been moved for this play, in samples.
+        /// </summary>
+        internal long LiveFadeInShift { get; private set; }
+
+        /// <summary>
+        ///     The same move in whole fade-in sections. Kept as well as the samples, because a section's length can
+        ///     change after a move (a fade type reshapes the fade-out).
+        /// </summary>
+        internal int LiveFadeInSections { get; private set; }
+
+        /// <summary>
+        ///     How far the fade-out section has been moved for this play, in samples.
+        /// </summary>
+        internal long LiveFadeOutShift { get; private set; }
+
+        /// <summary>
+        ///     The same move in whole fade-out sections.
+        /// </summary>
+        internal int LiveFadeOutSections { get; private set; }
+
+        internal void ShiftFadeIn(long samples, int sections)
+        {
+            FadeInStart += samples;
+            FadeInEnd += samples;
+            PreFadeInStart += samples;
+            LiveFadeInShift += samples;
+            LiveFadeInSections += sections;
+        }
+
+        internal void ShiftFadeOut(long samples, int sections)
+        {
+            FadeOutStart += samples;
+            FadeOutEnd += samples;
+            LiveFadeOutShift += samples;
+            LiveFadeOutSections += sections;
+        }
+
+        /// <summary>
+        ///     Moves the fade sections back to where they were before any live move.
+        /// </summary>
+        internal void RemoveLiveShifts()
+        {
+            ShiftFadeIn(-LiveFadeInShift, -LiveFadeInSections);
+            ShiftFadeOut(-LiveFadeOutShift, -LiveFadeOutSections);
+        }
+
+        /// <summary>
+        ///     Forgets the live moves without touching the fade points: for when the fade points are about to be
+        ///     set from scratch.
+        /// </summary>
+        internal void ForgetLiveShifts()
+        {
+            LiveFadeInShift = 0;
+            LiveFadeInSections = 0;
+            ForgetLiveFadeOutShift();
+        }
+
+        /// <summary>
+        ///     Forgets a live fade-out move without touching the fade points: for when the fade-out has been put
+        ///     somewhere else ("fade now").
+        /// </summary>
+        internal void ForgetLiveFadeOutShift()
+        {
+            LiveFadeOutShift = 0;
+            LiveFadeOutSections = 0;
+        }
     }
 }

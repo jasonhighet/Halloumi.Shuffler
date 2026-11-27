@@ -1,4 +1,5 @@
 using Halloumi.Shuffler.AudioEngine.Helpers;
+using Halloumi.Shuffler.AudioEngine.Mixing;
 using Halloumi.Shuffler.AudioEngine.Models;
 
 namespace Halloumi.Shuffler.AudioEngine.BassPlayer
@@ -159,7 +160,11 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 FadeLength = fadeLength,
                 FadeEndLoop = fadeEndLoop,
                 FadeEndVolume = fadeEndVolume,
-                PowerDownAfterFade = powerDownAfterFade
+                PowerDownAfterFade = powerDownAfterFade,
+
+                // the mix was played with the fades where they are now, moved or not, so it keeps those moves
+                FadeOutShift = FadeShift.GetFadeOutShift(fadeOutTrack),
+                FadeInShift = FadeShift.GetFadeInShift(fadeInTrack)
             };
         }
 

@@ -61,7 +61,7 @@ namespace Halloumi.Shuffler.AudioEngine.Mixing
         {
             if (fromTrack == null) return 0;
 
-            if (mix != null) return mix.FadeLength;
+            if (mix != null && mix.IsRecordedMix) return mix.FadeLength;
             var fadeOutLength = fromTrack.FullEndLoopLengthSeconds;
 
             if (fadeOutLength == 0)
@@ -93,7 +93,7 @@ namespace Halloumi.Shuffler.AudioEngine.Mixing
 
             var fadeOutLength = GetExtendedFadeOutLength(fromTrack, toTrack, mix);
 
-            if (mix == null)
+            if (mix == null || !mix.IsRecordedMix)
             {
                 if (fromTrack.PowerDownOnEnd)
                 {
@@ -222,7 +222,7 @@ namespace Halloumi.Shuffler.AudioEngine.Mixing
                 return plan;
             }
 
-            if (mix != null && mix.FadeLength != 0)
+            if (mix != null && mix.IsRecordedMix)
                 return PlanExtendedMixFadeOut(outgoingTrack, incomingTrack, mix);
 
             if (outgoingTrack.PowerDownOnEnd)

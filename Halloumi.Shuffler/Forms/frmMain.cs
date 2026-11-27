@@ -236,6 +236,12 @@ namespace Halloumi.Shuffler.Forms
             _application.SetTrackRank(tracks, (int)mixRank);
         }
 
+        private void mnuViewMixerWaveform_Click(object sender, EventArgs e)
+        {
+            mnuViewMixerWaveform.Checked = !mnuViewMixerWaveform.Checked;
+            mixerControl.WaveformShown = mnuViewMixerWaveform.Checked;
+        }
+
         private void mnuViewVisuals_Click(object sender, EventArgs e)
         {
             mnuViewVisuals.Checked = !mnuViewVisuals.Checked;
@@ -378,6 +384,8 @@ namespace Halloumi.Shuffler.Forms
             pnlTop.AutoSize = !mnuShowPlayer.Checked;
 
             mixerControl.LoadSettings();
+            mixerControl.WaveformShown = !settings.MixOverviewHidden;
+            mnuViewMixerWaveform.Checked = !settings.MixOverviewHidden;
             trackLibraryControl.LoadUiSettings();
 
             mnuUpdateLibraryOnStartup.Checked = settings.UpdateLibraryOnStartup;
@@ -400,6 +408,7 @@ namespace Halloumi.Shuffler.Forms
             settings.MinimizeToTray = MinimizeToTrayEnabled;
             settings.FormStateSettings = formStateController.FormStateSettings;
             settings.VisualsShown = playerDetails.VisualsShown;
+            settings.MixOverviewHidden = !mixerControl.WaveformShown;
             settings.AlbumArtShown = playerDetails.AlbumArtShown;
             settings.ShowMixableTracks = mnuShowMixableTracks.Checked;
             settings.ShowTrackDetails = mnuShowTrackDetails.Checked;

@@ -162,4 +162,5 @@ Detailed docs are in `docs/`:
 - [docs/ui.md](docs/ui.md) — forms and controls inventory
 - [docs/workflows.md](docs/workflows.md) — key user workflows end-to-end
 - [docs/settings.md](docs/settings.md) — settings reference
+- [docs/mixer-waveform.md](docs/mixer-waveform.md) — the Mixer view's waveform strip: moving the coming mix's fades in whole sections (manual mix mode), kept as part of the extended mix
 - [docs/fade-suggestions.md](docs/fade-suggestions.md) — how fade positions are suggested, and the harness (`tools/fade-eval/`) that scores them against hand-set fades

@@ -82,6 +82,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             syncs.On(TrackSyncType.EndFadeIn, track => RunSyncHandler(EndFadeIn));
             syncs.On(TrackSyncType.EndExtendedMix, track => RunSyncHandler(EndExtendedMix));
             syncs.On(TrackSyncType.StartSkipSection, track => RunSyncHandler(StartSkipSection));
+
+            // fades are only moved in manual mix mode: switching it puts them where that mode wants them
+            _manualMixer.ModeChanged += (sender, e) => OnManualMixModeChanged();
         }
 
         /// <summary>
@@ -178,6 +181,10 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
                 if (!becameCurrent && !_deck.IsInUse(replacedNext))
                     RemoveTrackFromMixers(replacedNext);
+
+                // a new mix (current → this track): its fades go where they are saved for it
+                if (!becameCurrent)
+                    ApplySavedFadeMoves();
 
                 SetTrackSyncPositions();
             }
@@ -376,6 +383,173 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         {
             // reads only, and the UI calls it often, so it takes no lock
             return GetPositionNoLock();
+        }
+
+        /// <summary>
+        ///     Gets the Mixer view's waveform overview: the current track, the end of the previous track while it is
+        ///     still playing out (the track change happens when its fade-out starts), and the next track. See
+        ///     docs/mixer-waveform.md.
+        /// </summary>
+        public MixOverview GetMixOverview()
+        {
+            // reads only, and the UI calls it often, so it takes no lock; read each slot once
+            var previous = PreviousTrack;
+            var current = CurrentTrack;
+            var next = NextTrack;
+
+            // ran out with nothing queued: show the last track on its own
+            if (current == null) return MixOverviewBuilder.Build(null, previous, null, null);
+
+            var isFadingOut = MixOverviewBuilder.IsFadingOut(previous, PlayState == PlayState.Playing);
+            var saved = next == null ? null : GetSavedFadeMoves(current, next);
+            if (saved != null) saved.IsManualMixMode = _manualMixer.IsOn;
+            return MixOverviewBuilder.Build(isFadingOut ? previous : null, current, next, saved);
+        }
+
+        // ---------- moving the coming mix's fades (docs/mixer-waveform.md) ----------
+        // In manual mix mode only, the current track's fade-out and the next track's fade-in move in whole sections,
+        // for this play only, by shifting the tracks' in-memory fade points (Track.ShiftFadeOut / ShiftFadeIn). A
+        // reload from disk keeps the move (ExtendedAttributesHelper.LoadExtendedAttributes) and unloading the audio
+        // drops it (TrackLoader). The moves are part of the mix: they are saved only when the manual mix is saved as
+        // an extended mix (TriggerRecorder.RecordExtendedMix), and a pair with an extended mix starts from them.
+
+        private readonly object _savedFadeMovesLock = new object();
+        private SavedFadeMoves _savedFadeMoves;
+        private Track _savedFadeMovesCurrent;
+        private Track _savedFadeMovesNext;
+        private DateTime _savedFadeMovesRead;
+
+        /// <summary>
+        ///     Moves the current track's fade-out to the given number of sections from its own place. False if not in
+        ///     manual mix mode, there is no next track, the fade-out has started, or it can't go there.
+        /// </summary>
+        public bool MoveFadeOut(int sections)
+        {
+            lock (_slotLock)
+            {
+                if (!_manualMixer.IsOn) return false;
+                var current = CurrentTrack;
+                var next = NextTrack;
+                if (current == null || next == null) return false;
+
+                var position = AudioStreamHelper.GetPosition(current);
+                var now = FadeShift.GetFadeOutShift(current);
+                if (!FadeShift.CanPlaceFadeOut(current, next, now, position)) return false;
+                if (!FadeShift.CanPlaceFadeOut(current, next, sections, position)) return false;
+
+                FadeShift.MoveFadeOut(current, sections);
+                SetTrackSyncPositions();
+                return true;
+            }
+        }
+
+        /// <summary>
+        ///     Moves the next track's fade-in to the given number of sections from its own place. False if not in
+        ///     manual mix mode, there is no next track, the next track has started, or it can't go there.
+        /// </summary>
+        public bool MoveFadeIn(int sections)
+        {
+            lock (_slotLock)
+            {
+                if (!_manualMixer.IsOn) return false;
+                var current = CurrentTrack;
+                var next = NextTrack;
+                if (current == null || next == null) return false;
+                if (FadeShift.HasFadeInStarted(next)) return false;
+                if (!FadeShift.CanPlaceFadeIn(next, sections)) return false;
+
+                FadeShift.MoveFadeIn(next, sections);
+                SetTrackSyncPositions();
+                return true;
+            }
+        }
+
+        /// <summary>
+        ///     Puts the coming mix's fades where its extended mix has them, or the tracks' own fades if it has none,
+        ///     as far as they can still move. Live moves are dropped. Call with _slotLock held, before setting the
+        ///     syncs.
+        /// </summary>
+        private void ApplySavedFadeMoves()
+        {
+            var current = CurrentTrack;
+            var next = NextTrack;
+            if (current == null || next == null) return;
+
+            var saved = ReadSavedFadeMoves(current, next);
+            var fadeOutTarget = saved.FadeOutShift;
+            var fadeInTarget = saved.FadeInShift;
+            var position = AudioStreamHelper.GetPosition(current);
+
+            // the fade-out may have been moved for a different next track; leave it if it can no longer move
+            var fadeOutNow = FadeShift.GetFadeOutShift(current);
+            if (FadeShift.CanPlaceFadeOut(current, next, fadeOutNow, position))
+            {
+                var target = FadeShift.CanPlaceFadeOut(current, next, fadeOutTarget, position) ? fadeOutTarget : 0;
+                if (FadeShift.CanPlaceFadeOut(current, next, target, position))
+                    FadeShift.MoveFadeOut(current, target);
+            }
+
+            if (!FadeShift.HasFadeInStarted(next))
+            {
+                var target = FadeShift.CanPlaceFadeIn(next, fadeInTarget) ? fadeInTarget : 0;
+                if (FadeShift.CanPlaceFadeIn(next, target))
+                    FadeShift.MoveFadeIn(next, target);
+            }
+        }
+
+        /// <summary>
+        ///     Manual mix mode was switched on or off. Either way the coming mix's fades go back to where its extended
+        ///     mix has them (or the tracks' own): leaving manual mix mode drops moves that were not saved with a mix.
+        /// </summary>
+        private void OnManualMixModeChanged()
+        {
+            lock (_slotLock)
+            {
+                if (CurrentTrack == null || NextTrack == null) return;
+                ApplySavedFadeMoves();
+                SetTrackSyncPositions();
+            }
+        }
+
+        /// <summary>
+        ///     What is saved for the mix from one track into another, cached for the overview (which asks many times
+        ///     a second) and re-read every few seconds in case a recorded mix was saved meanwhile.
+        /// </summary>
+        private SavedFadeMoves GetSavedFadeMoves(Track current, Track next)
+        {
+            lock (_savedFadeMovesLock)
+            {
+                if (_savedFadeMoves != null && _savedFadeMovesCurrent == current && _savedFadeMovesNext == next
+                    && DateTime.UtcNow - _savedFadeMovesRead < TimeSpan.FromSeconds(3))
+                    return _savedFadeMoves;
+            }
+
+            var saved = ReadSavedFadeMoves(current, next);
+
+            lock (_savedFadeMovesLock)
+            {
+                _savedFadeMoves = saved;
+                _savedFadeMovesCurrent = current;
+                _savedFadeMovesNext = next;
+                _savedFadeMovesRead = DateTime.UtcNow;
+            }
+
+            return saved;
+        }
+
+        /// <summary>
+        ///     The fade moves saved with the pair's extended mix. Moves only count as part of a recorded mix.
+        /// </summary>
+        private static SavedFadeMoves ReadSavedFadeMoves(Track current, Track next)
+        {
+            var mix = GetExtendedMixAttributes(current, next);
+            var isRecordedMix = mix != null && mix.IsRecordedMix;
+            return new SavedFadeMoves
+            {
+                IsRecordedMix = isRecordedMix,
+                FadeOutShift = isRecordedMix ? mix.FadeOutShift : 0,
+                FadeInShift = isRecordedMix ? mix.FadeInShift : 0
+            };
         }
 
         private TrackPosition GetPositionNoLock()
@@ -910,6 +1084,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
                 // just ahead of the play position is not reliable: BASS decodes ahead of what is heard,
                 // and can already be past it.)
                 var position = AudioStreamHelper.GetPosition(track);
+                track.ForgetLiveFadeOutShift();
                 track.FadeOutStart = position;
                 track.FadeOutEnd = position + track.SecondsToSamples(length);
                 track.Syncs.Set(TrackSyncType.StartFadeOut, track.FadeOutStart);
@@ -931,9 +1106,14 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         // ---------- extended mixes ----------
 
+        /// <summary>
+        ///     True if the pair has a recorded (manual) mix. An entry that only holds sample triggers or fade moves
+        ///     does not count.
+        /// </summary>
         public bool HasExtendedMixAttributes(Track fadeOutTrack, Track fadeInTrack)
         {
-            return GetExtendedMixAttributes(fadeOutTrack, fadeInTrack) != null;
+            var mix = GetExtendedMixAttributes(fadeOutTrack, fadeInTrack);
+            return mix != null && mix.IsRecordedMix;
         }
 
         public ExtendedFadeType GetExtendedFadeType(Track fromTrack, Track toTrack)
@@ -954,7 +1134,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         private bool HasExtendedMixAttributes()
         {
             var attributes = GetExtendedMixAttributes();
-            return attributes != null && attributes.FadeLength != 0;
+            return attributes != null && attributes.IsRecordedMix;
         }
 
         private ExtendedMixAttributes GetExtendedMixAttributes()

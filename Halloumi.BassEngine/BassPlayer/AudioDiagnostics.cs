@@ -237,12 +237,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             }
         }
 
-        private static bool IsPlayingInMixer(AudioStream stream)
-        {
-            if (stream == null || !stream.IsAudioLoaded()) return false;
-            if (BassMix.BASS_Mixer_ChannelGetMixer(stream.ChannelId) == 0) return false;
-            return BassMix.BASS_Mixer_ChannelIsActive(stream.ChannelId) == BASSActive.BASS_ACTIVE_PLAYING;
-        }
+        private static bool IsPlayingInMixer(AudioStream stream) => AudioStreamHelper.IsPlayingInMixer(stream);
 
         // ---------- mixers and plug-ins ----------
 

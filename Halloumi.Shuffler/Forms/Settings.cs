@@ -171,6 +171,16 @@ namespace Halloumi.Shuffler.Forms
 
         public bool VisualsShown { get; set; }
 
+        /// <summary>
+        ///     Height of the Mixer view's waveform strip in pixels; 0 until the splitter is first moved.
+        /// </summary>
+        public int MixOverviewHeight { get; set; }
+
+        /// <summary>
+        ///     True when the Mixer view's waveform strip is hidden (View > Mixer Waveform).
+        /// </summary>
+        public bool MixOverviewHidden { get; set; }
+
         public bool AlbumArtShown { get; set; }
 
         public bool SkipAfterMix { get; set; }

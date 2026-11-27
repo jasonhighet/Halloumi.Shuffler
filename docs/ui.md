@@ -96,6 +96,8 @@ When the Shuffler filter is **Yes**, the grid swaps Album and Track # for the Sh
 
 Shows the current state of the effects chain and mixer channels. `TrackMixerControl` handles the per-track mixing interface (volume, crossfade position).
 
+`Controls/MixOverviewControl.cs` is the waveform strip across the top of the Mixer view, above a draggable splitter. The top row is the current track. The bottom row holds the end of the previous track (under the current track's fade-in) and the next track (under its fade-out). Each is shown as heard, with the fade sections shaded. It gets its data from `ShufflerApplication.GetMixOverview()` and `GetWaveformPeaks()`. See [mixer-waveform.md](mixer-waveform.md).
+
 ### MixableTracks
 
 `Controls/MixableTracks.cs`
@@ -163,7 +165,8 @@ A section becomes active when you click its coloured band, drag one of its edges
 | Drag on empty waveform | Zoom to the range dragged (same as click then Shift+click) |
 | Wheel / Shift+wheel / middle-drag | Zoom around the pointer / scroll / pan |
 | Click a numbered box | Move the fade-in / fade-out to that suggestion |
-| Right-click | Set and Move commands at the cursor, Snap to Beat, Suggest Fade Sections |
+| Right-click | Set and Move commands at the cursor, Halve / Double / Move the section, Snap to Beat, Suggest Fade Sections |
+| Half / Double / ◀ Move / Move ▶ buttons | Same as `[` / `]` / `,` / `.` below: act on the section the red cursor is in (which becomes the selected one), or the selected section if the cursor isn't in one, keeping its start (Half, Double) or its length (Move) |
 
 **Keyboard** (handled by `HandleKey`, called from the forms' `ProcessCmdKey` when the focus is not on a text box, drop-down, list or tick box; clicking the waveform takes the focus)
 
@@ -172,8 +175,8 @@ A section becomes active when you click its coloured band, drag one of its edges
 | Space | Play / stop |
 | I / O / K | Select and show the fade-in / fade-out / skip section (Shuffler mode) |
 | S / E | Set the active section's start / end at the cursor (the playhead while playing) |
-| [ / ] | Halve / double the active section's length |
-| , / . | Move the active section back / forward by its own length |
+| [ / ] | Halve / double the length of the section the cursor is in (otherwise the active section) |
+| , / . | Move the section the cursor is in (otherwise the active section) back / forward by its own length |
 | Z | Show the active section with room to drag its edges |
 | Down / Up | Move the fade-in (or the fade-out, if it is the active section) to its next / previous suggestion |
 | 1 - 5 | Move it to that suggestion |

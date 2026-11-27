@@ -32,7 +32,15 @@
             this.spllLeftRight = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.trackMixerControl = new Halloumi.Shuffler.Controls.TrackMixerControl();
             this.SamplerControl = new Halloumi.Shuffler.Controls.SamplerControl();
+            this.mixOverviewControl = new Halloumi.Shuffler.Controls.MixOverviewControl();
+            this.spltTopBottom = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.pnlBackground.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spltTopBottom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.spltTopBottom.Panel1)).BeginInit();
+            this.spltTopBottom.Panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spltTopBottom.Panel2)).BeginInit();
+            this.spltTopBottom.Panel2.SuspendLayout();
+            this.spltTopBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spllLeftRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spllLeftRight.Panel1)).BeginInit();
             this.spllLeftRight.Panel1.SuspendLayout();
@@ -44,7 +52,7 @@
             // pnlBackground
             // 
             this.pnlBackground.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlBackground.Controls.Add(this.spllLeftRight);
+            this.pnlBackground.Controls.Add(this.spltTopBottom);
             this.pnlBackground.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlBackground.Location = new System.Drawing.Point(0, 0);
             this.pnlBackground.Margin = new System.Windows.Forms.Padding(4);
@@ -54,11 +62,40 @@
             this.pnlBackground.Style = Halloumi.Common.Windows.Controls.PanelStyle.Content;
             this.pnlBackground.TabIndex = 11;
             // 
+            // spltTopBottom
+            // 
+            this.spltTopBottom.Cursor = System.Windows.Forms.Cursors.Default;
+            this.spltTopBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.spltTopBottom.Location = new System.Drawing.Point(6, 6);
+            this.spltTopBottom.Name = "spltTopBottom";
+            this.spltTopBottom.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // spltTopBottom.Panel1
+            // 
+            this.spltTopBottom.Panel1.Controls.Add(this.mixOverviewControl);
+            this.spltTopBottom.Panel1MinSize = 80;
+            // 
+            // spltTopBottom.Panel2
+            // 
+            this.spltTopBottom.Panel2.Controls.Add(this.spllLeftRight);
+            this.spltTopBottom.Panel2MinSize = 200;
+            this.spltTopBottom.Size = new System.Drawing.Size(1275, 664);
+            this.spltTopBottom.SplitterDistance = 180;
+            this.spltTopBottom.TabIndex = 6;
+            // 
+            // mixOverviewControl
+            // 
+            this.mixOverviewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mixOverviewControl.Location = new System.Drawing.Point(0, 0);
+            this.mixOverviewControl.Name = "mixOverviewControl";
+            this.mixOverviewControl.Size = new System.Drawing.Size(1275, 180);
+            this.mixOverviewControl.TabIndex = 0;
+            // 
             // spllLeftRight
             // 
             this.spllLeftRight.Cursor = System.Windows.Forms.Cursors.Default;
             this.spllLeftRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.spllLeftRight.Location = new System.Drawing.Point(6, 6);
+            this.spllLeftRight.Location = new System.Drawing.Point(0, 0);
             this.spllLeftRight.Margin = new System.Windows.Forms.Padding(4);
             this.spllLeftRight.Name = "spllLeftRight";
             // 
@@ -69,7 +106,7 @@
             // spllLeftRight.Panel2
             // 
             this.spllLeftRight.Panel2.Controls.Add(this.SamplerControl);
-            this.spllLeftRight.Size = new System.Drawing.Size(1275, 664);
+            this.spllLeftRight.Size = new System.Drawing.Size(1275, 479);
             this.spllLeftRight.SplitterDistance = 622;
             this.spllLeftRight.TabIndex = 5;
             // 
@@ -106,6 +143,12 @@
             this.spllLeftRight.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.spllLeftRight)).EndInit();
             this.spllLeftRight.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.spltTopBottom.Panel1)).EndInit();
+            this.spltTopBottom.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.spltTopBottom.Panel2)).EndInit();
+            this.spltTopBottom.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.spltTopBottom)).EndInit();
+            this.spltTopBottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -114,6 +157,8 @@
 
         private Halloumi.Common.Windows.Controls.Panel pnlBackground;
         private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer spllLeftRight;
+        private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer spltTopBottom;
         private TrackMixerControl trackMixerControl;
+        private MixOverviewControl mixOverviewControl;
     }
 }

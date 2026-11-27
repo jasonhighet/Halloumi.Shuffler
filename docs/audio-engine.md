@@ -416,6 +416,14 @@ TryToChannelPosition(track, adjusted, out channel, out startLoop)
 
 `BassPlayer.GetTrackPosition` and `SetAdjustedTrackPosition` use these.
 
+### MixOverviewBuilder
+
+Builds `BassPlayer.GetMixOverview()` for the Mixer view's waveform strip. Each track is turned into the segments actually heard: pre-fade-in, the fade-in once per start loop, the body with the skip section cut out, and the fade-out once per end loop, then the tail to the end of the file (manual mixing can play on into it). The next track is offset so its fade-in starts at the current track's fade-out, and the previous track so its fade-out starts at the current track's fade-in. `Playback.GetMixOverview` includes the previous track only while it is still playing out. Like `GetTrackPosition`, it reads only and takes no lock. `Helpers/WaveformPeaks.Compute` decodes a file into overview peaks; it is slow, so call it from a worker thread. See [mixer-waveform.md](mixer-waveform.md).
+
+### FadeShift
+
+The rules for moving the coming mix's fades in whole sections, in manual mix mode only (`BassPlayer.MoveFadeOut` / `MoveFadeIn`). A move shifts the engine track's in-memory fade points. A reload from disk keeps the move, and unloading the audio drops it. The moves are saved with an extended mix (`ExtendedMixAttributes.FadeOutShift` / `FadeInShift`, recorded by `TriggerRecorder`). They are applied when the next track is queued and when manual mix mode is switched. Only an entry with a length (`IsRecordedMix`) counts as a recorded mix. See [mixer-waveform.md](mixer-waveform.md).
+
 ### TransitionPlanner
 
 Decides how one track hands over to the next. `BassPlayer` looks up the extended mix attributes for the pair and passes them in (null = no recorded mix).

@@ -192,6 +192,7 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             var attributes = AutomationAttributesHelper.GetAutomationAttributes(PreviousTrack.Description);
             if (attributes == null) return;
 
+            // the fade moves are part of the mix, so they go with it
             attributes.RemoveExtendedMixAttributes(CurrentTrack.Description);
             AutomationAttributesHelper.SaveAutomationAttributes(PreviousTrack.Description, attributes);
 

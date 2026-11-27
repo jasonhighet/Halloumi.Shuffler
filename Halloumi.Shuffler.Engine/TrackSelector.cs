@@ -227,6 +227,14 @@ namespace Halloumi.Shuffler.AudioLibrary
                 if (trackCountLimit == currentPlaylist.Count) return new List<Track>();
             }
 
+            // the length the spread is planned over: the whole playlist the length setting allows (with no limit,
+            // the current playlist plus every track that could still be added), not just this batch, so
+            // auto-generating a few tracks at a time doesn't use up the best mixes in each batch
+            var currentDescriptions = GetDistinctTrackDescriptions(currentPlaylist);
+            var possibleLength = currentPlaylist.Count +
+                                 availableTrackDescriptions.Count(d => !currentDescriptions.Contains(d));
+            var spreadLength = Math.Min(trackCountLimit, possibleLength);
+
             if (maxTracksToAdd != int.MaxValue && trackCountLimit > currentPlaylist.Count + maxTracksToAdd)
             {
                 trackCountLimit = currentPlaylist.Count + maxTracksToAdd;
@@ -306,7 +314,7 @@ namespace Halloumi.Shuffler.AudioLibrary
 
                 if (nextPaths.Count > max && spreadQuality)
                 {
-                    var limit = trackCountLimit;
+                    var limit = spreadLength;
                     nextPaths = nextPaths
                         .AsParallel()
                         .Select(p => new {Path = p, Score = GetSpreadScore(p, limit, direction)})

@@ -142,6 +142,7 @@ Ranking playlists by their average so far front-loads quality. A playlist that u
 **Save some of the best mixes for later** (`SpreadQualityEvenly`) changes steps 4 and 5:
 
 - **Pruning** ranks playlists by an estimated final average (`GetSpreadScore`). That is the mixes so far plus one estimated mix for each slot still to fill. For each unused track, the estimate takes the best Good-or-better mix into it from another unused track or the playlist's open end. The best of these, one per remaining slot, are added up. Using up the best links lowers the estimate, so saving them is no longer penalised. Tracks with no Good link left add nothing. The links are scored once per generation (`BuildSpreadLinks`), and the per-step scoring runs in parallel.
+- **The slots still to fill** are counted against the whole playlist, not the batch being added. With an approximate length, that is the length's track count. With no limit, it is the current playlist plus every available track not in it yet. So auto-generate, which adds a few tracks at a time, plans each batch as part of the full playlist and doesn't use up the best mixes within it.
 - **Result** is chosen on the average of two numbers: the overall average and the weakest run of 5 consecutive mixes (`GetWeakestStretchRank`). An even playlist can beat one with a slightly higher average but a weak tail.
 
 The estimate only helps when the good links are scarce. Generating 30 tracks from a large library behaves almost as before.

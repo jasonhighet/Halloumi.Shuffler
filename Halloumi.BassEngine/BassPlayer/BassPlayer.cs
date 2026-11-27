@@ -198,6 +198,12 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
 
         public TrackPosition GetTrackPosition() => _playback.GetTrackPosition();
 
+        public MixOverview GetMixOverview() => _playback.GetMixOverview();
+
+        public bool MoveFadeOut(int sections) => _playback.MoveFadeOut(sections);
+
+        public bool MoveFadeIn(int sections) => _playback.MoveFadeIn(sections);
+
         public void SetAdjustedTrackPosition(long position) => _playback.SetAdjustedTrackPosition(position);
 
         public void JumpBack() => _playback.JumpBack();

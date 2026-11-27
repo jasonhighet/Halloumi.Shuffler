@@ -137,6 +137,8 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
             {
                 AudioStreamHelper.LoadAudio(track);
 
+                // the fade points are set from scratch below, so any live move is gone
+                track.ForgetLiveShifts();
                 FadeDefaults.ResetFades(track);
 
                 ExtendedAttributesHelper.LoadExtendedAttributes(track);
@@ -155,6 +157,9 @@ namespace Halloumi.Shuffler.AudioEngine.BassPlayer
         public void UnloadTrackAudioData(Track track)
         {
             if (!track.IsAudioLoaded()) return;
+
+            // a fade moved live was for that play only
+            track.RemoveLiveShifts();
 
             track.Syncs.Clear();
 

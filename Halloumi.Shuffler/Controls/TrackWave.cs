@@ -337,11 +337,28 @@ namespace Halloumi.Shuffler.Controls
             _btnSuggest = NewToolButton("Auto Fades", (sender, e) => SuggestFades());
             var btnKeys = NewToolButton("Keys", (sender, e) => ShowShortcuts());
 
+            // the selected section (fade in, fade out, skip or sample): halve / double its length, or move it
+            // back / forward by its own length, so its start becomes its end (or its end its start)
+            var btnHalf = NewToolButton("Half", (sender, e) => ScaleActiveSection(0.5), true);
+            var btnDouble = NewToolButton("Double", (sender, e) => ScaleActiveSection(2), true);
+            var btnMoveBack = NewToolButton("◀ Move", (sender, e) => ShiftActiveSection(-1), true);
+            var btnMoveForward = NewToolButton("Move ▶", (sender, e) => ShiftActiveSection(1), true);
+
+            var toolTip = new ToolTip(components);
+            toolTip.SetToolTip(btnHalf, "Halve the length of the section the red cursor is in (or the selected one), keeping its start  ( [ )");
+            toolTip.SetToolTip(btnDouble, "Double the length of the section the red cursor is in (or the selected one), keeping its start  ( ] )");
+            toolTip.SetToolTip(btnMoveBack, "Move the section the red cursor is in (or the selected one) back by its own length: its start becomes its end  ( , )");
+            toolTip.SetToolTip(btnMoveForward, "Move the section the red cursor is in (or the selected one) forward by its own length: its end becomes its start  ( . )");
+
             flpPlaybackButtons.WrapContents = false;
             flpPlaybackButtons.AutoSize = true;
             flpPlaybackButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flpPlaybackButtons.Controls.Add(_btnSnap);
             flpPlaybackButtons.Controls.Add(_btnSuggest);
+            flpPlaybackButtons.Controls.Add(btnHalf);
+            flpPlaybackButtons.Controls.Add(btnDouble);
+            flpPlaybackButtons.Controls.Add(btnMoveBack);
+            flpPlaybackButtons.Controls.Add(btnMoveForward);
             flpPlaybackButtons.Controls.Add(btnKeys);
 
             _mnuSnap = new ToolStripMenuItem("Snap to Beat");
@@ -352,19 +369,26 @@ namespace Halloumi.Shuffler.Controls
             mnuKeys.Click += (sender, e) => ShowShortcuts();
 
             contextMenuStrip.Items.Add(new ToolStripSeparator());
+            contextMenuStrip.Items.Add("Halve Section Length", null, (sender, e) => ScaleActiveSection(0.5));
+            contextMenuStrip.Items.Add("Double Section Length", null, (sender, e) => ScaleActiveSection(2));
+            contextMenuStrip.Items.Add("Move Section Back (start becomes end)", null, (sender, e) => ShiftActiveSection(-1));
+            contextMenuStrip.Items.Add("Move Section Forward (end becomes start)", null, (sender, e) => ShiftActiveSection(1));
+
+            contextMenuStrip.Items.Add(new ToolStripSeparator());
             contextMenuStrip.Items.Add(_mnuSnap);
             contextMenuStrip.Items.Add(_mnuSuggest);
             contextMenuStrip.Items.Add(mnuKeys);
         }
 
-        private Button NewToolButton(string text, EventHandler click)
+        private Button NewToolButton(string text, EventHandler click, bool compact = false)
         {
-            // as tall as the designer's buttons, and wide enough for the text
+            // as tall as the designer's buttons, and wide enough for the text (compact ones just fit it)
             var textWidth = TextRenderer.MeasureText(text, btnEdit.Font).Width;
+            var width = compact ? textWidth + Scale96(16) : Math.Max(btnEdit.Width, textWidth + Scale96(36));
             var button = new Button
             {
                 Text = text,
-                Size = new Size(Math.Max(btnEdit.Width, textWidth + Scale96(36)), btnEdit.Height),
+                Size = new Size(width, btnEdit.Height),
                 Margin = btnEdit.Margin
             };
             button.Click += click;
@@ -2015,9 +2039,31 @@ namespace Halloumi.Shuffler.Controls
             PositionsChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        ///     If the red cursor is inside a section, makes that the active section (preferring the active one if
+        ///     the cursor is in more than one), so Half / Double / Move act on the section the cursor is in.
+        ///     Otherwise the active section stays as it is.
+        /// </summary>
+        private void SelectSectionAtCursor()
+        {
+            long start, end;
+            if (GetSection(_activeSection, out start, out end) && CurrentPosition >= start && CurrentPosition < end)
+                return;
+
+            foreach (var section in Sections())
+            {
+                if (!GetSection(section, out start, out end)) continue;
+                if (CurrentPosition < start || CurrentPosition >= end) continue;
+                SetActiveSection(section);
+                return;
+            }
+        }
+
         /// <summary>Halves or doubles the active section, keeping its start (so its tempo stays the same).</summary>
         private void ScaleActiveSection(double factor)
         {
+            SelectSectionAtCursor();
+
             long start, end;
             if (!GetSection(_activeSection, out start, out end)) return;
 
@@ -2034,6 +2080,8 @@ namespace Halloumi.Shuffler.Controls
         /// </summary>
         private void ShiftActiveSection(int direction)
         {
+            SelectSectionAtCursor();
+
             long start, end;
             if (!GetSection(_activeSection, out start, out end)) return;
 
@@ -2181,6 +2229,7 @@ namespace Halloumi.Shuffler.Controls
                 "  S / E            Set the section's start / end at the cursor (the playhead while playing)\n" +
                 "  [  /  ]          Halve / double the section's length\n" +
                 "  ,  /  .          Move the section back / forward by its own length\n" +
+                "                   ([ ] , . and Half / Double / Move use the section the red cursor is in, if any)\n" +
                 "  Z                Show the section with room to drag its edges\n" +
                 "  N                Snap to beat on / off (hold Ctrl while dragging for the opposite)\n\n" +
                 "Mouse\n" +

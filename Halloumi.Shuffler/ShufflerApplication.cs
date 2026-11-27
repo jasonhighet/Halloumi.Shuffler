@@ -627,6 +627,55 @@ namespace Halloumi.Shuffler
 
         public void Play() => BassPlayer.Play();
 
+        // ── Mixer waveform overview (docs/mixer-waveform.md) ─────────────────
+
+        private const int WaveformPeaksCacheSize = 6;
+        private readonly List<KeyValuePair<string, WaveformPeaks>> _waveformPeaksCache =
+            new List<KeyValuePair<string, WaveformPeaks>>();
+
+        /// <summary>
+        ///     The outgoing and incoming tracks as heard, lined up on the transition. Cheap: safe to poll.
+        /// </summary>
+        public AudioEngine.Models.MixOverview GetMixOverview() => BassPlayer.GetMixOverview();
+
+        /// <summary>
+        ///     Moves the current track's fade-out, for the coming mix, to a number of whole sections from its own place
+        ///     (negative is earlier). Manual mix mode only; kept if the manual mix is saved. False if it can't go there.
+        /// </summary>
+        public bool MoveFadeOut(int sections) => BassPlayer.MoveFadeOut(sections);
+
+        /// <summary>
+        ///     Moves the next track's fade-in, for the coming mix, to a number of whole sections from its own place.
+        /// </summary>
+        public bool MoveFadeIn(int sections) => BassPlayer.MoveFadeIn(sections);
+
+        /// <summary>
+        ///     A track's overview waveform peaks, or null if the file cannot be decoded. The first call for a file
+        ///     decodes it, which takes about a second: call it from a worker thread. Recent files are cached.
+        /// </summary>
+        public WaveformPeaks GetWaveformPeaks(string filename)
+        {
+            if (string.IsNullOrEmpty(filename)) return null;
+
+            lock (_waveformPeaksCache)
+            {
+                var cached = _waveformPeaksCache.FindIndex(x => x.Key == filename);
+                if (cached >= 0) return _waveformPeaksCache[cached].Value;
+            }
+
+            var peaks = WaveformPeaks.Compute(filename);
+
+            lock (_waveformPeaksCache)
+            {
+                _waveformPeaksCache.RemoveAll(x => x.Key == filename);
+                _waveformPeaksCache.Add(new KeyValuePair<string, WaveformPeaks>(filename, peaks));
+                while (_waveformPeaksCache.Count > WaveformPeaksCacheSize)
+                    _waveformPeaksCache.RemoveAt(0);
+            }
+
+            return peaks;
+        }
+
         // ── Library wrappers ────────────────────────────────────────────────
 
         public void SetTrackRank(List<Track> tracks, int rank) => Library.SetRank(tracks, rank);
@@ -1045,6 +1094,15 @@ namespace Halloumi.Shuffler
         public decimal GetSamplerDelayNotes() => Settings.Default.SamplerDelayNotes;
 
         public SoundOutput GetRawLoopOutput() => Settings.Default.RawLoopOutput;
+
+        public int GetMixOverviewHeight() => Settings.Default.MixOverviewHeight;
+
+        public void SetMixOverviewHeight(int height)
+        {
+            if (Settings.Default.MixOverviewHeight == height) return;
+            Settings.Default.MixOverviewHeight = height;
+            Settings.Default.Save();
+        }
     }
 
     public class MixRankChangedEventArgs : EventArgs

@@ -58,12 +58,28 @@ namespace Halloumi.Shuffler.AudioEngine.Helpers
         public static string ShufflerFolder { get; set; }
 
         /// <summary>
-        ///     Loads any attributes stored in a the track comment tag.
+        ///     Loads a track's saved attributes. A fade section moved live (for this play only) stays moved: the move
+        ///     is taken off, the saved fade points loaded, and the move put back.
         /// </summary>
         /// <param name="track">The track.</param>
         public static void LoadExtendedAttributes(Track track)
         {
             if (track == null) return;
+
+            var fadeInShift = track.LiveFadeInShift;
+            var fadeInSections = track.LiveFadeInSections;
+            var fadeOutShift = track.LiveFadeOutShift;
+            var fadeOutSections = track.LiveFadeOutSections;
+            track.RemoveLiveShifts();
+
+            LoadSavedAttributes(track);
+
+            track.ShiftFadeIn(fadeInShift, fadeInSections);
+            track.ShiftFadeOut(fadeOutShift, fadeOutSections);
+        }
+
+        private static void LoadSavedAttributes(Track track)
+        {
             if (track.Artist == "" || track.Title == "") return;
 
             var attributes = GetExtendedAttributes(track.Description);
